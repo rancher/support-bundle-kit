@@ -24,8 +24,8 @@ cd logs
 dmesg &> dmesg.log
 
 # k3s logs don't rorate well and can be huge
-tail -c 100m ${HOST_PATH}/var/log/k3s-service.log > k3s-service.log
-tail -c 100m ${HOST_PATH}/var/log/k3s-restarter.log > k3s-restarter.log
+tail -c 10m ${HOST_PATH}/var/log/k3s-service.log > k3s-service.log
+tail -c 10m ${HOST_PATH}/var/log/k3s-restarter.log > k3s-restarter.log
 
 cp ${HOST_PATH}/var/log/qemu-ga.log* .
 cp ${HOST_PATH}/var/log/messages* .
