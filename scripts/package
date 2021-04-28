@@ -5,15 +5,15 @@ source $(dirname $0)/version
 
 cd $(dirname $0)/..
 
-cd $(dirname $0)/package
+mkdir -p dist/artifacts
+cp bin/harvester-sb-collector.sh dist/artifacts
+cp bin/support-bundle-utils dist/artifacts/support-bundle-utils${SUFFIX}
 
-IMAGE=${REPO}/support-bundle-utils:${TAG}
+IMAGE=${REPO}/harvester-support-bundle-utils:${TAG}
 DOCKERFILE=Dockerfile
 if [ -e ${DOCKERFILE}.${ARCH} ]; then
     DOCKERFILE=${DOCKERFILE}.${ARCH}
 fi
 
-cp -r ../bin .
-
-docker build --build-arg VERSION=${VERSION} -f ${DOCKERFILE} -t ${IMAGE} .
+docker build -f package/${DOCKERFILE} -t ${IMAGE} .
 echo Built ${IMAGE}
