@@ -6,8 +6,6 @@ replace (
 	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go v3.2.1-0.20200107013213-dc14462fd587+incompatible
 	github.com/docker/distribution => github.com/docker/distribution v0.0.0-20191216044856-a8371794149d
 	github.com/docker/docker => github.com/docker/docker v1.4.2-0.20200203170920-46ec8731fbce
-	// TODO: Changeme
-	github.com/harvester/harvester => github.com/bk201/harvester v0.0.2-0.20210423064819-d0b827685f29
 	github.com/knative/pkg => github.com/rancher/pkg v0.0.0-20190514055449-b30ab9de040e
 	github.com/openshift/api => github.com/openshift/api v0.0.0-20191219222812-2987a591a72c
 	github.com/openshift/client-go => github.com/openshift/client-go v0.0.0-20191125132246-f6563a70e19a
@@ -48,7 +46,7 @@ replace (
 
 require (
 	github.com/gorilla/mux v1.8.0
-	github.com/harvester/harvester v0.0.0-00010101000000-000000000000
+	github.com/harvester/harvester v0.0.2-0.20210428030319-c246e3ad7df1
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
