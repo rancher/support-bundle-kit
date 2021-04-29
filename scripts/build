@@ -16,5 +16,5 @@ if [ "$CROSS" = "true" ] && [ "$ARCH" = "amd64" ]; then
     GOOS=windows go build -ldflags "$LINKFLAGS" -o bin/support-bundle-utils-windows
 fi
 
-
-
+# non-go scripts
+cp hack/*.sh bin

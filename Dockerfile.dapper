@@ -30,7 +30,7 @@ ENV GO111MODULE off
 ENV DAPPER_ENV REPO TAG DRONE_TAG CROSS GOPROXY
 ENV DAPPER_DOCKER_SOCKET true
 ENV DAPPER_SOURCE /go/src/github.com/harvester/support-bundle-utils/
-ENV DAPPER_OUTPUT ./dist
+ENV DAPPER_OUTPUT ./bin ./dist
 # -- for dapper
 
 WORKDIR ${DAPPER_SOURCE}
