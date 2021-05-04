@@ -100,13 +100,15 @@ func (c *Cluster) generateSupportBundleYAMLsForKubernetes(dir string, errLog io.
 	getListAndEncodeToYAML("nodes", c.sbm.k8s.GetAllNodesList, dir, errLog)
 	getListAndEncodeToYAML("configmaps", c.sbm.k8s.GetAllConfigMaps, dir, errLog)
 	getListAndEncodeToYAML("volumeattachments", c.sbm.k8s.GetAllVolumeAttachments, dir, errLog)
+	getListAndEncodeToYAML("nodemetrics", c.sbm.k8sMetrics.GetAllNodeMetrics, dir, errLog)
+	getListAndEncodeToYAML("podmetrics", c.sbm.k8sMetrics.GetAllPodMetrics, dir, errLog)
 }
 
 func (c *Cluster) generateSupportBundleYAMLsForHarvester(dir string, errLog io.Writer) {
 
 	// Harvester
 	for _, ns := range []string{c.sbm.HarvesterNamespace, "default"} {
-		harvester, err := client.NewHarvesterStore(c.sbm.context, ns, c.sbm.restConfig)
+		harvester, err := client.NewHarvesterClient(c.sbm.context, ns, c.sbm.restConfig)
 		if err != nil {
 			fmt.Fprint(errLog, err)
 			continue
@@ -127,7 +129,7 @@ func (c *Cluster) generateSupportBundleYAMLsForHarvester(dir string, errLog io.W
 
 	// KubeVirt & CDI
 	ns := "default"
-	harvester, err := client.NewHarvesterStore(c.sbm.context, ns, c.sbm.restConfig)
+	harvester, err := client.NewHarvesterClient(c.sbm.context, ns, c.sbm.restConfig)
 	if err != nil {
 		fmt.Fprint(errLog, err)
 		return
@@ -193,7 +195,7 @@ func (c *Cluster) generateSupportBundleLogs(logsDir string, errLog io.Writer) {
 	namespaces := []string{c.sbm.HarvesterNamespace, "default", "kube-system", "cattle-system"}
 
 	for _, ns := range namespaces {
-		k8s, err := client.NewKubernetesStore(c.sbm.context, ns, c.sbm.restConfig)
+		k8s, err := client.NewKubernetesClient(c.sbm.context, ns, c.sbm.restConfig)
 		if err != nil {
 			fmt.Fprint(errLog, err)
 			continue

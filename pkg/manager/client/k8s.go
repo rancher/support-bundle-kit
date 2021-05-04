@@ -18,7 +18,7 @@ type KubernetesClient struct {
 	clientSet *kubernetes.Clientset
 }
 
-func NewKubernetesStore(ctx context.Context, namespace string, config *rest.Config) (*KubernetesClient, error) {
+func NewKubernetesClient(ctx context.Context, namespace string, config *rest.Config) (*KubernetesClient, error) {
 	clientSet, err := kubernetes.NewForConfig(config)
 	if err != nil {
 		return nil, err

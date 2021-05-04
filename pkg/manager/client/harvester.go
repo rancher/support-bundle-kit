@@ -16,7 +16,7 @@ type HarvesterClient struct {
 	clientset *versioned.Clientset
 }
 
-func NewHarvesterStore(ctx context.Context, namespace string, config *rest.Config) (*HarvesterClient, error) {
+func NewHarvesterClient(ctx context.Context, namespace string, config *rest.Config) (*HarvesterClient, error) {
 	clientset, err := versioned.NewForConfig(config)
 	if err != nil {
 		return nil, err
