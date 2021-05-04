@@ -40,6 +40,7 @@ type SupportBundleManager struct {
 
 	restConfig *rest.Config
 	k8s        *client.KubernetesClient
+	k8sMetrics *client.MetricsClient
 	harvester  *client.HarvesterClient
 
 	ch            chan struct{}
@@ -95,22 +96,10 @@ func (m *SupportBundleManager) Run() error {
 	}
 
 	m.context = context.Background()
-	config, err := rest.InClusterConfig()
+	err := m.initClients()
 	if err != nil {
 		return err
 	}
-	m.restConfig = config
-	hvst, err := client.NewHarvesterStore(m.context, m.HarvesterNamespace, m.restConfig)
-	if err != nil {
-		return err
-	}
-	m.harvester = hvst
-
-	k8s, err := client.NewKubernetesStore(m.context, m.HarvesterNamespace, m.restConfig)
-	if err != nil {
-		return err
-	}
-	m.k8s = k8s
 
 	state, err := m.harvester.GetSupportBundleState(m.BundleName)
 	if err != nil {
@@ -153,6 +142,32 @@ func (m *SupportBundleManager) Run() error {
 
 	logrus.Infof("support bundle %s ready for downloading", m.getBundlefile())
 	select {}
+}
+
+func (m *SupportBundleManager) initClients() error {
+	config, err := rest.InClusterConfig()
+	if err != nil {
+		return err
+	}
+	m.restConfig = config
+	hvst, err := client.NewHarvesterClient(m.context, m.HarvesterNamespace, m.restConfig)
+	if err != nil {
+		return err
+	}
+	m.harvester = hvst
+
+	k8s, err := client.NewKubernetesClient(m.context, m.HarvesterNamespace, m.restConfig)
+	if err != nil {
+		return err
+	}
+	m.k8s = k8s
+
+	k8sMetrics, err := client.NewMetricsClient(m.context, m.HarvesterNamespace, m.restConfig)
+	if err != nil {
+		return err
+	}
+	m.k8sMetrics = k8sMetrics
+	return nil
 }
 
 func (m *SupportBundleManager) waitNodeBundles() error {
