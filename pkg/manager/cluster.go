@@ -47,6 +47,7 @@ func (c *Cluster) GenerateClusterBundle(bundleDir string) (string, error) {
 	bundleMeta := &BundleMeta{
 		ProjectName:          "Harvester",
 		ProjectVersion:       c.sbm.HarvesterVersion,
+		BundleVersion:        BundleVersion,
 		KubernetesVersion:    kubeVersion.GitVersion,
 		ProjectNamespaceUUID: string(namespace.UID),
 		BundleCreatedAt:      utils.Now(),
