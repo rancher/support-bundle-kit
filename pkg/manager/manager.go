@@ -101,7 +101,7 @@ func (m *SupportBundleManager) Run() error {
 		return err
 	}
 
-	state, err := m.harvester.GetSupportBundleState(m.BundleName)
+	state, err := m.harvester.GetSupportBundleState(m.HarvesterNamespace, m.BundleName)
 	if err != nil {
 		return err
 	}
@@ -113,7 +113,7 @@ func (m *SupportBundleManager) Run() error {
 	bundleName, err := cluster.GenerateClusterBundle(m.getWorkingDir())
 	if err != nil {
 		wErr := errors.Wrap(err, "fail to generate cluster bundle")
-		if e := m.harvester.SetSupportBundleError(m.BundleName, StateError, wErr.Error()); e != nil {
+		if e := m.harvester.SetSupportBundleError(m.HarvesterNamespace, m.BundleName, StateError, wErr.Error()); e != nil {
 			return e
 		}
 		return wErr
@@ -129,13 +129,13 @@ func (m *SupportBundleManager) Run() error {
 
 	err = m.compressBundle()
 	if err != nil {
-		if e := m.harvester.SetSupportBundleError(m.BundleName, StateError, err.Error()); e != nil {
+		if e := m.harvester.SetSupportBundleError(m.HarvesterNamespace, m.BundleName, StateError, err.Error()); e != nil {
 			return e
 		}
 		return err
 	}
 
-	err = m.harvester.UpdateSupportBundleStatus2(m.BundleName, StateReady, m.BundleFileName, m.bundleFileSize)
+	err = m.harvester.UpdateSupportBundleStatus2(m.HarvesterNamespace, m.BundleName, StateReady, m.BundleFileName, m.bundleFileSize)
 	if err != nil {
 		return err
 	}
@@ -150,19 +150,19 @@ func (m *SupportBundleManager) initClients() error {
 		return err
 	}
 	m.restConfig = config
-	hvst, err := client.NewHarvesterClient(m.context, m.HarvesterNamespace, m.restConfig)
+	hvst, err := client.NewHarvesterClient(m.context, m.restConfig)
 	if err != nil {
 		return err
 	}
 	m.harvester = hvst
 
-	k8s, err := client.NewKubernetesClient(m.context, m.HarvesterNamespace, m.restConfig)
+	k8s, err := client.NewKubernetesClient(m.context, m.restConfig)
 	if err != nil {
 		return err
 	}
 	m.k8s = k8s
 
-	k8sMetrics, err := client.NewMetricsClient(m.context, m.HarvesterNamespace, m.restConfig)
+	k8sMetrics, err := client.NewMetricsClient(m.context, m.restConfig)
 	if err != nil {
 		return err
 	}
