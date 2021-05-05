@@ -15,11 +15,14 @@ const (
 
 	AppManager = "support-bundle-manager"
 	AppAgent   = "support-bundle-agent"
+
+	BundleVersion = "0.1.0"
 )
 
 type BundleMeta struct {
 	ProjectName          string `json:"projectName"`
 	ProjectVersion       string `json:"projectVersion"`
+	BundleVersion        string `json:"bundleVersion"`
 	KubernetesVersion    string `json:"kubernetesVersion"`
 	ProjectNamespaceUUID string `json:"projectNamspaceUUID"`
 	BundleCreatedAt      string `json:"bundleCreatedAt"`
