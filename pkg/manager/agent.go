@@ -25,7 +25,7 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 
 	// get manager pod for owner reference
 	labels := fmt.Sprintf("app=%s,%s=%s", AppManager, SupportBundleLabelKey, a.sbm.BundleName)
-	pods, err := a.sbm.k8s.GetPodsListByLabels(labels)
+	pods, err := a.sbm.k8s.GetPodsListByLabels(a.sbm.HarvesterNamespace, labels)
 	if err != nil {
 		return err
 	}
@@ -134,13 +134,13 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 		},
 	}
 
-	_, err = a.sbm.k8s.CreateDaemonSets(daemonSet)
+	_, err = a.sbm.k8s.CreateDaemonSets(a.sbm.HarvesterNamespace, daemonSet)
 	return err
 }
 
 func (a *AgentDaemonSet) Cleanup() error {
 	dsName := a.getDaemonSetName()
-	err := a.sbm.k8s.DeleteDaemonSets(dsName)
+	err := a.sbm.k8s.DeleteDaemonSets(a.sbm.HarvesterNamespace, dsName)
 	if err != nil && !apierrors.IsNotFound(err) {
 		return err
 	}
