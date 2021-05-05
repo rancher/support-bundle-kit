@@ -1,0 +1,66 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: support-bundle-sample
+  namespace: harvester-system
+  labels:
+    app: support-bundle-manager
+    harvesterhci.io/supportbundle: sample
+spec:
+  selector:
+    app: support-bundle-manager
+    harvesterhci.io/supportbundle: sample
+  ports:
+    - protocol: TCP
+      port: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: support-bundle-manager
+    harvesterhci.io/supportbundle: sample
+  name: supportbundle-manager-sample
+  namespace: harvester-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: support-bundle-manager
+  template:
+    metadata:
+      labels:
+        app: support-bundle-manager
+        harvesterhci.io/supportbundle: sample
+    spec:
+      containers:
+      - args:
+        - /usr/bin/support-bundle-utils
+        - manager
+        - --standalone
+        env:
+        - name: HARVESTER_NAMESPACE
+          value: harvester-system
+        - name: HARVESTER_VERSION
+          value: unknown (from manifest)
+        - name: HARVESTER_SUPPORT_BUNDLE_NAME
+          value: sample
+        - name: HARVESTER_SUPPORT_BUNDLE_DEBUG
+          value: "true"
+        - name: HARVESTER_SUPPORT_BUNDLE_MANAGER_POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: HARVESTER_SUPPORT_BUNDLE_IMAGE
+          value: rancher/harvester-support-bundle-utils:dev
+        - name: HARVESTER_SUPPORT_BUNDLE_IMAGE_PULL_POLICY
+          value: Always
+        image: rancher/harvester-support-bundle-utils:dev
+        imagePullPolicy: Always
+        name: manager
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+      serviceAccountName: harvester

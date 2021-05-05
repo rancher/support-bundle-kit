@@ -33,6 +33,7 @@ type SupportBundleManager struct {
 	WaitTimeout        time.Duration
 	LonghornAPI        string
 	ManagerPodIP       string
+	Standalone         bool
 	ImageName          string
 	ImagePullPolicy    string
 
@@ -42,6 +43,8 @@ type SupportBundleManager struct {
 	k8s        *client.KubernetesClient
 	k8sMetrics *client.MetricsClient
 	harvester  *client.HarvesterClient
+
+	state StateStoreInterface
 
 	ch            chan struct{}
 	done          bool
@@ -101,7 +104,9 @@ func (m *SupportBundleManager) Run() error {
 		return err
 	}
 
-	state, err := m.harvester.GetSupportBundleState(m.HarvesterNamespace, m.BundleName)
+	m.initStateStore()
+
+	state, err := m.state.GetState(m.HarvesterNamespace, m.BundleName)
 	if err != nil {
 		return err
 	}
@@ -113,7 +118,7 @@ func (m *SupportBundleManager) Run() error {
 	bundleName, err := cluster.GenerateClusterBundle(m.getWorkingDir())
 	if err != nil {
 		wErr := errors.Wrap(err, "fail to generate cluster bundle")
-		if e := m.harvester.SetSupportBundleError(m.HarvesterNamespace, m.BundleName, StateError, wErr.Error()); e != nil {
+		if e := m.state.SetError(m.HarvesterNamespace, m.BundleName, wErr); e != nil {
 			return e
 		}
 		return wErr
@@ -129,13 +134,13 @@ func (m *SupportBundleManager) Run() error {
 
 	err = m.compressBundle()
 	if err != nil {
-		if e := m.harvester.SetSupportBundleError(m.HarvesterNamespace, m.BundleName, StateError, err.Error()); e != nil {
+		if e := m.state.SetError(m.HarvesterNamespace, m.BundleName, err); e != nil {
 			return e
 		}
 		return err
 	}
 
-	err = m.harvester.UpdateSupportBundleStatus2(m.HarvesterNamespace, m.BundleName, StateReady, m.BundleFileName, m.bundleFileSize)
+	err = m.state.Done(m.HarvesterNamespace, m.BundleName, m.BundleFileName, m.bundleFileSize)
 	if err != nil {
 		return err
 	}
@@ -168,6 +173,14 @@ func (m *SupportBundleManager) initClients() error {
 	}
 	m.k8sMetrics = k8sMetrics
 	return nil
+}
+
+func (m *SupportBundleManager) initStateStore() {
+	if m.Standalone {
+		m.state = NewLocalStore(m.HarvesterNamespace, m.BundleName)
+		return
+	}
+	m.state = NewK8sStore(m.harvester)
 }
 
 func (m *SupportBundleManager) waitNodeBundles() error {

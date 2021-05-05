@@ -48,4 +48,6 @@ func init() {
 	managerCmd.PersistentFlags().StringVar(&sbm.ManagerPodIP, "manager-pod-ip", os.Getenv("HARVESTER_SUPPORT_BUNDLE_MANAGER_POD_IP"), "The Harvester support bundle manager's IP (pod runs this app)")
 	managerCmd.PersistentFlags().StringVar(&sbm.ImageName, "image-name", os.Getenv("HARVESTER_SUPPORT_BUNDLE_IMAGE"), "The Harvester support bundle image")
 	managerCmd.PersistentFlags().StringVar(&sbm.ImagePullPolicy, "image-pull-policy", os.Getenv("HARVESTER_SUPPORT_BUNDLE_IMAGE_PULL_POLICY"), "Pull policy of the Harvester support bundle image")
+
+	managerCmd.PersistentFlags().BoolVar(&sbm.Standalone, "standalone", false, "Run the manager in standalone mode. Harvester api server is not required.")
 }
