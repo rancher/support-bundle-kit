@@ -4,35 +4,31 @@ import (
 	"archive/zip"
 	"context"
 	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
 
-	"github.com/gorilla/mux"
+	"github.com/harvester/harvester/pkg/controller/master/supportbundle/types"
 	"github.com/pkg/errors"
+	"github.com/rancher/wrangler/pkg/signals"
 	"github.com/sirupsen/logrus"
 	"k8s.io/client-go/rest"
 
 	"github.com/harvester/support-bundle-utils/pkg/manager/client"
-	"github.com/harvester/support-bundle-utils/pkg/utils"
 )
 
 type SupportBundleManager struct {
 	HarvesterNamespace string
-	HarvesterVersion   string
 	BundleName         string
-	BundleFileName     string
-	bundleFileSize     int64
+	bundleFileName     string
 	OutputDir          string
 	WaitTimeout        time.Duration
 	LonghornAPI        string
 	ManagerPodIP       string
+	Standalone         bool
 	ImageName          string
 	ImagePullPolicy    string
 
@@ -43,9 +39,12 @@ type SupportBundleManager struct {
 	k8sMetrics *client.MetricsClient
 	harvester  *client.HarvesterClient
 
+	state  StateStoreInterface
+	status ManagerStatus
+
 	ch            chan struct{}
 	done          bool
-	lock          sync.Mutex
+	nodesLock     sync.Mutex
 	expectedNodes map[string]string
 }
 
@@ -79,7 +78,7 @@ func (m *SupportBundleManager) getWorkingDir() string {
 }
 
 func (m *SupportBundleManager) getBundlefile() string {
-	return filepath.Join(m.OutputDir, m.BundleFileName)
+	return filepath.Join(m.OutputDir, m.bundleFileName)
 }
 
 func (m *SupportBundleManager) getBundlefilesize() (int64, error) {
@@ -91,57 +90,110 @@ func (m *SupportBundleManager) getBundlefilesize() (int64, error) {
 }
 
 func (m *SupportBundleManager) Run() error {
+	phases := []struct {
+		Name string
+		Run  func() error
+	}{
+		{
+			PhaseInit,
+			m.phaseInit,
+		},
+		{
+			PhaseClusterBundle,
+			m.phaseCollectClusterBundle,
+		},
+		{
+			PhaseNodeBundle,
+			m.phaseCollectNodeBundles,
+		},
+		{
+			PhasePackaging,
+			m.phasePackaging,
+		},
+		{
+			PhaseDone,
+			m.phaseDone,
+		},
+	}
+
+	for i, phase := range phases {
+		logrus.Infof("running phase %s", phase.Name)
+		m.status.SetPhase(phase.Name)
+		if err := phase.Run(); err != nil {
+			m.status.SetError(err.Error())
+			logrus.Errorf("fail to run phase %s: %s", phase.Name, err.Error())
+			break
+		}
+
+		progress := 100 * (i + 1) / len(phases)
+		m.status.SetProgress(progress)
+		logrus.Infof("succeed to run phase %s. Progress (%d).", phase.Name, progress)
+	}
+
+	<-m.context.Done()
+	return nil
+}
+
+func (m *SupportBundleManager) phaseInit() error {
 	if err := m.check(); err != nil {
 		return err
 	}
 
-	m.context = context.Background()
+	m.context = signals.SetupSignalHandler(context.Background())
 	err := m.initClients()
 	if err != nil {
 		return err
 	}
+	m.initStateStore()
 
-	state, err := m.harvester.GetSupportBundleState(m.HarvesterNamespace, m.BundleName)
+	state, err := m.state.GetState(m.HarvesterNamespace, m.BundleName)
 	if err != nil {
 		return err
 	}
-	if state != StateGenerating {
+	if state != types.StateGenerating {
 		return fmt.Errorf("invalid start state %s", state)
 	}
 
+	// create a http server to
+	// (1) provide status to controller
+	// (2) accept node bundles from agent daemonset
+	s := HttpServer{
+		context: m.context,
+		manager: m,
+	}
+
+	go s.Run(m)
+
+	return nil
+}
+
+func (m *SupportBundleManager) phaseCollectClusterBundle() error {
 	cluster := NewCluster(m.context, m)
 	bundleName, err := cluster.GenerateClusterBundle(m.getWorkingDir())
 	if err != nil {
-		wErr := errors.Wrap(err, "fail to generate cluster bundle")
-		if e := m.harvester.SetSupportBundleError(m.HarvesterNamespace, m.BundleName, StateError, wErr.Error()); e != nil {
-			return e
-		}
-		return wErr
+		return errors.Wrap(err, "fail to generate cluster bundle")
 	}
-	m.BundleFileName = bundleName
+	m.bundleFileName = bundleName
+	return nil
+}
 
-	err = m.waitNodeBundles()
+func (m *SupportBundleManager) phaseCollectNodeBundles() error {
+	err := m.collectNodeBundles()
 	if err != nil {
 		// Ignore error here, since in some failure cases we might not receive all node bundles.
 		// A support bundle with partital data is also useful.
 		logrus.Error(err)
 	}
+	return nil
+}
 
-	err = m.compressBundle()
-	if err != nil {
-		if e := m.harvester.SetSupportBundleError(m.HarvesterNamespace, m.BundleName, StateError, err.Error()); e != nil {
-			return e
-		}
-		return err
-	}
+func (m *SupportBundleManager) phasePackaging() error {
+	return m.compressBundle()
+}
 
-	err = m.harvester.UpdateSupportBundleStatus2(m.HarvesterNamespace, m.BundleName, StateReady, m.BundleFileName, m.bundleFileSize)
-	if err != nil {
-		return err
-	}
-
-	logrus.Infof("support bundle %s ready for downloading", m.getBundlefile())
-	select {}
+func (m *SupportBundleManager) phaseDone() error {
+	logrus.Infof("support bundle %s ready to download", m.getBundlefile())
+	return nil
 }
 
 func (m *SupportBundleManager) initClients() error {
@@ -168,7 +220,17 @@ func (m *SupportBundleManager) initClients() error {
 	return nil
 }
 
-func (m *SupportBundleManager) waitNodeBundles() error {
+func (m *SupportBundleManager) initStateStore() {
+	if m.Standalone {
+		m.state = NewLocalStore(m.HarvesterNamespace, m.BundleName)
+		return
+	}
+	m.state = NewK8sStore(m.harvester)
+}
+
+// collectNodeBundles spawns a daemonset on each node and waits for agents on
+// each node to push node bundles
+func (m *SupportBundleManager) collectNodeBundles() error {
 	m.ch = make(chan struct{})
 
 	err := m.refreshHarvesterNodes()
@@ -176,10 +238,6 @@ func (m *SupportBundleManager) waitNodeBundles() error {
 		return err
 	}
 	logrus.Debugf("expected bundles from nodes: %+v", m.expectedNodes)
-
-	// create a http server to receive node bundles
-	s := HttpServer{context: m.context}
-	go s.Run(m)
 
 	// create a daemonset to collect node bundles and push back
 	agents := &AgentDaemonSet{sbm: m}
@@ -193,8 +251,8 @@ func (m *SupportBundleManager) waitNodeBundles() error {
 	case <-m.ch:
 		logrus.Info("all node bundles are received.")
 
-		// Clean up when everything is fine, leave ds there for debugging.
-		// The ds will be garbage-collected when manager pod is gone
+		// Clean up when everything is fine. If something went wrong, keep ds for debugging.
+		// The ds will be garbage-collected when manager pod is gone.
 		err := agents.Cleanup()
 		if err != nil {
 			return errors.Wrap(err, "fail to cleanup agent daemonset")
@@ -205,80 +263,14 @@ func (m *SupportBundleManager) waitNodeBundles() error {
 	}
 }
 
-func (m *SupportBundleManager) getBundle(w http.ResponseWriter, req *http.Request) {
-	bundleFile := m.getBundlefile()
-	f, err := os.Open(bundleFile)
-	if err != nil {
-		e := errors.Wrap(err, "fail to open bundle file")
-		logrus.Error(e)
-		utils.HttpResponseError(w, http.StatusNotFound, e)
-		return
-	}
-	defer f.Close()
-
-	fstat, err := f.Stat()
-	if err != nil {
-		e := errors.Wrap(err, "fail to stat bundle file")
-		logrus.Error(e)
-		utils.HttpResponseError(w, http.StatusNotFound, e)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/zip")
-	w.Header().Set("Content-Length", strconv.FormatInt(fstat.Size(), 10))
-	w.Header().Set("Content-Disposition", "attachment; filename="+filepath.Base(bundleFile))
-	if _, err := io.Copy(w, f); err != nil {
-		utils.HttpResponseError(w, http.StatusInternalServerError, err)
-		return
-	}
-}
-
-func (m *SupportBundleManager) createNodeBundle(w http.ResponseWriter, req *http.Request) {
-	node := mux.Vars(req)["nodeName"]
-	if node == "" {
-		utils.HttpResponseError(w, http.StatusBadRequest, errors.New("empty node name"))
-		return
-	}
-
-	logrus.Debugf("handle create node bundle for %s", node)
-	nodesDir := filepath.Join(m.getWorkingDir(), "nodes")
-	err := os.MkdirAll(nodesDir, os.FileMode(0775))
-	if err != nil {
-		utils.HttpResponseError(w, http.StatusInternalServerError, fmt.Errorf("fail to create directory %s: %s", nodesDir, err))
-		return
-	}
-
-	nodeBundle := filepath.Join(nodesDir, node+".zip")
-	f, err := os.Create(nodeBundle)
-	if err != nil {
-		utils.HttpResponseError(w, http.StatusInternalServerError, fmt.Errorf("fail to create file %s: %s", nodeBundle, err))
-		return
-	}
-	defer f.Close()
-	_, err = io.Copy(f, req.Body)
-	if err != nil {
-		utils.HttpResponseError(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	err = m.verifyNodeBundle(nodeBundle)
-	if err != nil {
-		logrus.Errorf("fail to verify file %s: %s", nodeBundle, err)
-		utils.HttpResponseError(w, http.StatusBadRequest, err)
-		return
-	}
-	m.completeNode(node)
-	utils.HttpResponseStatus(w, http.StatusCreated)
-}
-
 func (m *SupportBundleManager) verifyNodeBundle(file string) error {
 	_, err := zip.OpenReader(file)
 	return err
 }
 
 func (m *SupportBundleManager) completeNode(node string) {
-	m.lock.Lock()
-	defer m.lock.Unlock()
+	m.nodesLock.Lock()
+	defer m.nodesLock.Unlock()
 
 	_, ok := m.expectedNodes[node]
 	if ok {
@@ -298,7 +290,7 @@ func (m *SupportBundleManager) completeNode(node string) {
 }
 
 func (m *SupportBundleManager) compressBundle() error {
-	bundleDir := strings.TrimSuffix(m.BundleFileName, filepath.Ext(m.getBundlefile()))
+	bundleDir := strings.TrimSuffix(m.bundleFileName, filepath.Ext(m.getBundlefile()))
 	bundleDirPath := filepath.Join(m.OutputDir, bundleDir)
 	err := os.Rename(m.getWorkingDir(), bundleDirPath)
 	if err != nil {
@@ -315,12 +307,12 @@ func (m *SupportBundleManager) compressBundle() error {
 	if err != nil {
 		return errors.Wrap(err, "fail to get bundle file size")
 	}
-	m.bundleFileSize = size
+	m.status.SetFileinfo(m.bundleFileName, size)
 	return nil
 }
 
 func (m *SupportBundleManager) refreshHarvesterNodes() error {
-	nodes, err := m.k8s.GetNodesListByLabels(fmt.Sprintf("%s=%s", HarvesterNodeLabelKey, HarvesterNodeLabelValue))
+	nodes, err := m.k8s.GetNodesListByLabels(fmt.Sprintf("%s=%s", types.HarvesterNodeLabelKey, types.HarvesterNodeLabelValue))
 	if err != nil {
 		return err
 	}

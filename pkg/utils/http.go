@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/harvester/harvester/pkg/apis/harvesterhci.io/v1beta1"
+	"github.com/sirupsen/logrus"
 )
 
 func httpResponseBody(obj interface{}) []byte {
@@ -27,6 +28,7 @@ func HttpResponseStatus(rw http.ResponseWriter, statusCode int) {
 }
 
 func HttpResponseError(rw http.ResponseWriter, statusCode int, err error) {
+	logrus.Error(err)
 	HttpResponseErrorMsg(rw, statusCode, err.Error())
 }
 

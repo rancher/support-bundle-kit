@@ -3,6 +3,7 @@ package manager
 import (
 	"fmt"
 
+	"github.com/harvester/harvester/pkg/controller/master/supportbundle/types"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	appsv1 "k8s.io/api/apps/v1"
@@ -24,7 +25,7 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 	logrus.Debugf("creating daemonset %s with image %s", dsName, image)
 
 	// get manager pod for owner reference
-	labels := fmt.Sprintf("app=%s,%s=%s", AppManager, SupportBundleLabelKey, a.sbm.BundleName)
+	labels := fmt.Sprintf("app=%s,%s=%s", types.AppManager, types.SupportBundleLabelKey, a.sbm.BundleName)
 	pods, err := a.sbm.k8s.GetPodsListByLabels(a.sbm.HarvesterNamespace, labels)
 	if err != nil {
 		return err
@@ -51,22 +52,22 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 		Spec: appsv1.DaemonSetSpec{
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"app":                 AppAgent,
-					SupportBundleLabelKey: a.sbm.BundleName,
+					"app":                       types.AppAgent,
+					types.SupportBundleLabelKey: a.sbm.BundleName,
 				},
 			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"app":                 AppAgent,
-						SupportBundleLabelKey: a.sbm.BundleName,
+						"app":                       types.AppAgent,
+						types.SupportBundleLabelKey: a.sbm.BundleName,
 					},
 				},
 				Spec: corev1.PodSpec{
-					NodeSelector: map[string]string{HarvesterNodeLabelKey: HarvesterNodeLabelValue},
+					NodeSelector: map[string]string{types.HarvesterNodeLabelKey: types.HarvesterNodeLabelValue},
 					Tolerations: []corev1.Toleration{
 						{
-							Key:   DrainKey,
+							Key:   types.DrainKey,
 							Value: "scheduling",
 						},
 					},
