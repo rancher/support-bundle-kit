@@ -145,28 +145,26 @@ func (m *SupportBundleManager) Run() error {
 }
 
 func (m *SupportBundleManager) initClients() error {
-	config, err := rest.InClusterConfig()
+	var err error
+	m.restConfig, err = rest.InClusterConfig()
 	if err != nil {
 		return err
 	}
-	m.restConfig = config
-	hvst, err := client.NewHarvesterClient(m.context, m.restConfig)
-	if err != nil {
-		return err
-	}
-	m.harvester = hvst
 
-	k8s, err := client.NewKubernetesClient(m.context, m.restConfig)
+	m.harvester, err = client.NewHarvesterClient(m.context, m.restConfig)
 	if err != nil {
 		return err
 	}
-	m.k8s = k8s
 
-	k8sMetrics, err := client.NewMetricsClient(m.context, m.restConfig)
+	m.k8s, err = client.NewKubernetesClient(m.context, m.restConfig)
 	if err != nil {
 		return err
 	}
-	m.k8sMetrics = k8sMetrics
+
+	m.k8sMetrics, err = client.NewMetricsClient(m.context, m.restConfig)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
