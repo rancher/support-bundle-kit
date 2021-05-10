@@ -37,7 +37,6 @@ And it also waits for reports from support bundle agents. The reports contain:
 func init() {
 	rootCmd.AddCommand(managerCmd)
 	managerCmd.PersistentFlags().StringVar(&sbm.HarvesterNamespace, "harvester-namespace", os.Getenv("HARVESTER_NAMESPACE"), "The Harvester namespace")
-	managerCmd.PersistentFlags().StringVar(&sbm.HarvesterVersion, "harvester-version", os.Getenv("HARVESTER_VERSION"), "The Harvester version")
 	managerCmd.PersistentFlags().StringVar(&sbm.BundleName, "bundlename", os.Getenv("HARVESTER_SUPPORT_BUNDLE_NAME"), "The support bundle name")
 	managerCmd.PersistentFlags().StringVar(&sbm.OutputDir, "outdir", os.Getenv("HARVESTER_SUPPORT_BUNDLE_OUTPUT_DIR"), "The directory to store the bundle")
 
@@ -48,4 +47,6 @@ func init() {
 	managerCmd.PersistentFlags().StringVar(&sbm.ManagerPodIP, "manager-pod-ip", os.Getenv("HARVESTER_SUPPORT_BUNDLE_MANAGER_POD_IP"), "The Harvester support bundle manager's IP (pod runs this app)")
 	managerCmd.PersistentFlags().StringVar(&sbm.ImageName, "image-name", os.Getenv("HARVESTER_SUPPORT_BUNDLE_IMAGE"), "The Harvester support bundle image")
 	managerCmd.PersistentFlags().StringVar(&sbm.ImagePullPolicy, "image-pull-policy", os.Getenv("HARVESTER_SUPPORT_BUNDLE_IMAGE_PULL_POLICY"), "Pull policy of the Harvester support bundle image")
+
+	managerCmd.PersistentFlags().BoolVar(&sbm.Standalone, "standalone", false, "Run the manager in standalone mode. Harvester api server is not required.")
 }

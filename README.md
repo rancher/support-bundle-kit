@@ -10,6 +10,7 @@ This project contains support bundle scripts and utilities for Harvester.
     - It starts a web server and waits for bundle downloading and uploading.
     - It starts a daemonset on each node. The agents in the daemonset collect node bundles and push them back to the manager.
 
+    The manager is designed to be spawned as a Kubernetes deployment by the Harvester API server. But it can also be deployed manually from a manifest file. Please check [standalone mode](./docs/standalone.md) for more information.
 
 ## Support bundle contents
 

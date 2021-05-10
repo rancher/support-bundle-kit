@@ -39,14 +39,14 @@ func (c *Cluster) GenerateClusterBundle(bundleDir string) (string, error) {
 	if err != nil {
 		return "", errors.Wrap(err, "cannot get kubernetes version")
 	}
-	sb, err := c.sbm.harvester.GetSupportBundle(c.sbm.HarvesterNamespace, c.sbm.BundleName)
+	sb, err := c.sbm.state.GetSupportBundle(c.sbm.HarvesterNamespace, c.sbm.BundleName)
 	if err != nil {
 		return "", errors.Wrap(err, "cannot get support bundle")
 	}
 
 	bundleMeta := &BundleMeta{
 		ProjectName:          "Harvester",
-		ProjectVersion:       c.sbm.HarvesterVersion,
+		ProjectVersion:       c.sbm.harvester.GetSettingValue("server-version"),
 		BundleVersion:        BundleVersion,
 		KubernetesVersion:    kubeVersion.GitVersion,
 		ProjectNamespaceUUID: string(namespace.UID),
