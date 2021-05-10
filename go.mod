@@ -46,9 +46,10 @@ replace (
 
 require (
 	github.com/gorilla/mux v1.8.0
-	github.com/harvester/harvester v0.0.2-0.20210428030319-c246e3ad7df1
+	github.com/harvester/harvester v0.0.2-0.20210528023109-d95127388f17
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pkg/errors v0.9.1
+	github.com/rancher/wrangler v0.7.3-0.20210219161540-ef7fe9ce2443
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/viper v1.7.1
