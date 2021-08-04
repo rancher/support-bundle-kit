@@ -36,7 +36,7 @@ And it also waits for reports from support bundle agents. The reports contain:
 
 func init() {
 	rootCmd.AddCommand(managerCmd)
-	managerCmd.PersistentFlags().StringVar(&sbm.NamespaceList, "namespaces", os.Getenv("NAMESPACES"), "List of namespaces delimited by :")
+	managerCmd.PersistentFlags().StringVar(&sbm.NamespaceList, "namespaces", os.Getenv("NAMESPACES"), "List of namespaces delimited by ,")
 	managerCmd.PersistentFlags().StringVar(&sbm.BundleName, "bundlename", os.Getenv("HARVESTER_SUPPORT_BUNDLE_NAME"), "The support bundle name")
 	managerCmd.PersistentFlags().StringVar(&sbm.OutputDir, "outdir", os.Getenv("HARVESTER_SUPPORT_BUNDLE_OUTPUT_DIR"), "The directory to store the bundle")
 

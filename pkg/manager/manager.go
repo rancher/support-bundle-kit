@@ -15,22 +15,27 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rancher/wrangler/pkg/signals"
 	"github.com/sirupsen/logrus"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/rest"
 
-	"github.com/harvester/support-bundle-utils/pkg/manager/client"
+	"github.com/rancher/support-bundle-kit/pkg/manager/client"
+	"github.com/rancher/support-bundle-kit/pkg/utils"
 )
 
 type SupportBundleManager struct {
-	HarvesterNamespace string
-	BundleName         string
-	bundleFileName     string
-	OutputDir          string
-	WaitTimeout        time.Duration
-	LonghornAPI        string
-	ManagerPodIP       string
-	Standalone         bool
-	ImageName          string
-	ImagePullPolicy    string
+	Namespaces      []string
+	NamespaceList   string
+	BundleName      string
+	bundleFileName  string
+	OutputDir       string
+	WaitTimeout     time.Duration
+	LonghornAPI     string
+	ManagerPodIP    string
+	Standalone      bool
+	ImageName       string
+	ImagePullPolicy string
+	KubeConfig      string
+	PodNamespace    string
 
 	context context.Context
 
@@ -38,6 +43,7 @@ type SupportBundleManager struct {
 	k8s        *client.KubernetesClient
 	k8sMetrics *client.MetricsClient
 	harvester  *client.HarvesterClient
+	discovery  *client.DiscoveryClient
 
 	state  StateStoreInterface
 	status ManagerStatus
@@ -49,7 +55,7 @@ type SupportBundleManager struct {
 }
 
 func (m *SupportBundleManager) check() error {
-	if m.HarvesterNamespace == "" {
+	if len(m.Namespaces) == 0 || len(m.Namespaces[0]) == 0 {
 		return errors.New("namespace is not specified")
 	}
 	if m.BundleName == "" {
@@ -121,7 +127,7 @@ func (m *SupportBundleManager) Run() error {
 		m.status.SetPhase(phase.Name)
 		if err := phase.Run(); err != nil {
 			m.status.SetError(err.Error())
-			logrus.Errorf("fail to run phase %s: %s", phase.Name, err.Error())
+			logrus.Errorf("failed to run phase %s: %s", phase.Name, err.Error())
 			break
 		}
 
@@ -135,6 +141,8 @@ func (m *SupportBundleManager) Run() error {
 }
 
 func (m *SupportBundleManager) phaseInit() error {
+	m.Namespaces = strings.Split(m.NamespaceList, ",")
+
 	if err := m.check(); err != nil {
 		return err
 	}
@@ -144,9 +152,12 @@ func (m *SupportBundleManager) phaseInit() error {
 	if err != nil {
 		return err
 	}
+
+	m.PodNamespace = utils.PodNamespace()
+
 	m.initStateStore()
 
-	state, err := m.state.GetState(m.HarvesterNamespace, m.BundleName)
+	state, err := m.state.GetState(m.PodNamespace, m.BundleName)
 	if err != nil {
 		return err
 	}
@@ -217,12 +228,17 @@ func (m *SupportBundleManager) initClients() error {
 	if err != nil {
 		return err
 	}
+
+	m.discovery, err = client.NewDiscoveryClient(m.context, m.restConfig)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 func (m *SupportBundleManager) initStateStore() {
 	if m.Standalone {
-		m.state = NewLocalStore(m.HarvesterNamespace, m.BundleName)
+		m.state = NewLocalStore(m.PodNamespace, m.BundleName)
 		return
 	}
 	m.state = NewK8sStore(m.harvester)
@@ -233,7 +249,7 @@ func (m *SupportBundleManager) initStateStore() {
 func (m *SupportBundleManager) collectNodeBundles() error {
 	m.ch = make(chan struct{})
 
-	err := m.refreshHarvesterNodes()
+	err := m.refreshNodes()
 	if err != nil {
 		return err
 	}
@@ -311,19 +327,29 @@ func (m *SupportBundleManager) compressBundle() error {
 	return nil
 }
 
-func (m *SupportBundleManager) refreshHarvesterNodes() error {
-	nodes, err := m.k8s.GetNodesListByLabels(fmt.Sprintf("%s=%s", types.HarvesterNodeLabelKey, types.HarvesterNodeLabelValue))
+func (m *SupportBundleManager) refreshNodes() error {
+	objs, err := m.k8s.GetAllNodesList()
 	if err != nil {
 		return err
 	}
 
-	if len(nodes.Items) == 0 {
-		return errors.New("no Harvester nodes are found")
+	// GetNodesListByLabels() returned a *corev1.NodeList but
+	// GetAllNodesList() returns runtime.Object despite both methods
+	// calling the same underlying API method.
+	nodes, ok := objs.(*corev1.NodeList)
+
+	if ok {
+		if len(nodes.Items) == 0 {
+			return errors.New("no nodes are found")
+		}
+
+		m.expectedNodes = make(map[string]string)
+		for _, node := range nodes.Items {
+			m.expectedNodes[node.Name] = ""
+		}
+	} else {
+		return errors.New("no nodes are found")
 	}
 
-	m.expectedNodes = make(map[string]string)
-	for _, node := range nodes.Items {
-		m.expectedNodes[node.Name] = ""
-	}
 	return nil
 }
