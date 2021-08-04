@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/harvester/support-bundle-utils/pkg/utils"
+	"github.com/rancher/support-bundle-kit/pkg/utils"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
@@ -20,9 +20,9 @@ var (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "support-bundle-utils",
-	Short: "Harvester support bundle utilities",
-	Long:  "Harvester support bundle utilities",
+	Use:   "support-bundle-kit",
+	Short: "Support bundle utilities",
+	Long:  "Support bundle utilities",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		logrus.SetOutput(os.Stdout)
 
