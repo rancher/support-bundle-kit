@@ -3,8 +3,8 @@ package manager
 import (
 	"fmt"
 
-	"github.com/harvester/harvester/pkg/controller/master/supportbundle/types"
 	"github.com/pkg/errors"
+	"github.com/rancher/support-bundle-kit/pkg/types"
 	"github.com/sirupsen/logrus"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -26,10 +26,12 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 
 	// get manager pod for owner reference
 	labels := fmt.Sprintf("app=%s,%s=%s", types.AppManager, types.SupportBundleLabelKey, a.sbm.BundleName)
-	pods, err := a.sbm.k8s.GetPodsListByLabels(a.sbm.HarvesterNamespace, labels)
+
+	pods, err := a.sbm.k8s.GetPodsListByLabels(a.sbm.PodNamespace, labels)
 	if err != nil {
 		return err
 	}
+
 	if len(pods.Items) != 1 {
 		return errors.New("more than one support bundle manager pods are found")
 	}
@@ -38,7 +40,7 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 	daemonSet := &appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      dsName,
-			Namespace: a.sbm.HarvesterNamespace,
+			Namespace: a.sbm.PodNamespace,
 			OwnerReferences: []metav1.OwnerReference{
 				{
 					// not sure why managerPod has empty Kind and APIVersion
@@ -64,7 +66,7 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 					},
 				},
 				Spec: corev1.PodSpec{
-					NodeSelector: map[string]string{types.HarvesterNodeLabelKey: types.HarvesterNodeLabelValue},
+					NodeSelector: map[string]string{"node-role.kubernetes.io/worker": types.HarvesterNodeLabelValue},
 					Tolerations: []corev1.Toleration{
 						{
 							Key:   types.DrainKey,
@@ -135,13 +137,13 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 		},
 	}
 
-	_, err = a.sbm.k8s.CreateDaemonSets(a.sbm.HarvesterNamespace, daemonSet)
+	_, err = a.sbm.k8s.CreateDaemonSets(a.sbm.PodNamespace, daemonSet)
 	return err
 }
 
 func (a *AgentDaemonSet) Cleanup() error {
 	dsName := a.getDaemonSetName()
-	err := a.sbm.k8s.DeleteDaemonSets(a.sbm.HarvesterNamespace, dsName)
+	err := a.sbm.k8s.DeleteDaemonSets(a.sbm.PodNamespace, dsName)
 	if err != nil && !apierrors.IsNotFound(err) {
 		return err
 	}
