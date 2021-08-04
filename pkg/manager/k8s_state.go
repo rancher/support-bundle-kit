@@ -3,7 +3,7 @@ package manager
 import (
 	harvesterv1 "github.com/harvester/harvester/pkg/apis/harvesterhci.io/v1beta1"
 
-	"github.com/harvester/support-bundle-utils/pkg/manager/client"
+	"github.com/rancher/support-bundle-kit/pkg/manager/client"
 )
 
 type K8sStore struct {

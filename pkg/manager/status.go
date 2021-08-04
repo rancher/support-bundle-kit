@@ -3,7 +3,7 @@ package manager
 import (
 	"sync"
 
-	"github.com/harvester/harvester/pkg/controller/master/supportbundle/types"
+	"github.com/rancher/support-bundle-kit/pkg/types"
 )
 
 type ManagerStatus struct {
