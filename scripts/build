@@ -8,12 +8,12 @@ if [ "$(uname)" = "Linux" ]; then
     OTHER_LINKFLAGS="-extldflags -static -s"
 fi
 
-LINKFLAGS="-X github.com/harvester/support-bundle-utils/cmd.AppVersion=$VERSION
-           -X github.com/harvester/support-bundle-utils/cmd.GitCommit=$COMMIT"
-CGO_ENABLED=0 go build -ldflags "$LINKFLAGS $OTHER_LINKFLAGS" -o bin/support-bundle-utils
+LINKFLAGS="-X github.com/rancher/support-bundle-kit/cmd.AppVersion=$VERSION
+           -X github.com/rancher/support-bundle-kit/cmd.GitCommit=$COMMIT"
+CGO_ENABLED=0 go build -ldflags "$LINKFLAGS $OTHER_LINKFLAGS" -o bin/support-bundle-kit
 if [ "$CROSS" = "true" ] && [ "$ARCH" = "amd64" ]; then
-    GOOS=darwin go build -ldflags "$LINKFLAGS" -o bin/support-bundle-utils-darwin
-    GOOS=windows go build -ldflags "$LINKFLAGS" -o bin/support-bundle-utils-windows
+    GOOS=darwin go build -ldflags "$LINKFLAGS" -o bin/support-bundle-kit-darwin
+    GOOS=windows go build -ldflags "$LINKFLAGS" -o bin/support-bundle-kit-windows
 fi
 
 # non-go scripts

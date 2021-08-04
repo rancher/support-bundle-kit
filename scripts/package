@@ -7,9 +7,9 @@ cd $(dirname $0)/..
 
 mkdir -p dist/artifacts
 cp bin/*.sh dist/artifacts
-cp bin/support-bundle-utils dist/artifacts/support-bundle-utils${SUFFIX}
+cp bin/support-bundle-kit dist/artifacts/support-bundle-kit${SUFFIX}
 
-IMAGE=${REPO}/harvester-support-bundle-utils:${TAG}
+IMAGE=${REPO}/support-bundle-kit:${TAG}
 DOCKERFILE=Dockerfile
 if [ -e ${DOCKERFILE}.${ARCH} ]; then
     DOCKERFILE=${DOCKERFILE}.${ARCH}
