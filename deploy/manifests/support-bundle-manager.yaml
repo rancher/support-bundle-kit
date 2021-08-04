@@ -20,12 +20,12 @@ spec:
     spec:
       containers:
       - args:
-        - /usr/bin/support-bundle-utils
+        - /usr/bin/support-bundle-kit
         - manager
         - --standalone
         env:
-        - name: HARVESTER_NAMESPACE
-          value: harvester-system
+        - name: NAMESPACES
+          value: harvester-system,longhorn-system
         - name: HARVESTER_SUPPORT_BUNDLE_NAME
           value: sample
         - name: HARVESTER_SUPPORT_BUNDLE_DEBUG
@@ -35,11 +35,16 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: status.podIP
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
         - name: HARVESTER_SUPPORT_BUNDLE_IMAGE
-          value: rancher/harvester-support-bundle-utils:master-head
+          value: rancher/support-bundle-kit:master-head
         - name: HARVESTER_SUPPORT_BUNDLE_IMAGE_PULL_POLICY
           value: Always
-        image: rancher/harvester-support-bundle-utils:master-head
+        image: rancher/support-bundle-kit:master-head
         imagePullPolicy: Always
         name: manager
         ports:
