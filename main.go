@@ -1,6 +1,6 @@
 package main
 
-import "github.com/harvester/support-bundle-utils/cmd"
+import "github.com/rancher/support-bundle-kit/cmd"
 
 func main() {
 	cmd.Execute()
