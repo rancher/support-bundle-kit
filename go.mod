@@ -45,6 +45,7 @@ replace (
 )
 
 require (
+	github.com/Jeffail/gabs/v2 v2.6.1
 	github.com/gorilla/mux v1.8.0
 	github.com/harvester/harvester v0.0.2-0.20210528023109-d95127388f17
 	github.com/mitchellh/go-homedir v1.1.0
