@@ -1,11 +1,12 @@
 package client
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
+	"regexp"
+	"strings"
 
+	"github.com/Jeffail/gabs/v2"
 	"github.com/sirupsen/logrus"
 
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -30,35 +31,53 @@ func NewDiscoveryClient(ctx context.Context, config *rest.Config) (*DiscoveryCli
 	}, nil
 }
 
-func toObj(b []byte) interface{} {
-	var objMap map[string]interface{}
+func toObj(b []byte, groupVersion, kind string) (interface{}, error) {
 
-	r := bytes.NewReader(b)
-	d := json.NewDecoder(r)
+	re := regexp.MustCompile(`("[a-zA-Z]+":)(null,)`)
+	replaceString := re.ReplaceAllString(string(b), "$1\"null\",")
 
-	if err := d.Decode(&objMap); err != nil {
-		logrus.Errorf("Unable to decode json.")
-		return nil
+	re = regexp.MustCompile(`(\\"[a-zA-Z]+\\":)(null,)`)
+	replaceString = re.ReplaceAllString(replaceString, "$1\\\"null\\\",")
+
+	finalString := strings.ReplaceAll(replaceString, `""`, `"null"`)
+	jsonParsed, err := gabs.ParseJSON([]byte(finalString))
+	if err != nil {
+		logrus.Errorf("Unable to parse json: %s, %s", groupVersion, kind)
+		return nil, err
+	}
+	// the yaml contains a list of resources
+	if _, err = jsonParsed.SetP("List", "kind"); err != nil {
+		logrus.Error("Unable to set kind for list.")
+		return nil, err
 	}
 
-	// Check that the obj has items
-	items, ok := objMap["items"].([]interface{})
-	if ok {
-		if len(items) > 0 {
-			return objMap
+	if _, err = jsonParsed.SetP("v1", "apiVersion"); err != nil {
+		logrus.Error("Unable to set apiVersion for list.")
+		return nil, err
+	}
+
+	for _, child := range jsonParsed.S("items").Children() {
+		if _, err = child.SetP(groupVersion, "apiVersion"); err != nil {
+			logrus.Error("Unable to set apiVersion field.")
+			return nil, err
+		}
+
+		if _, err = child.SetP(strings.Title(kind), "kind"); err != nil {
+			logrus.Error("Unable to set kind field.")
+			return nil, err
 		}
 	}
 
-	return nil
+	return jsonParsed.Data(), nil
 }
 
 // Get all the namespaced resources for a given namespace
-func (dc *DiscoveryClient) ResourcesForNamespace(namespace string) map[string]interface{} {
+func (dc *DiscoveryClient) ResourcesForNamespace(namespace string) (map[string]interface{}, error) {
 	objs := make(map[string]interface{})
 
 	lists, err := dc.discoveryClient.ServerPreferredResources()
 	if err != nil {
-		return objs
+		return nil, err
 	}
 
 	for _, list := range lists {
@@ -93,25 +112,26 @@ func (dc *DiscoveryClient) ResourcesForNamespace(namespace string) map[string]in
 			b, err := result.Raw()
 
 			if err == nil {
-				obj := toObj(b)
-				if obj != nil {
-					objs[resource.Name] = obj
+				obj, err := toObj(b, gv.String(), resource.Kind)
+				if err != nil {
+					return nil, err
 				}
+				objs[resource.Name] = obj
 			}
 		}
 	}
 
-	return objs
+	return objs, nil
 
 }
 
 // Get the cluster level resources
-func (dc *DiscoveryClient) ResourcesForCluster() map[string]interface{} {
+func (dc *DiscoveryClient) ResourcesForCluster() (map[string]interface{}, error) {
 	objs := make(map[string]interface{})
 
 	lists, err := dc.discoveryClient.ServerPreferredResources()
 	if err != nil {
-		return objs
+		return nil, err
 	}
 
 	for _, list := range lists {
@@ -141,16 +161,14 @@ func (dc *DiscoveryClient) ResourcesForCluster() map[string]interface{} {
 			b, err := result.Raw()
 
 			if err == nil {
-				obj := toObj(b)
-				if obj != nil {
-					objs[resource.Name] = obj
-				} else {
-					logrus.Tracef("%s is empty", url)
+				obj, err := toObj(b, gv.String(), resource.Kind)
+				if err != nil {
+					return nil, err
 				}
+				objs[resource.Name] = obj
 			}
 		}
 	}
 
-	return objs
-
+	return objs, nil
 }
