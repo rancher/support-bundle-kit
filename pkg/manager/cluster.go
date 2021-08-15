@@ -133,7 +133,12 @@ func (c *Cluster) generateKubernetesNamespacedYAMLs(namespace string, dir string
 
 func (c *Cluster) generateDiscoveredNamespacedYAMLs(namespace string, dir string, errLog io.Writer) {
 
-	objs := c.sbm.discovery.ResourcesForNamespace(namespace)
+	objs, err := c.sbm.discovery.ResourcesForNamespace(namespace)
+
+	if err != nil {
+		logrus.Error("Unable to fetch namespaced resources")
+		return
+	}
 
 	for name, obj := range objs {
 		file := filepath.Join(dir, name+".yaml")
@@ -142,7 +147,12 @@ func (c *Cluster) generateDiscoveredNamespacedYAMLs(namespace string, dir string
 }
 
 func (c *Cluster) generateDiscoveredClusterYAMLs(dir string, errLog io.Writer) {
-	objs := c.sbm.discovery.ResourcesForCluster()
+	objs, err := c.sbm.discovery.ResourcesForCluster()
+
+	if err != nil {
+		logrus.Error("Unable to fetch cluster resources")
+		return
+	}
 
 	for name, obj := range objs {
 		file := filepath.Join(dir, name+".yaml")
@@ -170,6 +180,8 @@ func encodeToYAMLFile(obj interface{}, path string, errLog io.Writer) {
 	switch v := obj.(type) {
 	case runtime.Object:
 		serializer := k8sjson.NewSerializerWithOptions(k8sjson.DefaultMetaFactory, nil, nil, k8sjson.SerializerOptions{
+			// only a subset of yaml that matches JSON is generated
+			// https://github.com/kubernetes/apimachinery/blob/1af25b613b6482b465c4bf23501a9b02acdb3c0c/pkg/runtime/serializer/json/json.go#L86
 			Yaml:   true,
 			Pretty: true,
 			Strict: true,
