@@ -81,19 +81,10 @@ func (c *Cluster) GenerateClusterBundle(bundleDir string) (string, error) {
 func (c *Cluster) generateSupportBundleYAMLs(yamlsDir string, errLog io.Writer) {
 	// Cluster scope
 	globalDir := filepath.Join(yamlsDir, "cluster")
-	c.generateKubernetesClusterYAMLs(globalDir, errLog)
 	c.generateDiscoveredClusterYAMLs(globalDir, errLog)
 
-	// Namespaced scope: k8s resources
+	// Namespaced scope: all resources
 	namespaces := []string{"default", "kube-system", "cattle-system"}
-	namespaces = append(namespaces, c.sbm.Namespaces...)
-	for _, namespace := range namespaces {
-		namespacedDir := filepath.Join(yamlsDir, "namespaced", namespace)
-		c.generateKubernetesNamespacedYAMLs(namespace, namespacedDir, errLog)
-	}
-
-	// Namespaced scope: harvester cr
-	namespaces = []string{"default"}
 	namespaces = append(namespaces, c.sbm.Namespaces...)
 	for _, namespace := range namespaces {
 		namespacedDir := filepath.Join(yamlsDir, "namespaced", namespace)
@@ -102,34 +93,6 @@ func (c *Cluster) generateSupportBundleYAMLs(yamlsDir string, errLog io.Writer) 
 }
 
 type NamespacedGetter func(string) (runtime.Object, error)
-
-func wrap(ns string, getter NamespacedGetter) GetRuntimeObjectListFunc {
-	wrapped := func() (runtime.Object, error) {
-		return getter(ns)
-	}
-	return wrapped
-}
-
-func (c *Cluster) generateKubernetesClusterYAMLs(dir string, errLog io.Writer) {
-	toDir := filepath.Join(dir, "kubernetes")
-	getListAndEncodeToYAML("nodes", c.sbm.k8s.GetAllNodesList, toDir, errLog)
-	getListAndEncodeToYAML("volumeattachments", c.sbm.k8s.GetAllVolumeAttachments, toDir, errLog)
-	getListAndEncodeToYAML("nodemetrics", c.sbm.k8sMetrics.GetAllNodeMetrics, toDir, errLog)
-}
-
-func (c *Cluster) generateKubernetesNamespacedYAMLs(namespace string, dir string, errLog io.Writer) {
-	toDir := filepath.Join(dir, "kubernetes")
-	getListAndEncodeToYAML("events", wrap(namespace, c.sbm.k8s.GetAllEventsList), toDir, errLog)
-	getListAndEncodeToYAML("pods", wrap(namespace, c.sbm.k8s.GetAllPodsList), toDir, errLog)
-	getListAndEncodeToYAML("services", wrap(namespace, c.sbm.k8s.GetAllServicesList), toDir, errLog)
-	getListAndEncodeToYAML("deployments", wrap(namespace, c.sbm.k8s.GetAllDeploymentsList), toDir, errLog)
-	getListAndEncodeToYAML("daemonsets", wrap(namespace, c.sbm.k8s.GetAllDaemonSetsList), toDir, errLog)
-	getListAndEncodeToYAML("statefulsets", wrap(namespace, c.sbm.k8s.GetAllStatefulSetsList), toDir, errLog)
-	getListAndEncodeToYAML("jobs", wrap(namespace, c.sbm.k8s.GetAllJobsList), toDir, errLog)
-	getListAndEncodeToYAML("cronjobs", wrap(namespace, c.sbm.k8s.GetAllCronJobsList), toDir, errLog)
-	getListAndEncodeToYAML("configmaps", wrap(namespace, c.sbm.k8s.GetAllConfigMaps), toDir, errLog)
-	getListAndEncodeToYAML("podmetrics", wrap(namespace, c.sbm.k8sMetrics.GetAllPodMetrics), toDir, errLog)
-}
 
 func (c *Cluster) generateDiscoveredNamespacedYAMLs(namespace string, dir string, errLog io.Writer) {
 
@@ -201,14 +164,6 @@ func encodeToYAMLFile(obj interface{}, path string, errLog io.Writer) {
 }
 
 type GetRuntimeObjectListFunc func() (runtime.Object, error)
-
-func getListAndEncodeToYAML(name string, getListFunc GetRuntimeObjectListFunc, yamlsDir string, errLog io.Writer) {
-	obj, err := getListFunc()
-	if err != nil {
-		fmt.Fprintf(errLog, "Support Bundle: failed to get %v: %v\n", name, err)
-	}
-	encodeToYAMLFile(obj, filepath.Join(yamlsDir, name+".yaml"), errLog)
-}
 
 func (c *Cluster) generateSupportBundleLogs(logsDir string, errLog io.Writer) {
 	namespaces := []string{"default", "kube-system", "cattle-system"}
