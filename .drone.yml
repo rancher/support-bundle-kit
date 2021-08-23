@@ -45,7 +45,7 @@ steps:
       dockerfile: package/Dockerfile
       password:
         from_secret: docker_password
-      repo: "rancher/harvester-support-bundle-utils"
+      repo: "rancher/support-bundle-kit"
       tag: ${DRONE_BRANCH}-head
       username:
         from_secret: docker_username
@@ -63,7 +63,7 @@ steps:
       dockerfile: package/Dockerfile
       password:
         from_secret: docker_password
-      repo: "rancher/harvester-support-bundle-utils"
+      repo: "rancher/support-bundle-kit"
       tag: "${DRONE_TAG}"
       username:
         from_secret: docker_username
