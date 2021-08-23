@@ -15,8 +15,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	k8sjson "k8s.io/apimachinery/pkg/runtime/serializer/json"
 
-	"github.com/harvester/support-bundle-utils/pkg/manager/external"
-	"github.com/harvester/support-bundle-utils/pkg/utils"
+	"github.com/rancher/support-bundle-kit/pkg/utils"
 )
 
 type Cluster struct {
@@ -31,7 +30,7 @@ func NewCluster(ctx context.Context, sbm *SupportBundleManager) *Cluster {
 
 func (c *Cluster) GenerateClusterBundle(bundleDir string) (string, error) {
 	logrus.Debug("generating cluster bundle...")
-	namespace, err := c.sbm.k8s.GetNamespace(c.sbm.HarvesterNamespace)
+	namespace, err := c.sbm.k8s.GetNamespace(c.sbm.PodNamespace)
 	if err != nil {
 		return "", errors.Wrap(err, "cannot get harvester namespace")
 	}
@@ -39,7 +38,8 @@ func (c *Cluster) GenerateClusterBundle(bundleDir string) (string, error) {
 	if err != nil {
 		return "", errors.Wrap(err, "cannot get kubernetes version")
 	}
-	sb, err := c.sbm.state.GetSupportBundle(c.sbm.HarvesterNamespace, c.sbm.BundleName)
+
+	sb, err := c.sbm.state.GetSupportBundle(c.sbm.PodNamespace, c.sbm.BundleName)
 	if err != nil {
 		return "", errors.Wrap(err, "cannot get support bundle")
 	}
@@ -55,7 +55,7 @@ func (c *Cluster) GenerateClusterBundle(bundleDir string) (string, error) {
 		IssueDescription:     sb.Spec.Description,
 	}
 
-	bundleName := fmt.Sprintf("harvester-supportbundle_%s_%s.zip",
+	bundleName := fmt.Sprintf("supportbundle_%s_%s.zip",
 		bundleMeta.ProjectNamespaceUUID,
 		strings.Replace(bundleMeta.BundleCreatedAt, ":", "-", -1))
 
@@ -75,91 +75,52 @@ func (c *Cluster) GenerateClusterBundle(bundleDir string) (string, error) {
 	logsDir := filepath.Join(bundleDir, "logs")
 	c.generateSupportBundleLogs(logsDir, errLog)
 
-	externalDir := filepath.Join(bundleDir, "external")
-	c.getExternalSupportBundles(bundleMeta, externalDir, errLog)
-
 	return bundleName, nil
 }
 
 func (c *Cluster) generateSupportBundleYAMLs(yamlsDir string, errLog io.Writer) {
 	// Cluster scope
 	globalDir := filepath.Join(yamlsDir, "cluster")
-	c.generateKubernetesClusterYAMLs(globalDir, errLog)
-	c.generateHarvesterClusterYAMLs(globalDir, errLog)
+	c.generateDiscoveredClusterYAMLs(globalDir, errLog)
 
-	// Namespaced scope: k8s resources
-	namespaces := []string{"default", "kube-system", "cattle-system", c.sbm.HarvesterNamespace}
+	// Namespaced scope: all resources
+	namespaces := []string{"default", "kube-system", "cattle-system"}
+	namespaces = append(namespaces, c.sbm.Namespaces...)
 	for _, namespace := range namespaces {
 		namespacedDir := filepath.Join(yamlsDir, "namespaced", namespace)
-		c.generateKubernetesNamespacedYAMLs(namespace, namespacedDir, errLog)
-	}
-
-	// Namespaced scope: harvester cr
-	namespaces = []string{"default", c.sbm.HarvesterNamespace}
-	for _, namespace := range namespaces {
-		namespacedDir := filepath.Join(yamlsDir, "namespaced", namespace)
-		c.generateHarvesterNamespacedYAMLs(namespace, namespacedDir, errLog)
+		c.generateDiscoveredNamespacedYAMLs(namespace, namespacedDir, errLog)
 	}
 }
 
 type NamespacedGetter func(string) (runtime.Object, error)
 
-func wrap(ns string, getter NamespacedGetter) GetRuntimeObjectListFunc {
-	wrapped := func() (runtime.Object, error) {
-		return getter(ns)
+func (c *Cluster) generateDiscoveredNamespacedYAMLs(namespace string, dir string, errLog io.Writer) {
+
+	objs, err := c.sbm.discovery.ResourcesForNamespace(namespace)
+
+	if err != nil {
+		logrus.Error("Unable to fetch namespaced resources")
+		return
 	}
-	return wrapped
+
+	for name, obj := range objs {
+		file := filepath.Join(dir, name+".yaml")
+		encodeToYAMLFile(obj, file, errLog)
+	}
 }
 
-func (c *Cluster) generateKubernetesClusterYAMLs(dir string, errLog io.Writer) {
-	toDir := filepath.Join(dir, "kubernetes")
-	getListAndEncodeToYAML("nodes", c.sbm.k8s.GetAllNodesList, toDir, errLog)
-	getListAndEncodeToYAML("volumeattachments", c.sbm.k8s.GetAllVolumeAttachments, toDir, errLog)
-	getListAndEncodeToYAML("nodemetrics", c.sbm.k8sMetrics.GetAllNodeMetrics, toDir, errLog)
-}
+func (c *Cluster) generateDiscoveredClusterYAMLs(dir string, errLog io.Writer) {
+	objs, err := c.sbm.discovery.ResourcesForCluster()
 
-func (c *Cluster) generateKubernetesNamespacedYAMLs(namespace string, dir string, errLog io.Writer) {
-	toDir := filepath.Join(dir, "kubernetes")
-	getListAndEncodeToYAML("events", wrap(namespace, c.sbm.k8s.GetAllEventsList), toDir, errLog)
-	getListAndEncodeToYAML("pods", wrap(namespace, c.sbm.k8s.GetAllPodsList), toDir, errLog)
-	getListAndEncodeToYAML("services", wrap(namespace, c.sbm.k8s.GetAllServicesList), toDir, errLog)
-	getListAndEncodeToYAML("deployments", wrap(namespace, c.sbm.k8s.GetAllDeploymentsList), toDir, errLog)
-	getListAndEncodeToYAML("daemonsets", wrap(namespace, c.sbm.k8s.GetAllDaemonSetsList), toDir, errLog)
-	getListAndEncodeToYAML("statefulsets", wrap(namespace, c.sbm.k8s.GetAllStatefulSetsList), toDir, errLog)
-	getListAndEncodeToYAML("jobs", wrap(namespace, c.sbm.k8s.GetAllJobsList), toDir, errLog)
-	getListAndEncodeToYAML("cronjobs", wrap(namespace, c.sbm.k8s.GetAllCronJobsList), toDir, errLog)
-	getListAndEncodeToYAML("configmaps", wrap(namespace, c.sbm.k8s.GetAllConfigMaps), toDir, errLog)
-	getListAndEncodeToYAML("podmetrics", wrap(namespace, c.sbm.k8sMetrics.GetAllPodMetrics), toDir, errLog)
-}
+	if err != nil {
+		logrus.Error("Unable to fetch cluster resources")
+		return
+	}
 
-func (c *Cluster) generateHarvesterClusterYAMLs(dir string, errLog io.Writer) {
-	toDir := filepath.Join(dir, "harvester")
-	getListAndEncodeToYAML("settings", c.sbm.harvester.GetAllSettings, toDir, errLog)
-	getListAndEncodeToYAML("users", c.sbm.harvester.GetAllUsers, toDir, errLog)
-}
-
-func (c *Cluster) generateHarvesterNamespacedYAMLs(namespace string, dir string, errLog io.Writer) {
-	// Harvester
-	toDir := filepath.Join(dir, "harvester")
-	getListAndEncodeToYAML("keypairs", wrap(namespace, c.sbm.harvester.GetAllKeypairs), toDir, errLog)
-	getListAndEncodeToYAML("preferences", wrap(namespace, c.sbm.harvester.GetAllPreferences), toDir, errLog)
-	getListAndEncodeToYAML("upgrades", wrap(namespace, c.sbm.harvester.GetAllUpgrades), toDir, errLog)
-	getListAndEncodeToYAML("virtualmachinebackups", wrap(namespace, c.sbm.harvester.GetAllVirtualMachineBackups), toDir, errLog)
-	getListAndEncodeToYAML("virtualmachinebackupcontents", wrap(namespace, c.sbm.harvester.GetAllVirtualMachineBackupContents), toDir, errLog)
-	getListAndEncodeToYAML("virtualmachineimages", wrap(namespace, c.sbm.harvester.GetAllVirtualMachineImages), toDir, errLog)
-	getListAndEncodeToYAML("virtualmachinerestores", wrap(namespace, c.sbm.harvester.GetAllVirtualMachineRestores), toDir, errLog)
-	getListAndEncodeToYAML("virtualmachinetemplates", wrap(namespace, c.sbm.harvester.GetAllVirtualMachineTemplates), toDir, errLog)
-	getListAndEncodeToYAML("virtualmachinetemplateversions", wrap(namespace, c.sbm.harvester.GetAllVirtualMachineTemplateVersions), toDir, errLog)
-
-	// KubeVirt
-	toDir = filepath.Join(dir, "kubevirt")
-	getListAndEncodeToYAML("virtualmachines", wrap(namespace, c.sbm.harvester.GetAllVirtualMachines), toDir, errLog)
-	getListAndEncodeToYAML("virtualmachineinstances", wrap(namespace, c.sbm.harvester.GetAllVirtualMachineInstances), toDir, errLog)
-	getListAndEncodeToYAML("virtualmachineinstancemigrations", wrap(namespace, c.sbm.harvester.GetAllVirtualMachineInstanceMigrations), toDir, errLog)
-
-	// CDI
-	toDir = filepath.Join(dir, "cdi")
-	getListAndEncodeToYAML("datavolumes", wrap(namespace, c.sbm.harvester.GetAllDataVolumes), toDir, errLog)
+	for name, obj := range objs {
+		file := filepath.Join(dir, name+".yaml")
+		encodeToYAMLFile(obj, file, errLog)
+	}
 }
 
 func encodeToYAMLFile(obj interface{}, path string, errLog io.Writer) {
@@ -182,6 +143,8 @@ func encodeToYAMLFile(obj interface{}, path string, errLog io.Writer) {
 	switch v := obj.(type) {
 	case runtime.Object:
 		serializer := k8sjson.NewSerializerWithOptions(k8sjson.DefaultMetaFactory, nil, nil, k8sjson.SerializerOptions{
+			// only a subset of yaml that matches JSON is generated
+			// https://github.com/kubernetes/apimachinery/blob/1af25b613b6482b465c4bf23501a9b02acdb3c0c/pkg/runtime/serializer/json/json.go#L86
 			Yaml:   true,
 			Pretty: true,
 			Strict: true,
@@ -202,16 +165,9 @@ func encodeToYAMLFile(obj interface{}, path string, errLog io.Writer) {
 
 type GetRuntimeObjectListFunc func() (runtime.Object, error)
 
-func getListAndEncodeToYAML(name string, getListFunc GetRuntimeObjectListFunc, yamlsDir string, errLog io.Writer) {
-	obj, err := getListFunc()
-	if err != nil {
-		fmt.Fprintf(errLog, "Support Bundle: failed to get %v: %v\n", name, err)
-	}
-	encodeToYAMLFile(obj, filepath.Join(yamlsDir, name+".yaml"), errLog)
-}
-
 func (c *Cluster) generateSupportBundleLogs(logsDir string, errLog io.Writer) {
-	namespaces := []string{c.sbm.HarvesterNamespace, "default", "kube-system", "cattle-system"}
+	namespaces := []string{"default", "kube-system", "cattle-system"}
+	namespaces = append(namespaces, c.sbm.Namespaces...)
 
 	for _, ns := range namespaces {
 		list, err := c.sbm.k8s.GetAllPodsList(ns)
@@ -260,25 +216,6 @@ func streamLogToFile(logStream io.ReadCloser, path string, errLog io.Writer) {
 	}
 	defer f.Close()
 	_, err = io.Copy(f, logStream)
-	if err != nil {
-		return
-	}
-}
-
-func (c *Cluster) getExternalSupportBundles(bundleMeta *BundleMeta, toDir string, errLog io.Writer) {
-	var err error
-	defer func() {
-		if err != nil {
-			fmt.Fprintf(errLog, "Support Bundle: failed to get external bundle: %v\n", err)
-		}
-	}()
-	err = os.Mkdir(toDir, os.FileMode(0755))
-	if err != nil {
-		return
-	}
-
-	lh := external.NewLonghornSupportBundleManager(c.sbm.context, c.sbm.LonghornAPI)
-	err = lh.GetLonghornSupportBundle(bundleMeta.IssueURL, bundleMeta.IssueDescription, toDir)
 	if err != nil {
 		return
 	}

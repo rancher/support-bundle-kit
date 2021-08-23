@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/harvester/support-bundle-utils/pkg/utils"
 	"github.com/pkg/errors"
+	"github.com/rancher/support-bundle-kit/pkg/utils"
 	"github.com/sirupsen/logrus"
 )
 
