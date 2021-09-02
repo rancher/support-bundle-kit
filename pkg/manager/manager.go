@@ -11,14 +11,15 @@ import (
 	"sync"
 	"time"
 
-	"github.com/harvester/harvester/pkg/controller/master/supportbundle/types"
 	"github.com/pkg/errors"
 	"github.com/rancher/wrangler/pkg/signals"
 	"github.com/sirupsen/logrus"
+
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/rest"
 
 	"github.com/rancher/support-bundle-kit/pkg/manager/client"
+	"github.com/rancher/support-bundle-kit/pkg/types"
 	"github.com/rancher/support-bundle-kit/pkg/utils"
 )
 
@@ -29,7 +30,6 @@ type SupportBundleManager struct {
 	bundleFileName  string
 	OutputDir       string
 	WaitTimeout     time.Duration
-	LonghornAPI     string
 	ManagerPodIP    string
 	Standalone      bool
 	ImageName       string
@@ -42,7 +42,6 @@ type SupportBundleManager struct {
 	restConfig *rest.Config
 	k8s        *client.KubernetesClient
 	k8sMetrics *client.MetricsClient
-	harvester  *client.HarvesterClient
 	discovery  *client.DiscoveryClient
 
 	state  StateStoreInterface
@@ -71,7 +70,7 @@ func (m *SupportBundleManager) check() error {
 		return errors.New("image pull policy is not specified")
 	}
 	if m.OutputDir == "" {
-		m.OutputDir = filepath.Join(os.TempDir(), "harvester-support-bundle")
+		m.OutputDir = filepath.Join(os.TempDir(), "support-bundle-kit")
 	}
 	if err := os.MkdirAll(m.getWorkingDir(), os.FileMode(0755)); err != nil {
 		return err
@@ -214,11 +213,6 @@ func (m *SupportBundleManager) initClients() error {
 		return err
 	}
 
-	m.harvester, err = client.NewHarvesterClient(m.context, m.restConfig)
-	if err != nil {
-		return err
-	}
-
 	m.k8s, err = client.NewKubernetesClient(m.context, m.restConfig)
 	if err != nil {
 		return err
@@ -237,11 +231,7 @@ func (m *SupportBundleManager) initClients() error {
 }
 
 func (m *SupportBundleManager) initStateStore() {
-	if m.Standalone {
-		m.state = NewLocalStore(m.PodNamespace, m.BundleName)
-		return
-	}
-	m.state = NewK8sStore(m.harvester)
+	m.state = NewLocalStore(m.PodNamespace, m.BundleName)
 }
 
 // collectNodeBundles spawns a daemonset on each node and waits for agents on
@@ -262,21 +252,16 @@ func (m *SupportBundleManager) collectNodeBundles() error {
 		return err
 	}
 
-	logrus.Infof("wating node bundles, (timeout: %s)", m.WaitTimeout)
-	select {
-	case <-m.ch:
-		logrus.Info("all node bundles are received.")
+	<-m.ch
+	logrus.Info("all node bundles are received.")
 
-		// Clean up when everything is fine. If something went wrong, keep ds for debugging.
-		// The ds will be garbage-collected when manager pod is gone.
-		err := agents.Cleanup()
-		if err != nil {
-			return errors.Wrap(err, "fail to cleanup agent daemonset")
-		}
-		return nil
-	case <-time.After(m.WaitTimeout):
-		return fmt.Errorf("fail to wait node bundles. missing: %+v", m.expectedNodes)
+	// Clean up when everything is fine. If something went wrong, keep ds for debugging.
+	// The ds will be garbage-collected when manager pod is gone.
+	err = agents.Cleanup()
+	if err != nil {
+		return errors.Wrap(err, "fail to cleanup agent daemonset")
 	}
+	return nil
 }
 
 func (m *SupportBundleManager) verifyNodeBundle(file string) error {

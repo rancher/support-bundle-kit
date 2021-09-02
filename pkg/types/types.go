@@ -1,7 +1,9 @@
 // shared types for support bundle controller and manager
 package types
 
-import "time"
+import (
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+)
 
 const (
 	StateNone       = ""
@@ -10,34 +12,39 @@ const (
 	StateReady      = "ready"
 
 	// labels
-	HarvesterNodeLabelKey   = "harvesterhci.io/managed"
-	HarvesterNodeLabelValue = "true"
-	SupportBundleLabelKey   = "harvesterhci.io/supportbundle"
-	DrainKey                = "kubevirt.io/drain"
+	SupportBundleLabelKey       = "rancher/supportbundle"
+	SupportBundleNodeLabelValue = "true"
+	DrainKey                    = "kubevirt.io/drain"
 
-	AppManager = "support-bundle-manager"
-	AppAgent   = "support-bundle-agent"
-
-	BundleCreationTimeout = 8 * time.Minute
-	NodeBundleWaitTimeout = "5m"
+	SupportBundleManager = "support-bundle-manager"
+	SupportBundleAgent   = "support-bundle-agent"
 )
 
 type ManagerStatus struct {
-	// phase to collect bundle
-	Phase string
-
-	// fail to collect bundle
-	Error bool
-
-	// error message
+	Phase        string
+	Error        bool
 	ErrorMessage string
+	Progress     int
+	FileName     string
+	FileSize     int64
+}
 
-	// progress of the bundle collecting. 0 - 100.
-	Progress int
+type SupportBundle struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	// bundle filename
-	Filename string
+	Spec   SupportBundleSpec   `json:"spec,omitempty"`
+	Status SupportBundleStatus `json:"status,omitempty"`
+}
 
-	// bundle filesize
-	Filesize int64
+type SupportBundleSpec struct {
+	IssueURL    string `json:"issueURL"`
+	Description string `json:"description"`
+}
+
+type SupportBundleStatus struct {
+	State    SupportBundleState `json:"state,omitempty"`
+	Progress int                `json:"progress,omitempty"`
+	FileName string             `json:"filename,omitempty"`
+	FileSize int64              `json:"filesize,omitempty"`
 }

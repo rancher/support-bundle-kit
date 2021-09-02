@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   labels:
     app: support-bundle-manager
-    harvesterhci.io/supportbundle: sample
+    rancher.io/support-bundle: sample
   name: supportbundle-manager-sample
   namespace: harvester-system
 spec:
@@ -16,21 +16,20 @@ spec:
     metadata:
       labels:
         app: support-bundle-manager
-        harvesterhci.io/supportbundle: sample
+        rancher.io/support-bundle: sample
     spec:
       containers:
       - args:
         - /usr/bin/support-bundle-kit
         - manager
-        - --standalone
         env:
-        - name: NAMESPACES
+        - name: SUPPORT_BUNDLE_TARGET_NAMESPACES
           value: harvester-system,longhorn-system
-        - name: HARVESTER_SUPPORT_BUNDLE_NAME
+        - name: SUPPORT_BUNDLE_NAME
           value: sample
-        - name: HARVESTER_SUPPORT_BUNDLE_DEBUG
+        - name: SUPPORT_BUNDLE_DEBUG
           value: "true"
-        - name: HARVESTER_SUPPORT_BUNDLE_MANAGER_POD_IP
+        - name: SUPPORT_BUNDLE_MANAGER_POD_IP
           valueFrom:
             fieldRef:
               apiVersion: v1
@@ -40,9 +39,9 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.namespace
-        - name: HARVESTER_SUPPORT_BUNDLE_IMAGE
+        - name: SUPPORT_BUNDLE_IMAGE
           value: rancher/support-bundle-kit:master-head
-        - name: HARVESTER_SUPPORT_BUNDLE_IMAGE_PULL_POLICY
+        - name: SUPPORT_BUNDLE_IMAGE_PULL_POLICY
           value: Always
         image: rancher/support-bundle-kit:master-head
         imagePullPolicy: Always

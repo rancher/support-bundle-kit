@@ -25,7 +25,7 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 	logrus.Debugf("creating daemonset %s with image %s", dsName, image)
 
 	// get manager pod for owner reference
-	labels := fmt.Sprintf("app=%s,%s=%s", types.AppManager, types.SupportBundleLabelKey, a.sbm.BundleName)
+	labels := fmt.Sprintf("app=%s,%s=%s", types.SupportBundleManager, types.SupportBundleLabelKey, a.sbm.BundleName)
 
 	pods, err := a.sbm.k8s.GetPodsListByLabels(a.sbm.PodNamespace, labels)
 	if err != nil {
@@ -54,19 +54,19 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 		Spec: appsv1.DaemonSetSpec{
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"app":                       types.AppAgent,
+					"app":                       types.SupportBundleAgent,
 					types.SupportBundleLabelKey: a.sbm.BundleName,
 				},
 			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"app":                       types.AppAgent,
+						"app":                       types.SupportBundleAgent,
 						types.SupportBundleLabelKey: a.sbm.BundleName,
 					},
 				},
 				Spec: corev1.PodSpec{
-					NodeSelector: map[string]string{"node-role.kubernetes.io/worker": types.HarvesterNodeLabelValue},
+					NodeSelector: map[string]string{"node-role.kubernetes.io/worker": types.SupportBundleNodeLabelValue},
 					Tolerations: []corev1.Toleration{
 						{
 							Key:   types.DrainKey,
@@ -77,7 +77,7 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 						{
 							Name:            "agent",
 							Image:           image,
-							Args:            []string{"/usr/bin/harvester-sb-collector.sh"},
+							Args:            []string{"/usr/bin/support-bundle-collector.sh"},
 							ImagePullPolicy: corev1.PullPolicy(a.sbm.ImagePullPolicy),
 							SecurityContext: &corev1.SecurityContext{
 								Capabilities: &corev1.Capabilities{
@@ -86,11 +86,11 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 							},
 							Env: []corev1.EnvVar{
 								{
-									Name:  "HARVESTER_HOST_PATH",
+									Name:  "SUPPORT_BUNDLE_HOST_PATH",
 									Value: "/host",
 								},
 								{
-									Name: "HARVESTER_NODE_NAME",
+									Name: "SUPPORT_BUNDLE_NODE_NAME",
 									ValueFrom: &corev1.EnvVarSource{
 										FieldRef: &corev1.ObjectFieldSelector{
 											FieldPath: "spec.nodeName",
@@ -98,7 +98,7 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 									},
 								},
 								{
-									Name:  "HARVESTER_SUPPORT_BUNDLE_MANAGER_URL",
+									Name:  "SUPPORT_BUNDLE_MANAGER_URL",
 									Value: managerURL,
 								},
 							},

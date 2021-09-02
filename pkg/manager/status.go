@@ -33,6 +33,6 @@ func (s *ManagerStatus) SetProgress(progress int) {
 func (s *ManagerStatus) SetFileinfo(filename string, filesize int64) {
 	s.Lock()
 	defer s.Unlock()
-	s.Filename = filename
-	s.Filesize = filesize
+	s.FileName = filename
+	s.FileSize = filesize
 }
