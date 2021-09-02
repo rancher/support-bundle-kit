@@ -5,11 +5,13 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+type SupportBundleState string
+
 const (
-	StateNone       = ""
-	StateGenerating = "generating"
-	StateError      = "error"
-	StateReady      = "ready"
+	SupportBundleStateNone       = SupportBundleState("")
+	SupportBundleStateGenerating = SupportBundleState("generating")
+	SupportBundleStateReady      = SupportBundleState("ready")
+	SupportBundleStateError      = SupportBundleState("error")
 
 	// labels
 	SupportBundleLabelKey       = "rancher/supportbundle"
@@ -20,8 +22,18 @@ const (
 	SupportBundleAgent   = "support-bundle-agent"
 )
 
+type ManagerPhase string
+
+const (
+	ManagerPhaseInit          = ManagerPhase("init")
+	ManagerPhaseClusterBundle = ManagerPhase("cluster bundle")
+	ManagerPhaseNodeBundle    = ManagerPhase("node bundle")
+	ManagerPhasePackaging     = ManagerPhase("package")
+	ManagerPhaseDone          = ManagerPhase("done")
+)
+
 type ManagerStatus struct {
-	Phase        string
+	Phase        ManagerPhase
 	Error        bool
 	ErrorMessage string
 	Progress     int
@@ -45,6 +57,6 @@ type SupportBundleSpec struct {
 type SupportBundleStatus struct {
 	State    SupportBundleState `json:"state,omitempty"`
 	Progress int                `json:"progress,omitempty"`
-	FileName string             `json:"filename,omitempty"`
-	FileSize int64              `json:"filesize,omitempty"`
+	FileName string             `json:"fileName,omitempty"`
+	FileSize int64              `json:"fileSize,omitempty"`
 }
