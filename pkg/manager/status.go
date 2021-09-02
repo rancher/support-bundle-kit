@@ -11,7 +11,7 @@ type ManagerStatus struct {
 	types.ManagerStatus
 }
 
-func (s *ManagerStatus) SetPhase(phase string) {
+func (s *ManagerStatus) SetPhase(phase types.ManagerPhase) {
 	s.Lock()
 	defer s.Unlock()
 	s.Phase = phase

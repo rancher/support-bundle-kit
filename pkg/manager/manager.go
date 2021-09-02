@@ -96,27 +96,27 @@ func (m *SupportBundleManager) getBundlefilesize() (int64, error) {
 
 func (m *SupportBundleManager) Run() error {
 	phases := []struct {
-		Name string
+		Name types.ManagerPhase
 		Run  func() error
 	}{
 		{
-			PhaseInit,
+			types.ManagerPhaseInit,
 			m.phaseInit,
 		},
 		{
-			PhaseClusterBundle,
+			types.ManagerPhaseClusterBundle,
 			m.phaseCollectClusterBundle,
 		},
 		{
-			PhaseNodeBundle,
+			types.ManagerPhaseNodeBundle,
 			m.phaseCollectNodeBundles,
 		},
 		{
-			PhasePackaging,
+			types.ManagerPhasePackaging,
 			m.phasePackaging,
 		},
 		{
-			PhaseDone,
+			types.ManagerPhaseDone,
 			m.phaseDone,
 		},
 	}
@@ -160,7 +160,7 @@ func (m *SupportBundleManager) phaseInit() error {
 	if err != nil {
 		return err
 	}
-	if state != types.StateGenerating {
+	if state != types.SupportBundleStateGenerating {
 		return fmt.Errorf("invalid start state %s", state)
 	}
 

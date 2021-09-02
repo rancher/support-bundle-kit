@@ -17,7 +17,7 @@ func NewLocalStore(namespace, supportbundle string) *LocalStore {
 	sbs := map[string]*types.SupportBundle{
 		getSupportBundleKey(namespace, supportbundle): {
 			Status: types.SupportBundleStatus{
-				State: types.StateGenerating,
+				State: types.SupportBundleStateGenerating,
 			},
 		},
 	}
@@ -44,7 +44,7 @@ func (s *LocalStore) GetSupportBundle(namespace, supportbundle string) (*types.S
 	return s.getSb(namespace, supportbundle)
 }
 
-func (s *LocalStore) GetState(namespace, supportbundle string) (string, error) {
+func (s *LocalStore) GetState(namespace, supportbundle string) (types.SupportBundleState, error) {
 	sb, err := s.getSb(namespace, supportbundle)
 	if err != nil {
 		return "", err

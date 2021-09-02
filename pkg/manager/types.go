@@ -24,5 +24,5 @@ type BundleMeta struct {
 
 type StateStoreInterface interface {
 	GetSupportBundle(namespace, supportbundle string) (*types.SupportBundle, error)
-	GetState(namespace, supportbundle string) (string, error)
+	GetState(namespace, supportbundle string) (types.SupportBundleState, error)
 }
