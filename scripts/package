@@ -6,8 +6,8 @@ source $(dirname $0)/version
 cd $(dirname $0)/..
 
 mkdir -p dist/artifacts
-cp bin/*.sh dist/artifacts
-cp bin/support-bundle-kit dist/artifacts/support-bundle-kit${SUFFIX}
+cp bin/* dist/artifacts
+mv dist/artifacts/support-bundle-kit dist/artifacts/support-bundle-kit${SUFFIX}
 
 IMAGE=${REPO}/support-bundle-kit:${TAG}
 DOCKERFILE=Dockerfile

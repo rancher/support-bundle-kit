@@ -17,4 +17,4 @@ if [ "$CROSS" = "true" ] && [ "$ARCH" = "amd64" ]; then
 fi
 
 # non-go scripts
-cp hack/*.sh bin
+cp hack/* bin

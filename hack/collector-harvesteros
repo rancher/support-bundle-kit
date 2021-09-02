@@ -1,0 +1,30 @@
+#!/bin/bash -ux
+
+HOST_PATH=$1
+BUNDLE_DIR=$2
+
+cd ${BUNDLE_DIR}
+# get some host information
+cp ${HOST_PATH}/etc/hostname .
+
+###############################################################################
+# collect configs
+###############################################################################
+mkdir -p configs
+cp -r /host/oem configs
+
+###############################################################################
+# collect logs
+###############################################################################
+mkdir -p logs
+cd logs
+
+chroot $HOST_PATH /usr/bin/journalctl -k > kernel.log
+
+units=(rke2-server rke2-agent rancherd rancher-system-agent wicked iscsid)
+
+for unit in ${units[@]}; do
+    chroot $HOST_PATH /usr/bin/journalctl -b all -u $unit | tail -c 10m > $unit.log
+done
+
+cp ${HOST_PATH}/var/log/console.log .

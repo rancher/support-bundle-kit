@@ -104,30 +104,18 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 							},
 							VolumeMounts: []corev1.VolumeMount{
 								{
-									Name:      "hostetc",
-									MountPath: "/host/etc",
-								},
-								{
-									Name:      "hostlog",
-									MountPath: "/host/var/log",
+									Name:      "host",
+									MountPath: "/host",
 								},
 							},
 						},
 					},
 					Volumes: []corev1.Volume{
 						{
-							Name: "hostetc",
+							Name: "host",
 							VolumeSource: corev1.VolumeSource{
 								HostPath: &corev1.HostPathVolumeSource{
-									Path: "/etc",
-								},
-							},
-						},
-						{
-							Name: "hostlog",
-							VolumeSource: corev1.VolumeSource{
-								HostPath: &corev1.HostPathVolumeSource{
-									Path: "/var/log",
+									Path: "/",
 								},
 							},
 						},

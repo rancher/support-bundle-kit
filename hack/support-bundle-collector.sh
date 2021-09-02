@@ -14,22 +14,20 @@ NODE_NAME=${SUPPORT_BUNDLE_NODE_NAME:-$(cat ${HOST_PATH}/etc/hostname)}
 BUNDLE_DIR="${OUTPUT_DIR}/${NODE_NAME}"
 
 mkdir -p ${BUNDLE_DIR}
-cd ${BUNDLE_DIR}
-# get some host information
-cp ${HOST_PATH}/etc/hostname .
 
-# collect logs
-mkdir -p logs
-cd logs
-dmesg &> dmesg.log
+OS_ID=$(bash -c "source $HOST_PATH/etc/os-release && echo \$ID")
+if [ -z "$OS_ID" ]; then
+    echo "Unable to determine OS ID"
+    exit 1
+fi
 
-# k3s logs don't rorate well and can be huge
-tail -c 10m ${HOST_PATH}/var/log/k3s-service.log > k3s-service.log
-tail -c 10m ${HOST_PATH}/var/log/k3s-restarter.log > k3s-restarter.log
+OS_COLLECTOR="collector-$OS_ID"
+if [ -x "$(which $OS_COLLECTOR)" ]; then
+    $OS_COLLECTOR $HOST_PATH $BUNDLE_DIR
+else
+    echo "No OS collector found"
+fi
 
-cp ${HOST_PATH}/var/log/qemu-ga.log* .
-cp ${HOST_PATH}/var/log/messages* .
-cp ${HOST_PATH}/var/log/console.log .
 
 cd ${OUTPUT_DIR}
 zip -r node_bundle.zip $(basename ${BUNDLE_DIR})
