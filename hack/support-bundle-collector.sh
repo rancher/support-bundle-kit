@@ -1,16 +1,16 @@
 #!/bin/bash -x
 
-HOST_PATH=${HARVESTER_HOST_PATH:-/}
-OUTPUT_DIR=${HARVESTER_CACHE_PATH:-/tmp/harvester-support-bundle}
+HOST_PATH=${SUPPORT_BUNDLE_HOST_PATH:-/}
+OUTPUT_DIR=${SUPPORT_BUNDLE_CACHE_PATH:-/tmp/support-bundle}
 
-if [ -z "$HARVESTER_SUPPORT_BUNDLE_MANAGER_URL" ]; then 
-    echo "Environment variable HARVESTER_SUPPORT_BUNDLE_MANAGER_URL is not defined"
+if [ -z "$SUPPORT_BUNDLE_MANAGER_URL" ]; then
+    echo "Environment variable SUPPORT_BUNDLE_MANAGER_URL is not defined"
     exit 1
 fi
 
 [ ! -e ${OUTPUT_DIR} ] && mkdir -p $OUTPUT_DIR
 
-NODE_NAME=${HARVESTER_NODE_NAME:-$(cat ${HOST_PATH}/etc/hostname)}
+NODE_NAME=${SUPPORT_BUNDLE_NODE_NAME:-$(cat ${HOST_PATH}/etc/hostname)}
 BUNDLE_DIR="${OUTPUT_DIR}/${NODE_NAME}"
 
 mkdir -p ${BUNDLE_DIR}
@@ -36,6 +36,6 @@ zip -r node_bundle.zip $(basename ${BUNDLE_DIR})
 rm -rf bundle
 
 set -o errexit
-curl -v -i -H "Content-Type: application/zip" --data-binary @node_bundle.zip "${HARVESTER_SUPPORT_BUNDLE_MANAGER_URL}/nodes/${NODE_NAME}"
+curl -v -i -H "Content-Type: application/zip" --data-binary @node_bundle.zip "${SUPPORT_BUNDLE_MANAGER_URL}/nodes/${NODE_NAME}"
 
 sleep infinity

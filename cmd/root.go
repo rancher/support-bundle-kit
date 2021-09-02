@@ -45,8 +45,8 @@ func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.support-bundle-utils.yaml)")
 
-	debug := utils.EnvGetBool("HARVESTER_SUPPORT_BUNDLE_DEBUG", false)
-	trace := utils.EnvGetBool("HARVESTER_SUPPORT_BUNDLE_TRACE", false)
+	debug := utils.EnvGetBool("SUPPORT_BUNDLE_DEBUG", false)
+	trace := utils.EnvGetBool("SUPPORT_BUNDLE_TRACE", false)
 	rootCmd.PersistentFlags().BoolVar(&logDebug, "debug", debug, "set logging level to debug")
 	rootCmd.PersistentFlags().BoolVar(&logTrace, "trace", trace, "set logging level to trace")
 }

@@ -1,6 +1,6 @@
 package manager
 
-import harvesterv1 "github.com/harvester/harvester/pkg/apis/harvesterhci.io/v1beta1"
+import "github.com/rancher/support-bundle-kit/pkg/types"
 
 const (
 	PhaseInit          = "start"
@@ -13,8 +13,7 @@ const (
 )
 
 type BundleMeta struct {
-	ProjectName          string `json:"projectName"`
-	ProjectVersion       string `json:"projectVersion"`
+	BundleName           string `json:"projectName"`
 	BundleVersion        string `json:"bundleVersion"`
 	KubernetesVersion    string `json:"kubernetesVersion"`
 	ProjectNamespaceUUID string `json:"projectNamspaceUUID"`
@@ -24,6 +23,6 @@ type BundleMeta struct {
 }
 
 type StateStoreInterface interface {
-	GetSupportBundle(namespace, supportbundle string) (*harvesterv1.SupportBundle, error)
+	GetSupportBundle(namespace, supportbundle string) (*types.SupportBundle, error)
 	GetState(namespace, supportbundle string) (string, error)
 }

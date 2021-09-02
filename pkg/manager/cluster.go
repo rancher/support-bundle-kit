@@ -32,7 +32,7 @@ func (c *Cluster) GenerateClusterBundle(bundleDir string) (string, error) {
 	logrus.Debug("generating cluster bundle...")
 	namespace, err := c.sbm.k8s.GetNamespace(c.sbm.PodNamespace)
 	if err != nil {
-		return "", errors.Wrap(err, "cannot get harvester namespace")
+		return "", errors.Wrap(err, "cannot get deployed namespace")
 	}
 	kubeVersion, err := c.sbm.k8s.GetKubernetesVersion()
 	if err != nil {
@@ -45,8 +45,7 @@ func (c *Cluster) GenerateClusterBundle(bundleDir string) (string, error) {
 	}
 
 	bundleMeta := &BundleMeta{
-		ProjectName:          "Harvester",
-		ProjectVersion:       c.sbm.harvester.GetSettingValue("server-version"),
+		BundleName:           sb.Name,
 		BundleVersion:        BundleVersion,
 		KubernetesVersion:    kubeVersion.GitVersion,
 		ProjectNamespaceUUID: string(namespace.UID),

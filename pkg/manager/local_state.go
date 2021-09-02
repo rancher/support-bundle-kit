@@ -3,20 +3,20 @@ package manager
 import (
 	"fmt"
 
-	harvesterv1 "github.com/harvester/harvester/pkg/apis/harvesterhci.io/v1beta1"
-	"github.com/harvester/harvester/pkg/controller/master/supportbundle/types"
 	"github.com/sirupsen/logrus"
+
+	"github.com/rancher/support-bundle-kit/pkg/types"
 )
 
 type LocalStore struct {
-	sbs map[string]*harvesterv1.SupportBundle
+	sbs map[string]*types.SupportBundle
 }
 
 // NewLocalStore creates a local state store with one supportbundle
 func NewLocalStore(namespace, supportbundle string) *LocalStore {
-	sbs := map[string]*harvesterv1.SupportBundle{
+	sbs := map[string]*types.SupportBundle{
 		getSupportBundleKey(namespace, supportbundle): {
-			Status: harvesterv1.SupportBundleStatus{
+			Status: types.SupportBundleStatus{
 				State: types.StateGenerating,
 			},
 		},
@@ -31,7 +31,7 @@ func getSupportBundleKey(namespace, supportbundle string) string {
 	return fmt.Sprintf("%s-%s", namespace, supportbundle)
 }
 
-func (s *LocalStore) getSb(namespace, supportbundle string) (*harvesterv1.SupportBundle, error) {
+func (s *LocalStore) getSb(namespace, supportbundle string) (*types.SupportBundle, error) {
 	key := getSupportBundleKey(namespace, supportbundle)
 	if _, ok := s.sbs[key]; !ok {
 		return nil, fmt.Errorf("supportbundle %s is not found", supportbundle)
@@ -39,7 +39,7 @@ func (s *LocalStore) getSb(namespace, supportbundle string) (*harvesterv1.Suppor
 	return s.sbs[key], nil
 }
 
-func (s *LocalStore) GetSupportBundle(namespace, supportbundle string) (*harvesterv1.SupportBundle, error) {
+func (s *LocalStore) GetSupportBundle(namespace, supportbundle string) (*types.SupportBundle, error) {
 	logrus.Debugf("Get supportbundle %s/%s", namespace, supportbundle)
 	return s.getSb(namespace, supportbundle)
 }
