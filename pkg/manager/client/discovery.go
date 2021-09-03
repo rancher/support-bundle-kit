@@ -122,7 +122,7 @@ func (dc *DiscoveryClient) ResourcesForNamespace(namespace string, errLog io.Wri
 				if err != nil {
 					return nil, err
 				}
-				objs[resource.Name] = obj
+				objs[gv.String() + "/" + resource.Name] = obj
 			}
 		}
 	}
@@ -176,7 +176,7 @@ func (dc *DiscoveryClient) ResourcesForCluster(errLog io.Writer) (map[string]int
 				if err != nil {
 					return nil, err
 				}
-				objs[resource.Name] = obj
+				objs[gv.String() + "/" + resource.Name] = obj
 			}
 		}
 	}
