@@ -14,9 +14,8 @@ const (
 	SupportBundleStateError      = SupportBundleState("error")
 
 	// labels
-	SupportBundleLabelKey       = "rancher/supportbundle"
-	SupportBundleNodeLabelValue = "true"
-	DrainKey                    = "kubevirt.io/drain"
+	SupportBundleLabelKey = "rancher/supportbundle"
+	DrainKey              = "kubevirt.io/drain"
 
 	SupportBundleManager = "support-bundle-manager"
 	SupportBundleAgent   = "support-bundle-agent"

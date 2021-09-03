@@ -15,7 +15,6 @@ import (
 	"github.com/rancher/wrangler/pkg/signals"
 	"github.com/sirupsen/logrus"
 
-	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/rest"
 
 	"github.com/rancher/support-bundle-kit/pkg/manager/client"
@@ -36,6 +35,7 @@ type SupportBundleManager struct {
 	ImagePullPolicy string
 	KubeConfig      string
 	PodNamespace    string
+	NodeSelector    string
 
 	context context.Context
 
@@ -313,28 +313,35 @@ func (m *SupportBundleManager) compressBundle() error {
 }
 
 func (m *SupportBundleManager) refreshNodes() error {
-	objs, err := m.k8s.GetAllNodesList()
+	nodes, err := m.k8s.GetNodesListByLabels(m.NodeSelector)
 	if err != nil {
 		return err
 	}
 
-	// GetNodesListByLabels() returned a *corev1.NodeList but
-	// GetAllNodesList() returns runtime.Object despite both methods
-	// calling the same underlying API method.
-	nodes, ok := objs.(*corev1.NodeList)
-
-	if ok {
-		if len(nodes.Items) == 0 {
-			return errors.New("no nodes are found")
-		}
-
-		m.expectedNodes = make(map[string]string)
-		for _, node := range nodes.Items {
-			m.expectedNodes[node.Name] = ""
-		}
-	} else {
+	if len(nodes.Items) == 0 {
 		return errors.New("no nodes are found")
 	}
 
+	m.expectedNodes = make(map[string]string)
+	for _, node := range nodes.Items {
+		m.expectedNodes[node.Name] = ""
+	}
+
 	return nil
+}
+
+func (m *SupportBundleManager) getNodeSelector() map[string]string {
+	nodeSelector := map[string]string{}
+	if m.NodeSelector != "" {
+		// parse key1=value1,key2=value2,...
+		for _, s := range strings.Split(m.NodeSelector, ",") {
+			kv := strings.Split(s, "=")
+			if len(kv) != 2 {
+				logrus.Warnf("Unable to parse %s", s)
+				continue
+			}
+			nodeSelector[kv[0]] = kv[1]
+		}
+	}
+	return nodeSelector
 }
