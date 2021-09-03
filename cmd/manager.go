@@ -40,5 +40,5 @@ func init() {
 	managerCmd.PersistentFlags().StringVar(&sbm.ManagerPodIP, "manager-pod-ip", os.Getenv("SUPPORT_BUNDLE_MANAGER_POD_IP"), "The support bundle manager's IP (pod runs this app)")
 	managerCmd.PersistentFlags().StringVar(&sbm.ImageName, "image-name", os.Getenv("SUPPORT_BUNDLE_IMAGE"), "The support bundle image")
 	managerCmd.PersistentFlags().StringVar(&sbm.ImagePullPolicy, "image-pull-policy", os.Getenv("SUPPORT_BUNDLE_IMAGE_PULL_POLICY"), "Pull policy of the support bundle image")
-
+	managerCmd.PersistentFlags().StringVar(&sbm.NodeSelector, "node-selector", os.Getenv("SUPPORT_BUNDLE_NODE_SELECTOR"), "NodeSelector of agent DaemonSet. e.g., key1=value1,key2=value2")
 }

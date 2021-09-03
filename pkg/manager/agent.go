@@ -66,7 +66,7 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 					},
 				},
 				Spec: corev1.PodSpec{
-					NodeSelector: map[string]string{"node-role.kubernetes.io/worker": types.SupportBundleNodeLabelValue},
+					NodeSelector: a.sbm.getNodeSelector(),
 					Tolerations: []corev1.Toleration{
 						{
 							Key:   types.DrainKey,
