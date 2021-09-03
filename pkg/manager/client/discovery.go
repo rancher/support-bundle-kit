@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"io"
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/sirupsen/logrus"
@@ -72,7 +73,7 @@ func toObj(b []byte, groupVersion, kind string) (interface{}, error) {
 }
 
 // Get all the namespaced resources for a given namespace
-func (dc *DiscoveryClient) ResourcesForNamespace(namespace string) (map[string]interface{}, error) {
+func (dc *DiscoveryClient) ResourcesForNamespace(namespace string, errLog io.Writer) (map[string]interface{}, error) {
 	objs := make(map[string]interface{})
 
 	lists, err := dc.discoveryClient.ServerPreferredResources()
@@ -98,13 +99,18 @@ func (dc *DiscoveryClient) ResourcesForNamespace(namespace string) (map[string]i
 			// methods, but I was not able to.  It might be
 			// possible if a new rest client is created each
 			// time with the GroupVersion
-			url := fmt.Sprintf("/apis/%s/namespaces/%s/%s", gv.String(), namespace, resource.Name)
+			prefix := "apis"
+			if gv.String() == "v1" {
+				prefix = "api"
+			}
+			url := fmt.Sprintf("/%s/%s/namespaces/%s/%s", prefix, gv.String(), namespace, resource.Name)
 
 			result := dc.discoveryClient.RESTClient().Get().AbsPath(url).Do(dc.Context)
 
 			// It is likely that errors can occur.
 			if result.Error() != nil {
 				logrus.Tracef("Failed to get %s: %v", url, result.Error())
+				fmt.Fprintf(errLog, "Failed to get %s: %v\n", url, result.Error())
 				continue
 			}
 
@@ -126,7 +132,7 @@ func (dc *DiscoveryClient) ResourcesForNamespace(namespace string) (map[string]i
 }
 
 // Get the cluster level resources
-func (dc *DiscoveryClient) ResourcesForCluster() (map[string]interface{}, error) {
+func (dc *DiscoveryClient) ResourcesForCluster(errLog io.Writer) (map[string]interface{}, error) {
 	objs := make(map[string]interface{})
 
 	lists, err := dc.discoveryClient.ServerPreferredResources()
@@ -148,13 +154,18 @@ func (dc *DiscoveryClient) ResourcesForCluster() (map[string]interface{}, error)
 				continue
 			}
 
-			url := fmt.Sprintf("/apis/%s/%s", gv.String(), resource.Name)
+			prefix := "apis"
+			if gv.String() == "v1" {
+				prefix = "api"
+			}
+			url := fmt.Sprintf("/%s/%s/%s", prefix, gv.String(), resource.Name)
 
 			result := dc.discoveryClient.RESTClient().Get().AbsPath(url).Do(dc.Context)
 
 			// It is likely that errors can occur.
 			if result.Error() != nil {
 				logrus.Tracef("Failed to get %s: %v", url, result.Error())
+				fmt.Fprintf(errLog, "Failed to get %s: %v\n", url, result.Error())
 				continue
 			}
 

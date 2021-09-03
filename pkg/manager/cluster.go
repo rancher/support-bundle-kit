@@ -95,7 +95,7 @@ type NamespacedGetter func(string) (runtime.Object, error)
 
 func (c *Cluster) generateDiscoveredNamespacedYAMLs(namespace string, dir string, errLog io.Writer) {
 
-	objs, err := c.sbm.discovery.ResourcesForNamespace(namespace)
+	objs, err := c.sbm.discovery.ResourcesForNamespace(namespace, errLog)
 
 	if err != nil {
 		logrus.Error("Unable to fetch namespaced resources")
@@ -109,7 +109,7 @@ func (c *Cluster) generateDiscoveredNamespacedYAMLs(namespace string, dir string
 }
 
 func (c *Cluster) generateDiscoveredClusterYAMLs(dir string, errLog io.Writer) {
-	objs, err := c.sbm.discovery.ResourcesForCluster()
+	objs, err := c.sbm.discovery.ResourcesForCluster(errLog)
 
 	if err != nil {
 		logrus.Error("Unable to fetch cluster resources")
