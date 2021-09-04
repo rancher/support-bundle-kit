@@ -85,9 +85,17 @@ func (c *Cluster) generateSupportBundleYAMLs(yamlsDir string, errLog io.Writer) 
 	// Namespaced scope: all resources
 	namespaces := []string{"default", "kube-system", "cattle-system"}
 	namespaces = append(namespaces, c.sbm.Namespaces...)
+
+	done := make(map[string]struct{})
 	for _, namespace := range namespaces {
+		if _, ok := done[namespace]; ok {
+			continue
+		}
+
 		namespacedDir := filepath.Join(yamlsDir, "namespaced", namespace)
 		c.generateDiscoveredNamespacedYAMLs(namespace, namespacedDir, errLog)
+
+		done[namespace] = struct{}{}
 	}
 }
 
