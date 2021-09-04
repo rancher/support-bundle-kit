@@ -3,9 +3,9 @@ package client
 import (
 	"context"
 	"fmt"
+	"io"
 	"regexp"
 	"strings"
-	"io"
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/sirupsen/logrus"
@@ -15,13 +15,22 @@ import (
 	"k8s.io/client-go/rest"
 )
 
+const (
+	discoveryBurst = 10000
+	discoveryQPS   = 10000
+)
+
 type DiscoveryClient struct {
 	Context         context.Context
 	discoveryClient *discovery.DiscoveryClient
 }
 
 func NewDiscoveryClient(ctx context.Context, config *rest.Config) (*DiscoveryClient, error) {
-	discoveryClient, err := discovery.NewDiscoveryClientForConfig(config)
+	newConfig := rest.CopyConfig(config)
+	newConfig.Burst = discoveryBurst
+	newConfig.QPS = discoveryQPS
+
+	discoveryClient, err := discovery.NewDiscoveryClientForConfig(newConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -122,7 +131,7 @@ func (dc *DiscoveryClient) ResourcesForNamespace(namespace string, errLog io.Wri
 				if err != nil {
 					return nil, err
 				}
-				objs[gv.String() + "/" + resource.Name] = obj
+				objs[gv.String()+"/"+resource.Name] = obj
 			}
 		}
 	}
@@ -176,7 +185,7 @@ func (dc *DiscoveryClient) ResourcesForCluster(errLog io.Writer) (map[string]int
 				if err != nil {
 					return nil, err
 				}
-				objs[gv.String() + "/" + resource.Name] = obj
+				objs[gv.String()+"/"+resource.Name] = obj
 			}
 		}
 	}
