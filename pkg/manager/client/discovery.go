@@ -78,6 +78,17 @@ func toObj(b []byte, groupVersion, kind string) (interface{}, error) {
 		}
 	}
 
+	if kind == "Secret" {
+		for _, child := range jsonParsed.S("items").Children() {
+			if exists := child.Exists("data"); exists {
+				_, err := child.SetP("", "data")
+				if err != nil {
+					logrus.Error("Unable to clear data section")
+				}
+			}
+		}
+	}
+
 	return jsonParsed.Data(), nil
 }
 
