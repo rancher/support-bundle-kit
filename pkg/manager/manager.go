@@ -15,6 +15,7 @@ import (
 	"github.com/rancher/wrangler/pkg/signals"
 	"github.com/sirupsen/logrus"
 
+	v1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/rest"
 
 	"github.com/rancher/support-bundle-kit/pkg/manager/client"
@@ -323,7 +324,21 @@ func (m *SupportBundleManager) refreshNodes() error {
 	}
 
 	m.expectedNodes = make(map[string]string)
+
+NODE_LOOP:
 	for _, node := range nodes.Items {
+		for _, cond := range node.Status.Conditions {
+			switch cond.Type {
+			case v1.NodeReady:
+				if cond.Status != v1.ConditionTrue {
+					continue NODE_LOOP
+				}
+			case v1.NodeNetworkUnavailable:
+				if cond.Status == v1.ConditionTrue {
+					continue NODE_LOOP
+				}
+			}
+		}
 		m.expectedNodes[node.Name] = ""
 	}
 

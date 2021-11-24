@@ -72,6 +72,11 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 							Key:   types.DrainKey,
 							Value: "scheduling",
 						},
+						{
+							Key:      corev1.TaintNodeUnschedulable,
+							Operator: corev1.TolerationOpExists,
+							Effect:   corev1.TaintEffectNoSchedule,
+						},
 					},
 					Containers: []corev1.Container{
 						{
