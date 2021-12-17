@@ -25,7 +25,6 @@ import (
 
 type SupportBundleManager struct {
 	Namespaces      []string
-	NamespaceList   string
 	BundleName      string
 	bundleFileName  string
 	OutputDir       string
@@ -141,8 +140,6 @@ func (m *SupportBundleManager) Run() error {
 }
 
 func (m *SupportBundleManager) phaseInit() error {
-	m.Namespaces = strings.Split(m.NamespaceList, ",")
-
 	if err := m.check(); err != nil {
 		return err
 	}
