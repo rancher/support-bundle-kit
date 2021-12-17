@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/rancher/support-bundle-kit/pkg/manager"
 	"github.com/spf13/cobra"
@@ -32,9 +33,17 @@ And it also waits for reports from support bundle agents. The reports contain:
 	},
 }
 
+func getEnvStringSlice(key string) []string {
+	value, ok := os.LookupEnv(key)
+	if !ok {
+		return []string{}
+	}
+	return strings.Split(value, ",")
+}
+
 func init() {
 	rootCmd.AddCommand(managerCmd)
-	managerCmd.PersistentFlags().StringVar(&sbm.NamespaceList, "namespaces", os.Getenv("SUPPORT_BUNDLE_TARGET_NAMESPACES"), "List of namespaces delimited by ,")
+	managerCmd.PersistentFlags().StringSliceVar(&sbm.Namespaces, "namespaces", getEnvStringSlice("SUPPORT_BUNDLE_TARGET_NAMESPACES"), "List of namespaces delimited by ,")
 	managerCmd.PersistentFlags().StringVar(&sbm.BundleName, "bundlename", os.Getenv("SUPPORT_BUNDLE_NAME"), "The support bundle name")
 	managerCmd.PersistentFlags().StringVar(&sbm.OutputDir, "outdir", os.Getenv("SUPPORT_BUNDLE_OUTPUT_DIR"), "The directory to store the bundle")
 	managerCmd.PersistentFlags().StringVar(&sbm.ManagerPodIP, "manager-pod-ip", os.Getenv("SUPPORT_BUNDLE_MANAGER_POD_IP"), "The support bundle manager's IP (pod runs this app)")
