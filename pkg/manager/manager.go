@@ -16,6 +16,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/rest"
 
 	"github.com/rancher/support-bundle-kit/pkg/manager/client"
@@ -36,6 +37,9 @@ type SupportBundleManager struct {
 	KubeConfig      string
 	PodNamespace    string
 	NodeSelector    string
+
+	ExcludeResources    []schema.GroupResource
+	ExcludeResourceList []string
 
 	context context.Context
 
@@ -140,6 +144,16 @@ func (m *SupportBundleManager) Run() error {
 }
 
 func (m *SupportBundleManager) phaseInit() error {
+	m.ExcludeResources = []schema.GroupResource{
+		// Default exclusion
+		{Group: v1.GroupName, Resource: "secrets"},
+	}
+	for _, res := range m.ExcludeResourceList {
+		gr := schema.ParseGroupResource(res)
+		if !gr.Empty() {
+			m.ExcludeResources = append(m.ExcludeResources, gr)
+		}
+	}
 	if err := m.check(); err != nil {
 		return err
 	}

@@ -12,7 +12,9 @@ import (
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	k8sjson "k8s.io/apimachinery/pkg/runtime/serializer/json"
 
 	"github.com/rancher/support-bundle-kit/pkg/utils"
@@ -102,8 +104,7 @@ func (c *Cluster) generateSupportBundleYAMLs(yamlsDir string, errLog io.Writer) 
 type NamespacedGetter func(string) (runtime.Object, error)
 
 func (c *Cluster) generateDiscoveredNamespacedYAMLs(namespace string, dir string, errLog io.Writer) {
-
-	objs, err := c.sbm.discovery.ResourcesForNamespace(namespace, errLog)
+	objs, err := c.sbm.discovery.ResourcesForNamespace(namespace, c.matchesExcludeResources, errLog)
 
 	if err != nil {
 		logrus.Error("Unable to fetch namespaced resources")
@@ -117,7 +118,7 @@ func (c *Cluster) generateDiscoveredNamespacedYAMLs(namespace string, dir string
 }
 
 func (c *Cluster) generateDiscoveredClusterYAMLs(dir string, errLog io.Writer) {
-	objs, err := c.sbm.discovery.ResourcesForCluster(errLog)
+	objs, err := c.sbm.discovery.ResourcesForCluster(c.matchesExcludeResources, errLog)
 
 	if err != nil {
 		logrus.Error("Unable to fetch cluster resources")
@@ -128,6 +129,16 @@ func (c *Cluster) generateDiscoveredClusterYAMLs(dir string, errLog io.Writer) {
 		file := filepath.Join(dir, name+".yaml")
 		encodeToYAMLFile(obj, file, errLog)
 	}
+}
+
+// matchesExcludeResources returns true if given resource group version mathces our ExcludeResources list.
+func (c *Cluster) matchesExcludeResources(gv schema.GroupVersion, resource metav1.APIResource) bool {
+	for _, excludeResource := range c.sbm.ExcludeResources {
+		if gv.Group == excludeResource.Group && resource.Name == excludeResource.Resource {
+			return true
+		}
+	}
+	return false
 }
 
 func encodeToYAMLFile(obj interface{}, path string, errLog io.Writer) {
