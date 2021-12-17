@@ -10,6 +10,7 @@ import (
 	"github.com/Jeffail/gabs/v2"
 	"github.com/sirupsen/logrus"
 
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/discovery"
 	"k8s.io/client-go/rest"
@@ -19,6 +20,8 @@ const (
 	discoveryBurst = 10000
 	discoveryQPS   = 10000
 )
+
+type ExcludeFilter func(schema.GroupVersion, metav1.APIResource) bool
 
 type DiscoveryClient struct {
 	Context         context.Context
@@ -93,7 +96,7 @@ func toObj(b []byte, groupVersion, kind string) (interface{}, error) {
 }
 
 // Get all the namespaced resources for a given namespace
-func (dc *DiscoveryClient) ResourcesForNamespace(namespace string, errLog io.Writer) (map[string]interface{}, error) {
+func (dc *DiscoveryClient) ResourcesForNamespace(namespace string, exclude ExcludeFilter, errLog io.Writer) (map[string]interface{}, error) {
 	objs := make(map[string]interface{})
 
 	lists, err := dc.discoveryClient.ServerPreferredResources()
@@ -112,6 +115,10 @@ func (dc *DiscoveryClient) ResourcesForNamespace(namespace string, errLog io.Wri
 
 		for _, resource := range list.APIResources {
 			if !resource.Namespaced {
+				continue
+			}
+
+			if exclude(gv, resource) {
 				continue
 			}
 
@@ -152,7 +159,7 @@ func (dc *DiscoveryClient) ResourcesForNamespace(namespace string, errLog io.Wri
 }
 
 // Get the cluster level resources
-func (dc *DiscoveryClient) ResourcesForCluster(errLog io.Writer) (map[string]interface{}, error) {
+func (dc *DiscoveryClient) ResourcesForCluster(exclude ExcludeFilter, errLog io.Writer) (map[string]interface{}, error) {
 	objs := make(map[string]interface{})
 
 	lists, err := dc.discoveryClient.ServerPreferredResources()
@@ -171,6 +178,10 @@ func (dc *DiscoveryClient) ResourcesForCluster(errLog io.Writer) (map[string]int
 
 		for _, resource := range list.APIResources {
 			if resource.Namespaced {
+				continue
+			}
+
+			if exclude(gv, resource) {
 				continue
 			}
 
