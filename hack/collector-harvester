@@ -3,15 +3,75 @@
 HOST_PATH=$1
 BUNDLE_DIR=$2
 
+log_warn() {
+    echo "[WARNING] $1"
+}
+
+remove_yaml_secret() {
+    local yaml_file=$1
+    export CONFIG_HEADER_COMMENT="Note: this file is re-formatted by support-bundle-kit collector."
+
+    yq e '. headComment=strenv(CONFIG_HEADER_COMMENT)' $yaml_file -i
+    yq e '(.. | select(has("passwd")) | .passwd) = "***" ' $yaml_file -i
+    yq e '(.. | select(has("password")) | .password) = "***" ' $yaml_file -i
+    yq e '(.. | select(has("secret")) | .secret) = "***" ' $yaml_file -i
+    yq e '(.. | select(has("token")) | .token) = "***" ' $yaml_file -i
+    yq e '(.. | select(has("agent-token")) | .agent-token) = "***" ' $yaml_file -i
+
+    unset CONFIG_HEADER_COMMENT
+}
+
+collect_etc() {
+    local to_dir=$1
+    local config
+
+    cp ${HOST_PATH}/etc/hostname $to_dir
+    cp ${HOST_PATH}/etc/os-release $to_dir
+    cp ${HOST_PATH}/etc/harvester-release.yaml $to_dir
+
+    mkdir -p $to_dir/rancher
+    cp -r ${HOST_PATH}/etc/rancher/agent $to_dir/rancher/
+    cp -r ${HOST_PATH}/etc/rancher/installer $to_dir/rancher/
+    cp -r ${HOST_PATH}/etc/rancher/rancherd $to_dir/rancher/ && chmod -R 744 $to_dir/rancher/rancherd
+    cp -r ${HOST_PATH}/etc/rancher/rke2 $to_dir/rancher/ && chmod -R 744 $to_dir/rancher/rke2/config.yaml.d
+
+    for config in $(find $to_dir/rancher -type f -regex ".*\.\(yaml\|yml\)"); do
+        remove_yaml_secret $config
+    done
+
+    rm -f $to_dir/rancher/rke2/rke2.yaml
+}
+
+remove_oem_secrets() {
+    local oem_dir=$1
+    local header=""
+    local config
+
+
+    if [ ! -d $oem_dir ]; then
+        log_warn "OEM folder $oem_dir doesn't exist."
+        return
+    fi
+
+    for config in $(find $oem_dir -type f -regex ".*\.\(yaml\|yml\|config\)"); do
+        remove_yaml_secret $config
+    done
+
+    # remove token in file contents
+    sed -i 's/token:.*/token: '\''***'\''/' $oem_dir/99_custom.yaml
+}
+
 cd ${BUNDLE_DIR}
-# get some host information
-cp ${HOST_PATH}/etc/hostname .
+
 
 ###############################################################################
 # collect configs
 ###############################################################################
-mkdir -p configs
-cp -r /host/oem configs
+mkdir -p ${BUNDLE_DIR}/configs
+cp -r $HOST_PATH/oem ${BUNDLE_DIR}/configs
+remove_oem_secrets ${BUNDLE_DIR}/configs/oem
+mkdir -p ${BUNDLE_DIR}/configs/etc
+collect_etc ${BUNDLE_DIR}/configs/etc
 
 ###############################################################################
 # collect logs
