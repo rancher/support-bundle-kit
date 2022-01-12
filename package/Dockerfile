@@ -1,5 +1,5 @@
 FROM alpine
-RUN apk update && apk add -u --no-cache zip tini bash curl
+RUN apk update && apk add -u --no-cache zip tini bash curl yq
 
 COPY package/entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
