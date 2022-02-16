@@ -1,4 +1,4 @@
-# Support Bundle Kit[![Build Status](http://drone-publish.rancher.io/api/badges/rancher/support-bundle-kit/status.svg)](http://drone-publish.rancher.io/rancher/support-bundle-kit)
+# Support Bundle Kit [![Build Status](http://drone-publish.rancher.io/api/badges/rancher/support-bundle-kit/status.svg)](http://drone-publish.rancher.io/rancher/support-bundle-kit)
 
 **working in progress**
 
