@@ -15,7 +15,7 @@ const (
 
 	// labels
 	SupportBundleLabelKey = "rancher/supportbundle"
-	DrainKey              = "kubevirt.io/drain"
+	KubevirtDrainKey      = "kubevirt.io/drain"
 
 	SupportBundleManager = "support-bundle-manager"
 	SupportBundleAgent   = "support-bundle-agent"
