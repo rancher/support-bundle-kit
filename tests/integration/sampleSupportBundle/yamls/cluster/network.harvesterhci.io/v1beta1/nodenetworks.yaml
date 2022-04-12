@@ -1,0 +1,85 @@
+apiVersion: v1
+items:
+- apiVersion: network.harvesterhci.io/v1beta1
+  kind: NodeNetwork
+  metadata:
+    creationTimestamp: "2022-03-06T22:52:04Z"
+    finalizers:
+    - wrangler.cattle.io/harvester-nodenetwork-controller
+    generation: 10
+    labels:
+      network.harvesterhci.io/nodename: node1
+    managedFields:
+    - apiVersion: network.harvesterhci.io/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:finalizers:
+            .: {}
+            v:"wrangler.cattle.io/harvester-nodenetwork-controller"null: {}
+          f:labels:
+            .: {}
+            f:network.harvesterhci.io/nodename: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"c4cd362a-7999-46e3-8744-b65c1581fd4e"}:
+              .: {}
+              f:apiVersion: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          .: {}
+          f:nodeName: {}
+          f:type: {}
+        f:status:
+          .: {}
+          f:conditions: {}
+          f:nics: {}
+      manager: harvester-network-controller
+      operation: Update
+      time: "2022-03-08T04:52:04Z"
+    name: node1-vlan
+    ownerReferences:
+    - apiVersion: v1
+      kind: Node
+      name: node1
+      uid: c4cd362a-7999-46e3-8744-b65c1581fd4e
+    resourceVersion: "1209570"
+    uid: f6a23b7a-e096-43cc-904e-3026ac3a7a64
+  spec:
+    nodeName: node1
+    type: vlan
+  status:
+    conditions:
+    - lastUpdateTime: "2022-03-08T04:52:04Z"
+      message: No network interface has been specified yet
+      status: "False"
+      type: Ready
+    nics:
+    - index: 2
+      masterIndex: 6
+      name: enp0s20f0
+      state: up
+      type: device
+    - index: 3
+      name: enp0s20f1
+      state: down
+      type: device
+    - index: 4
+      name: enp0s20f2
+      state: down
+      type: device
+    - index: 5
+      name: enp0s20f3
+      state: down
+      type: device
+    - index: 6
+      name: harvester-mgmt
+      state: up
+      type: bond
+      usedByManagementNetwork: true
+kind: List
+metadata:
+  continue: "null"
+  resourceVersion: "14658915"

@@ -1,0 +1,104 @@
+apiVersion: v1
+items:
+- apiVersion: rke.cattle.io/v1
+  kind: RKEControlPlane
+  metadata:
+    annotations:
+      objectset.rio.cattle.io/applied: H4sIAAAAAAAA/5SSUW/TQAzHvwryK0lpui5tI/GAxjQhJEAC7d25c5IjF9/hc9JB1e+O0nVoIJjG40l/2/f72QcYSNGiIlQHQOagqC5wmp+h/kpGE+lCXFgYVPW0cOGVs1CB9JQbPyYlgeyf0bBnkrydeqggSphccoEdt48iU5G9eO/Yvr56ZjfGgaACHwz6Z4VTRDNXNJ5I8/u6YwZG6MT6xQ2UFIcIFY/eZ+CxJv+kgQ5TBxUUy21Z1tu6vljXOyrJLFfri2ZptstdaWyNtthZKjc7yGZdjw2y05yDpXxA0zmm/OTUJNNov+IfQyojr7WJlxL7O7vhS2Ml7vebctttkvl2N3Xb1u/Xg9jYzyx/OHmCOkUyM5rpUPQW/Ujpgfu8zg+/9+rHmoRJKd2SzOuDCqZisSoWm5fS00oKyO7D5wW+GbW7ZhuDY4XqcMzgDHnjQ43+KnDj2oeZAzK2NBDr1V+nj7EVtPRZBZXa76efB1YJ/pNHpreCjj/GXyf7ruUgdC0SJEHVoE+UgbqBwqhQLY8Z7IP0JP9bd5zNKep4PotEMpG9ISY53dAp8zMAAP//Pd6KnU0DAAA
+      objectset.rio.cattle.io/id: rke-cluster
+      objectset.rio.cattle.io/owner-gvk: provisioning.cattle.io/v1, Kind=Cluster
+      objectset.rio.cattle.io/owner-name: local
+      objectset.rio.cattle.io/owner-namespace: fleet-local
+    creationTimestamp: "2022-03-06T22:49:42Z"
+    generation: 1
+    labels:
+      cluster.x-k8s.io/cluster-name: local
+      objectset.rio.cattle.io/hash: 10866b8bb34b9e6ec0243f0c8096cdbad19de679
+      rke.cattle.io/init-node-machine-id: cscftk2nzms6pn4tfp5rpkxd7n5cdrpww768h7scqxvh8glw4mrdpk
+      rke.cattle.io/init-node-machine-id-done: "true"
+    managedFields:
+    - apiVersion: rke.cattle.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:objectset.rio.cattle.io/applied: {}
+            f:objectset.rio.cattle.io/id: {}
+            f:objectset.rio.cattle.io/owner-gvk: {}
+            f:objectset.rio.cattle.io/owner-name: {}
+            f:objectset.rio.cattle.io/owner-namespace: {}
+          f:labels:
+            .: {}
+            f:cluster.x-k8s.io/cluster-name: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:rke.cattle.io/init-node-machine-id: {}
+            f:rke.cattle.io/init-node-machine-id-done: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"4f4994b3-6e9b-43ca-ad0a-e9b841cd3ee6"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          .: {}
+          f:chartValues: {}
+          f:clusterName: {}
+          f:kubernetesVersion: {}
+          f:localClusterAuthEndpoint: {}
+          f:machineGlobalConfig: {}
+          f:managementClusterName: {}
+          f:upgradeStrategy:
+            .: {}
+            f:controlPlaneDrainOptions:
+              .: {}
+              f:timeout: {}
+            f:workerDrainOptions:
+              .: {}
+              f:timeout: {}
+        f:status:
+          .: {}
+          f:conditions: {}
+          f:observedGeneration: {}
+          f:ready: {}
+      manager: rancher
+      operation: Update
+      time: "2022-03-06T22:50:21Z"
+    name: local
+    namespace: fleet-local
+    ownerReferences:
+    - apiVersion: cluster.x-k8s.io/v1alpha4
+      blockOwnerDeletion: true
+      controller: true
+      kind: Cluster
+      name: local
+      uid: 4f4994b3-6e9b-43ca-ad0a-e9b841cd3ee6
+    resourceVersion: "870934"
+    uid: 00e7d91f-84ed-4fc2-9ccf-95631abeca8a
+  spec:
+    chartValues: "null"
+    clusterName: local
+    kubernetesVersion: v1.21.7+rke2r1
+    localClusterAuthEndpoint: {}
+    machineGlobalConfig: "null"
+    managementClusterName: local
+    upgradeStrategy:
+      controlPlaneDrainOptions:
+        timeout: 0
+      workerDrainOptions:
+        timeout: 0
+  status:
+    conditions:
+    - lastUpdateTime: "2022-03-07T22:12:41Z"
+      status: "True"
+      type: Provisioned
+    observedGeneration: 1
+    ready: true
+kind: List
+metadata:
+  continue: "null"
+  resourceVersion: "14659164"

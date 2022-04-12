@@ -1,0 +1,1211 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "3"
+      deployment.kubernetes.io/max-replicas: "4"
+      deployment.kubernetes.io/revision: "1"
+      driver.longhorn.io/kubernetes-version: v1.21.7+rke2r1
+      driver.longhorn.io/version: v1.2.3
+      longhorn.io/last-applied-tolerations: '[{"key":"kubevirt.io/drain","operator":"Exists","effect":"NoSchedule"}]'
+    creationTimestamp: "2022-03-06T22:51:59Z"
+    generation: 1
+    labels:
+      app: csi-attacher
+      pod-template-hash: 66fcbbff5c
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deployment.kubernetes.io/desired-replicas: {}
+            f:deployment.kubernetes.io/max-replicas: {}
+            f:deployment.kubernetes.io/revision: {}
+            f:driver.longhorn.io/kubernetes-version: {}
+            f:driver.longhorn.io/version: {}
+            f:longhorn.io/last-applied-tolerations: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:pod-template-hash: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"660b810b-3351-43f6-954d-bea76db2883d"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:replicas: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:app: {}
+                f:pod-template-hash: {}
+            f:spec:
+              f:affinity:
+                .: {}
+                f:podAntiAffinity:
+                  .: {}
+                  f:preferredDuringSchedulingIgnoredDuringExecution: {}
+              f:containers:
+                k:{"name":"csi-attacher"}:
+                  .: {}
+                  f:args: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"ADDRESS"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"POD_NAMESPACE"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:resources: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/csi/"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+              f:dnsPolicy: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:tolerations: {}
+              f:volumes:
+                .: {}
+                k:{"name":"socket-dir"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+        f:status:
+          f:availableReplicas: {}
+          f:fullyLabeledReplicas: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:52:16Z"
+    name: csi-attacher-66fcbbff5c
+    namespace: longhorn-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: csi-attacher
+      uid: 660b810b-3351-43f6-954d-bea76db2883d
+    resourceVersion: "5056"
+    uid: d9917ac1-99c1-4eef-8e19-4f66da5963b4
+  spec:
+    replicas: 3
+    selector:
+      matchLabels:
+        app: csi-attacher
+        pod-template-hash: 66fcbbff5c
+    template:
+      metadata:
+        creationTimestamp: "null"
+        labels:
+          app: csi-attacher
+          pod-template-hash: 66fcbbff5c
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                    - csi-attacher
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        containers:
+        - args:
+          - --v=2
+          - --csi-address=$(ADDRESS)
+          - --timeout=1m50s
+          - --leader-election
+          - --leader-election-namespace=$(POD_NAMESPACE)
+          env:
+          - name: ADDRESS
+            value: /csi/csi.sock
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          image: longhornio/csi-attacher:v3.2.1
+          imagePullPolicy: IfNotPresent
+          name: csi-attacher
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /csi/
+            name: socket-dir
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: longhorn-service-account
+        serviceAccountName: longhorn-service-account
+        terminationGracePeriodSeconds: 30
+        tolerations:
+        - effect: NoSchedule
+          key: kubevirt.io/drain
+          operator: Exists
+        volumes:
+        - hostPath:
+            path: /var/lib/kubelet/plugins/driver.longhorn.io
+            type: DirectoryOrCreate
+          name: socket-dir
+  status:
+    availableReplicas: 3
+    fullyLabeledReplicas: 3
+    observedGeneration: 1
+    readyReplicas: 3
+    replicas: 3
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "3"
+      deployment.kubernetes.io/max-replicas: "4"
+      deployment.kubernetes.io/revision: "1"
+      driver.longhorn.io/kubernetes-version: v1.21.7+rke2r1
+      driver.longhorn.io/version: v1.2.3
+      longhorn.io/last-applied-tolerations: '[{"key":"kubevirt.io/drain","operator":"Exists","effect":"NoSchedule"}]'
+    creationTimestamp: "2022-03-06T22:52:00Z"
+    generation: 1
+    labels:
+      app: csi-provisioner
+      pod-template-hash: 84fcfbf785
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deployment.kubernetes.io/desired-replicas: {}
+            f:deployment.kubernetes.io/max-replicas: {}
+            f:deployment.kubernetes.io/revision: {}
+            f:driver.longhorn.io/kubernetes-version: {}
+            f:driver.longhorn.io/version: {}
+            f:longhorn.io/last-applied-tolerations: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:pod-template-hash: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"19cb3e68-3c44-45a9-8fdf-20bc3d72df39"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:replicas: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:app: {}
+                f:pod-template-hash: {}
+            f:spec:
+              f:affinity:
+                .: {}
+                f:podAntiAffinity:
+                  .: {}
+                  f:preferredDuringSchedulingIgnoredDuringExecution: {}
+              f:containers:
+                k:{"name":"csi-provisioner"}:
+                  .: {}
+                  f:args: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"ADDRESS"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"POD_NAMESPACE"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:resources: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/csi/"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+              f:dnsPolicy: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:tolerations: {}
+              f:volumes:
+                .: {}
+                k:{"name":"socket-dir"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+        f:status:
+          f:availableReplicas: {}
+          f:fullyLabeledReplicas: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:52:16Z"
+    name: csi-provisioner-84fcfbf785
+    namespace: longhorn-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: csi-provisioner
+      uid: 19cb3e68-3c44-45a9-8fdf-20bc3d72df39
+    resourceVersion: "4997"
+    uid: 30dcdc7c-00b0-4e37-b59a-79854c1e842e
+  spec:
+    replicas: 3
+    selector:
+      matchLabels:
+        app: csi-provisioner
+        pod-template-hash: 84fcfbf785
+    template:
+      metadata:
+        creationTimestamp: "null"
+        labels:
+          app: csi-provisioner
+          pod-template-hash: 84fcfbf785
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                    - csi-provisioner
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        containers:
+        - args:
+          - --v=2
+          - --csi-address=$(ADDRESS)
+          - --timeout=1m50s
+          - --leader-election
+          - --leader-election-namespace=$(POD_NAMESPACE)
+          - --default-fstype=ext4
+          env:
+          - name: ADDRESS
+            value: /csi/csi.sock
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          image: longhornio/csi-provisioner:v2.1.2
+          imagePullPolicy: IfNotPresent
+          name: csi-provisioner
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /csi/
+            name: socket-dir
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: longhorn-service-account
+        serviceAccountName: longhorn-service-account
+        terminationGracePeriodSeconds: 30
+        tolerations:
+        - effect: NoSchedule
+          key: kubevirt.io/drain
+          operator: Exists
+        volumes:
+        - hostPath:
+            path: /var/lib/kubelet/plugins/driver.longhorn.io
+            type: DirectoryOrCreate
+          name: socket-dir
+  status:
+    availableReplicas: 3
+    fullyLabeledReplicas: 3
+    observedGeneration: 1
+    readyReplicas: 3
+    replicas: 3
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "3"
+      deployment.kubernetes.io/max-replicas: "4"
+      deployment.kubernetes.io/revision: "1"
+      driver.longhorn.io/kubernetes-version: v1.21.7+rke2r1
+      driver.longhorn.io/version: v1.2.3
+      longhorn.io/last-applied-tolerations: '[{"key":"kubevirt.io/drain","operator":"Exists","effect":"NoSchedule"}]'
+    creationTimestamp: "2022-03-06T22:52:00Z"
+    generation: 1
+    labels:
+      app: csi-resizer
+      pod-template-hash: 558f9d8df
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deployment.kubernetes.io/desired-replicas: {}
+            f:deployment.kubernetes.io/max-replicas: {}
+            f:deployment.kubernetes.io/revision: {}
+            f:driver.longhorn.io/kubernetes-version: {}
+            f:driver.longhorn.io/version: {}
+            f:longhorn.io/last-applied-tolerations: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:pod-template-hash: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"40fa3475-b3a9-482a-a2ce-4bc09619fec0"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:replicas: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:app: {}
+                f:pod-template-hash: {}
+            f:spec:
+              f:affinity:
+                .: {}
+                f:podAntiAffinity:
+                  .: {}
+                  f:preferredDuringSchedulingIgnoredDuringExecution: {}
+              f:containers:
+                k:{"name":"csi-resizer"}:
+                  .: {}
+                  f:args: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"ADDRESS"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"POD_NAMESPACE"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:resources: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/csi/"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+              f:dnsPolicy: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:tolerations: {}
+              f:volumes:
+                .: {}
+                k:{"name":"socket-dir"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+        f:status:
+          f:availableReplicas: {}
+          f:fullyLabeledReplicas: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:52:16Z"
+    name: csi-resizer-558f9d8df
+    namespace: longhorn-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: csi-resizer
+      uid: 40fa3475-b3a9-482a-a2ce-4bc09619fec0
+    resourceVersion: "5026"
+    uid: 4e5c1749-e6f8-4611-b5d5-e07eaf038134
+  spec:
+    replicas: 3
+    selector:
+      matchLabels:
+        app: csi-resizer
+        pod-template-hash: 558f9d8df
+    template:
+      metadata:
+        creationTimestamp: "null"
+        labels:
+          app: csi-resizer
+          pod-template-hash: 558f9d8df
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                    - csi-resizer
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        containers:
+        - args:
+          - --v=2
+          - --csi-address=$(ADDRESS)
+          - --timeout=1m50s
+          - --leader-election
+          - --leader-election-namespace=$(POD_NAMESPACE)
+          - --leader-election-namespace=$(POD_NAMESPACE)
+          - --handle-volume-inuse-error=false
+          env:
+          - name: ADDRESS
+            value: /csi/csi.sock
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          image: longhornio/csi-resizer:v1.2.0
+          imagePullPolicy: IfNotPresent
+          name: csi-resizer
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /csi/
+            name: socket-dir
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: longhorn-service-account
+        serviceAccountName: longhorn-service-account
+        terminationGracePeriodSeconds: 30
+        tolerations:
+        - effect: NoSchedule
+          key: kubevirt.io/drain
+          operator: Exists
+        volumes:
+        - hostPath:
+            path: /var/lib/kubelet/plugins/driver.longhorn.io
+            type: DirectoryOrCreate
+          name: socket-dir
+  status:
+    availableReplicas: 3
+    fullyLabeledReplicas: 3
+    observedGeneration: 1
+    readyReplicas: 3
+    replicas: 3
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "3"
+      deployment.kubernetes.io/max-replicas: "4"
+      deployment.kubernetes.io/revision: "1"
+      driver.longhorn.io/kubernetes-version: v1.21.7+rke2r1
+      driver.longhorn.io/version: v1.2.3
+      longhorn.io/last-applied-tolerations: '[{"key":"kubevirt.io/drain","operator":"Exists","effect":"NoSchedule"}]'
+    creationTimestamp: "2022-03-06T22:52:00Z"
+    generation: 1
+    labels:
+      app: csi-snapshotter
+      pod-template-hash: 7dc99d7f87
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deployment.kubernetes.io/desired-replicas: {}
+            f:deployment.kubernetes.io/max-replicas: {}
+            f:deployment.kubernetes.io/revision: {}
+            f:driver.longhorn.io/kubernetes-version: {}
+            f:driver.longhorn.io/version: {}
+            f:longhorn.io/last-applied-tolerations: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:pod-template-hash: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"3a170a7e-7853-4f09-854b-9eecc318288e"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:replicas: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:app: {}
+                f:pod-template-hash: {}
+            f:spec:
+              f:affinity:
+                .: {}
+                f:podAntiAffinity:
+                  .: {}
+                  f:preferredDuringSchedulingIgnoredDuringExecution: {}
+              f:containers:
+                k:{"name":"csi-snapshotter"}:
+                  .: {}
+                  f:args: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"ADDRESS"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"POD_NAMESPACE"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:resources: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/csi/"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+              f:dnsPolicy: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:tolerations: {}
+              f:volumes:
+                .: {}
+                k:{"name":"socket-dir"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+        f:status:
+          f:availableReplicas: {}
+          f:fullyLabeledReplicas: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:52:17Z"
+    name: csi-snapshotter-7dc99d7f87
+    namespace: longhorn-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: csi-snapshotter
+      uid: 3a170a7e-7853-4f09-854b-9eecc318288e
+    resourceVersion: "5041"
+    uid: 6fcc4933-a7b5-4c20-af0c-a3c5b924bbb0
+  spec:
+    replicas: 3
+    selector:
+      matchLabels:
+        app: csi-snapshotter
+        pod-template-hash: 7dc99d7f87
+    template:
+      metadata:
+        creationTimestamp: "null"
+        labels:
+          app: csi-snapshotter
+          pod-template-hash: 7dc99d7f87
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                    - csi-snapshotter
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        containers:
+        - args:
+          - --v=2
+          - --csi-address=$(ADDRESS)
+          - --timeout=1m50s
+          - --leader-election
+          - --leader-election-namespace=$(POD_NAMESPACE)
+          env:
+          - name: ADDRESS
+            value: /csi/csi.sock
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          image: longhornio/csi-snapshotter:v3.0.3
+          imagePullPolicy: IfNotPresent
+          name: csi-snapshotter
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /csi/
+            name: socket-dir
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: longhorn-service-account
+        serviceAccountName: longhorn-service-account
+        terminationGracePeriodSeconds: 30
+        tolerations:
+        - effect: NoSchedule
+          key: kubevirt.io/drain
+          operator: Exists
+        volumes:
+        - hostPath:
+            path: /var/lib/kubelet/plugins/driver.longhorn.io
+            type: DirectoryOrCreate
+          name: socket-dir
+  status:
+    availableReplicas: 3
+    fullyLabeledReplicas: 3
+    observedGeneration: 1
+    readyReplicas: 3
+    replicas: 3
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "1"
+      meta.helm.sh/release-name: harvester
+      meta.helm.sh/release-namespace: harvester-system
+      objectset.rio.cattle.io/id: default-mcc-harvester-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:50:37Z"
+    generation: 1
+    labels:
+      app: longhorn-driver-deployer
+      app.kubernetes.io/instance: harvester
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: longhorn
+      app.kubernetes.io/version: v1.2.3
+      helm.sh/chart: longhorn-1.2.3
+      pod-template-hash: 7769758bc9
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deployment.kubernetes.io/desired-replicas: {}
+            f:deployment.kubernetes.io/max-replicas: {}
+            f:deployment.kubernetes.io/revision: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:app.kubernetes.io/version: {}
+            f:helm.sh/chart: {}
+            f:pod-template-hash: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"9fef7f5b-87ac-4cf6-aecd-fa2fd9fab903"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:replicas: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:app: {}
+                f:app.kubernetes.io/instance: {}
+                f:app.kubernetes.io/managed-by: {}
+                f:app.kubernetes.io/name: {}
+                f:app.kubernetes.io/version: {}
+                f:helm.sh/chart: {}
+                f:pod-template-hash: {}
+            f:spec:
+              f:containers:
+                k:{"name":"longhorn-driver-deployer"}:
+                  .: {}
+                  f:command: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"CSI_ATTACHER_IMAGE"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"CSI_NODE_DRIVER_REGISTRAR_IMAGE"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"CSI_PROVISIONER_IMAGE"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"CSI_RESIZER_IMAGE"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"CSI_SNAPSHOTTER_IMAGE"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"KUBELET_ROOT_DIR"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"NODE_NAME"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                    k:{"name":"POD_NAMESPACE"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                    k:{"name":"SERVICE_ACCOUNT"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:resources: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+              f:dnsPolicy: {}
+              f:initContainers:
+                .: {}
+                k:{"name":"wait-longhorn-manager"}:
+                  .: {}
+                  f:command: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:resources: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext:
+                .: {}
+                f:runAsUser: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+        f:status:
+          f:availableReplicas: {}
+          f:fullyLabeledReplicas: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:51:59Z"
+    name: longhorn-driver-deployer-7769758bc9
+    namespace: longhorn-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: longhorn-driver-deployer
+      uid: 9fef7f5b-87ac-4cf6-aecd-fa2fd9fab903
+    resourceVersion: "4450"
+    uid: f458928a-f1d9-42fd-8591-419c9547585c
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: longhorn-driver-deployer
+        pod-template-hash: 7769758bc9
+    template:
+      metadata:
+        creationTimestamp: "null"
+        labels:
+          app: longhorn-driver-deployer
+          app.kubernetes.io/instance: harvester
+          app.kubernetes.io/managed-by: Helm
+          app.kubernetes.io/name: longhorn
+          app.kubernetes.io/version: v1.2.3
+          helm.sh/chart: longhorn-1.2.3
+          pod-template-hash: 7769758bc9
+      spec:
+        containers:
+        - command:
+          - longhorn-manager
+          - -d
+          - deploy-driver
+          - --manager-image
+          - longhornio/longhorn-manager:v1.2.3
+          - --manager-url
+          - http://longhorn-backend:9500/v1
+          env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: SERVICE_ACCOUNT
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.serviceAccountName
+          - name: KUBELET_ROOT_DIR
+            value: /var/lib/kubelet
+          - name: CSI_ATTACHER_IMAGE
+            value: longhornio/csi-attacher:v3.2.1
+          - name: CSI_PROVISIONER_IMAGE
+            value: longhornio/csi-provisioner:v2.1.2
+          - name: CSI_NODE_DRIVER_REGISTRAR_IMAGE
+            value: longhornio/csi-node-driver-registrar:v2.3.0
+          - name: CSI_RESIZER_IMAGE
+            value: longhornio/csi-resizer:v1.2.0
+          - name: CSI_SNAPSHOTTER_IMAGE
+            value: longhornio/csi-snapshotter:v3.0.3
+          image: longhornio/longhorn-manager:v1.2.3
+          imagePullPolicy: IfNotPresent
+          name: longhorn-driver-deployer
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        initContainers:
+        - command:
+          - sh
+          - -c
+          - while [ $(curl -m 1 -s -o /dev/null -w "%{http_code}" http://longhorn-backend:9500/v1)
+            != "200" ]; do echo waiting; sleep 2; done
+          image: longhornio/longhorn-manager:v1.2.3
+          imagePullPolicy: IfNotPresent
+          name: wait-longhorn-manager
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          runAsUser: 0
+        serviceAccount: longhorn-service-account
+        serviceAccountName: longhorn-service-account
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "1"
+      meta.helm.sh/release-name: harvester
+      meta.helm.sh/release-namespace: harvester-system
+      objectset.rio.cattle.io/id: default-mcc-harvester-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:50:37Z"
+    generation: 1
+    labels:
+      app: longhorn-ui
+      app.kubernetes.io/instance: harvester
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: longhorn
+      app.kubernetes.io/version: v1.2.3
+      helm.sh/chart: longhorn-1.2.3
+      pod-template-hash: 8466bcb8b7
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deployment.kubernetes.io/desired-replicas: {}
+            f:deployment.kubernetes.io/max-replicas: {}
+            f:deployment.kubernetes.io/revision: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:app.kubernetes.io/version: {}
+            f:helm.sh/chart: {}
+            f:pod-template-hash: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"6bffa9bc-b273-4f8e-b6ec-7129ba07a1ea"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:replicas: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:app: {}
+                f:app.kubernetes.io/instance: {}
+                f:app.kubernetes.io/managed-by: {}
+                f:app.kubernetes.io/name: {}
+                f:app.kubernetes.io/version: {}
+                f:helm.sh/chart: {}
+                f:pod-template-hash: {}
+            f:spec:
+              f:containers:
+                k:{"name":"longhorn-ui"}:
+                  .: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"LONGHORN_MANAGER_IP"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:ports:
+                    .: {}
+                    k:{"containerPort":8000,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:name: {}
+                      f:protocol: {}
+                  f:resources: {}
+                  f:securityContext:
+                    .: {}
+                    f:runAsUser: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+              f:dnsPolicy: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:terminationGracePeriodSeconds: {}
+        f:status:
+          f:availableReplicas: {}
+          f:fullyLabeledReplicas: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:51:51Z"
+    name: longhorn-ui-8466bcb8b7
+    namespace: longhorn-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: longhorn-ui
+      uid: 6bffa9bc-b273-4f8e-b6ec-7129ba07a1ea
+    resourceVersion: "4194"
+    uid: b620f261-8cff-4f56-bc2c-9ce7994293fb
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: longhorn-ui
+        pod-template-hash: 8466bcb8b7
+    template:
+      metadata:
+        creationTimestamp: "null"
+        labels:
+          app: longhorn-ui
+          app.kubernetes.io/instance: harvester
+          app.kubernetes.io/managed-by: Helm
+          app.kubernetes.io/name: longhorn
+          app.kubernetes.io/version: v1.2.3
+          helm.sh/chart: longhorn-1.2.3
+          pod-template-hash: 8466bcb8b7
+      spec:
+        containers:
+        - env:
+          - name: LONGHORN_MANAGER_IP
+            value: http://longhorn-backend:9500
+          image: longhornio/longhorn-ui:v1.2.3
+          imagePullPolicy: IfNotPresent
+          name: longhorn-ui
+          ports:
+          - containerPort: 8000
+            name: http
+            protocol: TCP
+          resources: {}
+          securityContext:
+            runAsUser: 0
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+kind: List
+metadata:
+  resourceVersion: "14659217"

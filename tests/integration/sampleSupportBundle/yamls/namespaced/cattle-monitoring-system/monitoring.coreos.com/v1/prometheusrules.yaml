@@ -1,0 +1,3685 @@
+apiVersion: v1
+items:
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:07Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:06Z"
+    name: rancher-monitoring-general.rules
+    namespace: cattle-monitoring-system
+    resourceVersion: "8195"
+    uid: e8c30f85-8440-4e87-9395-b317acea80be
+  spec:
+    groups:
+    - name: general.rules
+      rules:
+      - alert: TargetDown
+        annotations:
+          description: '{{ printf "%.4g" $value }}% of the {{ $labels.job }}/{{ $labels.service
+            }} targets in {{ $labels.namespace }} namespace are down.'
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-targetdown
+          summary: One or more targets are unreachable.
+        expr: 100 * (count(up == 0) BY (job, namespace, service) / count(up) BY (job,
+          namespace, service)) > 10
+        for: 10m
+        labels:
+          severity: warning
+      - alert: Watchdog
+        annotations:
+          description: |
+            This is an alert meant to ensure that the entire alerting pipeline is functional.
+            This alert is always firing, therefore it should always be firing in Alertmanager
+            and always fire against a receiver. There are integrations with various notification
+            mechanisms that send a notification when this alert is not firing. For example the
+            "DeadMansSnitch" integration in PagerDuty.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-watchdog
+          summary: An alert that should always be firing to certify that Alertmanager
+            is working properly.
+        expr: vector(1)
+        labels:
+          severity: none
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:08Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:07Z"
+    name: rancher-monitoring-k8s.rules
+    namespace: cattle-monitoring-system
+    resourceVersion: "8196"
+    uid: 774c005f-1ebf-4b1f-98ca-4543d042d62a
+  spec:
+    groups:
+    - name: k8s.rules
+      rules:
+      - expr: |-
+          sum by (cluster, namespace, pod, container) (
+            irate(container_cpu_usage_seconds_total{job="kubelet", metrics_path="/metrics/cadvisor", image!=""}[5m])
+          ) * on (cluster, namespace, pod) group_left(node) topk by (cluster, namespace, pod) (
+            1, max by(cluster, namespace, pod, node) (kube_pod_info{node!=""})
+          )
+        record: node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate
+      - expr: |-
+          container_memory_working_set_bytes{job="kubelet", metrics_path="/metrics/cadvisor", image!=""}
+          * on (namespace, pod) group_left(node) topk by(namespace, pod) (1,
+            max by(namespace, pod, node) (kube_pod_info{node!=""})
+          )
+        record: node_namespace_pod_container:container_memory_working_set_bytes
+      - expr: |-
+          container_memory_rss{job="kubelet", metrics_path="/metrics/cadvisor", image!=""}
+          * on (namespace, pod) group_left(node) topk by(namespace, pod) (1,
+            max by(namespace, pod, node) (kube_pod_info{node!=""})
+          )
+        record: node_namespace_pod_container:container_memory_rss
+      - expr: |-
+          container_memory_cache{job="kubelet", metrics_path="/metrics/cadvisor", image!=""}
+          * on (namespace, pod) group_left(node) topk by(namespace, pod) (1,
+            max by(namespace, pod, node) (kube_pod_info{node!=""})
+          )
+        record: node_namespace_pod_container:container_memory_cache
+      - expr: |-
+          container_memory_swap{job="kubelet", metrics_path="/metrics/cadvisor", image!=""}
+          * on (namespace, pod) group_left(node) topk by(namespace, pod) (1,
+            max by(namespace, pod, node) (kube_pod_info{node!=""})
+          )
+        record: node_namespace_pod_container:container_memory_swap
+      - expr: |-
+          kube_pod_container_resource_requests{resource="memory",job="kube-state-metrics"}  * on (namespace, pod, cluster)
+          group_left() max by (namespace, pod) (
+            (kube_pod_status_phase{phase=~"Pending|Running"} == 1)
+          )
+        record: cluster:namespace:pod_memory:active:kube_pod_container_resource_requests
+      - expr: |-
+          sum by (namespace, cluster) (
+              sum by (namespace, pod, cluster) (
+                  max by (namespace, pod, container, cluster) (
+                    kube_pod_container_resource_requests{resource="memory",job="kube-state-metrics"}
+                  ) * on(namespace, pod, cluster) group_left() max by (namespace, pod) (
+                    kube_pod_status_phase{phase=~"Pending|Running"} == 1
+                  )
+              )
+          )
+        record: namespace_memory:kube_pod_container_resource_requests:sum
+      - expr: |-
+          kube_pod_container_resource_requests{resource="cpu",job="kube-state-metrics"}  * on (namespace, pod, cluster)
+          group_left() max by (namespace, pod) (
+            (kube_pod_status_phase{phase=~"Pending|Running"} == 1)
+          )
+        record: cluster:namespace:pod_cpu:active:kube_pod_container_resource_requests
+      - expr: |-
+          sum by (namespace, cluster) (
+              sum by (namespace, pod, cluster) (
+                  max by (namespace, pod, container, cluster) (
+                    kube_pod_container_resource_requests{resource="cpu",job="kube-state-metrics"}
+                  ) * on(namespace, pod, cluster) group_left() max by (namespace, pod) (
+                    kube_pod_status_phase{phase=~"Pending|Running"} == 1
+                  )
+              )
+          )
+        record: namespace_cpu:kube_pod_container_resource_requests:sum
+      - expr: |-
+          kube_pod_container_resource_limits{resource="memory",job="kube-state-metrics"}  * on (namespace, pod, cluster)
+          group_left() max by (namespace, pod) (
+            (kube_pod_status_phase{phase=~"Pending|Running"} == 1)
+          )
+        record: cluster:namespace:pod_memory:active:kube_pod_container_resource_limits
+      - expr: |-
+          sum by (namespace, cluster) (
+              sum by (namespace, pod, cluster) (
+                  max by (namespace, pod, container, cluster) (
+                    kube_pod_container_resource_limits{resource="memory",job="kube-state-metrics"}
+                  ) * on(namespace, pod, cluster) group_left() max by (namespace, pod) (
+                    kube_pod_status_phase{phase=~"Pending|Running"} == 1
+                  )
+              )
+          )
+        record: namespace_memory:kube_pod_container_resource_limits:sum
+      - expr: |-
+          kube_pod_container_resource_limits{resource="cpu",job="kube-state-metrics"}  * on (namespace, pod, cluster)
+          group_left() max by (namespace, pod) (
+           (kube_pod_status_phase{phase=~"Pending|Running"} == 1)
+           )
+        record: cluster:namespace:pod_cpu:active:kube_pod_container_resource_limits
+      - expr: |-
+          sum by (namespace, cluster) (
+              sum by (namespace, pod, cluster) (
+                  max by (namespace, pod, container, cluster) (
+                    kube_pod_container_resource_limits{resource="cpu",job="kube-state-metrics"}
+                  ) * on(namespace, pod, cluster) group_left() max by (namespace, pod) (
+                    kube_pod_status_phase{phase=~"Pending|Running"} == 1
+                  )
+              )
+          )
+        record: namespace_cpu:kube_pod_container_resource_limits:sum
+      - expr: |-
+          max by (cluster, namespace, workload, pod) (
+            label_replace(
+              label_replace(
+                kube_pod_owner{job="kube-state-metrics", owner_kind="ReplicaSet"},
+                "replicaset", "$1", "owner_name", "(.*)"
+              ) * on(replicaset, namespace) group_left(owner_name) topk by(replicaset, namespace) (
+                1, max by (replicaset, namespace, owner_name) (
+                  kube_replicaset_owner{job="kube-state-metrics"}
+                )
+              ),
+              "workload", "$1", "owner_name", "(.*)"
+            )
+          )
+        labels:
+          workload_type: deployment
+        record: namespace_workload_pod:kube_pod_owner:relabel
+      - expr: |-
+          max by (cluster, namespace, workload, pod) (
+            label_replace(
+              kube_pod_owner{job="kube-state-metrics", owner_kind="DaemonSet"},
+              "workload", "$1", "owner_name", "(.*)"
+            )
+          )
+        labels:
+          workload_type: daemonset
+        record: namespace_workload_pod:kube_pod_owner:relabel
+      - expr: |-
+          max by (cluster, namespace, workload, pod) (
+            label_replace(
+              kube_pod_owner{job="kube-state-metrics", owner_kind="StatefulSet"},
+              "workload", "$1", "owner_name", "(.*)"
+            )
+          )
+        labels:
+          workload_type: statefulset
+        record: namespace_workload_pod:kube_pod_owner:relabel
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:09Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:08Z"
+    name: rancher-monitoring-kube-apiserver-availability.rules
+    namespace: cattle-monitoring-system
+    resourceVersion: "8197"
+    uid: 3668b72a-095c-46b8-ba20-020db7816f93
+  spec:
+    groups:
+    - interval: 3m
+      name: kube-apiserver-availability.rules
+      rules:
+      - expr: avg_over_time(code_verb:apiserver_request_total:increase1h[30d]) * 24
+          * 30
+        record: code_verb:apiserver_request_total:increase30d
+      - expr: sum by (cluster, code) (code_verb:apiserver_request_total:increase30d{verb=~"LIST|GET"})
+        labels:
+          verb: read
+        record: code:apiserver_request_total:increase30d
+      - expr: sum by (cluster, code) (code_verb:apiserver_request_total:increase30d{verb=~"POST|PUT|PATCH|DELETE"})
+        labels:
+          verb: write
+        record: code:apiserver_request_total:increase30d
+      - expr: |-
+          1 - (
+            (
+              # write too slow
+              sum by (cluster) (increase(apiserver_request_duration_seconds_count{verb=~"POST|PUT|PATCH|DELETE"}[30d]))
+              -
+              sum by (cluster) (increase(apiserver_request_duration_seconds_bucket{verb=~"POST|PUT|PATCH|DELETE",le="1"}[30d]))
+            ) +
+            (
+              # read too slow
+              sum by (cluster) (increase(apiserver_request_duration_seconds_count{verb=~"LIST|GET"}[30d]))
+              -
+              (
+                (
+                  sum by (cluster) (increase(apiserver_request_duration_seconds_bucket{verb=~"LIST|GET",scope=~"resource|",le="1"}[30d]))
+                  or
+                  vector(0)
+                )
+                +
+                sum by (cluster) (increase(apiserver_request_duration_seconds_bucket{verb=~"LIST|GET",scope="namespace",le="5"}[30d]))
+                +
+                sum by (cluster) (increase(apiserver_request_duration_seconds_bucket{verb=~"LIST|GET",scope="cluster",le="40"}[30d]))
+              )
+            ) +
+            # errors
+            sum by (cluster) (code:apiserver_request_total:increase30d{code=~"5.."} or vector(0))
+          )
+          /
+          sum by (cluster) (code:apiserver_request_total:increase30d)
+        labels:
+          verb: all
+        record: apiserver_request:availability30d
+      - expr: |-
+          1 - (
+            sum by (cluster) (increase(apiserver_request_duration_seconds_count{job="apiserver",verb=~"LIST|GET"}[30d]))
+            -
+            (
+              # too slow
+              (
+                sum by (cluster) (increase(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope=~"resource|",le="1"}[30d]))
+                or
+                vector(0)
+              )
+              +
+              sum by (cluster) (increase(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="namespace",le="5"}[30d]))
+              +
+              sum by (cluster) (increase(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="cluster",le="40"}[30d]))
+            )
+            +
+            # errors
+            sum by (cluster) (code:apiserver_request_total:increase30d{verb="read",code=~"5.."} or vector(0))
+          )
+          /
+          sum by (cluster) (code:apiserver_request_total:increase30d{verb="read"})
+        labels:
+          verb: read
+        record: apiserver_request:availability30d
+      - expr: |-
+          1 - (
+            (
+              # too slow
+              sum by (cluster) (increase(apiserver_request_duration_seconds_count{verb=~"POST|PUT|PATCH|DELETE"}[30d]))
+              -
+              sum by (cluster) (increase(apiserver_request_duration_seconds_bucket{verb=~"POST|PUT|PATCH|DELETE",le="1"}[30d]))
+            )
+            +
+            # errors
+            sum by (cluster) (code:apiserver_request_total:increase30d{verb="write",code=~"5.."} or vector(0))
+          )
+          /
+          sum by (cluster) (code:apiserver_request_total:increase30d{verb="write"})
+        labels:
+          verb: write
+        record: apiserver_request:availability30d
+      - expr: sum by (cluster,code,resource) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET"}[5m]))
+        labels:
+          verb: read
+        record: code_resource:apiserver_request_total:rate5m
+      - expr: sum by (cluster,code,resource) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[5m]))
+        labels:
+          verb: write
+        record: code_resource:apiserver_request_total:rate5m
+      - expr: sum by (cluster, code, verb) (increase(apiserver_request_total{job="apiserver",verb=~"LIST|GET|POST|PUT|PATCH|DELETE",code=~"2.."}[1h]))
+        record: code_verb:apiserver_request_total:increase1h
+      - expr: sum by (cluster, code, verb) (increase(apiserver_request_total{job="apiserver",verb=~"LIST|GET|POST|PUT|PATCH|DELETE",code=~"3.."}[1h]))
+        record: code_verb:apiserver_request_total:increase1h
+      - expr: sum by (cluster, code, verb) (increase(apiserver_request_total{job="apiserver",verb=~"LIST|GET|POST|PUT|PATCH|DELETE",code=~"4.."}[1h]))
+        record: code_verb:apiserver_request_total:increase1h
+      - expr: sum by (cluster, code, verb) (increase(apiserver_request_total{job="apiserver",verb=~"LIST|GET|POST|PUT|PATCH|DELETE",code=~"5.."}[1h]))
+        record: code_verb:apiserver_request_total:increase1h
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:10Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:09Z"
+    name: rancher-monitoring-kube-apiserver-burnrate.rules
+    namespace: cattle-monitoring-system
+    resourceVersion: "8201"
+    uid: 1040d1cc-d9aa-463b-8593-6dc04a410c00
+  spec:
+    groups:
+    - name: kube-apiserver-burnrate.rules
+      rules:
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"LIST|GET"}[1d]))
+              -
+              (
+                (
+                  sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope=~"resource|",le="1"}[1d]))
+                  or
+                  vector(0)
+                )
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="namespace",le="5"}[1d]))
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="cluster",le="40"}[1d]))
+              )
+            )
+            +
+            # errors
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET",code=~"5.."}[1d]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET"}[1d]))
+        labels:
+          verb: read
+        record: apiserver_request:burnrate1d
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"LIST|GET"}[1h]))
+              -
+              (
+                (
+                  sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope=~"resource|",le="1"}[1h]))
+                  or
+                  vector(0)
+                )
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="namespace",le="5"}[1h]))
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="cluster",le="40"}[1h]))
+              )
+            )
+            +
+            # errors
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET",code=~"5.."}[1h]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET"}[1h]))
+        labels:
+          verb: read
+        record: apiserver_request:burnrate1h
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"LIST|GET"}[2h]))
+              -
+              (
+                (
+                  sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope=~"resource|",le="1"}[2h]))
+                  or
+                  vector(0)
+                )
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="namespace",le="5"}[2h]))
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="cluster",le="40"}[2h]))
+              )
+            )
+            +
+            # errors
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET",code=~"5.."}[2h]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET"}[2h]))
+        labels:
+          verb: read
+        record: apiserver_request:burnrate2h
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"LIST|GET"}[30m]))
+              -
+              (
+                (
+                  sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope=~"resource|",le="1"}[30m]))
+                  or
+                  vector(0)
+                )
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="namespace",le="5"}[30m]))
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="cluster",le="40"}[30m]))
+              )
+            )
+            +
+            # errors
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET",code=~"5.."}[30m]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET"}[30m]))
+        labels:
+          verb: read
+        record: apiserver_request:burnrate30m
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"LIST|GET"}[3d]))
+              -
+              (
+                (
+                  sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope=~"resource|",le="1"}[3d]))
+                  or
+                  vector(0)
+                )
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="namespace",le="5"}[3d]))
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="cluster",le="40"}[3d]))
+              )
+            )
+            +
+            # errors
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET",code=~"5.."}[3d]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET"}[3d]))
+        labels:
+          verb: read
+        record: apiserver_request:burnrate3d
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"LIST|GET"}[5m]))
+              -
+              (
+                (
+                  sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope=~"resource|",le="1"}[5m]))
+                  or
+                  vector(0)
+                )
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="namespace",le="5"}[5m]))
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="cluster",le="40"}[5m]))
+              )
+            )
+            +
+            # errors
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET",code=~"5.."}[5m]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET"}[5m]))
+        labels:
+          verb: read
+        record: apiserver_request:burnrate5m
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"LIST|GET"}[6h]))
+              -
+              (
+                (
+                  sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope=~"resource|",le="1"}[6h]))
+                  or
+                  vector(0)
+                )
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="namespace",le="5"}[6h]))
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="cluster",le="40"}[6h]))
+              )
+            )
+            +
+            # errors
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET",code=~"5.."}[6h]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET"}[6h]))
+        labels:
+          verb: read
+        record: apiserver_request:burnrate6h
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[1d]))
+              -
+              sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",le="1"}[1d]))
+            )
+            +
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",code=~"5.."}[1d]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[1d]))
+        labels:
+          verb: write
+        record: apiserver_request:burnrate1d
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[1h]))
+              -
+              sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",le="1"}[1h]))
+            )
+            +
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",code=~"5.."}[1h]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[1h]))
+        labels:
+          verb: write
+        record: apiserver_request:burnrate1h
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[2h]))
+              -
+              sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",le="1"}[2h]))
+            )
+            +
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",code=~"5.."}[2h]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[2h]))
+        labels:
+          verb: write
+        record: apiserver_request:burnrate2h
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[30m]))
+              -
+              sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",le="1"}[30m]))
+            )
+            +
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",code=~"5.."}[30m]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[30m]))
+        labels:
+          verb: write
+        record: apiserver_request:burnrate30m
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[3d]))
+              -
+              sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",le="1"}[3d]))
+            )
+            +
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",code=~"5.."}[3d]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[3d]))
+        labels:
+          verb: write
+        record: apiserver_request:burnrate3d
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[5m]))
+              -
+              sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",le="1"}[5m]))
+            )
+            +
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",code=~"5.."}[5m]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[5m]))
+        labels:
+          verb: write
+        record: apiserver_request:burnrate5m
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[6h]))
+              -
+              sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",le="1"}[6h]))
+            )
+            +
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",code=~"5.."}[6h]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[6h]))
+        labels:
+          verb: write
+        record: apiserver_request:burnrate6h
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:11Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:10Z"
+    name: rancher-monitoring-kube-apiserver-histogram.rules
+    namespace: cattle-monitoring-system
+    resourceVersion: "8203"
+    uid: 1dbb4795-b769-4089-aafb-f1316d2bb167
+  spec:
+    groups:
+    - name: kube-apiserver-histogram.rules
+      rules:
+      - expr: histogram_quantile(0.99, sum by (cluster, le, resource) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET"}[5m])))
+          > 0
+        labels:
+          quantile: "0.99"
+          verb: read
+        record: cluster_quantile:apiserver_request_duration_seconds:histogram_quantile
+      - expr: histogram_quantile(0.99, sum by (cluster, le, resource) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[5m])))
+          > 0
+        labels:
+          quantile: "0.99"
+          verb: write
+        record: cluster_quantile:apiserver_request_duration_seconds:histogram_quantile
+      - expr: histogram_quantile(0.99, sum(rate(apiserver_request_duration_seconds_bucket{job="apiserver",subresource!="log",verb!~"LIST|WATCH|WATCHLIST|DELETECOLLECTION|PROXY|CONNECT"}[5m]))
+          without(instance, pod))
+        labels:
+          quantile: "0.99"
+        record: cluster_quantile:apiserver_request_duration_seconds:histogram_quantile
+      - expr: histogram_quantile(0.9, sum(rate(apiserver_request_duration_seconds_bucket{job="apiserver",subresource!="log",verb!~"LIST|WATCH|WATCHLIST|DELETECOLLECTION|PROXY|CONNECT"}[5m]))
+          without(instance, pod))
+        labels:
+          quantile: "0.9"
+        record: cluster_quantile:apiserver_request_duration_seconds:histogram_quantile
+      - expr: histogram_quantile(0.5, sum(rate(apiserver_request_duration_seconds_bucket{job="apiserver",subresource!="log",verb!~"LIST|WATCH|WATCHLIST|DELETECOLLECTION|PROXY|CONNECT"}[5m]))
+          without(instance, pod))
+        labels:
+          quantile: "0.5"
+        record: cluster_quantile:apiserver_request_duration_seconds:histogram_quantile
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:13Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:12Z"
+    name: rancher-monitoring-kube-apiserver-slos
+    namespace: cattle-monitoring-system
+    resourceVersion: "8204"
+    uid: e36cbd2c-d15b-400e-afc6-8e756d2abb46
+  spec:
+    groups:
+    - name: kube-apiserver-slos
+      rules:
+      - alert: KubeAPIErrorBudgetBurn
+        annotations:
+          description: The API server is burning too much error budget.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapierrorbudgetburn
+          summary: The API server is burning too much error budget.
+        expr: |-
+          sum(apiserver_request:burnrate1h) > (14.40 * 0.01000)
+          and
+          sum(apiserver_request:burnrate5m) > (14.40 * 0.01000)
+        for: 2m
+        labels:
+          long: 1h
+          severity: critical
+          short: 5m
+      - alert: KubeAPIErrorBudgetBurn
+        annotations:
+          description: The API server is burning too much error budget.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapierrorbudgetburn
+          summary: The API server is burning too much error budget.
+        expr: |-
+          sum(apiserver_request:burnrate6h) > (6.00 * 0.01000)
+          and
+          sum(apiserver_request:burnrate30m) > (6.00 * 0.01000)
+        for: 15m
+        labels:
+          long: 6h
+          severity: critical
+          short: 30m
+      - alert: KubeAPIErrorBudgetBurn
+        annotations:
+          description: The API server is burning too much error budget.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapierrorbudgetburn
+          summary: The API server is burning too much error budget.
+        expr: |-
+          sum(apiserver_request:burnrate1d) > (3.00 * 0.01000)
+          and
+          sum(apiserver_request:burnrate2h) > (3.00 * 0.01000)
+        for: 1h
+        labels:
+          long: 1d
+          severity: warning
+          short: 2h
+      - alert: KubeAPIErrorBudgetBurn
+        annotations:
+          description: The API server is burning too much error budget.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapierrorbudgetburn
+          summary: The API server is burning too much error budget.
+        expr: |-
+          sum(apiserver_request:burnrate3d) > (1.00 * 0.01000)
+          and
+          sum(apiserver_request:burnrate6h) > (1.00 * 0.01000)
+        for: 3h
+        labels:
+          long: 3d
+          severity: warning
+          short: 6h
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:14Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:13Z"
+    name: rancher-monitoring-kube-apiserver.rules
+    namespace: cattle-monitoring-system
+    resourceVersion: "8216"
+    uid: 3d7104b0-09ea-451f-a1af-b26c26aa8fd7
+  spec:
+    groups:
+    - name: kube-apiserver.rules
+      rules:
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"LIST|GET"}[1d]))
+              -
+              (
+                (
+                  sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope=~"resource|",le="0.1"}[1d]))
+                  or
+                  vector(0)
+                )
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="namespace",le="0.5"}[1d]))
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="cluster",le="5"}[1d]))
+              )
+            )
+            +
+            # errors
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET",code=~"5.."}[1d]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET"}[1d]))
+        labels:
+          verb: read
+        record: apiserver_request:burnrate1d
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"LIST|GET"}[1h]))
+              -
+              (
+                (
+                  sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope=~"resource|",le="0.1"}[1h]))
+                  or
+                  vector(0)
+                )
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="namespace",le="0.5"}[1h]))
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="cluster",le="5"}[1h]))
+              )
+            )
+            +
+            # errors
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET",code=~"5.."}[1h]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET"}[1h]))
+        labels:
+          verb: read
+        record: apiserver_request:burnrate1h
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"LIST|GET"}[2h]))
+              -
+              (
+                (
+                  sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope=~"resource|",le="0.1"}[2h]))
+                  or
+                  vector(0)
+                )
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="namespace",le="0.5"}[2h]))
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="cluster",le="5"}[2h]))
+              )
+            )
+            +
+            # errors
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET",code=~"5.."}[2h]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET"}[2h]))
+        labels:
+          verb: read
+        record: apiserver_request:burnrate2h
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"LIST|GET"}[30m]))
+              -
+              (
+                (
+                  sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope=~"resource|",le="0.1"}[30m]))
+                  or
+                  vector(0)
+                )
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="namespace",le="0.5"}[30m]))
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="cluster",le="5"}[30m]))
+              )
+            )
+            +
+            # errors
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET",code=~"5.."}[30m]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET"}[30m]))
+        labels:
+          verb: read
+        record: apiserver_request:burnrate30m
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"LIST|GET"}[3d]))
+              -
+              (
+                (
+                  sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope=~"resource|",le="0.1"}[3d]))
+                  or
+                  vector(0)
+                )
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="namespace",le="0.5"}[3d]))
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="cluster",le="5"}[3d]))
+              )
+            )
+            +
+            # errors
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET",code=~"5.."}[3d]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET"}[3d]))
+        labels:
+          verb: read
+        record: apiserver_request:burnrate3d
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"LIST|GET"}[5m]))
+              -
+              (
+                (
+                  sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope=~"resource|",le="0.1"}[5m]))
+                  or
+                  vector(0)
+                )
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="namespace",le="0.5"}[5m]))
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="cluster",le="5"}[5m]))
+              )
+            )
+            +
+            # errors
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET",code=~"5.."}[5m]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET"}[5m]))
+        labels:
+          verb: read
+        record: apiserver_request:burnrate5m
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"LIST|GET"}[6h]))
+              -
+              (
+                (
+                  sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope=~"resource|",le="0.1"}[6h]))
+                  or
+                  vector(0)
+                )
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="namespace",le="0.5"}[6h]))
+                +
+                sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET",scope="cluster",le="5"}[6h]))
+              )
+            )
+            +
+            # errors
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET",code=~"5.."}[6h]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET"}[6h]))
+        labels:
+          verb: read
+        record: apiserver_request:burnrate6h
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[1d]))
+              -
+              sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",le="1"}[1d]))
+            )
+            +
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",code=~"5.."}[1d]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[1d]))
+        labels:
+          verb: write
+        record: apiserver_request:burnrate1d
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[1h]))
+              -
+              sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",le="1"}[1h]))
+            )
+            +
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",code=~"5.."}[1h]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[1h]))
+        labels:
+          verb: write
+        record: apiserver_request:burnrate1h
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[2h]))
+              -
+              sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",le="1"}[2h]))
+            )
+            +
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",code=~"5.."}[2h]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[2h]))
+        labels:
+          verb: write
+        record: apiserver_request:burnrate2h
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[30m]))
+              -
+              sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",le="1"}[30m]))
+            )
+            +
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",code=~"5.."}[30m]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[30m]))
+        labels:
+          verb: write
+        record: apiserver_request:burnrate30m
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[3d]))
+              -
+              sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",le="1"}[3d]))
+            )
+            +
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",code=~"5.."}[3d]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[3d]))
+        labels:
+          verb: write
+        record: apiserver_request:burnrate3d
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[5m]))
+              -
+              sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",le="1"}[5m]))
+            )
+            +
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",code=~"5.."}[5m]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[5m]))
+        labels:
+          verb: write
+        record: apiserver_request:burnrate5m
+      - expr: |-
+          (
+            (
+              # too slow
+              sum by (cluster) (rate(apiserver_request_duration_seconds_count{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[6h]))
+              -
+              sum by (cluster) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",le="1"}[6h]))
+            )
+            +
+            sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE",code=~"5.."}[6h]))
+          )
+          /
+          sum by (cluster) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[6h]))
+        labels:
+          verb: write
+        record: apiserver_request:burnrate6h
+      - expr: sum by (cluster,code,resource) (rate(apiserver_request_total{job="apiserver",verb=~"LIST|GET"}[5m]))
+        labels:
+          verb: read
+        record: code_resource:apiserver_request_total:rate5m
+      - expr: sum by (cluster,code,resource) (rate(apiserver_request_total{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[5m]))
+        labels:
+          verb: write
+        record: code_resource:apiserver_request_total:rate5m
+      - expr: histogram_quantile(0.99, sum by (cluster, le, resource) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"LIST|GET"}[5m])))
+          > 0
+        labels:
+          quantile: "0.99"
+          verb: read
+        record: cluster_quantile:apiserver_request_duration_seconds:histogram_quantile
+      - expr: histogram_quantile(0.99, sum by (cluster, le, resource) (rate(apiserver_request_duration_seconds_bucket{job="apiserver",verb=~"POST|PUT|PATCH|DELETE"}[5m])))
+          > 0
+        labels:
+          quantile: "0.99"
+          verb: write
+        record: cluster_quantile:apiserver_request_duration_seconds:histogram_quantile
+      - expr: histogram_quantile(0.99, sum(rate(apiserver_request_duration_seconds_bucket{job="apiserver",subresource!="log",verb!~"LIST|WATCH|WATCHLIST|DELETECOLLECTION|PROXY|CONNECT"}[5m]))
+          without(instance, pod))
+        labels:
+          quantile: "0.99"
+        record: cluster_quantile:apiserver_request_duration_seconds:histogram_quantile
+      - expr: histogram_quantile(0.9, sum(rate(apiserver_request_duration_seconds_bucket{job="apiserver",subresource!="log",verb!~"LIST|WATCH|WATCHLIST|DELETECOLLECTION|PROXY|CONNECT"}[5m]))
+          without(instance, pod))
+        labels:
+          quantile: "0.9"
+        record: cluster_quantile:apiserver_request_duration_seconds:histogram_quantile
+      - expr: histogram_quantile(0.5, sum(rate(apiserver_request_duration_seconds_bucket{job="apiserver",subresource!="log",verb!~"LIST|WATCH|WATCHLIST|DELETECOLLECTION|PROXY|CONNECT"}[5m]))
+          without(instance, pod))
+        labels:
+          quantile: "0.5"
+        record: cluster_quantile:apiserver_request_duration_seconds:histogram_quantile
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:15Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:14Z"
+    name: rancher-monitoring-kube-prometheus-general.rules
+    namespace: cattle-monitoring-system
+    resourceVersion: "8220"
+    uid: cb071293-2dc0-43d9-9a09-a0cb5fcb5485
+  spec:
+    groups:
+    - name: kube-prometheus-general.rules
+      rules:
+      - expr: count without(instance, pod, node) (up == 1)
+        record: count:up1
+      - expr: count without(instance, pod, node) (up == 0)
+        record: count:up0
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:16Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:15Z"
+    name: rancher-monitoring-kube-prometheus-node-recording.rules
+    namespace: cattle-monitoring-system
+    resourceVersion: "8221"
+    uid: db13d21e-e4d5-4051-8f86-5377b154a3a9
+  spec:
+    groups:
+    - name: kube-prometheus-node-recording.rules
+      rules:
+      - expr: sum(rate(node_cpu_seconds_total{mode!="idle",mode!="iowait",mode!="steal"}[3m]))
+          BY (instance)
+        record: instance:node_cpu:rate:sum
+      - expr: sum(rate(node_network_receive_bytes_total[3m])) BY (instance)
+        record: instance:node_network_receive_bytes:rate:sum
+      - expr: sum(rate(node_network_transmit_bytes_total[3m])) BY (instance)
+        record: instance:node_network_transmit_bytes:rate:sum
+      - expr: sum(rate(node_cpu_seconds_total{mode!="idle",mode!="iowait",mode!="steal"}[5m]))
+          WITHOUT (cpu, mode) / ON(instance) GROUP_LEFT() count(sum(node_cpu_seconds_total)
+          BY (instance, cpu)) BY (instance)
+        record: instance:node_cpu:ratio
+      - expr: sum(rate(node_cpu_seconds_total{mode!="idle",mode!="iowait",mode!="steal"}[5m]))
+        record: cluster:node_cpu:sum_rate5m
+      - expr: cluster:node_cpu_seconds_total:rate5m / count(sum(node_cpu_seconds_total)
+          BY (instance, cpu))
+        record: cluster:node_cpu:ratio
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:17Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:16Z"
+    name: rancher-monitoring-kube-state-metrics
+    namespace: cattle-monitoring-system
+    resourceVersion: "8222"
+    uid: 2b6b59f8-0d5b-4e48-9ed9-50fbed678002
+  spec:
+    groups:
+    - name: kube-state-metrics
+      rules:
+      - alert: KubeStateMetricsListErrors
+        annotations:
+          description: kube-state-metrics is experiencing errors at an elevated rate
+            in list operations. This is likely causing it to not be able to expose
+            metrics about Kubernetes objects correctly or at all.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubestatemetricslisterrors
+          summary: kube-state-metrics is experiencing errors in list operations.
+        expr: |-
+          (sum(rate(kube_state_metrics_list_total{job="kube-state-metrics",result="error"}[5m]))
+            /
+          sum(rate(kube_state_metrics_list_total{job="kube-state-metrics"}[5m])))
+          > 0.01
+        for: 15m
+        labels:
+          severity: critical
+      - alert: KubeStateMetricsWatchErrors
+        annotations:
+          description: kube-state-metrics is experiencing errors at an elevated rate
+            in watch operations. This is likely causing it to not be able to expose
+            metrics about Kubernetes objects correctly or at all.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubestatemetricswatcherrors
+          summary: kube-state-metrics is experiencing errors in watch operations.
+        expr: |-
+          (sum(rate(kube_state_metrics_watch_total{job="kube-state-metrics",result="error"}[5m]))
+            /
+          sum(rate(kube_state_metrics_watch_total{job="kube-state-metrics"}[5m])))
+          > 0.01
+        for: 15m
+        labels:
+          severity: critical
+      - alert: KubeStateMetricsShardingMismatch
+        annotations:
+          description: kube-state-metrics pods are running with different --total-shards
+            configuration, some Kubernetes objects may be exposed multiple times or
+            not exposed at all.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubestatemetricsshardingmismatch
+          summary: kube-state-metrics sharding is misconfigured.
+        expr: stdvar (kube_state_metrics_total_shards{job="kube-state-metrics"}) !=
+          0
+        for: 15m
+        labels:
+          severity: critical
+      - alert: KubeStateMetricsShardsMissing
+        annotations:
+          description: kube-state-metrics shards are missing, some Kubernetes objects
+            are not being exposed.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubestatemetricsshardsmissing
+          summary: kube-state-metrics shards are missing.
+        expr: |-
+          2^max(kube_state_metrics_total_shards{job="kube-state-metrics"}) - 1
+            -
+          sum( 2 ^ max by (shard_ordinal) (kube_state_metrics_shard_ordinal{job="kube-state-metrics"}) )
+          != 0
+        for: 15m
+        labels:
+          severity: critical
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:18Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:17Z"
+    name: rancher-monitoring-kubelet.rules
+    namespace: cattle-monitoring-system
+    resourceVersion: "8225"
+    uid: a51e2d15-59af-4d6b-addd-6ebcf0577421
+  spec:
+    groups:
+    - name: kubelet.rules
+      rules:
+      - expr: histogram_quantile(0.99, sum(rate(kubelet_pleg_relist_duration_seconds_bucket[5m]))
+          by (instance, le) * on(instance) group_left(node) kubelet_node_name{job="kubelet",
+          metrics_path="/metrics"})
+        labels:
+          quantile: "0.99"
+        record: node_quantile:kubelet_pleg_relist_duration_seconds:histogram_quantile
+      - expr: histogram_quantile(0.9, sum(rate(kubelet_pleg_relist_duration_seconds_bucket[5m]))
+          by (instance, le) * on(instance) group_left(node) kubelet_node_name{job="kubelet",
+          metrics_path="/metrics"})
+        labels:
+          quantile: "0.9"
+        record: node_quantile:kubelet_pleg_relist_duration_seconds:histogram_quantile
+      - expr: histogram_quantile(0.5, sum(rate(kubelet_pleg_relist_duration_seconds_bucket[5m]))
+          by (instance, le) * on(instance) group_left(node) kubelet_node_name{job="kubelet",
+          metrics_path="/metrics"})
+        labels:
+          quantile: "0.5"
+        record: node_quantile:kubelet_pleg_relist_duration_seconds:histogram_quantile
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:19Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:18Z"
+    name: rancher-monitoring-kubernetes-apps
+    namespace: cattle-monitoring-system
+    resourceVersion: "8228"
+    uid: ca7b2c37-d657-462c-846c-dec8f79a7efd
+  spec:
+    groups:
+    - name: kubernetes-apps
+      rules:
+      - alert: KubePodCrashLooping
+        annotations:
+          description: Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container
+            }}) is restarting {{ printf "%.2f" $value }} times / 10 minutes.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepodcrashlooping
+          summary: Pod is crash looping.
+        expr: |-
+          increase(kube_pod_container_status_restarts_total{job="kube-state-metrics", namespace=~".*"}[10m]) > 0
+          and
+          kube_pod_container_status_waiting{job="kube-state-metrics", namespace=~".*"} == 1
+        for: 15m
+        labels:
+          severity: warning
+      - alert: KubePodNotReady
+        annotations:
+          description: Pod {{ $labels.namespace }}/{{ $labels.pod }} has been in a
+            non-ready state for longer than 15 minutes.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepodnotready
+          summary: Pod has been in a non-ready state for more than 15 minutes.
+        expr: |-
+          sum by (namespace, pod) (
+            max by(namespace, pod) (
+              kube_pod_status_phase{job="kube-state-metrics", namespace=~".*", phase=~"Pending|Unknown"}
+            ) * on(namespace, pod) group_left(owner_kind) topk by(namespace, pod) (
+              1, max by(namespace, pod, owner_kind) (kube_pod_owner{owner_kind!="Job"})
+            )
+          ) > 0
+        for: 15m
+        labels:
+          severity: warning
+      - alert: KubeDeploymentGenerationMismatch
+        annotations:
+          description: Deployment generation for {{ $labels.namespace }}/{{ $labels.deployment
+            }} does not match, this indicates that the Deployment has failed but has
+            not been rolled back.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubedeploymentgenerationmismatch
+          summary: Deployment generation mismatch due to possible roll-back
+        expr: |-
+          kube_deployment_status_observed_generation{job="kube-state-metrics", namespace=~".*"}
+            !=
+          kube_deployment_metadata_generation{job="kube-state-metrics", namespace=~".*"}
+        for: 15m
+        labels:
+          severity: warning
+      - alert: KubeDeploymentReplicasMismatch
+        annotations:
+          description: Deployment {{ $labels.namespace }}/{{ $labels.deployment }}
+            has not matched the expected number of replicas for longer than 15 minutes.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubedeploymentreplicasmismatch
+          summary: Deployment has not matched the expected number of replicas.
+        expr: |-
+          (
+            kube_deployment_spec_replicas{job="kube-state-metrics", namespace=~".*"}
+              >
+            kube_deployment_status_replicas_available{job="kube-state-metrics", namespace=~".*"}
+          ) and (
+            changes(kube_deployment_status_replicas_updated{job="kube-state-metrics", namespace=~".*"}[10m])
+              ==
+            0
+          )
+        for: 15m
+        labels:
+          severity: warning
+      - alert: KubeStatefulSetReplicasMismatch
+        annotations:
+          description: StatefulSet {{ $labels.namespace }}/{{ $labels.statefulset
+            }} has not matched the expected number of replicas for longer than 15
+            minutes.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubestatefulsetreplicasmismatch
+          summary: Deployment has not matched the expected number of replicas.
+        expr: |-
+          (
+            kube_statefulset_status_replicas_ready{job="kube-state-metrics", namespace=~".*"}
+              !=
+            kube_statefulset_status_replicas{job="kube-state-metrics", namespace=~".*"}
+          ) and (
+            changes(kube_statefulset_status_replicas_updated{job="kube-state-metrics", namespace=~".*"}[10m])
+              ==
+            0
+          )
+        for: 15m
+        labels:
+          severity: warning
+      - alert: KubeStatefulSetGenerationMismatch
+        annotations:
+          description: StatefulSet generation for {{ $labels.namespace }}/{{ $labels.statefulset
+            }} does not match, this indicates that the StatefulSet has failed but
+            has not been rolled back.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubestatefulsetgenerationmismatch
+          summary: StatefulSet generation mismatch due to possible roll-back
+        expr: |-
+          kube_statefulset_status_observed_generation{job="kube-state-metrics", namespace=~".*"}
+            !=
+          kube_statefulset_metadata_generation{job="kube-state-metrics", namespace=~".*"}
+        for: 15m
+        labels:
+          severity: warning
+      - alert: KubeStatefulSetUpdateNotRolledOut
+        annotations:
+          description: StatefulSet {{ $labels.namespace }}/{{ $labels.statefulset
+            }} update has not been rolled out.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubestatefulsetupdatenotrolledout
+          summary: StatefulSet update has not been rolled out.
+        expr: |-
+          (
+            max without (revision) (
+              kube_statefulset_status_current_revision{job="kube-state-metrics", namespace=~".*"}
+                unless
+              kube_statefulset_status_update_revision{job="kube-state-metrics", namespace=~".*"}
+            )
+              *
+            (
+              kube_statefulset_replicas{job="kube-state-metrics", namespace=~".*"}
+                !=
+              kube_statefulset_status_replicas_updated{job="kube-state-metrics", namespace=~".*"}
+            )
+          )  and (
+            changes(kube_statefulset_status_replicas_updated{job="kube-state-metrics", namespace=~".*"}[5m])
+              ==
+            0
+          )
+        for: 15m
+        labels:
+          severity: warning
+      - alert: KubeDaemonSetRolloutStuck
+        annotations:
+          description: DaemonSet {{ $labels.namespace }}/{{ $labels.daemonset }} has
+            not finished or progressed for at least 15 minutes.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubedaemonsetrolloutstuck
+          summary: DaemonSet rollout is stuck.
+        expr: |-
+          (
+            (
+              kube_daemonset_status_current_number_scheduled{job="kube-state-metrics", namespace=~".*"}
+               !=
+              kube_daemonset_status_desired_number_scheduled{job="kube-state-metrics", namespace=~".*"}
+            ) or (
+              kube_daemonset_status_number_misscheduled{job="kube-state-metrics", namespace=~".*"}
+               !=
+              0
+            ) or (
+              kube_daemonset_updated_number_scheduled{job="kube-state-metrics", namespace=~".*"}
+               !=
+              kube_daemonset_status_desired_number_scheduled{job="kube-state-metrics", namespace=~".*"}
+            ) or (
+              kube_daemonset_status_number_available{job="kube-state-metrics", namespace=~".*"}
+               !=
+              kube_daemonset_status_desired_number_scheduled{job="kube-state-metrics", namespace=~".*"}
+            )
+          ) and (
+            changes(kube_daemonset_updated_number_scheduled{job="kube-state-metrics", namespace=~".*"}[5m])
+              ==
+            0
+          )
+        for: 15m
+        labels:
+          severity: warning
+      - alert: KubeContainerWaiting
+        annotations:
+          description: Pod {{ $labels.namespace }}/{{ $labels.pod }} container {{
+            $labels.container}} has been in waiting state for longer than 1 hour.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubecontainerwaiting
+          summary: Pod container waiting longer than 1 hour
+        expr: sum by (namespace, pod, container) (kube_pod_container_status_waiting_reason{job="kube-state-metrics",
+          namespace=~".*"}) > 0
+        for: 1h
+        labels:
+          severity: warning
+      - alert: KubeDaemonSetNotScheduled
+        annotations:
+          description: '{{ $value }} Pods of DaemonSet {{ $labels.namespace }}/{{
+            $labels.daemonset }} are not scheduled.'
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubedaemonsetnotscheduled
+          summary: DaemonSet pods are not scheduled.
+        expr: |-
+          kube_daemonset_status_desired_number_scheduled{job="kube-state-metrics", namespace=~".*"}
+            -
+          kube_daemonset_status_current_number_scheduled{job="kube-state-metrics", namespace=~".*"} > 0
+        for: 10m
+        labels:
+          severity: warning
+      - alert: KubeDaemonSetMisScheduled
+        annotations:
+          description: '{{ $value }} Pods of DaemonSet {{ $labels.namespace }}/{{
+            $labels.daemonset }} are running where they are not supposed to run.'
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubedaemonsetmisscheduled
+          summary: DaemonSet pods are misscheduled.
+        expr: kube_daemonset_status_number_misscheduled{job="kube-state-metrics",
+          namespace=~".*"} > 0
+        for: 15m
+        labels:
+          severity: warning
+      - alert: KubeJobCompletion
+        annotations:
+          description: Job {{ $labels.namespace }}/{{ $labels.job_name }} is taking
+            more than 12 hours to complete.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubejobcompletion
+          summary: Job did not complete in time
+        expr: kube_job_spec_completions{job="kube-state-metrics", namespace=~".*"}
+          - kube_job_status_succeeded{job="kube-state-metrics", namespace=~".*"}  >
+          0
+        for: 12h
+        labels:
+          severity: warning
+      - alert: KubeJobFailed
+        annotations:
+          description: Job {{ $labels.namespace }}/{{ $labels.job_name }} failed to
+            complete. Removing failed job after investigation should clear this alert.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubejobfailed
+          summary: Job failed to complete.
+        expr: kube_job_failed{job="kube-state-metrics", namespace=~".*"}  > 0
+        for: 15m
+        labels:
+          severity: warning
+      - alert: KubeHpaReplicasMismatch
+        annotations:
+          description: HPA {{ $labels.namespace }}/{{ $labels.horizontalpodautoscaler  }}
+            has not matched the desired number of replicas for longer than 15 minutes.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubehpareplicasmismatch
+          summary: HPA has not matched descired number of replicas.
+        expr: |-
+          (kube_horizontalpodautoscaler_status_desired_replicas{job="kube-state-metrics", namespace=~".*"}
+            !=
+          kube_horizontalpodautoscaler_status_current_replicas{job="kube-state-metrics", namespace=~".*"})
+            and
+          (kube_horizontalpodautoscaler_status_current_replicas{job="kube-state-metrics", namespace=~".*"}
+            >
+          kube_horizontalpodautoscaler_spec_min_replicas{job="kube-state-metrics", namespace=~".*"})
+            and
+          (kube_horizontalpodautoscaler_status_current_replicas{job="kube-state-metrics", namespace=~".*"}
+            <
+          kube_horizontalpodautoscaler_spec_max_replicas{job="kube-state-metrics", namespace=~".*"})
+            and
+          changes(kube_horizontalpodautoscaler_status_current_replicas{job="kube-state-metrics", namespace=~".*"}[15m]) == 0
+        for: 15m
+        labels:
+          severity: warning
+      - alert: KubeHpaMaxedOut
+        annotations:
+          description: HPA {{ $labels.namespace }}/{{ $labels.horizontalpodautoscaler  }}
+            has been running at max replicas for longer than 15 minutes.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubehpamaxedout
+          summary: HPA is running at max replicas
+        expr: |-
+          kube_horizontalpodautoscaler_status_current_replicas{job="kube-state-metrics", namespace=~".*"}
+            ==
+          kube_horizontalpodautoscaler_spec_max_replicas{job="kube-state-metrics", namespace=~".*"}
+        for: 15m
+        labels:
+          severity: warning
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:20Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:19Z"
+    name: rancher-monitoring-kubernetes-resources
+    namespace: cattle-monitoring-system
+    resourceVersion: "8231"
+    uid: d7ca6c58-1627-47e8-95cb-fd6ae6365028
+  spec:
+    groups:
+    - name: kubernetes-resources
+      rules:
+      - alert: KubeCPUOvercommit
+        annotations:
+          description: Cluster has overcommitted CPU resource requests for Pods and
+            cannot tolerate node failure.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubecpuovercommit
+          summary: Cluster has overcommitted CPU resource requests.
+        expr: |-
+          sum(namespace_cpu:kube_pod_container_resource_requests:sum{})
+            /
+          sum(kube_node_status_allocatable{resource="cpu"})
+            >
+          ((count(kube_node_status_allocatable{resource="cpu"}) > 1) - 1) / count(kube_node_status_allocatable{resource="cpu"})
+        for: 5m
+        labels:
+          severity: warning
+      - alert: KubeMemoryOvercommit
+        annotations:
+          description: Cluster has overcommitted memory resource requests for Pods
+            and cannot tolerate node failure.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubememoryovercommit
+          summary: Cluster has overcommitted memory resource requests.
+        expr: |-
+          sum(namespace_memory:kube_pod_container_resource_requests:sum{})
+            /
+          sum(kube_node_status_allocatable{resource="memory"})
+            >
+          ((count(kube_node_status_allocatable{resource="memory"}) > 1) - 1)
+            /
+          count(kube_node_status_allocatable{resource="memory"})
+        for: 5m
+        labels:
+          severity: warning
+      - alert: KubeCPUQuotaOvercommit
+        annotations:
+          description: Cluster has overcommitted CPU resource requests for Namespaces.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubecpuquotaovercommit
+          summary: Cluster has overcommitted CPU resource requests.
+        expr: |-
+          sum(kube_resourcequota{job="kube-state-metrics", type="hard", resource="cpu"})
+            /
+          sum(kube_node_status_allocatable{resource="cpu"})
+            > 1.5
+        for: 5m
+        labels:
+          severity: warning
+      - alert: KubeMemoryQuotaOvercommit
+        annotations:
+          description: Cluster has overcommitted memory resource requests for Namespaces.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubememoryquotaovercommit
+          summary: Cluster has overcommitted memory resource requests.
+        expr: |-
+          sum(kube_resourcequota{job="kube-state-metrics", type="hard", resource="memory"})
+            /
+          sum(kube_node_status_allocatable{resource="memory",job="kube-state-metrics"})
+            > 1.5
+        for: 5m
+        labels:
+          severity: warning
+      - alert: KubeQuotaAlmostFull
+        annotations:
+          description: Namespace {{ $labels.namespace }} is using {{ $value | humanizePercentage
+            }} of its {{ $labels.resource }} quota.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubequotaalmostfull
+          summary: Namespace quota is going to be full.
+        expr: |-
+          kube_resourcequota{job="kube-state-metrics", type="used"}
+            / ignoring(instance, job, type)
+          (kube_resourcequota{job="kube-state-metrics", type="hard"} > 0)
+            > 0.9 < 1
+        for: 15m
+        labels:
+          severity: info
+      - alert: KubeQuotaFullyUsed
+        annotations:
+          description: Namespace {{ $labels.namespace }} is using {{ $value | humanizePercentage
+            }} of its {{ $labels.resource }} quota.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubequotafullyused
+          summary: Namespace quota is fully used.
+        expr: |-
+          kube_resourcequota{job="kube-state-metrics", type="used"}
+            / ignoring(instance, job, type)
+          (kube_resourcequota{job="kube-state-metrics", type="hard"} > 0)
+            == 1
+        for: 15m
+        labels:
+          severity: info
+      - alert: KubeQuotaExceeded
+        annotations:
+          description: Namespace {{ $labels.namespace }} is using {{ $value | humanizePercentage
+            }} of its {{ $labels.resource }} quota.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubequotaexceeded
+          summary: Namespace quota has exceeded the limits.
+        expr: |-
+          kube_resourcequota{job="kube-state-metrics", type="used"}
+            / ignoring(instance, job, type)
+          (kube_resourcequota{job="kube-state-metrics", type="hard"} > 0)
+            > 1
+        for: 15m
+        labels:
+          severity: warning
+      - alert: CPUThrottlingHigh
+        annotations:
+          description: '{{ $value | humanizePercentage }} throttling of CPU in namespace
+            {{ $labels.namespace }} for container {{ $labels.container }} in pod {{
+            $labels.pod }}.'
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-cputhrottlinghigh
+          summary: Processes experience elevated CPU throttling.
+        expr: |-
+          sum(increase(container_cpu_cfs_throttled_periods_total{container!="", }[5m])) by (container, pod, namespace)
+            /
+          sum(increase(container_cpu_cfs_periods_total{}[5m])) by (container, pod, namespace)
+            > ( 25 / 100 )
+        for: 15m
+        labels:
+          severity: info
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:22Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:20Z"
+    name: rancher-monitoring-kubernetes-storage
+    namespace: cattle-monitoring-system
+    resourceVersion: "8236"
+    uid: 584014a6-1775-4073-beb2-f5d14644a855
+  spec:
+    groups:
+    - name: kubernetes-storage
+      rules:
+      - alert: KubePersistentVolumeFillingUp
+        annotations:
+          description: The PersistentVolume claimed by {{ $labels.persistentvolumeclaim
+            }} in Namespace {{ $labels.namespace }} is only {{ $value | humanizePercentage
+            }} free.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepersistentvolumefillingup
+          summary: PersistentVolume is filling up.
+        expr: |-
+          kubelet_volume_stats_available_bytes{job="kubelet", namespace=~".*", metrics_path="/metrics"}
+            /
+          kubelet_volume_stats_capacity_bytes{job="kubelet", namespace=~".*", metrics_path="/metrics"}
+            < 0.03
+          and
+          kubelet_volume_stats_used_bytes{job="kubelet", namespace=~".*", metrics_path="/metrics"} > 0
+        for: 1m
+        labels:
+          severity: critical
+      - alert: KubePersistentVolumeFillingUp
+        annotations:
+          description: Based on recent sampling, the PersistentVolume claimed by {{
+            $labels.persistentvolumeclaim }} in Namespace {{ $labels.namespace }}
+            is expected to fill up within four days. Currently {{ $value | humanizePercentage
+            }} is available.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepersistentvolumefillingup
+          summary: PersistentVolume is filling up.
+        expr: |-
+          (
+            kubelet_volume_stats_available_bytes{job="kubelet", namespace=~".*", metrics_path="/metrics"}
+              /
+            kubelet_volume_stats_capacity_bytes{job="kubelet", namespace=~".*", metrics_path="/metrics"}
+          ) < 0.15
+          and
+          kubelet_volume_stats_used_bytes{job="kubelet", namespace=~".*", metrics_path="/metrics"} > 0
+          and
+          predict_linear(kubelet_volume_stats_available_bytes{job="kubelet", namespace=~".*", metrics_path="/metrics"}[6h], 4 * 24 * 3600) < 0
+        for: 1h
+        labels:
+          severity: warning
+      - alert: KubePersistentVolumeErrors
+        annotations:
+          description: The persistent volume {{ $labels.persistentvolume }} has status
+            {{ $labels.phase }}.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepersistentvolumeerrors
+          summary: PersistentVolume is having issues with provisioning.
+        expr: kube_persistentvolume_status_phase{phase=~"Failed|Pending",job="kube-state-metrics"}
+          > 0
+        for: 5m
+        labels:
+          severity: critical
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:25Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:24Z"
+    name: rancher-monitoring-kubernetes-system
+    namespace: cattle-monitoring-system
+    resourceVersion: "8242"
+    uid: 5e20fdbf-0269-4f03-bcef-e53bf0796960
+  spec:
+    groups:
+    - name: kubernetes-system
+      rules:
+      - alert: KubeVersionMismatch
+        annotations:
+          description: There are {{ $value }} different semantic versions of Kubernetes
+            components running.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeversionmismatch
+          summary: Different semantic versions of Kubernetes components running.
+        expr: count(count by (git_version) (label_replace(kubernetes_build_info{job!~"kube-dns|coredns"},"git_version","$1","git_version","(v[0-9]*.[0-9]*).*")))
+          > 1
+        for: 15m
+        labels:
+          severity: warning
+      - alert: KubeClientErrors
+        annotations:
+          description: Kubernetes API server client '{{ $labels.job }}/{{ $labels.instance
+            }}' is experiencing {{ $value | humanizePercentage }} errors.'
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeclienterrors
+          summary: Kubernetes API server client is experiencing errors.
+        expr: |-
+          (sum(rate(rest_client_requests_total{code=~"5.."}[5m])) by (instance, job)
+            /
+          sum(rate(rest_client_requests_total[5m])) by (instance, job))
+          > 0.01
+        for: 15m
+        labels:
+          severity: warning
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:23Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:22Z"
+    name: rancher-monitoring-kubernetes-system-apiserver
+    namespace: cattle-monitoring-system
+    resourceVersion: "8237"
+    uid: 8916c2aa-3c5d-44f7-ba0b-0c30b2932a49
+  spec:
+    groups:
+    - name: kubernetes-system-apiserver
+      rules:
+      - alert: KubeClientCertificateExpiration
+        annotations:
+          description: A client certificate used to authenticate to the apiserver
+            is expiring in less than 7.0 days.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeclientcertificateexpiration
+          summary: Client certificate is about to expire.
+        expr: apiserver_client_certificate_expiration_seconds_count{job="apiserver"}
+          > 0 and on(job) histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m])))
+          < 604800
+        labels:
+          severity: warning
+      - alert: KubeClientCertificateExpiration
+        annotations:
+          description: A client certificate used to authenticate to the apiserver
+            is expiring in less than 24.0 hours.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeclientcertificateexpiration
+          summary: Client certificate is about to expire.
+        expr: apiserver_client_certificate_expiration_seconds_count{job="apiserver"}
+          > 0 and on(job) histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m])))
+          < 86400
+        labels:
+          severity: critical
+      - alert: AggregatedAPIErrors
+        annotations:
+          description: An aggregated API {{ $labels.name }}/{{ $labels.namespace }}
+            has reported errors. It has appeared unavailable {{ $value | humanize
+            }} times averaged over the past 10m.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-aggregatedapierrors
+          summary: An aggregated API has reported errors.
+        expr: sum by(name, namespace)(increase(aggregator_unavailable_apiservice_total[10m]))
+          > 4
+        labels:
+          severity: warning
+      - alert: AggregatedAPIDown
+        annotations:
+          description: An aggregated API {{ $labels.name }}/{{ $labels.namespace }}
+            has been only {{ $value | humanize }}% available over the last 10m.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-aggregatedapidown
+          summary: An aggregated API is down.
+        expr: (1 - max by(name, namespace)(avg_over_time(aggregator_unavailable_apiservice[10m])))
+          * 100 < 85
+        for: 5m
+        labels:
+          severity: warning
+      - alert: KubeAPIDown
+        annotations:
+          description: KubeAPI has disappeared from Prometheus target discovery.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapidown
+          summary: Target disappeared from Prometheus target discovery.
+        expr: absent(up{job="apiserver"} == 1)
+        for: 15m
+        labels:
+          severity: critical
+      - alert: KubeAPITerminatedRequests
+        annotations:
+          description: The apiserver has terminated {{ $value | humanizePercentage
+            }} of its incoming requests.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapiterminatedrequests
+          summary: The apiserver has terminated {{ $value | humanizePercentage }}
+            of its incoming requests.
+        expr: sum(rate(apiserver_request_terminations_total{job="apiserver"}[10m]))  /
+          (  sum(rate(apiserver_request_total{job="apiserver"}[10m])) + sum(rate(apiserver_request_terminations_total{job="apiserver"}[10m]))
+          ) > 0.20
+        for: 5m
+        labels:
+          severity: warning
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:24Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:23Z"
+    name: rancher-monitoring-kubernetes-system-kubelet
+    namespace: cattle-monitoring-system
+    resourceVersion: "8239"
+    uid: 1bbed608-fd8a-4e84-9186-170fa06ef75c
+  spec:
+    groups:
+    - name: kubernetes-system-kubelet
+      rules:
+      - alert: KubeNodeNotReady
+        annotations:
+          description: '{{ $labels.node }} has been unready for more than 15 minutes.'
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubenodenotready
+          summary: Node is not ready.
+        expr: kube_node_status_condition{job="kube-state-metrics",condition="Ready",status="true"}
+          == 0
+        for: 15m
+        labels:
+          severity: warning
+      - alert: KubeNodeUnreachable
+        annotations:
+          description: '{{ $labels.node }} is unreachable and some workloads may be
+            rescheduled.'
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubenodeunreachable
+          summary: Node is unreachable.
+        expr: (kube_node_spec_taint{job="kube-state-metrics",key="node.kubernetes.io/unreachable",effect="NoSchedule"}
+          unless ignoring(key,value) kube_node_spec_taint{job="kube-state-metrics",key=~"ToBeDeletedByClusterAutoscaler|cloud.google.com/impending-node-termination|aws-node-termination-handler/spot-itn"})
+          == 1
+        for: 15m
+        labels:
+          severity: warning
+      - alert: KubeletTooManyPods
+        annotations:
+          description: Kubelet '{{ $labels.node }}' is running at {{ $value | humanizePercentage
+            }} of its Pod capacity.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubelettoomanypods
+          summary: Kubelet is running at capacity.
+        expr: |-
+          count by(node) (
+            (kube_pod_status_phase{job="kube-state-metrics",phase="Running"} == 1) * on(instance,pod,namespace,cluster) group_left(node) topk by(instance,pod,namespace,cluster) (1, kube_pod_info{job="kube-state-metrics"})
+          )
+          /
+          max by(node) (
+            kube_node_status_capacity{job="kube-state-metrics",resource="pods"} != 1
+          ) > 0.95
+        for: 15m
+        labels:
+          severity: warning
+      - alert: KubeNodeReadinessFlapping
+        annotations:
+          description: The readiness status of node {{ $labels.node }} has changed
+            {{ $value }} times in the last 15 minutes.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubenodereadinessflapping
+          summary: Node readiness status is flapping.
+        expr: sum(changes(kube_node_status_condition{status="true",condition="Ready"}[15m]))
+          by (node) > 2
+        for: 15m
+        labels:
+          severity: warning
+      - alert: KubeletPlegDurationHigh
+        annotations:
+          description: The Kubelet Pod Lifecycle Event Generator has a 99th percentile
+            duration of {{ $value }} seconds on node {{ $labels.node }}.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeletplegdurationhigh
+          summary: Kubelet Pod Lifecycle Event Generator is taking too long to relist.
+        expr: node_quantile:kubelet_pleg_relist_duration_seconds:histogram_quantile{quantile="0.99"}
+          >= 10
+        for: 5m
+        labels:
+          severity: warning
+      - alert: KubeletPodStartUpLatencyHigh
+        annotations:
+          description: Kubelet Pod startup 99th percentile latency is {{ $value }}
+            seconds on node {{ $labels.node }}.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeletpodstartuplatencyhigh
+          summary: Kubelet Pod startup latency is too high.
+        expr: histogram_quantile(0.99, sum(rate(kubelet_pod_worker_duration_seconds_bucket{job="kubelet",
+          metrics_path="/metrics"}[5m])) by (instance, le)) * on(instance) group_left(node)
+          kubelet_node_name{job="kubelet", metrics_path="/metrics"} > 60
+        for: 15m
+        labels:
+          severity: warning
+      - alert: KubeletClientCertificateExpiration
+        annotations:
+          description: Client certificate for Kubelet on node {{ $labels.node }} expires
+            in {{ $value | humanizeDuration }}.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeletclientcertificateexpiration
+          summary: Kubelet client certificate is about to expire.
+        expr: kubelet_certificate_manager_client_ttl_seconds < 604800
+        labels:
+          severity: warning
+      - alert: KubeletClientCertificateExpiration
+        annotations:
+          description: Client certificate for Kubelet on node {{ $labels.node }} expires
+            in {{ $value | humanizeDuration }}.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeletclientcertificateexpiration
+          summary: Kubelet client certificate is about to expire.
+        expr: kubelet_certificate_manager_client_ttl_seconds < 86400
+        labels:
+          severity: critical
+      - alert: KubeletServerCertificateExpiration
+        annotations:
+          description: Server certificate for Kubelet on node {{ $labels.node }} expires
+            in {{ $value | humanizeDuration }}.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeletservercertificateexpiration
+          summary: Kubelet server certificate is about to expire.
+        expr: kubelet_certificate_manager_server_ttl_seconds < 604800
+        labels:
+          severity: warning
+      - alert: KubeletServerCertificateExpiration
+        annotations:
+          description: Server certificate for Kubelet on node {{ $labels.node }} expires
+            in {{ $value | humanizeDuration }}.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeletservercertificateexpiration
+          summary: Kubelet server certificate is about to expire.
+        expr: kubelet_certificate_manager_server_ttl_seconds < 86400
+        labels:
+          severity: critical
+      - alert: KubeletClientCertificateRenewalErrors
+        annotations:
+          description: Kubelet on node {{ $labels.node }} has failed to renew its
+            client certificate ({{ $value | humanize }} errors in the last 5 minutes).
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeletclientcertificaterenewalerrors
+          summary: Kubelet has failed to renew its client certificate.
+        expr: increase(kubelet_certificate_manager_client_expiration_renew_errors[5m])
+          > 0
+        for: 15m
+        labels:
+          severity: warning
+      - alert: KubeletServerCertificateRenewalErrors
+        annotations:
+          description: Kubelet on node {{ $labels.node }} has failed to renew its
+            server certificate ({{ $value | humanize }} errors in the last 5 minutes).
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeletservercertificaterenewalerrors
+          summary: Kubelet has failed to renew its server certificate.
+        expr: increase(kubelet_server_expiration_renew_errors[5m]) > 0
+        for: 15m
+        labels:
+          severity: warning
+      - alert: KubeletDown
+        annotations:
+          description: Kubelet has disappeared from Prometheus target discovery.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeletdown
+          summary: Target disappeared from Prometheus target discovery.
+        expr: absent(up{job="kubelet", metrics_path="/metrics"} == 1)
+        for: 15m
+        labels:
+          severity: critical
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:25Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:25Z"
+    name: rancher-monitoring-node-exporter
+    namespace: cattle-monitoring-system
+    resourceVersion: "8255"
+    uid: e8fe3507-d743-48a8-9ead-691f870be15a
+  spec:
+    groups:
+    - name: node-exporter
+      rules:
+      - alert: NodeFilesystemSpaceFillingUp
+        annotations:
+          description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+            has only {{ printf "%.2f" $value }}% available space left and is filling
+            up.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemspacefillingup
+          summary: Filesystem is predicted to run out of space within the next 24
+            hours.
+        expr: |-
+          (
+            node_filesystem_avail_bytes{job="node-exporter",fstype!=""} / node_filesystem_size_bytes{job="node-exporter",fstype!=""} * 100 < 40
+          and
+            predict_linear(node_filesystem_avail_bytes{job="node-exporter",fstype!=""}[6h], 24*60*60) < 0
+          and
+            node_filesystem_readonly{job="node-exporter",fstype!=""} == 0
+          )
+        for: 1h
+        labels:
+          severity: warning
+      - alert: NodeFilesystemSpaceFillingUp
+        annotations:
+          description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+            has only {{ printf "%.2f" $value }}% available space left and is filling
+            up fast.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemspacefillingup
+          summary: Filesystem is predicted to run out of space within the next 4 hours.
+        expr: |-
+          (
+            node_filesystem_avail_bytes{job="node-exporter",fstype!=""} / node_filesystem_size_bytes{job="node-exporter",fstype!=""} * 100 < 15
+          and
+            predict_linear(node_filesystem_avail_bytes{job="node-exporter",fstype!=""}[6h], 4*60*60) < 0
+          and
+            node_filesystem_readonly{job="node-exporter",fstype!=""} == 0
+          )
+        for: 1h
+        labels:
+          severity: critical
+      - alert: NodeFilesystemAlmostOutOfSpace
+        annotations:
+          description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+            has only {{ printf "%.2f" $value }}% available space left.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemalmostoutofspace
+          summary: Filesystem has less than 5% space left.
+        expr: |-
+          (
+            node_filesystem_avail_bytes{job="node-exporter",fstype!=""} / node_filesystem_size_bytes{job="node-exporter",fstype!=""} * 100 < 5
+          and
+            node_filesystem_readonly{job="node-exporter",fstype!=""} == 0
+          )
+        for: 1h
+        labels:
+          severity: warning
+      - alert: NodeFilesystemAlmostOutOfSpace
+        annotations:
+          description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+            has only {{ printf "%.2f" $value }}% available space left.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemalmostoutofspace
+          summary: Filesystem has less than 3% space left.
+        expr: |-
+          (
+            node_filesystem_avail_bytes{job="node-exporter",fstype!=""} / node_filesystem_size_bytes{job="node-exporter",fstype!=""} * 100 < 3
+          and
+            node_filesystem_readonly{job="node-exporter",fstype!=""} == 0
+          )
+        for: 1h
+        labels:
+          severity: critical
+      - alert: NodeFilesystemFilesFillingUp
+        annotations:
+          description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+            has only {{ printf "%.2f" $value }}% available inodes left and is filling
+            up.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemfilesfillingup
+          summary: Filesystem is predicted to run out of inodes within the next 24
+            hours.
+        expr: |-
+          (
+            node_filesystem_files_free{job="node-exporter",fstype!=""} / node_filesystem_files{job="node-exporter",fstype!=""} * 100 < 40
+          and
+            predict_linear(node_filesystem_files_free{job="node-exporter",fstype!=""}[6h], 24*60*60) < 0
+          and
+            node_filesystem_readonly{job="node-exporter",fstype!=""} == 0
+          )
+        for: 1h
+        labels:
+          severity: warning
+      - alert: NodeFilesystemFilesFillingUp
+        annotations:
+          description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+            has only {{ printf "%.2f" $value }}% available inodes left and is filling
+            up fast.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemfilesfillingup
+          summary: Filesystem is predicted to run out of inodes within the next 4
+            hours.
+        expr: |-
+          (
+            node_filesystem_files_free{job="node-exporter",fstype!=""} / node_filesystem_files{job="node-exporter",fstype!=""} * 100 < 20
+          and
+            predict_linear(node_filesystem_files_free{job="node-exporter",fstype!=""}[6h], 4*60*60) < 0
+          and
+            node_filesystem_readonly{job="node-exporter",fstype!=""} == 0
+          )
+        for: 1h
+        labels:
+          severity: critical
+      - alert: NodeFilesystemAlmostOutOfFiles
+        annotations:
+          description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+            has only {{ printf "%.2f" $value }}% available inodes left.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemalmostoutoffiles
+          summary: Filesystem has less than 5% inodes left.
+        expr: |-
+          (
+            node_filesystem_files_free{job="node-exporter",fstype!=""} / node_filesystem_files{job="node-exporter",fstype!=""} * 100 < 5
+          and
+            node_filesystem_readonly{job="node-exporter",fstype!=""} == 0
+          )
+        for: 1h
+        labels:
+          severity: warning
+      - alert: NodeFilesystemAlmostOutOfFiles
+        annotations:
+          description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+            has only {{ printf "%.2f" $value }}% available inodes left.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefilesystemalmostoutoffiles
+          summary: Filesystem has less than 3% inodes left.
+        expr: |-
+          (
+            node_filesystem_files_free{job="node-exporter",fstype!=""} / node_filesystem_files{job="node-exporter",fstype!=""} * 100 < 3
+          and
+            node_filesystem_readonly{job="node-exporter",fstype!=""} == 0
+          )
+        for: 1h
+        labels:
+          severity: critical
+      - alert: NodeNetworkReceiveErrs
+        annotations:
+          description: '{{ $labels.instance }} interface {{ $labels.device }} has
+            encountered {{ printf "%.0f" $value }} receive errors in the last two
+            minutes.'
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodenetworkreceiveerrs
+          summary: Network interface is reporting many receive errors.
+        expr: rate(node_network_receive_errs_total[2m]) / rate(node_network_receive_packets_total[2m])
+          > 0.01
+        for: 1h
+        labels:
+          severity: warning
+      - alert: NodeNetworkTransmitErrs
+        annotations:
+          description: '{{ $labels.instance }} interface {{ $labels.device }} has
+            encountered {{ printf "%.0f" $value }} transmit errors in the last two
+            minutes.'
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodenetworktransmiterrs
+          summary: Network interface is reporting many transmit errors.
+        expr: rate(node_network_transmit_errs_total[2m]) / rate(node_network_transmit_packets_total[2m])
+          > 0.01
+        for: 1h
+        labels:
+          severity: warning
+      - alert: NodeHighNumberConntrackEntriesUsed
+        annotations:
+          description: '{{ $value | humanizePercentage }} of conntrack entries are
+            used.'
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodehighnumberconntrackentriesused
+          summary: Number of conntrack are getting close to the limit.
+        expr: (node_nf_conntrack_entries / node_nf_conntrack_entries_limit) > 0.75
+        labels:
+          severity: warning
+      - alert: NodeTextFileCollectorScrapeError
+        annotations:
+          description: Node Exporter text file collector failed to scrape.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodetextfilecollectorscrapeerror
+          summary: Node Exporter text file collector failed to scrape.
+        expr: node_textfile_scrape_error{job="node-exporter"} == 1
+        labels:
+          severity: warning
+      - alert: NodeClockSkewDetected
+        annotations:
+          description: Clock on {{ $labels.instance }} is out of sync by more than
+            300s. Ensure NTP is configured correctly on this host.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodeclockskewdetected
+          summary: Clock skew detected.
+        expr: |-
+          (
+            node_timex_offset_seconds > 0.05
+          and
+            deriv(node_timex_offset_seconds[5m]) >= 0
+          )
+          or
+          (
+            node_timex_offset_seconds < -0.05
+          and
+            deriv(node_timex_offset_seconds[5m]) <= 0
+          )
+        for: 10m
+        labels:
+          severity: warning
+      - alert: NodeClockNotSynchronising
+        annotations:
+          description: Clock on {{ $labels.instance }} is not synchronising. Ensure
+            NTP is configured on this host.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodeclocknotsynchronising
+          summary: Clock not synchronising.
+        expr: |-
+          min_over_time(node_timex_sync_status[5m]) == 0
+          and
+          node_timex_maxerror_seconds >= 16
+        for: 10m
+        labels:
+          severity: warning
+      - alert: NodeRAIDDegraded
+        annotations:
+          description: RAID array '{{ $labels.device }}' on {{ $labels.instance }}
+            is in degraded state due to one or more disks failures. Number of spare
+            drives is insufficient to fix issue automatically.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-noderaiddegraded
+          summary: RAID Array is degraded
+        expr: node_md_disks_required - ignoring (state) (node_md_disks{state="active"})
+          > 0
+        for: 15m
+        labels:
+          severity: critical
+      - alert: NodeRAIDDiskFailure
+        annotations:
+          description: At least one device in RAID array on {{ $labels.instance }}
+            failed. Array '{{ $labels.device }}' needs attention and possibly a disk
+            swap.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-noderaiddiskfailure
+          summary: Failed device in RAID array
+        expr: node_md_disks{state="failed"} > 0
+        labels:
+          severity: warning
+      - alert: NodeFileDescriptorLimit
+        annotations:
+          description: File descriptors limit at {{ $labels.instance }} is currently
+            at {{ printf "%.2f" $value }}%.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefiledescriptorlimit
+          summary: Kernel is predicted to exhaust file descriptors limit soon.
+        expr: |-
+          (
+            node_filefd_allocated{job="node-exporter"} * 100 / node_filefd_maximum{job="node-exporter"} > 70
+          )
+        for: 15m
+        labels:
+          severity: warning
+      - alert: NodeFileDescriptorLimit
+        annotations:
+          description: File descriptors limit at {{ $labels.instance }} is currently
+            at {{ printf "%.2f" $value }}%.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodefiledescriptorlimit
+          summary: Kernel is predicted to exhaust file descriptors limit soon.
+        expr: |-
+          (
+            node_filefd_allocated{job="node-exporter"} * 100 / node_filefd_maximum{job="node-exporter"} > 90
+          )
+        for: 15m
+        labels:
+          severity: critical
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:25Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:25Z"
+    name: rancher-monitoring-node-exporter.rules
+    namespace: cattle-monitoring-system
+    resourceVersion: "8247"
+    uid: 17821426-2684-4aa8-bfa5-730f04afcd64
+  spec:
+    groups:
+    - name: node-exporter.rules
+      rules:
+      - expr: |-
+          count without (cpu) (
+            count without (mode) (
+              node_cpu_seconds_total{job="node-exporter"}
+            )
+          )
+        record: instance:node_num_cpu:sum
+      - expr: |-
+          1 - avg without (cpu, mode) (
+            rate(node_cpu_seconds_total{job="node-exporter", mode="idle"}[5m])
+          )
+        record: instance:node_cpu_utilisation:rate5m
+      - expr: |-
+          (
+            node_load1{job="node-exporter"}
+          /
+            instance:node_num_cpu:sum{job="node-exporter"}
+          )
+        record: instance:node_load1_per_cpu:ratio
+      - expr: |-
+          1 - (
+            node_memory_MemAvailable_bytes{job="node-exporter"}
+          /
+            node_memory_MemTotal_bytes{job="node-exporter"}
+          )
+        record: instance:node_memory_utilisation:ratio
+      - expr: rate(node_vmstat_pgmajfault{job="node-exporter"}[5m])
+        record: instance:node_vmstat_pgmajfault:rate5m
+      - expr: rate(node_disk_io_time_seconds_total{job="node-exporter", device=~"mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+"}[5m])
+        record: instance_device:node_disk_io_time_seconds:rate5m
+      - expr: rate(node_disk_io_time_weighted_seconds_total{job="node-exporter", device=~"mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+"}[5m])
+        record: instance_device:node_disk_io_time_weighted_seconds:rate5m
+      - expr: |-
+          sum without (device) (
+            rate(node_network_receive_bytes_total{job="node-exporter", device!="lo"}[5m])
+          )
+        record: instance:node_network_receive_bytes_excluding_lo:rate5m
+      - expr: |-
+          sum without (device) (
+            rate(node_network_transmit_bytes_total{job="node-exporter", device!="lo"}[5m])
+          )
+        record: instance:node_network_transmit_bytes_excluding_lo:rate5m
+      - expr: |-
+          sum without (device) (
+            rate(node_network_receive_drop_total{job="node-exporter", device!="lo"}[5m])
+          )
+        record: instance:node_network_receive_drop_excluding_lo:rate5m
+      - expr: |-
+          sum without (device) (
+            rate(node_network_transmit_drop_total{job="node-exporter", device!="lo"}[5m])
+          )
+        record: instance:node_network_transmit_drop_excluding_lo:rate5m
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:25Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:25Z"
+    name: rancher-monitoring-node-network
+    namespace: cattle-monitoring-system
+    resourceVersion: "8256"
+    uid: 13e3500e-3e6f-4b7e-93c1-5287fdf0b3b9
+  spec:
+    groups:
+    - name: node-network
+      rules:
+      - alert: NodeNetworkInterfaceFlapping
+        annotations:
+          description: Network interface "{{ $labels.device }}" changing it's up status
+            often on node-exporter {{ $labels.namespace }}/{{ $labels.pod }}
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodenetworkinterfaceflapping
+          summary: Network interface is often changin it's status
+        expr: changes(node_network_up{job="node-exporter",device!~"veth.+"}[2m]) >
+          2
+        for: 2m
+        labels:
+          severity: warning
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:25Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:25Z"
+    name: rancher-monitoring-node.rules
+    namespace: cattle-monitoring-system
+    resourceVersion: "8257"
+    uid: cbebe1c2-9f8d-40aa-b688-35da7888aef8
+  spec:
+    groups:
+    - name: node.rules
+      rules:
+      - expr: |-
+          topk by(namespace, pod) (1,
+            max by (node, namespace, pod) (
+              label_replace(kube_pod_info{job="kube-state-metrics",node!=""}, "pod", "$1", "pod", "(.*)")
+          ))
+        record: 'node_namespace_pod:kube_pod_info:'
+      - expr: |-
+          count by (cluster, node) (sum by (node, cpu) (
+            node_cpu_seconds_total{job="node-exporter"}
+          * on (namespace, pod) group_left(node)
+            topk by(namespace, pod) (1, node_namespace_pod:kube_pod_info:)
+          ))
+        record: node:node_num_cpu:sum
+      - expr: |-
+          sum(
+            node_memory_MemAvailable_bytes{job="node-exporter"} or
+            (
+              node_memory_Buffers_bytes{job="node-exporter"} +
+              node_memory_Cached_bytes{job="node-exporter"} +
+              node_memory_MemFree_bytes{job="node-exporter"} +
+              node_memory_Slab_bytes{job="node-exporter"}
+            )
+          ) by (cluster)
+        record: :node_memory_MemAvailable_bytes:sum
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:25Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:25Z"
+    name: rancher-monitoring-prometheus
+    namespace: cattle-monitoring-system
+    resourceVersion: "8270"
+    uid: 8d014e31-be41-412d-a573-3f134c728275
+  spec:
+    groups:
+    - name: prometheus
+      rules:
+      - alert: PrometheusBadConfig
+        annotations:
+          description: Prometheus {{$labels.namespace}}/{{$labels.pod}} has failed
+            to reload its configuration.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusbadconfig
+          summary: Failed Prometheus configuration reload.
+        expr: |-
+          # Without max_over_time, failed scrapes could create false negatives, see
+          # https://www.robustperception.io/alerting-on-gauges-in-prometheus-2-0 for details.
+          max_over_time(prometheus_config_last_reload_successful{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m]) == 0
+        for: 10m
+        labels:
+          severity: critical
+      - alert: PrometheusNotificationQueueRunningFull
+        annotations:
+          description: Alert notification queue of Prometheus {{$labels.namespace}}/{{$labels.pod}}
+            is running full.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusnotificationqueuerunningfull
+          summary: Prometheus alert notification queue predicted to run full in less
+            than 30m.
+        expr: |-
+          # Without min_over_time, failed scrapes could create false negatives, see
+          # https://www.robustperception.io/alerting-on-gauges-in-prometheus-2-0 for details.
+          (
+            predict_linear(prometheus_notifications_queue_length{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m], 60 * 30)
+          >
+            min_over_time(prometheus_notifications_queue_capacity{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m])
+          )
+        for: 15m
+        labels:
+          severity: warning
+      - alert: PrometheusErrorSendingAlertsToSomeAlertmanagers
+        annotations:
+          description: '{{ printf "%.1f" $value }}% errors while sending alerts from
+            Prometheus {{$labels.namespace}}/{{$labels.pod}} to Alertmanager {{$labels.alertmanager}}.'
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheuserrorsendingalertstosomealertmanagers
+          summary: Prometheus has encountered more than 1% errors sending alerts to
+            a specific Alertmanager.
+        expr: |-
+          (
+            rate(prometheus_notifications_errors_total{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m])
+          /
+            rate(prometheus_notifications_sent_total{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m])
+          )
+          * 100
+          > 1
+        for: 15m
+        labels:
+          severity: warning
+      - alert: PrometheusNotConnectedToAlertmanagers
+        annotations:
+          description: Prometheus {{$labels.namespace}}/{{$labels.pod}} is not connected
+            to any Alertmanagers.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusnotconnectedtoalertmanagers
+          summary: Prometheus is not connected to any Alertmanagers.
+        expr: |-
+          # Without max_over_time, failed scrapes could create false negatives, see
+          # https://www.robustperception.io/alerting-on-gauges-in-prometheus-2-0 for details.
+          max_over_time(prometheus_notifications_alertmanagers_discovered{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m]) < 1
+        for: 10m
+        labels:
+          severity: warning
+      - alert: PrometheusTSDBReloadsFailing
+        annotations:
+          description: Prometheus {{$labels.namespace}}/{{$labels.pod}} has detected
+            {{$value | humanize}} reload failures over the last 3h.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheustsdbreloadsfailing
+          summary: Prometheus has issues reloading blocks from disk.
+        expr: increase(prometheus_tsdb_reloads_failures_total{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[3h])
+          > 0
+        for: 4h
+        labels:
+          severity: warning
+      - alert: PrometheusTSDBCompactionsFailing
+        annotations:
+          description: Prometheus {{$labels.namespace}}/{{$labels.pod}} has detected
+            {{$value | humanize}} compaction failures over the last 3h.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheustsdbcompactionsfailing
+          summary: Prometheus has issues compacting blocks.
+        expr: increase(prometheus_tsdb_compactions_failed_total{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[3h])
+          > 0
+        for: 4h
+        labels:
+          severity: warning
+      - alert: PrometheusNotIngestingSamples
+        annotations:
+          description: Prometheus {{$labels.namespace}}/{{$labels.pod}} is not ingesting
+            samples.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusnotingestingsamples
+          summary: Prometheus is not ingesting samples.
+        expr: |-
+          (
+            rate(prometheus_tsdb_head_samples_appended_total{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m]) <= 0
+          and
+            (
+              sum without(scrape_job) (prometheus_target_metadata_cache_entries{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}) > 0
+            or
+              sum without(rule_group) (prometheus_rule_group_rules{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}) > 0
+            )
+          )
+        for: 10m
+        labels:
+          severity: warning
+      - alert: PrometheusDuplicateTimestamps
+        annotations:
+          description: Prometheus {{$labels.namespace}}/{{$labels.pod}} is dropping
+            {{ printf "%.4g" $value  }} samples/s with different values but duplicated
+            timestamp.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusduplicatetimestamps
+          summary: Prometheus is dropping samples with duplicate timestamps.
+        expr: rate(prometheus_target_scrapes_sample_duplicate_timestamp_total{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m])
+          > 0
+        for: 10m
+        labels:
+          severity: warning
+      - alert: PrometheusOutOfOrderTimestamps
+        annotations:
+          description: Prometheus {{$labels.namespace}}/{{$labels.pod}} is dropping
+            {{ printf "%.4g" $value  }} samples/s with timestamps arriving out of
+            order.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusoutofordertimestamps
+          summary: Prometheus drops samples with out-of-order timestamps.
+        expr: rate(prometheus_target_scrapes_sample_out_of_order_total{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m])
+          > 0
+        for: 10m
+        labels:
+          severity: warning
+      - alert: PrometheusRemoteStorageFailures
+        annotations:
+          description: Prometheus {{$labels.namespace}}/{{$labels.pod}} failed to
+            send {{ printf "%.1f" $value }}% of the samples to {{ $labels.remote_name}}:{{
+            $labels.url }}
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusremotestoragefailures
+          summary: Prometheus fails to send samples to remote storage.
+        expr: |-
+          (
+            (rate(prometheus_remote_storage_failed_samples_total{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m]) or rate(prometheus_remote_storage_samples_failed_total{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m]))
+          /
+            (
+              (rate(prometheus_remote_storage_failed_samples_total{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m]) or rate(prometheus_remote_storage_samples_failed_total{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m]))
+            +
+              (rate(prometheus_remote_storage_succeeded_samples_total{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m]) or rate(prometheus_remote_storage_samples_total{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m]))
+            )
+          )
+          * 100
+          > 1
+        for: 15m
+        labels:
+          severity: critical
+      - alert: PrometheusRemoteWriteBehind
+        annotations:
+          description: Prometheus {{$labels.namespace}}/{{$labels.pod}} remote write
+            is {{ printf "%.1f" $value }}s behind for {{ $labels.remote_name}}:{{
+            $labels.url }}.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusremotewritebehind
+          summary: Prometheus remote write is behind.
+        expr: |-
+          # Without max_over_time, failed scrapes could create false negatives, see
+          # https://www.robustperception.io/alerting-on-gauges-in-prometheus-2-0 for details.
+          (
+            max_over_time(prometheus_remote_storage_highest_timestamp_in_seconds{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m])
+          - ignoring(remote_name, url) group_right
+            max_over_time(prometheus_remote_storage_queue_highest_sent_timestamp_seconds{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m])
+          )
+          > 120
+        for: 15m
+        labels:
+          severity: critical
+      - alert: PrometheusRemoteWriteDesiredShards
+        annotations:
+          description: Prometheus {{$labels.namespace}}/{{$labels.pod}} remote write
+            desired shards calculation wants to run {{ $value }} shards for queue
+            {{ $labels.remote_name}}:{{ $labels.url }}, which is more than the max
+            of {{ printf `prometheus_remote_storage_shards_max{instance="%s",job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}`
+            $labels.instance | query | first | value }}.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusremotewritedesiredshards
+          summary: Prometheus remote write desired shards calculation wants to run
+            more than configured max shards.
+        expr: |-
+          # Without max_over_time, failed scrapes could create false negatives, see
+          # https://www.robustperception.io/alerting-on-gauges-in-prometheus-2-0 for details.
+          (
+            max_over_time(prometheus_remote_storage_shards_desired{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m])
+          >
+            max_over_time(prometheus_remote_storage_shards_max{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m])
+          )
+        for: 15m
+        labels:
+          severity: warning
+      - alert: PrometheusRuleFailures
+        annotations:
+          description: Prometheus {{$labels.namespace}}/{{$labels.pod}} has failed
+            to evaluate {{ printf "%.0f" $value }} rules in the last 5m.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusrulefailures
+          summary: Prometheus is failing rule evaluations.
+        expr: increase(prometheus_rule_evaluation_failures_total{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m])
+          > 0
+        for: 15m
+        labels:
+          severity: critical
+      - alert: PrometheusMissingRuleEvaluations
+        annotations:
+          description: Prometheus {{$labels.namespace}}/{{$labels.pod}} has missed
+            {{ printf "%.0f" $value }} rule group evaluations in the last 5m.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusmissingruleevaluations
+          summary: Prometheus is missing rule evaluations due to slow rule group evaluation.
+        expr: increase(prometheus_rule_group_iterations_missed_total{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m])
+          > 0
+        for: 15m
+        labels:
+          severity: warning
+      - alert: PrometheusTargetLimitHit
+        annotations:
+          description: Prometheus {{$labels.namespace}}/{{$labels.pod}} has dropped
+            {{ printf "%.0f" $value }} targets because the number of targets exceeded
+            the configured target_limit.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheustargetlimithit
+          summary: Prometheus has dropped targets because some scrape configs have
+            exceeded the targets limit.
+        expr: increase(prometheus_target_scrape_pool_exceeded_target_limit_total{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m])
+          > 0
+        for: 15m
+        labels:
+          severity: warning
+      - alert: PrometheusLabelLimitHit
+        annotations:
+          description: Prometheus {{$labels.namespace}}/{{$labels.pod}} has dropped
+            {{ printf "%.0f" $value }} targets because some samples exceeded the configured
+            label_limit, label_name_length_limit or label_value_length_limit.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheuslabellimithit
+          summary: Prometheus has dropped targets because some scrape configs have
+            exceeded the labels limit.
+        expr: increase(prometheus_target_scrape_pool_exceeded_label_limits_total{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[5m])
+          > 0
+        for: 15m
+        labels:
+          severity: warning
+      - alert: PrometheusTargetSyncFailure
+        annotations:
+          description: '{{ printf "%.0f" $value }} targets in Prometheus {{$labels.namespace}}/{{$labels.pod}}
+            have failed to sync because invalid configuration was supplied.'
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheustargetsyncfailure
+          summary: Prometheus has failed to sync targets.
+        expr: increase(prometheus_target_sync_failed_total{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system"}[30m])
+          > 0
+        for: 5m
+        labels:
+          severity: critical
+      - alert: PrometheusErrorSendingAlertsToAnyAlertmanager
+        annotations:
+          description: '{{ printf "%.1f" $value }}% minimum errors while sending alerts
+            from Prometheus {{$labels.namespace}}/{{$labels.pod}} to any Alertmanager.'
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheuserrorsendingalertstoanyalertmanager
+          summary: Prometheus encounters more than 3% errors sending alerts to any
+            Alertmanager.
+        expr: |-
+          min without (alertmanager) (
+            rate(prometheus_notifications_errors_total{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system",alertmanager!~``}[5m])
+          /
+            rate(prometheus_notifications_sent_total{job="rancher-monitoring-prometheus",namespace="cattle-monitoring-system",alertmanager!~``}[5m])
+          )
+          * 100
+          > 3
+        for: 15m
+        labels:
+          severity: critical
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:25Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:25Z"
+    name: rancher-monitoring-prometheus-operator
+    namespace: cattle-monitoring-system
+    resourceVersion: "8261"
+    uid: 474500fb-1f79-419a-97da-0a671ff70d34
+  spec:
+    groups:
+    - name: prometheus-operator
+      rules:
+      - alert: PrometheusOperatorListErrors
+        annotations:
+          description: Errors while performing List operations in controller {{$labels.controller}}
+            in {{$labels.namespace}} namespace.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusoperatorlisterrors
+          summary: Errors while performing list operations in controller.
+        expr: (sum by (controller,namespace) (rate(prometheus_operator_list_operations_failed_total{job="rancher-monitoring-operator",namespace="cattle-monitoring-system"}[10m]))
+          / sum by (controller,namespace) (rate(prometheus_operator_list_operations_total{job="rancher-monitoring-operator",namespace="cattle-monitoring-system"}[10m])))
+          > 0.4
+        for: 15m
+        labels:
+          severity: warning
+      - alert: PrometheusOperatorWatchErrors
+        annotations:
+          description: Errors while performing watch operations in controller {{$labels.controller}}
+            in {{$labels.namespace}} namespace.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusoperatorwatcherrors
+          summary: Errors while performing watch operations in controller.
+        expr: (sum by (controller,namespace) (rate(prometheus_operator_watch_operations_failed_total{job="rancher-monitoring-operator",namespace="cattle-monitoring-system"}[10m]))
+          / sum by (controller,namespace) (rate(prometheus_operator_watch_operations_total{job="rancher-monitoring-operator",namespace="cattle-monitoring-system"}[10m])))
+          > 0.4
+        for: 15m
+        labels:
+          severity: warning
+      - alert: PrometheusOperatorSyncFailed
+        annotations:
+          description: Controller {{ $labels.controller }} in {{ $labels.namespace
+            }} namespace fails to reconcile {{ $value }} objects.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusoperatorsyncfailed
+          summary: Last controller reconciliation failed
+        expr: min_over_time(prometheus_operator_syncs{status="failed",job="rancher-monitoring-operator",namespace="cattle-monitoring-system"}[5m])
+          > 0
+        for: 10m
+        labels:
+          severity: warning
+      - alert: PrometheusOperatorReconcileErrors
+        annotations:
+          description: '{{ $value | humanizePercentage }} of reconciling operations
+            failed for {{ $labels.controller }} controller in {{ $labels.namespace
+            }} namespace.'
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusoperatorreconcileerrors
+          summary: Errors while reconciling controller.
+        expr: (sum by (controller,namespace) (rate(prometheus_operator_reconcile_errors_total{job="rancher-monitoring-operator",namespace="cattle-monitoring-system"}[5m])))
+          / (sum by (controller,namespace) (rate(prometheus_operator_reconcile_operations_total{job="rancher-monitoring-operator",namespace="cattle-monitoring-system"}[5m])))
+          > 0.1
+        for: 10m
+        labels:
+          severity: warning
+      - alert: PrometheusOperatorNodeLookupErrors
+        annotations:
+          description: Errors while reconciling Prometheus in {{ $labels.namespace
+            }} Namespace.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusoperatornodelookuperrors
+          summary: Errors while reconciling Prometheus.
+        expr: rate(prometheus_operator_node_address_lookup_errors_total{job="rancher-monitoring-operator",namespace="cattle-monitoring-system"}[5m])
+          > 0.1
+        for: 10m
+        labels:
+          severity: warning
+      - alert: PrometheusOperatorNotReady
+        annotations:
+          description: Prometheus operator in {{ $labels.namespace }} namespace isn't
+            ready to reconcile {{ $labels.controller }} resources.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusoperatornotready
+          summary: Prometheus operator not ready
+        expr: min by(namespace, controller) (max_over_time(prometheus_operator_ready{job="rancher-monitoring-operator",namespace="cattle-monitoring-system"}[5m])
+          == 0)
+        for: 5m
+        labels:
+          severity: warning
+      - alert: PrometheusOperatorRejectedResources
+        annotations:
+          description: Prometheus operator in {{ $labels.namespace }} namespace rejected
+            {{ printf "%0.0f" $value }} {{ $labels.controller }}/{{ $labels.resource
+            }} resources.
+          runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-prometheusoperatorrejectedresources
+          summary: Resources rejected by Prometheus operator
+        expr: min_over_time(prometheus_operator_managed_resources{state="rejected",job="rancher-monitoring-operator",namespace="cattle-monitoring-system"}[5m])
+          > 0
+        for: 5m
+        labels:
+          severity: warning
+kind: List
+metadata:
+  continue: "null"
+  resourceVersion: "14659123"

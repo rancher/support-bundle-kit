@@ -1,0 +1,390 @@
+apiVersion: v1
+items:
+- action: Binding
+  apiVersion: events.k8s.io/v1
+  deprecatedFirstTimestamp: "null"
+  deprecatedLastTimestamp: null
+  deprecatedSource: {}
+  eventTime: "2022-03-22T23:49:14.123518Z"
+  kind: Event
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:14Z"
+    managedFields:
+    - apiVersion: events.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:action: {}
+        f:eventTime: {}
+        f:note: {}
+        f:reason: {}
+        f:regarding:
+          f:apiVersion: {}
+          f:kind: {}
+          f:name: {}
+          f:namespace: {}
+          f:resourceVersion: {}
+          f:uid: {}
+        f:reportingController: {}
+        f:reportingInstance: {}
+        f:type: {}
+      manager: kube-scheduler
+      operation: Update
+      time: "2022-03-22T23:49:14Z"
+    name: supportbundle-manager-bundle-o3n28-7d6d44c544-ndn25.16ded8dc3ee14eea
+    namespace: harvester-system
+    resourceVersion: "14658658"
+    uid: 57a690f9-848d-4114-8da2-21ed7b623f08
+  note: Successfully assigned harvester-system/supportbundle-manager-bundle-o3n28-7d6d44c544-ndn25
+    to node1
+  reason: Scheduled
+  regarding:
+    apiVersion: v1
+    kind: Pod
+    name: supportbundle-manager-bundle-o3n28-7d6d44c544-ndn25
+    namespace: harvester-system
+    resourceVersion: "14658651"
+    uid: cd74d46c-46a7-4f0d-a65c-1dab50cc6519
+  reportingController: default-scheduler
+  reportingInstance: default-scheduler-node1
+  type: Normal
+- apiVersion: events.k8s.io/v1
+  deprecatedCount: 1
+  deprecatedFirstTimestamp: "2022-03-22T23:49:15Z"
+  deprecatedLastTimestamp: "2022-03-22T23:49:15Z"
+  deprecatedSource:
+    component: multus
+  eventTime: "null"
+  kind: Event
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:15Z"
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:count: {}
+        f:firstTimestamp: {}
+        f:involvedObject:
+          f:apiVersion: {}
+          f:kind: {}
+          f:name: {}
+          f:namespace: {}
+          f:resourceVersion: {}
+          f:uid: {}
+        f:lastTimestamp: {}
+        f:message: {}
+        f:reason: {}
+        f:source:
+          f:component: {}
+        f:type: {}
+      manager: multus
+      operation: Update
+      time: "2022-03-22T23:49:15Z"
+    name: supportbundle-manager-bundle-o3n28-7d6d44c544-ndn25.16ded8dc82335a81
+    namespace: harvester-system
+    resourceVersion: "14658672"
+    uid: 68721b1b-55c0-41a1-ac68-0341cf1b975e
+  note: Add eth0 [10.52.0.188/32]
+  reason: AddedInterface
+  regarding:
+    apiVersion: v1
+    kind: Pod
+    name: supportbundle-manager-bundle-o3n28-7d6d44c544-ndn25
+    namespace: harvester-system
+    resourceVersion: "14658660"
+    uid: cd74d46c-46a7-4f0d-a65c-1dab50cc6519
+  type: Normal
+- apiVersion: events.k8s.io/v1
+  deprecatedCount: 1
+  deprecatedFirstTimestamp: "2022-03-22T23:49:15Z"
+  deprecatedLastTimestamp: "2022-03-22T23:49:15Z"
+  deprecatedSource:
+    component: kubelet
+    host: node1
+  eventTime: "null"
+  kind: Event
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:15Z"
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:count: {}
+        f:firstTimestamp: {}
+        f:involvedObject:
+          f:apiVersion: {}
+          f:fieldPath: {}
+          f:kind: {}
+          f:name: {}
+          f:namespace: {}
+          f:resourceVersion: {}
+          f:uid: {}
+        f:lastTimestamp: {}
+        f:message: {}
+        f:reason: {}
+        f:source:
+          f:component: {}
+          f:host: {}
+        f:type: {}
+      manager: kubelet
+      operation: Update
+      time: "2022-03-22T23:49:15Z"
+    name: supportbundle-manager-bundle-o3n28-7d6d44c544-ndn25.16ded8dca5a2c5eb
+    namespace: harvester-system
+    resourceVersion: "14658681"
+    uid: 5245301c-4070-4eb1-902b-b8ee3733e947
+  note: Pulling image "rancher/support-bundle-kit:master-head"null
+  reason: Pulling
+  regarding:
+    apiVersion: v1
+    fieldPath: spec.containers{manager}
+    kind: Pod
+    name: supportbundle-manager-bundle-o3n28-7d6d44c544-ndn25
+    namespace: harvester-system
+    resourceVersion: "14658654"
+    uid: cd74d46c-46a7-4f0d-a65c-1dab50cc6519
+  type: Normal
+- apiVersion: events.k8s.io/v1
+  deprecatedCount: 1
+  deprecatedFirstTimestamp: "2022-03-22T23:49:30Z"
+  deprecatedLastTimestamp: "2022-03-22T23:49:30Z"
+  deprecatedSource:
+    component: kubelet
+    host: node1
+  eventTime: "null"
+  kind: Event
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:30Z"
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:count: {}
+        f:firstTimestamp: {}
+        f:involvedObject:
+          f:apiVersion: {}
+          f:fieldPath: {}
+          f:kind: {}
+          f:name: {}
+          f:namespace: {}
+          f:resourceVersion: {}
+          f:uid: {}
+        f:lastTimestamp: {}
+        f:message: {}
+        f:reason: {}
+        f:source:
+          f:component: {}
+          f:host: {}
+        f:type: {}
+      manager: kubelet
+      operation: Update
+      time: "2022-03-22T23:49:30Z"
+    name: supportbundle-manager-bundle-o3n28-7d6d44c544-ndn25.16ded8e021229a6e
+    namespace: harvester-system
+    resourceVersion: "14658845"
+    uid: a8cf3818-a749-4cf3-8113-aa7739f9d4c8
+  note: Successfully pulled image "rancher/support-bundle-kit:master-head" in 14.956847241s
+  reason: Pulled
+  regarding:
+    apiVersion: v1
+    fieldPath: spec.containers{manager}
+    kind: Pod
+    name: supportbundle-manager-bundle-o3n28-7d6d44c544-ndn25
+    namespace: harvester-system
+    resourceVersion: "14658654"
+    uid: cd74d46c-46a7-4f0d-a65c-1dab50cc6519
+  type: Normal
+- apiVersion: events.k8s.io/v1
+  deprecatedCount: 1
+  deprecatedFirstTimestamp: "2022-03-22T23:49:31Z"
+  deprecatedLastTimestamp: "2022-03-22T23:49:31Z"
+  deprecatedSource:
+    component: kubelet
+    host: node1
+  eventTime: "null"
+  kind: Event
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:31Z"
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:count: {}
+        f:firstTimestamp: {}
+        f:involvedObject:
+          f:apiVersion: {}
+          f:fieldPath: {}
+          f:kind: {}
+          f:name: {}
+          f:namespace: {}
+          f:resourceVersion: {}
+          f:uid: {}
+        f:lastTimestamp: {}
+        f:message: {}
+        f:reason: {}
+        f:source:
+          f:component: {}
+          f:host: {}
+        f:type: {}
+      manager: kubelet
+      operation: Update
+      time: "2022-03-22T23:49:31Z"
+    name: supportbundle-manager-bundle-o3n28-7d6d44c544-ndn25.16ded8e0534acc16
+    namespace: harvester-system
+    resourceVersion: "14658857"
+    uid: 44b7a4c3-463e-4f69-9ed4-6f0dcd11311a
+  note: Created container manager
+  reason: Created
+  regarding:
+    apiVersion: v1
+    fieldPath: spec.containers{manager}
+    kind: Pod
+    name: supportbundle-manager-bundle-o3n28-7d6d44c544-ndn25
+    namespace: harvester-system
+    resourceVersion: "14658654"
+    uid: cd74d46c-46a7-4f0d-a65c-1dab50cc6519
+  type: Normal
+- apiVersion: events.k8s.io/v1
+  deprecatedCount: 1
+  deprecatedFirstTimestamp: "2022-03-22T23:49:32Z"
+  deprecatedLastTimestamp: "2022-03-22T23:49:32Z"
+  deprecatedSource:
+    component: kubelet
+    host: node1
+  eventTime: "null"
+  kind: Event
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:32Z"
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:count: {}
+        f:firstTimestamp: {}
+        f:involvedObject:
+          f:apiVersion: {}
+          f:fieldPath: {}
+          f:kind: {}
+          f:name: {}
+          f:namespace: {}
+          f:resourceVersion: {}
+          f:uid: {}
+        f:lastTimestamp: {}
+        f:message: {}
+        f:reason: {}
+        f:source:
+          f:component: {}
+          f:host: {}
+        f:type: {}
+      manager: kubelet
+      operation: Update
+      time: "2022-03-22T23:49:32Z"
+    name: supportbundle-manager-bundle-o3n28-7d6d44c544-ndn25.16ded8e06e5f8331
+    namespace: harvester-system
+    resourceVersion: "14658865"
+    uid: 9f1479a2-412c-4151-8c53-35ccd493f773
+  note: Started container manager
+  reason: Started
+  regarding:
+    apiVersion: v1
+    fieldPath: spec.containers{manager}
+    kind: Pod
+    name: supportbundle-manager-bundle-o3n28-7d6d44c544-ndn25
+    namespace: harvester-system
+    resourceVersion: "14658654"
+    uid: cd74d46c-46a7-4f0d-a65c-1dab50cc6519
+  type: Normal
+- apiVersion: events.k8s.io/v1
+  deprecatedCount: 1
+  deprecatedFirstTimestamp: "2022-03-22T23:49:14Z"
+  deprecatedLastTimestamp: "2022-03-22T23:49:14Z"
+  deprecatedSource:
+    component: replicaset-controller
+  eventTime: "null"
+  kind: Event
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:14Z"
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:count: {}
+        f:firstTimestamp: {}
+        f:involvedObject:
+          f:apiVersion: {}
+          f:kind: {}
+          f:name: {}
+          f:namespace: {}
+          f:resourceVersion: {}
+          f:uid: {}
+        f:lastTimestamp: {}
+        f:message: {}
+        f:reason: {}
+        f:source:
+          f:component: {}
+        f:type: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-22T23:49:14Z"
+    name: supportbundle-manager-bundle-o3n28-7d6d44c544.16ded8dc3bf67414
+    namespace: harvester-system
+    resourceVersion: "14658653"
+    uid: 4032d1a2-ab3d-426d-ac6a-cd7329404ba7
+  note: 'Created pod: supportbundle-manager-bundle-o3n28-7d6d44c544-ndn25'
+  reason: SuccessfulCreate
+  regarding:
+    apiVersion: apps/v1
+    kind: ReplicaSet
+    name: supportbundle-manager-bundle-o3n28-7d6d44c544
+    namespace: harvester-system
+    resourceVersion: "14658647"
+    uid: ec2abb8f-9e67-46e1-b6d0-f78cb55caf75
+  type: Normal
+- apiVersion: events.k8s.io/v1
+  deprecatedCount: 1
+  deprecatedFirstTimestamp: "2022-03-22T23:49:13Z"
+  deprecatedLastTimestamp: "2022-03-22T23:49:13Z"
+  deprecatedSource:
+    component: deployment-controller
+  eventTime: "null"
+  kind: Event
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:13Z"
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:count: {}
+        f:firstTimestamp: {}
+        f:involvedObject:
+          f:apiVersion: {}
+          f:kind: {}
+          f:name: {}
+          f:namespace: {}
+          f:resourceVersion: {}
+          f:uid: {}
+        f:lastTimestamp: {}
+        f:message: {}
+        f:reason: {}
+        f:source:
+          f:component: {}
+        f:type: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-22T23:49:13Z"
+    name: supportbundle-manager-bundle-o3n28.16ded8dc36e2b3cf
+    namespace: harvester-system
+    resourceVersion: "14658649"
+    uid: 70e3c50e-9daa-4ab2-92f4-b4c1c5691c11
+  note: Scaled up replica set supportbundle-manager-bundle-o3n28-7d6d44c544 to 1
+  reason: ScalingReplicaSet
+  regarding:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: supportbundle-manager-bundle-o3n28
+    namespace: harvester-system
+    resourceVersion: "14658645"
+    uid: cafc50d3-e506-4ea1-af55-8784911510b7
+  type: Normal
+kind: List
+metadata:
+  resourceVersion: "14659187"

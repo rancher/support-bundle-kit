@@ -1,0 +1,77 @@
+apiVersion: v1
+items:
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: "2022-03-07T22:16:09Z"
+    labels:
+      authz.cluster.cattle.io/rtb-owner-updated: p-jn8sl_creator-project-owner
+      cattle.io/creator: norman
+    managedFields:
+    - apiVersion: rbac.authorization.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:labels:
+            .: {}
+            f:authz.cluster.cattle.io/rtb-owner-updated: {}
+            f:cattle.io/creator: {}
+        f:roleRef:
+          f:apiGroup: {}
+          f:kind: {}
+          f:name: {}
+        f:subjects: {}
+      manager: rancher
+      operation: Update
+      time: "2022-03-07T22:16:09Z"
+    name: rb-irb4r2lz2v
+    namespace: cattle-system
+    resourceVersion: "875040"
+    uid: 23da6ac3-7dc7-40fb-b7a0-15b52982d37d
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: project-owner
+  subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: user-4dqnw
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: "2022-03-07T22:16:09Z"
+    labels:
+      authz.cluster.cattle.io/rtb-owner-updated: p-jn8sl_creator-project-owner
+      cattle.io/creator: norman
+    managedFields:
+    - apiVersion: rbac.authorization.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:labels:
+            .: {}
+            f:authz.cluster.cattle.io/rtb-owner-updated: {}
+            f:cattle.io/creator: {}
+        f:roleRef:
+          f:apiGroup: {}
+          f:kind: {}
+          f:name: {}
+        f:subjects: {}
+      manager: rancher
+      operation: Update
+      time: "2022-03-07T22:16:09Z"
+    name: rb-n763fwcuxm
+    namespace: cattle-system
+    resourceVersion: "875037"
+    uid: 2a357134-3a32-475c-8309-efe7ea331a48
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: admin
+  subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: user-4dqnw
+kind: List
+metadata:
+  resourceVersion: "14659029"

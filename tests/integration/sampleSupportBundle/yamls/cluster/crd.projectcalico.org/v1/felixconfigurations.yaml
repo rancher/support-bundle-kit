@@ -1,0 +1,36 @@
+apiVersion: v1
+items:
+- apiVersion: crd.projectcalico.org/v1
+  kind: FelixConfiguration
+  metadata:
+    annotations:
+      projectcalico.org/metadata: '{"uid":"c7c6fefe-fd76-485b-8ab1-8b5a4b0f0718","creationTimestamp":"2022-03-06T22:47:33Z"}'
+    creationTimestamp: "2022-03-06T22:47:33Z"
+    generation: 1
+    managedFields:
+    - apiVersion: crd.projectcalico.org/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:projectcalico.org/metadata: {}
+        f:spec:
+          .: {}
+          f:bpfLogLevel: {}
+          f:logSeverityScreen: {}
+          f:reportingInterval: {}
+      manager: Go-http-client
+      operation: Update
+      time: "2022-03-06T22:47:33Z"
+    name: default
+    resourceVersion: "825"
+    uid: 4174ad80-d3d3-4e47-8fdf-0ea0ded4a536
+  spec:
+    bpfLogLevel: "null"
+    logSeverityScreen: Info
+    reportingInterval: 0s
+kind: List
+metadata:
+  continue: "null"
+  resourceVersion: "14658905"

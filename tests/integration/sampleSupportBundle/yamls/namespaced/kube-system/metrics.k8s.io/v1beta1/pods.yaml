@@ -1,0 +1,242 @@
+apiVersion: v1
+items:
+- apiVersion: metrics.k8s.io/v1beta1
+  containers:
+  - name: cloud-controller-manager
+    usage:
+      cpu: 3326608n
+      memory: 25844Ki
+  kind: PodMetrics
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:45Z"
+    labels:
+      component: cloud-controller-manager
+      tier: control-plane
+    name: cloud-controller-manager-node1
+    namespace: kube-system
+  timestamp: "2022-03-22T23:49:00Z"
+  window: 1m0s
+- apiVersion: metrics.k8s.io/v1beta1
+  containers:
+  - name: etcd
+    usage:
+      cpu: 144590200n
+      memory: 612808Ki
+  kind: PodMetrics
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:45Z"
+    labels:
+      component: etcd
+      tier: control-plane
+    name: etcd-node1
+    namespace: kube-system
+  timestamp: "2022-03-22T23:48:57Z"
+  window: 55s
+- apiVersion: metrics.k8s.io/v1beta1
+  containers:
+  - name: kube-apiserver
+    usage:
+      cpu: 512943277n
+      memory: 2430044Ki
+  kind: PodMetrics
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:45Z"
+    labels:
+      component: kube-apiserver
+      tier: control-plane
+    name: kube-apiserver-node1
+    namespace: kube-system
+  timestamp: "2022-03-22T23:48:53Z"
+  window: 49s
+- apiVersion: metrics.k8s.io/v1beta1
+  containers:
+  - name: kube-controller-manager
+    usage:
+      cpu: 38383306n
+      memory: 146508Ki
+  kind: PodMetrics
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:45Z"
+    labels:
+      component: kube-controller-manager
+      tier: control-plane
+    name: kube-controller-manager-node1
+    namespace: kube-system
+  timestamp: "2022-03-22T23:48:49Z"
+  window: 45s
+- apiVersion: metrics.k8s.io/v1beta1
+  containers:
+  - name: kube-multus
+    usage:
+      cpu: "0"
+      memory: 28996Ki
+  kind: PodMetrics
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:45Z"
+    labels:
+      controller-revision-hash: 588654c788
+      name: multus
+      pod-template-generation: "1"
+    name: kube-multus-ds-db5bp
+    namespace: kube-system
+  timestamp: "2022-03-22T23:48:51Z"
+  window: 51s
+- apiVersion: metrics.k8s.io/v1beta1
+  containers:
+  - name: kube-proxy
+    usage:
+      cpu: 554887n
+      memory: 31032Ki
+  kind: PodMetrics
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:45Z"
+    labels:
+      component: kube-proxy
+      tier: control-plane
+    name: kube-proxy-node1
+    namespace: kube-system
+  timestamp: "2022-03-22T23:48:58Z"
+  window: 55s
+- apiVersion: metrics.k8s.io/v1beta1
+  containers:
+  - name: kube-scheduler
+    usage:
+      cpu: 6470872n
+      memory: 36588Ki
+  kind: PodMetrics
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:45Z"
+    labels:
+      component: kube-scheduler
+      tier: control-plane
+    name: kube-scheduler-node1
+    namespace: kube-system
+  timestamp: "2022-03-22T23:48:58Z"
+  window: 1m1s
+- apiVersion: metrics.k8s.io/v1beta1
+  containers:
+  - name: calico-node
+    usage:
+      cpu: 55728627n
+      memory: 118764Ki
+  - name: kube-flannel
+    usage:
+      cpu: 7388615n
+      memory: 26412Ki
+  kind: PodMetrics
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:45Z"
+    labels:
+      controller-revision-hash: 57b4cd77
+      k8s-app: canal
+      pod-template-generation: "1"
+    name: rke2-canal-4c45f
+    namespace: kube-system
+  timestamp: "2022-03-22T23:48:51Z"
+  window: 52s
+- apiVersion: metrics.k8s.io/v1beta1
+  containers:
+  - name: coredns
+    usage:
+      cpu: 3859113n
+      memory: 29712Ki
+  kind: PodMetrics
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:45Z"
+    labels:
+      app.kubernetes.io/instance: rke2-coredns
+      app.kubernetes.io/name: rke2-coredns
+      k8s-app: kube-dns
+      pod-template-hash: 5679c85bbb
+    name: rke2-coredns-rke2-coredns-5679c85bbb-ph7cc
+    namespace: kube-system
+  timestamp: "2022-03-22T23:48:58Z"
+  window: 56s
+- apiVersion: metrics.k8s.io/v1beta1
+  containers:
+  - name: autoscaler
+    usage:
+      cpu: 489425n
+      memory: 14424Ki
+  kind: PodMetrics
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:45Z"
+    labels:
+      app.kubernetes.io/instance: rke2-coredns
+      app.kubernetes.io/name: rke2-coredns-autoscaler
+      k8s-app: kube-dns-autoscaler
+      pod-template-hash: "6889866896"
+    name: rke2-coredns-rke2-coredns-autoscaler-6889866896-dn2hc
+    namespace: kube-system
+  timestamp: "2022-03-22T23:48:53Z"
+  window: 1m7s
+- apiVersion: metrics.k8s.io/v1beta1
+  containers:
+  - name: rke2-ingress-nginx-controller
+    usage:
+      cpu: 9744698n
+      memory: 226740Ki
+  kind: PodMetrics
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:45Z"
+    labels:
+      app.kubernetes.io/component: controller
+      app.kubernetes.io/instance: rke2-ingress-nginx
+      app.kubernetes.io/name: rke2-ingress-nginx
+      controller-revision-hash: 84ccc46865
+      pod-template-generation: "2"
+    name: rke2-ingress-nginx-controller-vx265
+    namespace: kube-system
+  timestamp: "2022-03-22T23:48:56Z"
+  window: 1m4s
+- apiVersion: metrics.k8s.io/v1beta1
+  containers:
+  - name: metrics-server
+    usage:
+      cpu: 8931633n
+      memory: 37736Ki
+  kind: PodMetrics
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:45Z"
+    labels:
+      app: rke2-metrics-server
+      pod-template-hash: 8574659c85
+      release: rke2-metrics-server
+    name: rke2-metrics-server-8574659c85-s467p
+    namespace: kube-system
+  timestamp: "2022-03-22T23:49:04Z"
+  window: 1m1s
+- apiVersion: metrics.k8s.io/v1beta1
+  containers:
+  - name: snapshot-controller
+    usage:
+      cpu: 762662n
+      memory: 13404Ki
+  kind: PodMetrics
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:45Z"
+    labels:
+      app: snapshot-controller
+      pod-template-hash: 9f68fdd9
+    name: snapshot-controller-9f68fdd9-9qcng
+    namespace: kube-system
+  timestamp: "2022-03-22T23:48:56Z"
+  window: 52s
+- apiVersion: metrics.k8s.io/v1beta1
+  containers:
+  - name: snapshot-controller
+    usage:
+      cpu: 1189882n
+      memory: 17604Ki
+  kind: PodMetrics
+  metadata:
+    creationTimestamp: "2022-03-22T23:49:45Z"
+    labels:
+      app: snapshot-controller
+      pod-template-hash: 9f68fdd9
+    name: snapshot-controller-9f68fdd9-tgbvv
+    namespace: kube-system
+  timestamp: "2022-03-22T23:48:50Z"
+  window: 48s
+kind: List
+metadata: {}

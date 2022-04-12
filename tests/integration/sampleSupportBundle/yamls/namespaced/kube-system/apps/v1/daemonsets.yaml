@@ -1,0 +1,1229 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: DaemonSet
+  metadata:
+    annotations:
+      deprecated.daemonset.template.generation: "1"
+      meta.helm.sh/release-name: rke2-multus
+      meta.helm.sh/release-namespace: kube-system
+    creationTimestamp: "2022-03-06T22:47:19Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/managed-by: Helm
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deprecated.daemonset.template.generation: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/managed-by: {}
+        f:spec:
+          f:revisionHistoryLimit: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:name: {}
+            f:spec:
+              f:containers:
+                k:{"name":"kube-multus"}:
+                  .: {}
+                  f:args: {}
+                  f:command: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:resources:
+                    .: {}
+                    f:limits:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                    f:requests:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                  f:securityContext:
+                    .: {}
+                    f:privileged: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/host/etc/cni/net.d"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                    k:{"mountPath":"/host/opt/cni/bin"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+              f:dnsPolicy: {}
+              f:hostNetwork: {}
+              f:initContainers:
+                .: {}
+                k:{"name":"cni-plugins"}:
+                  .: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"SKIP_CNI_BINARIES"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:resources: {}
+                  f:securityContext:
+                    .: {}
+                    f:privileged: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/host/opt/cni/bin"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+              f:nodeSelector:
+                .: {}
+                f:kubernetes.io/os: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:tolerations: {}
+              f:volumes:
+                .: {}
+                k:{"name":"cni"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+                k:{"name":"cnibin"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+          f:updateStrategy:
+            f:rollingUpdate:
+              .: {}
+              f:maxSurge: {}
+              f:maxUnavailable: {}
+            f:type: {}
+      manager: helm
+      operation: Update
+      time: "2022-03-06T22:47:19Z"
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:currentNumberScheduled: {}
+          f:desiredNumberScheduled: {}
+          f:numberAvailable: {}
+          f:numberReady: {}
+          f:observedGeneration: {}
+          f:updatedNumberScheduled: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-08T00:12:38Z"
+    name: kube-multus-ds
+    namespace: kube-system
+    resourceVersion: "1026209"
+    uid: 3db141f0-75ac-48ce-9dfa-c9a2cfe79b8f
+  spec:
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        name: multus
+    template:
+      metadata:
+        creationTimestamp: "null"
+        labels:
+          name: multus
+      spec:
+        containers:
+        - args:
+          - --multus-conf-file=auto
+          - --cni-version=0.3.1
+          command:
+          - /entrypoint.sh
+          image: rancher/hardened-multus-cni:v3.7.1-build20211119
+          imagePullPolicy: IfNotPresent
+          name: kube-multus
+          resources:
+            limits:
+              cpu: 100m
+              memory: 50Mi
+            requests:
+              cpu: 100m
+              memory: 50Mi
+          securityContext:
+            privileged: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /host/etc/cni/net.d
+            name: cni
+          - mountPath: /host/opt/cni/bin
+            name: cnibin
+        dnsPolicy: ClusterFirst
+        hostNetwork: true
+        initContainers:
+        - env:
+          - name: SKIP_CNI_BINARIES
+            value: flannel
+          image: rancher/hardened-cni-plugins:v0.9.1-build20211119
+          imagePullPolicy: IfNotPresent
+          name: cni-plugins
+          resources: {}
+          securityContext:
+            privileged: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /host/opt/cni/bin
+            name: cnibin
+        nodeSelector:
+          kubernetes.io/os: linux
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: multus
+        serviceAccountName: multus
+        terminationGracePeriodSeconds: 10
+        tolerations:
+        - effect: NoSchedule
+          operator: Exists
+        - effect: NoExecute
+          operator: Exists
+        volumes:
+        - hostPath:
+            path: /etc/cni/net.d
+            type: "null"
+          name: cni
+        - hostPath:
+            path: /opt/cni/bin
+            type: "null"
+          name: cnibin
+    updateStrategy:
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 1
+      type: RollingUpdate
+  status:
+    currentNumberScheduled: 1
+    desiredNumberScheduled: 1
+    numberAvailable: 1
+    numberMisscheduled: 0
+    numberReady: 1
+    observedGeneration: 1
+    updatedNumberScheduled: 1
+- apiVersion: apps/v1
+  kind: DaemonSet
+  metadata:
+    annotations:
+      deprecated.daemonset.template.generation: "1"
+      meta.helm.sh/release-name: rke2-canal
+      meta.helm.sh/release-namespace: kube-system
+    creationTimestamp: "2022-03-06T22:47:19Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/managed-by: Helm
+      k8s-app: canal
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deprecated.daemonset.template.generation: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:k8s-app: {}
+        f:spec:
+          f:revisionHistoryLimit: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:k8s-app: {}
+            f:spec:
+              f:containers:
+                k:{"name":"calico-node"}:
+                  .: {}
+                  f:command: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"CALICO_DISABLE_FILE_LOGGING"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"CALICO_NETWORKING_BACKEND"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"CLUSTER_TYPE"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"DATASTORE_TYPE"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"FELIX_DEFAULTENDPOINTTOHOSTACTION"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"FELIX_FAILSAFEINBOUNDHOSTPORTS"}:
+                      .: {}
+                      f:name: {}
+                    k:{"name":"FELIX_FAILSAFEOUTBOUNDHOSTPORTS"}:
+                      .: {}
+                      f:name: {}
+                    k:{"name":"FELIX_HEALTHENABLED"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"FELIX_IPTABLESBACKEND"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"FELIX_IPTABLESREFRESHINTERVAL"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"FELIX_IPV6SUPPORT"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"FELIX_LOGSEVERITYSCREEN"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"FELIX_PROMETHEUSMETRICSENABLED"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"FELIX_XDPENABLED"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"IP"}:
+                      .: {}
+                      f:name: {}
+                    k:{"name":"NODENAME"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                    k:{"name":"USE_POD_CIDR"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"WAIT_FOR_DATASTORE"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:livenessProbe:
+                    .: {}
+                    f:exec:
+                      .: {}
+                      f:command: {}
+                    f:failureThreshold: {}
+                    f:initialDelaySeconds: {}
+                    f:periodSeconds: {}
+                    f:successThreshold: {}
+                    f:timeoutSeconds: {}
+                  f:name: {}
+                  f:readinessProbe:
+                    .: {}
+                    f:failureThreshold: {}
+                    f:httpGet:
+                      .: {}
+                      f:host: {}
+                      f:path: {}
+                      f:port: {}
+                      f:scheme: {}
+                    f:periodSeconds: {}
+                    f:successThreshold: {}
+                    f:timeoutSeconds: {}
+                  f:resources:
+                    .: {}
+                    f:requests:
+                      .: {}
+                      f:cpu: {}
+                  f:securityContext:
+                    .: {}
+                    f:privileged: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/lib/modules"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                      f:readOnly: {}
+                    k:{"mountPath":"/run/xtables.lock"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                    k:{"mountPath":"/var/lib/calico"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                    k:{"mountPath":"/var/run/calico"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                    k:{"mountPath":"/var/run/nodeagent"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                k:{"name":"kube-flannel"}:
+                  .: {}
+                  f:command: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"FLANNELD_IFACE"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:configMapKeyRef:
+                          .: {}
+                          f:key: {}
+                          f:name: {}
+                    k:{"name":"FLANNELD_IP_MASQ"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:configMapKeyRef:
+                          .: {}
+                          f:key: {}
+                          f:name: {}
+                    k:{"name":"POD_NAME"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                    k:{"name":"POD_NAMESPACE"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:resources: {}
+                  f:securityContext:
+                    .: {}
+                    f:privileged: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/etc/kube-flannel/"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                    k:{"mountPath":"/run/xtables.lock"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+              f:dnsPolicy: {}
+              f:hostNetwork: {}
+              f:initContainers:
+                .: {}
+                k:{"name":"flexvol-driver"}:
+                  .: {}
+                  f:command: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:resources: {}
+                  f:securityContext:
+                    .: {}
+                    f:privileged: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/host/driver"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                k:{"name":"install-cni"}:
+                  .: {}
+                  f:command: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"CNI_CONF_NAME"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"CNI_MTU"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:configMapKeyRef:
+                          .: {}
+                          f:key: {}
+                          f:name: {}
+                    k:{"name":"CNI_NETWORK_CONFIG"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:configMapKeyRef:
+                          .: {}
+                          f:key: {}
+                          f:name: {}
+                    k:{"name":"KUBERNETES_NODE_NAME"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                    k:{"name":"SLEEP"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:resources: {}
+                  f:securityContext:
+                    .: {}
+                    f:privileged: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/host/etc/cni/net.d"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                    k:{"mountPath":"/host/opt/cni/bin"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+              f:nodeSelector:
+                .: {}
+                f:kubernetes.io/os: {}
+              f:priorityClassName: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:tolerations: {}
+              f:volumes:
+                .: {}
+                k:{"name":"cni-bin-dir"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+                k:{"name":"cni-net-dir"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+                k:{"name":"flannel-cfg"}:
+                  .: {}
+                  f:configMap:
+                    .: {}
+                    f:defaultMode: {}
+                    f:name: {}
+                  f:name: {}
+                k:{"name":"flexvol-driver-host"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+                k:{"name":"lib-modules"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+                k:{"name":"policysync"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+                k:{"name":"var-lib-calico"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+                k:{"name":"var-run-calico"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+                k:{"name":"xtables-lock"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+          f:updateStrategy:
+            f:rollingUpdate:
+              .: {}
+              f:maxSurge: {}
+              f:maxUnavailable: {}
+            f:type: {}
+      manager: helm
+      operation: Update
+      time: "2022-03-06T22:47:19Z"
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:currentNumberScheduled: {}
+          f:desiredNumberScheduled: {}
+          f:numberAvailable: {}
+          f:numberReady: {}
+          f:observedGeneration: {}
+          f:updatedNumberScheduled: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-08T00:12:38Z"
+    name: rke2-canal
+    namespace: kube-system
+    resourceVersion: "1026188"
+    uid: 5842c6da-a7e6-4f76-a25c-4eba039b31a2
+  spec:
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        k8s-app: canal
+    template:
+      metadata:
+        creationTimestamp: "null"
+        labels:
+          k8s-app: canal
+      spec:
+        containers:
+        - command:
+          - start_runit
+          env:
+          - name: DATASTORE_TYPE
+            value: kubernetes
+          - name: USE_POD_CIDR
+            value: "true"
+          - name: WAIT_FOR_DATASTORE
+            value: "true"
+          - name: NODENAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: CALICO_NETWORKING_BACKEND
+            value: none
+          - name: CLUSTER_TYPE
+            value: k8s,canal
+          - name: FELIX_IPTABLESREFRESHINTERVAL
+            value: "60"
+          - name: FELIX_IPTABLESBACKEND
+            value: auto
+          - name: IP
+          - name: CALICO_DISABLE_FILE_LOGGING
+            value: "true"
+          - name: FELIX_DEFAULTENDPOINTTOHOSTACTION
+            value: ACCEPT
+          - name: FELIX_IPV6SUPPORT
+            value: "false"
+          - name: FELIX_LOGSEVERITYSCREEN
+            value: info
+          - name: FELIX_HEALTHENABLED
+            value: "true"
+          - name: FELIX_PROMETHEUSMETRICSENABLED
+            value: "true"
+          - name: FELIX_XDPENABLED
+            value: "false"
+          - name: FELIX_FAILSAFEINBOUNDHOSTPORTS
+          - name: FELIX_FAILSAFEOUTBOUNDHOSTPORTS
+          image: rancher/hardened-calico:v3.20.2-build20211119
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - /bin/calico-node
+              - -felix-live
+            failureThreshold: 6
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: calico-node
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              host: localhost
+              path: /readiness
+              port: 9099
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            requests:
+              cpu: 250m
+          securityContext:
+            privileged: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /lib/modules
+            name: lib-modules
+            readOnly: true
+          - mountPath: /run/xtables.lock
+            name: xtables-lock
+          - mountPath: /var/run/calico
+            name: var-run-calico
+          - mountPath: /var/lib/calico
+            name: var-lib-calico
+          - mountPath: /var/run/nodeagent
+            name: policysync
+        - command:
+          - /opt/bin/flanneld
+          - --ip-masq
+          - --kube-subnet-mgr
+          env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: FLANNELD_IFACE
+            valueFrom:
+              configMapKeyRef:
+                key: canal_iface
+                name: rke2-canal-config
+          - name: FLANNELD_IP_MASQ
+            valueFrom:
+              configMapKeyRef:
+                key: masquerade
+                name: rke2-canal-config
+          image: rancher/hardened-flannel:v0.15.1-build20211119
+          imagePullPolicy: IfNotPresent
+          name: kube-flannel
+          resources: {}
+          securityContext:
+            privileged: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /run/xtables.lock
+            name: xtables-lock
+          - mountPath: /etc/kube-flannel/
+            name: flannel-cfg
+        dnsPolicy: ClusterFirst
+        hostNetwork: true
+        initContainers:
+        - command:
+          - /opt/cni/bin/install
+          env:
+          - name: CNI_CONF_NAME
+            value: 10-canal.conflist
+          - name: CNI_NETWORK_CONFIG
+            valueFrom:
+              configMapKeyRef:
+                key: cni_network_config
+                name: rke2-canal-config
+          - name: KUBERNETES_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: CNI_MTU
+            valueFrom:
+              configMapKeyRef:
+                key: veth_mtu
+                name: rke2-canal-config
+          - name: SLEEP
+            value: "false"
+          image: rancher/hardened-calico:v3.20.2-build20211119
+          imagePullPolicy: IfNotPresent
+          name: install-cni
+          resources: {}
+          securityContext:
+            privileged: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /host/opt/cni/bin
+            name: cni-bin-dir
+          - mountPath: /host/etc/cni/net.d
+            name: cni-net-dir
+        - command:
+          - /usr/local/bin/flexvol.sh
+          - -s
+          - /usr/local/bin/flexvol
+          - -i
+          - flexvoldriver
+          image: rancher/hardened-calico:v3.20.2-build20211119
+          imagePullPolicy: IfNotPresent
+          name: flexvol-driver
+          resources: {}
+          securityContext:
+            privileged: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /host/driver
+            name: flexvol-driver-host
+        nodeSelector:
+          kubernetes.io/os: linux
+        priorityClassName: system-node-critical
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: canal
+        serviceAccountName: canal
+        terminationGracePeriodSeconds: 0
+        tolerations:
+        - effect: NoSchedule
+          operator: Exists
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - effect: NoExecute
+          operator: Exists
+        volumes:
+        - hostPath:
+            path: /lib/modules
+            type: "null"
+          name: lib-modules
+        - hostPath:
+            path: /var/run/calico
+            type: "null"
+          name: var-run-calico
+        - hostPath:
+            path: /var/lib/calico
+            type: "null"
+          name: var-lib-calico
+        - hostPath:
+            path: /run/xtables.lock
+            type: FileOrCreate
+          name: xtables-lock
+        - configMap:
+            defaultMode: 420
+            name: rke2-canal-config
+          name: flannel-cfg
+        - hostPath:
+            path: /opt/cni/bin
+            type: "null"
+          name: cni-bin-dir
+        - hostPath:
+            path: /etc/cni/net.d
+            type: "null"
+          name: cni-net-dir
+        - hostPath:
+            path: /var/run/nodeagent
+            type: DirectoryOrCreate
+          name: policysync
+        - hostPath:
+            path: /var/lib/kubelet/volumeplugins/nodeagent~uds
+            type: DirectoryOrCreate
+          name: flexvol-driver-host
+    updateStrategy:
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 1
+      type: RollingUpdate
+  status:
+    currentNumberScheduled: 1
+    desiredNumberScheduled: 1
+    numberAvailable: 1
+    numberMisscheduled: 0
+    numberReady: 1
+    observedGeneration: 1
+    updatedNumberScheduled: 1
+- apiVersion: apps/v1
+  kind: DaemonSet
+  metadata:
+    annotations:
+      deprecated.daemonset.template.generation: "2"
+      meta.helm.sh/release-name: rke2-ingress-nginx
+      meta.helm.sh/release-namespace: kube-system
+    creationTimestamp: "2022-03-06T22:48:04Z"
+    generation: 2
+    labels:
+      app.kubernetes.io/component: controller
+      app.kubernetes.io/instance: rke2-ingress-nginx
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: rke2-ingress-nginx
+      app.kubernetes.io/version: 1.0.2
+      helm.sh/chart: rke2-ingress-nginx-4.0.306
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deprecated.daemonset.template.generation: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/component: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:app.kubernetes.io/version: {}
+            f:helm.sh/chart: {}
+        f:spec:
+          f:revisionHistoryLimit: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:app.kubernetes.io/component: {}
+                f:app.kubernetes.io/instance: {}
+                f:app.kubernetes.io/name: {}
+            f:spec:
+              f:containers:
+                k:{"name":"rke2-ingress-nginx-controller"}:
+                  .: {}
+                  f:args: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"LD_PRELOAD"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"POD_NAME"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                    k:{"name":"POD_NAMESPACE"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:lifecycle:
+                    .: {}
+                    f:preStop:
+                      .: {}
+                      f:exec:
+                        .: {}
+                        f:command: {}
+                  f:livenessProbe:
+                    .: {}
+                    f:failureThreshold: {}
+                    f:httpGet:
+                      .: {}
+                      f:path: {}
+                      f:port: {}
+                      f:scheme: {}
+                    f:initialDelaySeconds: {}
+                    f:periodSeconds: {}
+                    f:successThreshold: {}
+                    f:timeoutSeconds: {}
+                  f:name: {}
+                  f:ports:
+                    .: {}
+                    k:{"containerPort":80,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:hostPort: {}
+                      f:name: {}
+                      f:protocol: {}
+                    k:{"containerPort":443,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:hostPort: {}
+                      f:name: {}
+                      f:protocol: {}
+                    k:{"containerPort":8444,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:hostPort: {}
+                      f:name: {}
+                      f:protocol: {}
+                  f:readinessProbe:
+                    .: {}
+                    f:failureThreshold: {}
+                    f:httpGet:
+                      .: {}
+                      f:path: {}
+                      f:port: {}
+                      f:scheme: {}
+                    f:initialDelaySeconds: {}
+                    f:periodSeconds: {}
+                    f:successThreshold: {}
+                    f:timeoutSeconds: {}
+                  f:resources:
+                    .: {}
+                    f:requests:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                  f:securityContext:
+                    .: {}
+                    f:allowPrivilegeEscalation: {}
+                    f:capabilities:
+                      .: {}
+                      f:add: {}
+                      f:drop: {}
+                    f:runAsUser: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/usr/local/certificates/"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                      f:readOnly: {}
+              f:dnsPolicy: {}
+              f:hostNetwork: {}
+              f:nodeSelector:
+                .: {}
+                f:kubernetes.io/os: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:volumes:
+                .: {}
+                k:{"name":"webhook-cert"}:
+                  .: {}
+                  f:name: {}
+                  f:secret:
+                    .: {}
+                    f:defaultMode: {}
+                    f:secretName: {}
+          f:updateStrategy:
+            f:rollingUpdate:
+              .: {}
+              f:maxSurge: {}
+              f:maxUnavailable: {}
+            f:type: {}
+      manager: helm
+      operation: Update
+      time: "2022-03-06T22:49:52Z"
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:currentNumberScheduled: {}
+          f:desiredNumberScheduled: {}
+          f:numberAvailable: {}
+          f:numberMisscheduled: {}
+          f:numberReady: {}
+          f:observedGeneration: {}
+          f:updatedNumberScheduled: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-08T00:12:41Z"
+    name: rke2-ingress-nginx-controller
+    namespace: kube-system
+    resourceVersion: "1026228"
+    uid: b7a8dc9a-0c19-464b-85cf-94e006cf7ed3
+  spec:
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app.kubernetes.io/component: controller
+        app.kubernetes.io/instance: rke2-ingress-nginx
+        app.kubernetes.io/name: rke2-ingress-nginx
+    template:
+      metadata:
+        creationTimestamp: "null"
+        labels:
+          app.kubernetes.io/component: controller
+          app.kubernetes.io/instance: rke2-ingress-nginx
+          app.kubernetes.io/name: rke2-ingress-nginx
+      spec:
+        containers:
+        - args:
+          - /nginx-ingress-controller
+          - --election-id=ingress-controller-leader
+          - --controller-class=k8s.io/ingress-nginx
+          - --configmap=$(POD_NAMESPACE)/rke2-ingress-nginx-controller
+          - --validating-webhook=:8444
+          - --validating-webhook-certificate=/usr/local/certificates/cert
+          - --validating-webhook-key=/usr/local/certificates/key
+          - --watch-ingress-without-class=true
+          - --default-ssl-certificate=cattle-system/tls-rancher-internal
+          env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: LD_PRELOAD
+            value: /usr/local/lib/libmimalloc.so
+          image: rancher/nginx-ingress-controller:nginx-1.0.2-hardened2
+          imagePullPolicy: IfNotPresent
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - /wait-shutdown
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: rke2-ingress-nginx-controller
+          ports:
+          - containerPort: 80
+            hostPort: 80
+            name: http
+            protocol: TCP
+          - containerPort: 443
+            hostPort: 443
+            name: https
+            protocol: TCP
+          - containerPort: 8444
+            hostPort: 8444
+            name: webhook
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 90Mi
+          securityContext:
+            allowPrivilegeEscalation: true
+            capabilities:
+              add:
+              - NET_BIND_SERVICE
+              drop:
+              - ALL
+            runAsUser: 101
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /usr/local/certificates/
+            name: webhook-cert
+            readOnly: true
+        dnsPolicy: ClusterFirstWithHostNet
+        hostNetwork: true
+        nodeSelector:
+          kubernetes.io/os: linux
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: rke2-ingress-nginx
+        serviceAccountName: rke2-ingress-nginx
+        terminationGracePeriodSeconds: 300
+        volumes:
+        - name: webhook-cert
+          secret:
+            defaultMode: 420
+            secretName: rke2-ingress-nginx-admission
+    updateStrategy:
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 1
+      type: RollingUpdate
+  status:
+    currentNumberScheduled: 1
+    desiredNumberScheduled: 1
+    numberAvailable: 1
+    numberMisscheduled: 0
+    numberReady: 1
+    observedGeneration: 2
+    updatedNumberScheduled: 1
+kind: List
+metadata:
+  resourceVersion: "14658995"

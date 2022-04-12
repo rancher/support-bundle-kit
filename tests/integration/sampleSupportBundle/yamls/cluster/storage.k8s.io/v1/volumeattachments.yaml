@@ -1,0 +1,95 @@
+apiVersion: v1
+items:
+- apiVersion: storage.k8s.io/v1
+  kind: VolumeAttachment
+  metadata:
+    annotations:
+      csi.alpha.kubernetes.io/node-id: node1
+    creationTimestamp: "2022-03-06T22:52:47Z"
+    finalizers:
+    - external-attacher/driver-longhorn-io
+    managedFields:
+    - apiVersion: storage.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:spec:
+          f:attacher: {}
+          f:nodeName: {}
+          f:source:
+            f:persistentVolumeName: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:52:47Z"
+    - apiVersion: storage.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:csi.alpha.kubernetes.io/node-id: {}
+          f:finalizers:
+            .: {}
+            v:"external-attacher/driver-longhorn-io"null: {}
+        f:status:
+          f:attached: {}
+      manager: csi-attacher
+      operation: Update
+      time: "2022-03-06T22:52:58Z"
+    name: csi-a1a2a863c6a38f2a6cff5ce0c5a8f0350815aee49b4ee2313ac4b01f502f10ef
+    resourceVersion: "5871"
+    uid: 4881f291-9180-4620-84d7-4d5c0e57429e
+  spec:
+    attacher: driver.longhorn.io
+    nodeName: node1
+    source:
+      persistentVolumeName: pvc-232180f3-6740-4682-ba5c-f4b57a75512b
+  status:
+    attached: true
+- apiVersion: storage.k8s.io/v1
+  kind: VolumeAttachment
+  metadata:
+    annotations:
+      csi.alpha.kubernetes.io/node-id: node1
+    creationTimestamp: "2022-03-06T22:52:49Z"
+    finalizers:
+    - external-attacher/driver-longhorn-io
+    managedFields:
+    - apiVersion: storage.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:spec:
+          f:attacher: {}
+          f:nodeName: {}
+          f:source:
+            f:persistentVolumeName: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:52:49Z"
+    - apiVersion: storage.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:csi.alpha.kubernetes.io/node-id: {}
+          f:finalizers:
+            .: {}
+            v:"external-attacher/driver-longhorn-io"null: {}
+        f:status:
+          f:attached: {}
+      manager: csi-attacher
+      operation: Update
+      time: "2022-03-06T22:52:59Z"
+    name: csi-c73e33c9cacbf01d506614f5377daf4c195922a25ecadb00f2c204bd8a3d0056
+    resourceVersion: "5893"
+    uid: b9c09939-b48a-4556-898b-88625cbedae6
+  spec:
+    attacher: driver.longhorn.io
+    nodeName: node1
+    source:
+      persistentVolumeName: pvc-ce3fa571-6642-4018-b7fd-9eb2c1e56191
+  status:
+    attached: true
+kind: List
+metadata:
+  resourceVersion: "14658871"

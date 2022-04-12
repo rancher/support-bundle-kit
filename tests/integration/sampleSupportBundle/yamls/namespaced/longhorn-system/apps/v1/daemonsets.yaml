@@ -1,0 +1,922 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: DaemonSet
+  metadata:
+    annotations:
+      deprecated.daemonset.template.generation: "1"
+      longhorn.io/last-applied-tolerations: '[{"key":"kubevirt.io/drain","operator":"Exists","effect":"NoSchedule"}]'
+    creationTimestamp: "2022-03-06T22:51:51Z"
+    generation: 1
+    labels:
+      longhorn.io/component: engine-image
+      longhorn.io/engine-image: ei-fa2dfbf0
+      longhorn.io/managed-by: longhorn-manager
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deprecated.daemonset.template.generation: {}
+            f:longhorn.io/last-applied-tolerations: {}
+          f:labels:
+            .: {}
+            f:longhorn.io/component: {}
+            f:longhorn.io/engine-image: {}
+            f:longhorn.io/managed-by: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"44c4e724-9cba-43ae-843d-a26aa216a988"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:revisionHistoryLimit: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:longhorn.io/component: {}
+                f:longhorn.io/engine-image: {}
+              f:name: {}
+              f:ownerReferences:
+                .: {}
+                k:{"uid":"44c4e724-9cba-43ae-843d-a26aa216a988"}:
+                  .: {}
+                  f:apiVersion: {}
+                  f:blockOwnerDeletion: {}
+                  f:kind: {}
+                  f:name: {}
+                  f:uid: {}
+            f:spec:
+              f:containers:
+                k:{"name":"engine-image-ei-fa2dfbf0"}:
+                  .: {}
+                  f:args: {}
+                  f:command: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:readinessProbe:
+                    .: {}
+                    f:exec:
+                      .: {}
+                      f:command: {}
+                    f:failureThreshold: {}
+                    f:initialDelaySeconds: {}
+                    f:periodSeconds: {}
+                    f:successThreshold: {}
+                    f:timeoutSeconds: {}
+                  f:resources: {}
+                  f:securityContext:
+                    .: {}
+                    f:privileged: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/data/"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+              f:dnsPolicy: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:tolerations: {}
+              f:volumes:
+                .: {}
+                k:{"name":"data"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+          f:updateStrategy:
+            f:rollingUpdate:
+              .: {}
+              f:maxSurge: {}
+              f:maxUnavailable: {}
+            f:type: {}
+      manager: longhorn-manager
+      operation: Update
+      time: "2022-03-06T22:51:52Z"
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:currentNumberScheduled: {}
+          f:desiredNumberScheduled: {}
+          f:numberAvailable: {}
+          f:numberMisscheduled: {}
+          f:numberReady: {}
+          f:observedGeneration: {}
+          f:updatedNumberScheduled: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-08T00:12:53Z"
+    name: engine-image-ei-fa2dfbf0
+    namespace: longhorn-system
+    ownerReferences:
+    - apiVersion: longhorn.io/v1beta1
+      blockOwnerDeletion: true
+      kind: EngineImage
+      name: ei-fa2dfbf0
+      uid: 44c4e724-9cba-43ae-843d-a26aa216a988
+    resourceVersion: "1026194"
+    uid: 9e49a19f-ac73-4710-8386-ba73b77522e0
+  spec:
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        longhorn.io/component: engine-image
+        longhorn.io/engine-image: ei-fa2dfbf0
+    template:
+      metadata:
+        creationTimestamp: "null"
+        labels:
+          longhorn.io/component: engine-image
+          longhorn.io/engine-image: ei-fa2dfbf0
+        name: engine-image-ei-fa2dfbf0
+        ownerReferences:
+        - apiVersion: longhorn.io/v1beta1
+          blockOwnerDeletion: true
+          kind: EngineImage
+          name: ei-fa2dfbf0
+          uid: 44c4e724-9cba-43ae-843d-a26aa216a988
+      spec:
+        containers:
+        - args:
+          - -c
+          - diff /usr/local/bin/longhorn /data/longhorn > /dev/null 2>&1; if [ $?
+            -ne 0 ]; then cp -p /usr/local/bin/longhorn /data/ && echo installed;
+            fi && trap 'rm /data/longhorn* && echo cleaned up' EXIT && sleep infinity
+          command:
+          - /bin/bash
+          image: longhornio/longhorn-engine:v1.2.3
+          imagePullPolicy: IfNotPresent
+          name: engine-image-ei-fa2dfbf0
+          readinessProbe:
+            exec:
+              command:
+              - sh
+              - -c
+              - ls /data/longhorn && /data/longhorn version --client-only
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 4
+          resources: {}
+          securityContext:
+            privileged: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /data/
+            name: data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: longhorn-service-account
+        serviceAccountName: longhorn-service-account
+        terminationGracePeriodSeconds: 30
+        tolerations:
+        - effect: NoSchedule
+          key: kubevirt.io/drain
+          operator: Exists
+        volumes:
+        - hostPath:
+            path: /var/lib/longhorn/engine-binaries/longhornio-longhorn-engine-v1.2.3
+            type: "null"
+          name: data
+    updateStrategy:
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 100%
+      type: RollingUpdate
+  status:
+    currentNumberScheduled: 1
+    desiredNumberScheduled: 1
+    numberAvailable: 1
+    numberMisscheduled: 0
+    numberReady: 1
+    observedGeneration: 1
+    updatedNumberScheduled: 1
+- apiVersion: apps/v1
+  kind: DaemonSet
+  metadata:
+    annotations:
+      deprecated.daemonset.template.generation: "1"
+      driver.longhorn.io/kubernetes-version: v1.21.7+rke2r1
+      driver.longhorn.io/version: v1.2.3
+      longhorn.io/last-applied-tolerations: '[{"key":"kubevirt.io/drain","operator":"Exists","effect":"NoSchedule"}]'
+    creationTimestamp: "2022-03-06T22:52:01Z"
+    generation: 1
+    labels:
+      longhorn.io/managed-by: longhorn-manager
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deprecated.daemonset.template.generation: {}
+            f:driver.longhorn.io/kubernetes-version: {}
+            f:driver.longhorn.io/version: {}
+            f:longhorn.io/last-applied-tolerations: {}
+          f:labels:
+            .: {}
+            f:longhorn.io/managed-by: {}
+        f:spec:
+          f:revisionHistoryLimit: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:app: {}
+            f:spec:
+              f:containers:
+                k:{"name":"longhorn-csi-plugin"}:
+                  .: {}
+                  f:args: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"CSI_ENDPOINT"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"NODE_ID"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:lifecycle:
+                    .: {}
+                    f:preStop:
+                      .: {}
+                      f:exec:
+                        .: {}
+                        f:command: {}
+                  f:name: {}
+                  f:resources: {}
+                  f:securityContext:
+                    .: {}
+                    f:allowPrivilegeEscalation: {}
+                    f:capabilities:
+                      .: {}
+                      f:add: {}
+                    f:privileged: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/csi/"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                    k:{"mountPath":"/dev"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                    k:{"mountPath":"/lib/modules"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                      f:readOnly: {}
+                    k:{"mountPath":"/rootfs"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:mountPropagation: {}
+                      f:name: {}
+                    k:{"mountPath":"/sys"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                    k:{"mountPath":"/var/lib/kubelet/plugins/kubernetes.io/csi"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:mountPropagation: {}
+                      f:name: {}
+                    k:{"mountPath":"/var/lib/kubelet/pods"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:mountPropagation: {}
+                      f:name: {}
+                k:{"name":"node-driver-registrar"}:
+                  .: {}
+                  f:args: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"ADDRESS"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:lifecycle:
+                    .: {}
+                    f:preStop:
+                      .: {}
+                      f:exec:
+                        .: {}
+                        f:command: {}
+                  f:name: {}
+                  f:resources: {}
+                  f:securityContext:
+                    .: {}
+                    f:privileged: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/csi/"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                    k:{"mountPath":"/registration"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+              f:dnsPolicy: {}
+              f:hostPID: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:tolerations: {}
+              f:volumes:
+                .: {}
+                k:{"name":"host"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+                k:{"name":"host-dev"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+                k:{"name":"host-sys"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+                k:{"name":"kubernetes-csi-dir"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+                k:{"name":"lib-modules"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+                k:{"name":"pods-mount-dir"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+                k:{"name":"registration-dir"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+                k:{"name":"socket-dir"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+          f:updateStrategy:
+            f:rollingUpdate:
+              .: {}
+              f:maxSurge: {}
+              f:maxUnavailable: {}
+            f:type: {}
+      manager: longhorn-manager
+      operation: Update
+      time: "2022-03-06T22:52:01Z"
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:currentNumberScheduled: {}
+          f:desiredNumberScheduled: {}
+          f:numberAvailable: {}
+          f:numberMisscheduled: {}
+          f:numberReady: {}
+          f:observedGeneration: {}
+          f:updatedNumberScheduled: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-08T00:12:46Z"
+    name: longhorn-csi-plugin
+    namespace: longhorn-system
+    resourceVersion: "1026222"
+    uid: 745a06c2-6cee-4416-bcfd-aec01c52383c
+  spec:
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: longhorn-csi-plugin
+    template:
+      metadata:
+        creationTimestamp: "null"
+        labels:
+          app: longhorn-csi-plugin
+      spec:
+        containers:
+        - args:
+          - --v=2
+          - --csi-address=$(ADDRESS)
+          - --kubelet-registration-path=/var/lib/kubelet/plugins/driver.longhorn.io/csi.sock
+          env:
+          - name: ADDRESS
+            value: /csi/csi.sock
+          image: longhornio/csi-node-driver-registrar:v2.3.0
+          imagePullPolicy: IfNotPresent
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - /bin/sh
+                - -c
+                - rm -rf /registration/driver.longhorn.io /registration/driver.longhorn.io-reg.sock
+                  /csi//*
+          name: node-driver-registrar
+          resources: {}
+          securityContext:
+            privileged: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /csi/
+            name: socket-dir
+          - mountPath: /registration
+            name: registration-dir
+        - args:
+          - longhorn-manager
+          - -d
+          - csi
+          - --nodeid=$(NODE_ID)
+          - --endpoint=$(CSI_ENDPOINT)
+          - --drivername=driver.longhorn.io
+          - --manager-url=http://longhorn-backend:9500/v1
+          env:
+          - name: NODE_ID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: CSI_ENDPOINT
+            value: unix:///csi/csi.sock
+          image: longhornio/longhorn-manager:v1.2.3
+          imagePullPolicy: IfNotPresent
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - /bin/sh
+                - -c
+                - rm -f /csi//*
+          name: longhorn-csi-plugin
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: true
+            capabilities:
+              add:
+              - SYS_ADMIN
+            privileged: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /csi/
+            name: socket-dir
+          - mountPath: /var/lib/kubelet/plugins/kubernetes.io/csi
+            mountPropagation: Bidirectional
+            name: kubernetes-csi-dir
+          - mountPath: /var/lib/kubelet/pods
+            mountPropagation: Bidirectional
+            name: pods-mount-dir
+          - mountPath: /dev
+            name: host-dev
+          - mountPath: /sys
+            name: host-sys
+          - mountPath: /rootfs
+            mountPropagation: Bidirectional
+            name: host
+          - mountPath: /lib/modules
+            name: lib-modules
+            readOnly: true
+        dnsPolicy: ClusterFirst
+        hostPID: true
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: longhorn-service-account
+        serviceAccountName: longhorn-service-account
+        terminationGracePeriodSeconds: 30
+        tolerations:
+        - effect: NoSchedule
+          key: kubevirt.io/drain
+          operator: Exists
+        volumes:
+        - hostPath:
+            path: /var/lib/kubelet/plugins/kubernetes.io/csi
+            type: DirectoryOrCreate
+          name: kubernetes-csi-dir
+        - hostPath:
+            path: /var/lib/kubelet/plugins_registry
+            type: DirectoryOrCreate
+          name: registration-dir
+        - hostPath:
+            path: /var/lib/kubelet/plugins/driver.longhorn.io
+            type: DirectoryOrCreate
+          name: socket-dir
+        - hostPath:
+            path: /var/lib/kubelet/pods
+            type: DirectoryOrCreate
+          name: pods-mount-dir
+        - hostPath:
+            path: /dev
+            type: "null"
+          name: host-dev
+        - hostPath:
+            path: /sys
+            type: "null"
+          name: host-sys
+        - hostPath:
+            path: /
+            type: "null"
+          name: host
+        - hostPath:
+            path: /lib/modules
+            type: "null"
+          name: lib-modules
+    updateStrategy:
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 1
+      type: RollingUpdate
+  status:
+    currentNumberScheduled: 1
+    desiredNumberScheduled: 1
+    numberAvailable: 1
+    numberMisscheduled: 0
+    numberReady: 1
+    observedGeneration: 1
+    updatedNumberScheduled: 1
+- apiVersion: apps/v1
+  kind: DaemonSet
+  metadata:
+    annotations:
+      deprecated.daemonset.template.generation: "1"
+      meta.helm.sh/release-name: harvester
+      meta.helm.sh/release-namespace: harvester-system
+      objectset.rio.cattle.io/id: default-mcc-harvester-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:50:37Z"
+    generation: 1
+    labels:
+      app: longhorn-manager
+      app.kubernetes.io/instance: harvester
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: longhorn
+      app.kubernetes.io/version: v1.2.3
+      helm.sh/chart: longhorn-1.2.3
+      objectset.rio.cattle.io/hash: e852fa897f5eae59a44b4bfe186aad80b10b94b3
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deprecated.daemonset.template.generation: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:app.kubernetes.io/version: {}
+            f:helm.sh/chart: {}
+            f:objectset.rio.cattle.io/hash: {}
+        f:spec:
+          f:revisionHistoryLimit: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:app: {}
+                f:app.kubernetes.io/instance: {}
+                f:app.kubernetes.io/managed-by: {}
+                f:app.kubernetes.io/name: {}
+                f:app.kubernetes.io/version: {}
+                f:helm.sh/chart: {}
+            f:spec:
+              f:containers:
+                k:{"name":"longhorn-manager"}:
+                  .: {}
+                  f:command: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"DEFAULT_SETTING_PATH"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"NODE_NAME"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                    k:{"name":"POD_IP"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                    k:{"name":"POD_NAMESPACE"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:ports:
+                    .: {}
+                    k:{"containerPort":9500,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:name: {}
+                      f:protocol: {}
+                  f:readinessProbe:
+                    .: {}
+                    f:failureThreshold: {}
+                    f:periodSeconds: {}
+                    f:successThreshold: {}
+                    f:tcpSocket:
+                      .: {}
+                      f:port: {}
+                    f:timeoutSeconds: {}
+                  f:resources: {}
+                  f:securityContext:
+                    .: {}
+                    f:privileged: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/host/dev/"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                    k:{"mountPath":"/host/proc/"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                    k:{"mountPath":"/var/lib/longhorn-setting/"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                    k:{"mountPath":"/var/lib/longhorn/"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:mountPropagation: {}
+                      f:name: {}
+              f:dnsPolicy: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:volumes:
+                .: {}
+                k:{"name":"dev"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+                k:{"name":"longhorn"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+                k:{"name":"longhorn-default-setting"}:
+                  .: {}
+                  f:configMap:
+                    .: {}
+                    f:defaultMode: {}
+                    f:name: {}
+                  f:name: {}
+                k:{"name":"proc"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+          f:updateStrategy:
+            f:rollingUpdate:
+              .: {}
+              f:maxSurge: {}
+              f:maxUnavailable: {}
+            f:type: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:50:37Z"
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:currentNumberScheduled: {}
+          f:desiredNumberScheduled: {}
+          f:numberAvailable: {}
+          f:numberMisscheduled: {}
+          f:numberReady: {}
+          f:observedGeneration: {}
+          f:updatedNumberScheduled: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-08T00:12:42Z"
+    name: longhorn-manager
+    namespace: longhorn-system
+    resourceVersion: "1026239"
+    uid: 7a97fa9d-7927-4d9d-8ac9-84c14a589a35
+  spec:
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: longhorn-manager
+    template:
+      metadata:
+        creationTimestamp: "null"
+        labels:
+          app: longhorn-manager
+          app.kubernetes.io/instance: harvester
+          app.kubernetes.io/managed-by: Helm
+          app.kubernetes.io/name: longhorn
+          app.kubernetes.io/version: v1.2.3
+          helm.sh/chart: longhorn-1.2.3
+      spec:
+        containers:
+        - command:
+          - longhorn-manager
+          - -d
+          - daemon
+          - --engine-image
+          - longhornio/longhorn-engine:v1.2.3
+          - --instance-manager-image
+          - longhornio/longhorn-instance-manager:v1_20211210
+          - --share-manager-image
+          - longhornio/longhorn-share-manager:v1_20211020
+          - --backing-image-manager-image
+          - longhornio/backing-image-manager:v2_20210820
+          - --manager-image
+          - longhornio/longhorn-manager:v1.2.3
+          - --service-account
+          - longhorn-service-account
+          env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: status.podIP
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: DEFAULT_SETTING_PATH
+            value: /var/lib/longhorn-setting/default-setting.yaml
+          image: longhornio/longhorn-manager:v1.2.3
+          imagePullPolicy: IfNotPresent
+          name: longhorn-manager
+          ports:
+          - containerPort: 9500
+            name: manager
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 9500
+            timeoutSeconds: 1
+          resources: {}
+          securityContext:
+            privileged: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /host/dev/
+            name: dev
+          - mountPath: /host/proc/
+            name: proc
+          - mountPath: /var/lib/longhorn/
+            mountPropagation: Bidirectional
+            name: longhorn
+          - mountPath: /var/lib/longhorn-setting/
+            name: longhorn-default-setting
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: longhorn-service-account
+        serviceAccountName: longhorn-service-account
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - hostPath:
+            path: /dev/
+            type: "null"
+          name: dev
+        - hostPath:
+            path: /proc/
+            type: "null"
+          name: proc
+        - hostPath:
+            path: /var/lib/longhorn/
+            type: "null"
+          name: longhorn
+        - configMap:
+            defaultMode: 420
+            name: longhorn-default-setting
+          name: longhorn-default-setting
+    updateStrategy:
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 100%
+      type: RollingUpdate
+  status:
+    currentNumberScheduled: 1
+    desiredNumberScheduled: 1
+    numberAvailable: 1
+    numberMisscheduled: 0
+    numberReady: 1
+    observedGeneration: 1
+    updatedNumberScheduled: 1
+kind: List
+metadata:
+  resourceVersion: "14659219"

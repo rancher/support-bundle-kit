@@ -1,0 +1,49 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  count: 34075
+  eventTime: "null"
+  firstTimestamp: "2022-03-08T00:11:14Z"
+  involvedObject:
+    kind: Node
+    name: node2
+    uid: node2
+  kind: Event
+  lastTimestamp: "2022-03-22T23:46:53Z"
+  message: 'Node node2 status is now: NodeHasSufficientMemory'
+  metadata:
+    creationTimestamp: "2022-03-08T00:12:20Z"
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:count: {}
+        f:firstTimestamp: {}
+        f:involvedObject:
+          f:kind: {}
+          f:name: {}
+          f:uid: {}
+        f:lastTimestamp: {}
+        f:message: {}
+        f:reason: {}
+        f:source:
+          f:component: {}
+          f:host: {}
+        f:type: {}
+      manager: kubelet
+      operation: Update
+      time: "2022-03-08T00:12:20Z"
+    name: node2.16da3f5b1533a2aa
+    namespace: default
+    resourceVersion: "14657843"
+    uid: 1552e055-ac6e-40bd-9838-d19db00dc844
+  reason: NodeHasSufficientMemory
+  reportingComponent: "null"
+  reportingInstance: "null"
+  source:
+    component: kubelet
+    host: node2
+  type: Normal
+kind: List
+metadata:
+  resourceVersion: "14658967"

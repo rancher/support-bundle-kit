@@ -1,0 +1,11 @@
+2022-03-06T22:52:17.232127109Z I0306 22:52:17.229996       1 main.go:87] Version: v3.0.3
+2022-03-06T22:52:17.243828648Z I0306 22:52:17.240270       1 connection.go:153] Connecting to unix:///csi/csi.sock
+2022-03-06T22:52:19.168933577Z I0306 22:52:19.166228       1 main.go:136] CSI driver name: "driver.longhorn.io"
+2022-03-06T22:52:19.168960867Z W0306 22:52:19.166272       1 metrics.go:333] metrics endpoint will not be started because `metrics-address` was not specified.
+2022-03-06T22:52:19.168978097Z I0306 22:52:19.166298       1 common.go:111] Probing CSI driver for readiness
+2022-03-06T22:52:19.188469202Z I0306 22:52:19.181865       1 main.go:162] Start NewCSISnapshotSideCarController with snapshotter [driver.longhorn.io] kubeconfig [] csiTimeout [1m50s] csiAddress [/csi/csi.sock] resyncPeriod [1m0s] snapshotNamePrefix [snapshot] snapshotNameUUIDLength [824635130392]
+2022-03-06T22:52:19.188519982Z I0306 22:52:19.185241       1 leaderelection.go:243] attempting to acquire leader lease  longhorn-system/external-snapshotter-leader-driver-longhorn-io...
+2022-03-06T22:52:19.336381344Z I0306 22:52:19.333936       1 leaderelection.go:253] successfully acquired lease longhorn-system/external-snapshotter-leader-driver-longhorn-io
+2022-03-06T22:52:19.340337157Z I0306 22:52:19.335562       1 snapshot_controller_base.go:111] Starting CSI snapshotter
+2022-03-06T22:52:19.364419616Z I0306 22:52:19.359505       1 reflector.go:207] Starting reflector *v1beta1.VolumeSnapshotClass (1m0s) from github.com/kubernetes-csi/external-snapshotter/client/v3/informers/externalversions/factory.go:117
+2022-03-06T22:52:19.370828331Z I0306 22:52:19.364493       1 reflector.go:207] Starting reflector *v1beta1.VolumeSnapshotContent (1m0s) from github.com/kubernetes-csi/external-snapshotter/client/v3/informers/externalversions/factory.go:117

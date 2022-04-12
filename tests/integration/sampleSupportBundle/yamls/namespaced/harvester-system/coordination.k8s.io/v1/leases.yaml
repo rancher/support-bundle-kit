@@ -1,0 +1,32 @@
+apiVersion: v1
+items:
+- apiVersion: coordination.k8s.io/v1
+  kind: Lease
+  metadata:
+    creationTimestamp: "2022-03-06T22:51:36Z"
+    managedFields:
+    - apiVersion: coordination.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:spec:
+          f:acquireTime: {}
+          f:holderIdentity: {}
+          f:leaseDurationSeconds: {}
+          f:leaseTransitions: {}
+          f:renewTime: {}
+      manager: Go-http-client
+      operation: Update
+      time: "2022-03-06T22:51:36Z"
+    name: plndr-svcs-lock
+    namespace: harvester-system
+    resourceVersion: "14659181"
+    uid: 305fd855-4fdf-480a-9783-eb73019a0e3a
+  spec:
+    acquireTime: "2022-03-06T22:51:36.582857Z"
+    holderIdentity: node1
+    leaseDurationSeconds: 10
+    leaseTransitions: 0
+    renewTime: "2022-03-22T23:50:00.496370Z"
+kind: List
+metadata:
+  resourceVersion: "14659188"

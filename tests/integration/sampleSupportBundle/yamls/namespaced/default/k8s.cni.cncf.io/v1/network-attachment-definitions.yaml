@@ -1,0 +1,55 @@
+apiVersion: v1
+items:
+- apiVersion: k8s.cni.cncf.io/v1
+  kind: NetworkAttachmentDefinition
+  metadata:
+    annotations:
+      network.harvesterhci.io/route: '{"mode":"auto","cidr":"172.16.128.0/21","gateway":"172.16.128.1","connectivity":"true"}'
+    creationTimestamp: "2022-03-06T23:10:38Z"
+    finalizers:
+    - wrangler.cattle.io/harvester-network-nad-controller
+    - wrangler.cattle.io/harvester-network-manager-nad-controller
+    generation: 1
+    labels:
+      network.harvesterhci.io/type: L2VlanNetwork
+      network.harvesterhci.io/vlan-id: "1"
+    managedFields:
+    - apiVersion: k8s.cni.cncf.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations: {}
+          f:labels:
+            .: {}
+            f:network.harvesterhci.io/type: {}
+        f:spec:
+          .: {}
+          f:config: {}
+      manager: harvester
+      operation: Update
+      time: "2022-03-06T23:10:38Z"
+    - apiVersion: k8s.cni.cncf.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            f:network.harvesterhci.io/route: {}
+          f:finalizers:
+            .: {}
+            v:"wrangler.cattle.io/harvester-network-manager-nad-controller"null: {}
+            v:"wrangler.cattle.io/harvester-network-nad-controller"null: {}
+          f:labels:
+            f:network.harvesterhci.io/vlan-id: {}
+      manager: harvester-network-controller
+      operation: Update
+      time: "2022-03-06T23:10:51Z"
+    name: default
+    namespace: default
+    resourceVersion: "17873"
+    uid: e2aff45f-ac45-4742-ab5c-68152df0d425
+  spec:
+    config: '{"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}'
+kind: List
+metadata:
+  continue: "null"
+  resourceVersion: "14658980"

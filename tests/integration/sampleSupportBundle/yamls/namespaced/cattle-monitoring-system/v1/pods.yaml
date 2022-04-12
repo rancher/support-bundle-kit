@@ -1,0 +1,2945 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      cni.projectcalico.org/containerID: 0e1219c7e6358208c5d5e7efb292dcfa1f69fb49478c0b22bf2f1b01a65a1e91
+      cni.projectcalico.org/podIP: 10.52.0.68/32
+      cni.projectcalico.org/podIPs: 10.52.0.68/32
+      k8s.v1.cni.cncf.io/network-status: |-
+        [{
+            "name": "",
+            "ips": [
+                "10.52.0.68"
+            ],
+            "default": true,
+            "dns": {}
+        }]
+      k8s.v1.cni.cncf.io/networks-status: |-
+        [{
+            "name": "",
+            "ips": [
+                "10.52.0.68"
+            ],
+            "default": true,
+            "dns": {}
+        }]
+      kubectl.kubernetes.io/default-container: prometheus
+      kubernetes.io/psp: global-unrestricted-psp
+    creationTimestamp: "2022-03-06T22:52:38Z"
+    generateName: prometheus-rancher-monitoring-prometheus-
+    labels:
+      app: prometheus
+      app.kubernetes.io/instance: rancher-monitoring-prometheus
+      app.kubernetes.io/managed-by: prometheus-operator
+      app.kubernetes.io/name: prometheus
+      app.kubernetes.io/version: 2.28.1
+      controller-revision-hash: prometheus-rancher-monitoring-prometheus-5d65c8544
+      operator.prometheus.io/name: rancher-monitoring-prometheus
+      operator.prometheus.io/shard: "0"
+      prometheus: rancher-monitoring-prometheus
+      statefulset.kubernetes.io/pod-name: prometheus-rancher-monitoring-prometheus-0
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:kubectl.kubernetes.io/default-container: {}
+          f:generateName: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:app.kubernetes.io/version: {}
+            f:controller-revision-hash: {}
+            f:operator.prometheus.io/name: {}
+            f:operator.prometheus.io/shard: {}
+            f:prometheus: {}
+            f:statefulset.kubernetes.io/pod-name: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"9bdef9f5-25d3-41ca-8898-1f662228d5d7"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:containers:
+            k:{"name":"config-reloader"}:
+              .: {}
+              f:args: {}
+              f:command: {}
+              f:env:
+                .: {}
+                k:{"name":"POD_NAME"}:
+                  .: {}
+                  f:name: {}
+                  f:valueFrom:
+                    .: {}
+                    f:fieldRef:
+                      .: {}
+                      f:apiVersion: {}
+                      f:fieldPath: {}
+                k:{"name":"SHARD"}:
+                  .: {}
+                  f:name: {}
+                  f:value: {}
+              f:image: {}
+              f:imagePullPolicy: {}
+              f:name: {}
+              f:ports:
+                .: {}
+                k:{"containerPort":8080,"protocol":"TCP"}:
+                  .: {}
+                  f:containerPort: {}
+                  f:name: {}
+                  f:protocol: {}
+              f:resources:
+                .: {}
+                f:limits:
+                  .: {}
+                  f:cpu: {}
+                  f:memory: {}
+                f:requests:
+                  .: {}
+                  f:cpu: {}
+                  f:memory: {}
+              f:terminationMessagePath: {}
+              f:terminationMessagePolicy: {}
+              f:volumeMounts:
+                .: {}
+                k:{"mountPath":"/etc/prometheus/config"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+                k:{"mountPath":"/etc/prometheus/config_out"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+                k:{"mountPath":"/etc/prometheus/rules/prometheus-rancher-monitoring-prometheus-rulefiles-0"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+            k:{"name":"prometheus"}:
+              .: {}
+              f:args: {}
+              f:image: {}
+              f:imagePullPolicy: {}
+              f:name: {}
+              f:ports:
+                .: {}
+                k:{"containerPort":9090,"protocol":"TCP"}:
+                  .: {}
+                  f:containerPort: {}
+                  f:name: {}
+                  f:protocol: {}
+              f:readinessProbe:
+                .: {}
+                f:failureThreshold: {}
+                f:httpGet:
+                  .: {}
+                  f:path: {}
+                  f:port: {}
+                  f:scheme: {}
+                f:periodSeconds: {}
+                f:successThreshold: {}
+                f:timeoutSeconds: {}
+              f:resources:
+                .: {}
+                f:limits:
+                  .: {}
+                  f:cpu: {}
+                  f:memory: {}
+                f:requests:
+                  .: {}
+                  f:cpu: {}
+                  f:memory: {}
+              f:terminationMessagePath: {}
+              f:terminationMessagePolicy: {}
+              f:volumeMounts:
+                .: {}
+                k:{"mountPath":"/etc/prometheus/certs"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+                  f:readOnly: {}
+                k:{"mountPath":"/etc/prometheus/config_out"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+                  f:readOnly: {}
+                k:{"mountPath":"/etc/prometheus/rules/prometheus-rancher-monitoring-prometheus-rulefiles-0"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+                k:{"mountPath":"/etc/prometheus/web_config/web-config.yaml"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+                  f:readOnly: {}
+                  f:subPath: {}
+                k:{"mountPath":"/prometheus"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+                  f:subPath: {}
+            k:{"name":"prometheus-proxy"}:
+              .: {}
+              f:args: {}
+              f:image: {}
+              f:imagePullPolicy: {}
+              f:name: {}
+              f:ports:
+                .: {}
+                k:{"containerPort":8081,"protocol":"TCP"}:
+                  .: {}
+                  f:containerPort: {}
+                  f:name: {}
+                  f:protocol: {}
+              f:resources: {}
+              f:securityContext:
+                .: {}
+                f:runAsGroup: {}
+                f:runAsUser: {}
+              f:terminationMessagePath: {}
+              f:terminationMessagePolicy: {}
+              f:volumeMounts:
+                .: {}
+                k:{"mountPath":"/nginx"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+                k:{"mountPath":"/var/cache/nginx"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+          f:dnsPolicy: {}
+          f:enableServiceLinks: {}
+          f:hostname: {}
+          f:initContainers:
+            .: {}
+            k:{"name":"init-config-reloader"}:
+              .: {}
+              f:args: {}
+              f:command: {}
+              f:env:
+                .: {}
+                k:{"name":"POD_NAME"}:
+                  .: {}
+                  f:name: {}
+                  f:valueFrom:
+                    .: {}
+                    f:fieldRef:
+                      .: {}
+                      f:apiVersion: {}
+                      f:fieldPath: {}
+                k:{"name":"SHARD"}:
+                  .: {}
+                  f:name: {}
+                  f:value: {}
+              f:image: {}
+              f:imagePullPolicy: {}
+              f:name: {}
+              f:ports:
+                .: {}
+                k:{"containerPort":8080,"protocol":"TCP"}:
+                  .: {}
+                  f:containerPort: {}
+                  f:name: {}
+                  f:protocol: {}
+              f:resources:
+                .: {}
+                f:limits:
+                  .: {}
+                  f:cpu: {}
+                  f:memory: {}
+                f:requests:
+                  .: {}
+                  f:cpu: {}
+                  f:memory: {}
+              f:terminationMessagePath: {}
+              f:terminationMessagePolicy: {}
+              f:volumeMounts:
+                .: {}
+                k:{"mountPath":"/etc/prometheus/config"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+                k:{"mountPath":"/etc/prometheus/config_out"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+                k:{"mountPath":"/etc/prometheus/rules/prometheus-rancher-monitoring-prometheus-rulefiles-0"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+          f:nodeSelector:
+            .: {}
+            f:kubernetes.io/os: {}
+          f:restartPolicy: {}
+          f:schedulerName: {}
+          f:securityContext:
+            .: {}
+            f:fsGroup: {}
+            f:runAsGroup: {}
+            f:runAsNonRoot: {}
+            f:runAsUser: {}
+          f:serviceAccount: {}
+          f:serviceAccountName: {}
+          f:subdomain: {}
+          f:terminationGracePeriodSeconds: {}
+          f:tolerations: {}
+          f:volumes:
+            .: {}
+            k:{"name":"config"}:
+              .: {}
+              f:name: {}
+              f:secret:
+                .: {}
+                f:defaultMode: {}
+                f:secretName: {}
+            k:{"name":"config-out"}:
+              .: {}
+              f:emptyDir: {}
+              f:name: {}
+            k:{"name":"nginx-home"}:
+              .: {}
+              f:emptyDir: {}
+              f:name: {}
+            k:{"name":"prometheus-nginx"}:
+              .: {}
+              f:configMap:
+                .: {}
+                f:defaultMode: {}
+                f:name: {}
+              f:name: {}
+            k:{"name":"prometheus-rancher-monitoring-prometheus-db"}:
+              .: {}
+              f:name: {}
+              f:persistentVolumeClaim:
+                .: {}
+                f:claimName: {}
+            k:{"name":"prometheus-rancher-monitoring-prometheus-rulefiles-0"}:
+              .: {}
+              f:configMap:
+                .: {}
+                f:defaultMode: {}
+                f:name: {}
+              f:name: {}
+            k:{"name":"tls-assets"}:
+              .: {}
+              f:name: {}
+              f:secret:
+                .: {}
+                f:defaultMode: {}
+                f:secretName: {}
+            k:{"name":"web-config"}:
+              .: {}
+              f:name: {}
+              f:secret:
+                .: {}
+                f:defaultMode: {}
+                f:secretName: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:52:38Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:conditions:
+            .: {}
+            k:{"type":"PodScheduled"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:message: {}
+              f:reason: {}
+              f:status: {}
+              f:type: {}
+      manager: kube-scheduler
+      operation: Update
+      time: "2022-03-06T22:52:38Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            f:cni.projectcalico.org/containerID: {}
+            f:cni.projectcalico.org/podIP: {}
+            f:cni.projectcalico.org/podIPs: {}
+      manager: calico
+      operation: Update
+      time: "2022-03-06T22:53:08Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            f:k8s.v1.cni.cncf.io/network-status: {}
+            f:k8s.v1.cni.cncf.io/networks-status: {}
+      manager: multus
+      operation: Update
+      time: "2022-03-06T22:53:08Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:conditions:
+            k:{"type":"ContainersReady"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:status: {}
+              f:type: {}
+            k:{"type":"Initialized"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:status: {}
+              f:type: {}
+            k:{"type":"Ready"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:status: {}
+              f:type: {}
+          f:containerStatuses: {}
+          f:hostIP: {}
+          f:initContainerStatuses: {}
+          f:phase: {}
+          f:podIP: {}
+          f:podIPs:
+            .: {}
+            k:{"ip":"10.52.0.68"}:
+              .: {}
+              f:ip: {}
+          f:startTime: {}
+      manager: kubelet
+      operation: Update
+      time: "2022-03-06T22:53:35Z"
+    name: prometheus-rancher-monitoring-prometheus-0
+    namespace: cattle-monitoring-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: StatefulSet
+      name: prometheus-rancher-monitoring-prometheus
+      uid: 9bdef9f5-25d3-41ca-8898-1f662228d5d7
+    resourceVersion: "6522"
+    uid: 49528edb-4c3d-481e-9f44-520fda36020d
+  spec:
+    containers:
+    - args:
+      - --web.console.templates=/etc/prometheus/consoles
+      - --web.console.libraries=/etc/prometheus/console_libraries
+      - --storage.tsdb.retention.size=50GiB
+      - --config.file=/etc/prometheus/config_out/prometheus.env.yaml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=5d
+      - --web.enable-lifecycle
+      - --web.external-url=http://rancher-monitoring-prometheus.cattle-monitoring-system:9090
+      - --web.route-prefix=/
+      - --web.config.file=/etc/prometheus/web_config/web-config.yaml
+      image: rancher/mirrored-prometheus-prometheus:v2.28.1
+      imagePullPolicy: IfNotPresent
+      name: prometheus
+      ports:
+      - containerPort: 9090
+        name: nginx-http
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 120
+        httpGet:
+          path: /-/ready
+          port: nginx-http
+          scheme: HTTP
+        periodSeconds: 5
+        successThreshold: 1
+        timeoutSeconds: 3
+      resources:
+        limits:
+          cpu: "1"
+          memory: 3000Mi
+        requests:
+          cpu: 500m
+          memory: 750Mi
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: FallbackToLogsOnError
+      volumeMounts:
+      - mountPath: /etc/prometheus/config_out
+        name: config-out
+        readOnly: true
+      - mountPath: /etc/prometheus/certs
+        name: tls-assets
+        readOnly: true
+      - mountPath: /prometheus
+        name: prometheus-rancher-monitoring-prometheus-db
+        subPath: prometheus-db
+      - mountPath: /etc/prometheus/rules/prometheus-rancher-monitoring-prometheus-rulefiles-0
+        name: prometheus-rancher-monitoring-prometheus-rulefiles-0
+      - mountPath: /etc/prometheus/web_config/web-config.yaml
+        name: web-config
+        readOnly: true
+        subPath: web-config.yaml
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-pgv2g
+        readOnly: true
+    - args:
+      - --listen-address=:8080
+      - --reload-url=http://127.0.0.1:9090/-/reload
+      - --config-file=/etc/prometheus/config/prometheus.yaml.gz
+      - --config-envsubst-file=/etc/prometheus/config_out/prometheus.env.yaml
+      - --watched-dir=/etc/prometheus/rules/prometheus-rancher-monitoring-prometheus-rulefiles-0
+      command:
+      - /bin/prometheus-config-reloader
+      env:
+      - name: POD_NAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.name
+      - name: SHARD
+        value: "0"
+      image: rancher/mirrored-prometheus-operator-prometheus-config-reloader:v0.50.0
+      imagePullPolicy: IfNotPresent
+      name: config-reloader
+      ports:
+      - containerPort: 8080
+        name: reloader-web
+        protocol: TCP
+      resources:
+        limits:
+          cpu: 100m
+          memory: 50Mi
+        requests:
+          cpu: 100m
+          memory: 50Mi
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: FallbackToLogsOnError
+      volumeMounts:
+      - mountPath: /etc/prometheus/config
+        name: config
+      - mountPath: /etc/prometheus/config_out
+        name: config-out
+      - mountPath: /etc/prometheus/rules/prometheus-rancher-monitoring-prometheus-rulefiles-0
+        name: prometheus-rancher-monitoring-prometheus-rulefiles-0
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-pgv2g
+        readOnly: true
+    - args:
+      - nginx
+      - -g
+      - daemon off;
+      - -c
+      - /nginx/nginx.conf
+      image: rancher/mirrored-library-nginx:1.21.1-alpine
+      imagePullPolicy: IfNotPresent
+      name: prometheus-proxy
+      ports:
+      - containerPort: 8081
+        name: nginx-http
+        protocol: TCP
+      resources: {}
+      securityContext:
+        runAsGroup: 101
+        runAsUser: 101
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /nginx
+        name: prometheus-nginx
+      - mountPath: /var/cache/nginx
+        name: nginx-home
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-pgv2g
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    hostname: prometheus-rancher-monitoring-prometheus-0
+    initContainers:
+    - args:
+      - --watch-interval=0
+      - --listen-address=:8080
+      - --config-file=/etc/prometheus/config/prometheus.yaml.gz
+      - --config-envsubst-file=/etc/prometheus/config_out/prometheus.env.yaml
+      - --watched-dir=/etc/prometheus/rules/prometheus-rancher-monitoring-prometheus-rulefiles-0
+      command:
+      - /bin/prometheus-config-reloader
+      env:
+      - name: POD_NAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.name
+      - name: SHARD
+        value: "0"
+      image: rancher/mirrored-prometheus-operator-prometheus-config-reloader:v0.50.0
+      imagePullPolicy: IfNotPresent
+      name: init-config-reloader
+      ports:
+      - containerPort: 8080
+        name: reloader-web
+        protocol: TCP
+      resources:
+        limits:
+          cpu: 100m
+          memory: 50Mi
+        requests:
+          cpu: 100m
+          memory: 50Mi
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: FallbackToLogsOnError
+      volumeMounts:
+      - mountPath: /etc/prometheus/config
+        name: config
+      - mountPath: /etc/prometheus/config_out
+        name: config-out
+      - mountPath: /etc/prometheus/rules/prometheus-rancher-monitoring-prometheus-rulefiles-0
+        name: prometheus-rancher-monitoring-prometheus-rulefiles-0
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-pgv2g
+        readOnly: true
+    nodeName: node1
+    nodeSelector:
+      kubernetes.io/os: linux
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 2000
+      runAsGroup: 2000
+      runAsNonRoot: true
+      runAsUser: 1000
+    serviceAccount: rancher-monitoring-prometheus
+    serviceAccountName: rancher-monitoring-prometheus
+    subdomain: prometheus-operated
+    terminationGracePeriodSeconds: 600
+    tolerations:
+    - effect: NoSchedule
+      key: cattle.io/os
+      operator: Equal
+      value: linux
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - name: prometheus-rancher-monitoring-prometheus-db
+      persistentVolumeClaim:
+        claimName: prometheus-rancher-monitoring-prometheus-db-prometheus-rancher-monitoring-prometheus-0
+    - name: config
+      secret:
+        defaultMode: 420
+        secretName: prometheus-rancher-monitoring-prometheus
+    - name: tls-assets
+      secret:
+        defaultMode: 420
+        secretName: prometheus-rancher-monitoring-prometheus-tls-assets
+    - emptyDir: {}
+      name: config-out
+    - configMap:
+        defaultMode: 420
+        name: prometheus-rancher-monitoring-prometheus-rulefiles-0
+      name: prometheus-rancher-monitoring-prometheus-rulefiles-0
+    - name: web-config
+      secret:
+        defaultMode: 420
+        secretName: prometheus-rancher-monitoring-prometheus-web-config
+    - emptyDir: {}
+      name: nginx-home
+    - configMap:
+        defaultMode: 438
+        name: prometheus-nginx-proxy-config
+      name: prometheus-nginx
+    - name: kube-api-access-pgv2g
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:53:15Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:53:35Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:53:35Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:52:47Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://ae043c5f1caf0afb2dbfd298441903626b9d4249a75b2057347db4adf5d5c45e
+      image: docker.io/rancher/mirrored-prometheus-operator-prometheus-config-reloader:v0.50.0
+      imageID: docker.io/rancher/mirrored-prometheus-operator-prometheus-config-reloader@sha256:5e819f4c9063310da7c5497043273553e8478cbb52b29cb86d3f0e96958a0667
+      lastState: {}
+      name: config-reloader
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2022-03-06T22:53:31Z"
+    - containerID: containerd://1bb82563c66fe213ebcadb5060cc8664e6a57fc16a2b971c2e561719949bc8a7
+      image: docker.io/rancher/mirrored-prometheus-prometheus:v2.28.1
+      imageID: docker.io/rancher/mirrored-prometheus-prometheus@sha256:0a402729e2edb4872cdc9060f1adba1532db0e023235420df262039a837fd9f3
+      lastState: {}
+      name: prometheus
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2022-03-06T22:53:30Z"
+    - containerID: containerd://4e72335740734ee31da2ccdeab9ca9ccae201e8deaf7ba033e8b8da60741e9ba
+      image: docker.io/rancher/mirrored-library-nginx:1.21.1-alpine
+      imageID: sha256:1318bf5f63b46fc1a7bb1d06ab1a5b4b309b6ed7ecb8ba105ace1c3dd00933a8
+      lastState: {}
+      name: prometheus-proxy
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2022-03-06T22:53:34Z"
+    hostIP: 172.16.132.182
+    initContainerStatuses:
+    - containerID: containerd://3fc15c50408b2e9c1ee0e3328c3df0e3ddc1d49cfbf76a8ed6da2e05fd4a5d55
+      image: docker.io/rancher/mirrored-prometheus-operator-prometheus-config-reloader:v0.50.0
+      imageID: docker.io/rancher/mirrored-prometheus-operator-prometheus-config-reloader@sha256:5e819f4c9063310da7c5497043273553e8478cbb52b29cb86d3f0e96958a0667
+      lastState: {}
+      name: init-config-reloader
+      ready: true
+      restartCount: 0
+      state:
+        terminated:
+          containerID: containerd://3fc15c50408b2e9c1ee0e3328c3df0e3ddc1d49cfbf76a8ed6da2e05fd4a5d55
+          exitCode: 0
+          finishedAt: "2022-03-06T22:53:15Z"
+          reason: Completed
+          startedAt: "2022-03-06T22:53:14Z"
+    phase: Running
+    podIP: 10.52.0.68
+    podIPs:
+    - ip: 10.52.0.68
+    qosClass: Burstable
+    startTime: "2022-03-06T22:52:47Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      checksum/config: baa87bcad60dffc957d16bb65b2a11a3886935cd43486f971493e67831ff2e51
+      checksum/dashboards-json-config: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
+      checksum/sc-dashboard-provider-config: 0d935d012ebc014def86adc9573b542a49259d4ce7a327f7d28098a370d6ec4b
+      checksum/secret: 046f1c8916601c84cac07adfef03bef914d793c560d92ebcd0cca2acb95f33c3
+      cni.projectcalico.org/containerID: 5d783c9e8fe3c093dd3d2ec0712c8f00f3105bc198a69f73cd0ab0e89ddda9a7
+      cni.projectcalico.org/podIP: 10.52.0.69/32
+      cni.projectcalico.org/podIPs: 10.52.0.69/32
+      k8s.v1.cni.cncf.io/network-status: |-
+        [{
+            "name": "",
+            "ips": [
+                "10.52.0.69"
+            ],
+            "default": true,
+            "dns": {}
+        }]
+      k8s.v1.cni.cncf.io/networks-status: |-
+        [{
+            "name": "",
+            "ips": [
+                "10.52.0.69"
+            ],
+            "default": true,
+            "dns": {}
+        }]
+      kubernetes.io/psp: global-unrestricted-psp
+    creationTimestamp: "2022-03-06T22:52:05Z"
+    generateName: rancher-monitoring-grafana-d9c56d79b-
+    labels:
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/name: grafana
+      pod-template-hash: d9c56d79b
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:checksum/config: {}
+            f:checksum/dashboards-json-config: {}
+            f:checksum/sc-dashboard-provider-config: {}
+            f:checksum/secret: {}
+          f:generateName: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/name: {}
+            f:pod-template-hash: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"75e102f1-35a7-4837-97c2-5a88804b26be"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:automountServiceAccountToken: {}
+          f:containers:
+            k:{"name":"grafana"}:
+              .: {}
+              f:env:
+                .: {}
+                k:{"name":"GF_PATHS_DATA"}:
+                  .: {}
+                  f:name: {}
+                  f:value: {}
+                k:{"name":"GF_PATHS_LOGS"}:
+                  .: {}
+                  f:name: {}
+                  f:value: {}
+                k:{"name":"GF_PATHS_PLUGINS"}:
+                  .: {}
+                  f:name: {}
+                  f:value: {}
+                k:{"name":"GF_PATHS_PROVISIONING"}:
+                  .: {}
+                  f:name: {}
+                  f:value: {}
+                k:{"name":"GF_SECURITY_ADMIN_PASSWORD"}:
+                  .: {}
+                  f:name: {}
+                  f:valueFrom:
+                    .: {}
+                    f:secretKeyRef:
+                      .: {}
+                      f:key: {}
+                      f:name: {}
+                k:{"name":"GF_SECURITY_ADMIN_USER"}:
+                  .: {}
+                  f:name: {}
+                  f:valueFrom:
+                    .: {}
+                    f:secretKeyRef:
+                      .: {}
+                      f:key: {}
+                      f:name: {}
+              f:image: {}
+              f:imagePullPolicy: {}
+              f:livenessProbe:
+                .: {}
+                f:failureThreshold: {}
+                f:httpGet:
+                  .: {}
+                  f:path: {}
+                  f:port: {}
+                  f:scheme: {}
+                f:initialDelaySeconds: {}
+                f:periodSeconds: {}
+                f:successThreshold: {}
+                f:timeoutSeconds: {}
+              f:name: {}
+              f:ports:
+                .: {}
+                k:{"containerPort":3000,"protocol":"TCP"}:
+                  .: {}
+                  f:containerPort: {}
+                  f:name: {}
+                  f:protocol: {}
+                k:{"containerPort":8080,"protocol":"TCP"}:
+                  .: {}
+                  f:containerPort: {}
+                  f:name: {}
+                  f:protocol: {}
+              f:readinessProbe:
+                .: {}
+                f:failureThreshold: {}
+                f:httpGet:
+                  .: {}
+                  f:path: {}
+                  f:port: {}
+                  f:scheme: {}
+                f:periodSeconds: {}
+                f:successThreshold: {}
+                f:timeoutSeconds: {}
+              f:resources:
+                .: {}
+                f:limits:
+                  .: {}
+                  f:cpu: {}
+                  f:memory: {}
+                f:requests:
+                  .: {}
+                  f:cpu: {}
+                  f:memory: {}
+              f:terminationMessagePath: {}
+              f:terminationMessagePolicy: {}
+              f:volumeMounts:
+                .: {}
+                k:{"mountPath":"/etc/grafana/grafana.ini"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+                  f:subPath: {}
+                k:{"mountPath":"/etc/grafana/provisioning/dashboards/sc-dashboardproviders.yaml"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+                  f:subPath: {}
+                k:{"mountPath":"/etc/grafana/provisioning/datasources"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+                k:{"mountPath":"/tmp/dashboards"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+                k:{"mountPath":"/var/lib/grafana"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+            k:{"name":"grafana-proxy"}:
+              .: {}
+              f:args: {}
+              f:image: {}
+              f:imagePullPolicy: {}
+              f:name: {}
+              f:ports:
+                .: {}
+                k:{"containerPort":8080,"protocol":"TCP"}:
+                  .: {}
+                  f:containerPort: {}
+                  f:name: {}
+                  f:protocol: {}
+              f:resources: {}
+              f:securityContext:
+                .: {}
+                f:runAsGroup: {}
+                f:runAsUser: {}
+              f:terminationMessagePath: {}
+              f:terminationMessagePolicy: {}
+              f:volumeMounts:
+                .: {}
+                k:{"mountPath":"/nginx"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+                k:{"mountPath":"/var/cache/nginx"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+            k:{"name":"grafana-sc-dashboard"}:
+              .: {}
+              f:env:
+                .: {}
+                k:{"name":"FOLDER"}:
+                  .: {}
+                  f:name: {}
+                  f:value: {}
+                k:{"name":"LABEL"}:
+                  .: {}
+                  f:name: {}
+                  f:value: {}
+                k:{"name":"METHOD"}:
+                  .: {}
+                  f:name: {}
+                k:{"name":"NAMESPACE"}:
+                  .: {}
+                  f:name: {}
+                  f:value: {}
+                k:{"name":"RESOURCE"}:
+                  .: {}
+                  f:name: {}
+                  f:value: {}
+              f:image: {}
+              f:imagePullPolicy: {}
+              f:name: {}
+              f:resources: {}
+              f:terminationMessagePath: {}
+              f:terminationMessagePolicy: {}
+              f:volumeMounts:
+                .: {}
+                k:{"mountPath":"/tmp/dashboards"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+          f:dnsPolicy: {}
+          f:enableServiceLinks: {}
+          f:initContainers:
+            .: {}
+            k:{"name":"grafana-sc-datasources"}:
+              .: {}
+              f:env:
+                .: {}
+                k:{"name":"FOLDER"}:
+                  .: {}
+                  f:name: {}
+                  f:value: {}
+                k:{"name":"LABEL"}:
+                  .: {}
+                  f:name: {}
+                  f:value: {}
+                k:{"name":"METHOD"}:
+                  .: {}
+                  f:name: {}
+                  f:value: {}
+                k:{"name":"RESOURCE"}:
+                  .: {}
+                  f:name: {}
+                  f:value: {}
+              f:image: {}
+              f:imagePullPolicy: {}
+              f:name: {}
+              f:resources: {}
+              f:terminationMessagePath: {}
+              f:terminationMessagePolicy: {}
+              f:volumeMounts:
+                .: {}
+                k:{"mountPath":"/etc/grafana/provisioning/datasources"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+            k:{"name":"init-chown-data"}:
+              .: {}
+              f:command: {}
+              f:image: {}
+              f:imagePullPolicy: {}
+              f:name: {}
+              f:resources: {}
+              f:securityContext:
+                .: {}
+                f:runAsNonRoot: {}
+                f:runAsUser: {}
+              f:terminationMessagePath: {}
+              f:terminationMessagePolicy: {}
+              f:volumeMounts:
+                .: {}
+                k:{"mountPath":"/var/lib/grafana"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+          f:nodeSelector:
+            .: {}
+            f:kubernetes.io/os: {}
+          f:restartPolicy: {}
+          f:schedulerName: {}
+          f:securityContext:
+            .: {}
+            f:fsGroup: {}
+            f:runAsGroup: {}
+            f:runAsNonRoot: {}
+            f:runAsUser: {}
+          f:serviceAccount: {}
+          f:serviceAccountName: {}
+          f:terminationGracePeriodSeconds: {}
+          f:tolerations: {}
+          f:volumes:
+            .: {}
+            k:{"name":"config"}:
+              .: {}
+              f:configMap:
+                .: {}
+                f:defaultMode: {}
+                f:name: {}
+              f:name: {}
+            k:{"name":"grafana-nginx"}:
+              .: {}
+              f:configMap:
+                .: {}
+                f:defaultMode: {}
+                f:items: {}
+                f:name: {}
+              f:name: {}
+            k:{"name":"nginx-home"}:
+              .: {}
+              f:emptyDir: {}
+              f:name: {}
+            k:{"name":"sc-dashboard-provider"}:
+              .: {}
+              f:configMap:
+                .: {}
+                f:defaultMode: {}
+                f:name: {}
+              f:name: {}
+            k:{"name":"sc-dashboard-volume"}:
+              .: {}
+              f:emptyDir: {}
+              f:name: {}
+            k:{"name":"sc-datasources-volume"}:
+              .: {}
+              f:emptyDir: {}
+              f:name: {}
+            k:{"name":"storage"}:
+              .: {}
+              f:name: {}
+              f:persistentVolumeClaim:
+                .: {}
+                f:claimName: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:52:05Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:conditions:
+            .: {}
+            k:{"type":"PodScheduled"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:message: {}
+              f:reason: {}
+              f:status: {}
+              f:type: {}
+      manager: kube-scheduler
+      operation: Update
+      time: "2022-03-06T22:52:05Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            f:cni.projectcalico.org/containerID: {}
+            f:cni.projectcalico.org/podIP: {}
+            f:cni.projectcalico.org/podIPs: {}
+      manager: calico
+      operation: Update
+      time: "2022-03-06T22:53:08Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            f:k8s.v1.cni.cncf.io/network-status: {}
+            f:k8s.v1.cni.cncf.io/networks-status: {}
+      manager: multus
+      operation: Update
+      time: "2022-03-06T22:53:08Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:conditions:
+            k:{"type":"ContainersReady"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:status: {}
+              f:type: {}
+            k:{"type":"Initialized"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:status: {}
+              f:type: {}
+            k:{"type":"Ready"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:status: {}
+              f:type: {}
+          f:containerStatuses: {}
+          f:hostIP: {}
+          f:initContainerStatuses: {}
+          f:phase: {}
+          f:podIP: {}
+          f:podIPs:
+            .: {}
+            k:{"ip":"10.52.0.69"}:
+              .: {}
+              f:ip: {}
+          f:startTime: {}
+      manager: kubelet
+      operation: Update
+      time: "2022-03-06T22:53:49Z"
+    name: rancher-monitoring-grafana-d9c56d79b-rt4pt
+    namespace: cattle-monitoring-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: rancher-monitoring-grafana-d9c56d79b
+      uid: 75e102f1-35a7-4837-97c2-5a88804b26be
+    resourceVersion: "6711"
+    uid: e199d5a7-36fd-4c06-ad81-de3ab0ce98cc
+  spec:
+    automountServiceAccountToken: true
+    containers:
+    - env:
+      - name: METHOD
+      - name: LABEL
+        value: grafana_dashboard
+      - name: FOLDER
+        value: /tmp/dashboards
+      - name: RESOURCE
+        value: both
+      - name: NAMESPACE
+        value: cattle-dashboards
+      image: rancher/mirrored-kiwigrid-k8s-sidecar:1.12.3
+      imagePullPolicy: IfNotPresent
+      name: grafana-sc-dashboard
+      resources: {}
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /tmp/dashboards
+        name: sc-dashboard-volume
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-x5jgl
+        readOnly: true
+    - env:
+      - name: GF_SECURITY_ADMIN_USER
+        valueFrom:
+          secretKeyRef:
+            key: admin-user
+            name: rancher-monitoring-grafana
+      - name: GF_SECURITY_ADMIN_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            key: admin-password
+            name: rancher-monitoring-grafana
+      - name: GF_PATHS_DATA
+        value: /var/lib/grafana/
+      - name: GF_PATHS_LOGS
+        value: /var/log/grafana
+      - name: GF_PATHS_PLUGINS
+        value: /var/lib/grafana/plugins
+      - name: GF_PATHS_PROVISIONING
+        value: /etc/grafana/provisioning
+      image: rancher/mirrored-grafana-grafana:7.5.11
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 10
+        httpGet:
+          path: /api/health
+          port: 3000
+          scheme: HTTP
+        initialDelaySeconds: 60
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 30
+      name: grafana
+      ports:
+      - containerPort: 8080
+        name: nginx-http
+        protocol: TCP
+      - containerPort: 3000
+        name: grafana
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /api/health
+          port: 3000
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        limits:
+          cpu: 200m
+          memory: 200Mi
+        requests:
+          cpu: 100m
+          memory: 100Mi
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /etc/grafana/grafana.ini
+        name: config
+        subPath: grafana.ini
+      - mountPath: /var/lib/grafana
+        name: storage
+      - mountPath: /tmp/dashboards
+        name: sc-dashboard-volume
+      - mountPath: /etc/grafana/provisioning/dashboards/sc-dashboardproviders.yaml
+        name: sc-dashboard-provider
+        subPath: provider.yaml
+      - mountPath: /etc/grafana/provisioning/datasources
+        name: sc-datasources-volume
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-x5jgl
+        readOnly: true
+    - args:
+      - nginx
+      - -g
+      - daemon off;
+      - -c
+      - /nginx/nginx.conf
+      image: rancher/mirrored-library-nginx:1.21.1-alpine
+      imagePullPolicy: IfNotPresent
+      name: grafana-proxy
+      ports:
+      - containerPort: 8080
+        name: nginx-http
+        protocol: TCP
+      resources: {}
+      securityContext:
+        runAsGroup: 101
+        runAsUser: 101
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /nginx
+        name: grafana-nginx
+      - mountPath: /var/cache/nginx
+        name: nginx-home
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-x5jgl
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    initContainers:
+    - command:
+      - chown
+      - -R
+      - 472:472
+      - /var/lib/grafana
+      image: rancher/mirrored-library-busybox:1.31.1
+      imagePullPolicy: IfNotPresent
+      name: init-chown-data
+      resources: {}
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/lib/grafana
+        name: storage
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-x5jgl
+        readOnly: true
+    - env:
+      - name: METHOD
+        value: LIST
+      - name: LABEL
+        value: grafana_datasource
+      - name: FOLDER
+        value: /etc/grafana/provisioning/datasources
+      - name: RESOURCE
+        value: both
+      image: rancher/mirrored-kiwigrid-k8s-sidecar:1.12.3
+      imagePullPolicy: IfNotPresent
+      name: grafana-sc-datasources
+      resources: {}
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /etc/grafana/provisioning/datasources
+        name: sc-datasources-volume
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-x5jgl
+        readOnly: true
+    nodeName: node1
+    nodeSelector:
+      kubernetes.io/os: linux
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 472
+      runAsGroup: 472
+      runAsNonRoot: true
+      runAsUser: 472
+    serviceAccount: rancher-monitoring-grafana
+    serviceAccountName: rancher-monitoring-grafana
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoSchedule
+      key: cattle.io/os
+      operator: Equal
+      value: linux
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: rancher-monitoring-grafana
+      name: config
+    - name: storage
+      persistentVolumeClaim:
+        claimName: rancher-monitoring-grafana
+    - emptyDir: {}
+      name: sc-dashboard-volume
+    - configMap:
+        defaultMode: 420
+        name: rancher-monitoring-grafana-config-dashboards
+      name: sc-dashboard-provider
+    - emptyDir: {}
+      name: sc-datasources-volume
+    - emptyDir: {}
+      name: nginx-home
+    - configMap:
+        defaultMode: 420
+        items:
+        - key: nginx.conf
+          mode: 438
+          path: nginx.conf
+        name: grafana-nginx-proxy-config
+      name: grafana-nginx
+    - name: kube-api-access-x5jgl
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:53:20Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:53:49Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:53:49Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:52:49Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://b07daec07b68288aaa9165b6ea34916adeb152dad0b8b9910934f4c348e1182a
+      image: docker.io/rancher/mirrored-grafana-grafana:7.5.11
+      imageID: sha256:6cfe8ab94353f80f2c8317013182a04ce8d87eadf4d9da45dd44de8c6a3026cd
+      lastState: {}
+      name: grafana
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2022-03-06T22:53:30Z"
+    - containerID: containerd://c559af88883c11196e1bc89d57354a0cd7434c6f6b581e8ca70bb1de467b50c9
+      image: docker.io/rancher/mirrored-library-nginx:1.21.1-alpine
+      imageID: sha256:1318bf5f63b46fc1a7bb1d06ab1a5b4b309b6ed7ecb8ba105ace1c3dd00933a8
+      lastState: {}
+      name: grafana-proxy
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2022-03-06T22:53:34Z"
+    - containerID: containerd://c7fc5cb58a9416957d7f056c0e82c0ee1c14b6705dc8cb65554e05c13cbd4f9e
+      image: docker.io/rancher/mirrored-kiwigrid-k8s-sidecar:1.12.3
+      imageID: sha256:7cd5e6c23e4dccf4f58ed4de66bd7318ad2b56506faa23f72e2e6d40615ad5f9
+      lastState: {}
+      name: grafana-sc-dashboard
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2022-03-06T22:53:21Z"
+    hostIP: 172.16.132.182
+    initContainerStatuses:
+    - containerID: containerd://67b3006eeeb9cfd3b002ba1cfcefceb13c9456844dfa0fb6417e64d25c252f96
+      image: docker.io/rancher/mirrored-library-busybox:1.31.1
+      imageID: sha256:1c35c441208254cb7c3844ba95a96485388cef9ccc0646d562c7fc026e04c807
+      lastState: {}
+      name: init-chown-data
+      ready: true
+      restartCount: 0
+      state:
+        terminated:
+          containerID: containerd://67b3006eeeb9cfd3b002ba1cfcefceb13c9456844dfa0fb6417e64d25c252f96
+          exitCode: 0
+          finishedAt: "2022-03-06T22:53:10Z"
+          reason: Completed
+          startedAt: "2022-03-06T22:53:10Z"
+    - containerID: containerd://a0de6d8dc6bbea9fb7160dfda8793064fe06e58eb770d20d6b5137c2e5d1a829
+      image: docker.io/rancher/mirrored-kiwigrid-k8s-sidecar:1.12.3
+      imageID: sha256:7cd5e6c23e4dccf4f58ed4de66bd7318ad2b56506faa23f72e2e6d40615ad5f9
+      lastState: {}
+      name: grafana-sc-datasources
+      ready: true
+      restartCount: 0
+      state:
+        terminated:
+          containerID: containerd://a0de6d8dc6bbea9fb7160dfda8793064fe06e58eb770d20d6b5137c2e5d1a829
+          exitCode: 0
+          finishedAt: "2022-03-06T22:53:19Z"
+          reason: Completed
+          startedAt: "2022-03-06T22:53:17Z"
+    phase: Running
+    podIP: 10.52.0.69
+    podIPs:
+    - ip: 10.52.0.69
+    qosClass: Burstable
+    startTime: "2022-03-06T22:52:49Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      cni.projectcalico.org/containerID: 6043afe500f5a658779b949279d77425283a38d9f7b0660b56b6dae1965d7e38
+      cni.projectcalico.org/podIP: 10.52.0.58/32
+      cni.projectcalico.org/podIPs: 10.52.0.58/32
+      k8s.v1.cni.cncf.io/network-status: |-
+        [{
+            "name": "",
+            "ips": [
+                "10.52.0.58"
+            ],
+            "default": true,
+            "dns": {}
+        }]
+      k8s.v1.cni.cncf.io/networks-status: |-
+        [{
+            "name": "",
+            "ips": [
+                "10.52.0.58"
+            ],
+            "default": true,
+            "dns": {}
+        }]
+      kubernetes.io/psp: global-unrestricted-psp
+    creationTimestamp: "2022-03-06T22:52:05Z"
+    generateName: rancher-monitoring-kube-state-metrics-5bc8bb48bd-
+    labels:
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/name: kube-state-metrics
+      pod-template-hash: 5bc8bb48bd
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:generateName: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/name: {}
+            f:pod-template-hash: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"9c09d7af-9712-4c75-9a15-aa74286bc599"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:containers:
+            k:{"name":"kube-state-metrics"}:
+              .: {}
+              f:args: {}
+              f:image: {}
+              f:imagePullPolicy: {}
+              f:livenessProbe:
+                .: {}
+                f:failureThreshold: {}
+                f:httpGet:
+                  .: {}
+                  f:path: {}
+                  f:port: {}
+                  f:scheme: {}
+                f:initialDelaySeconds: {}
+                f:periodSeconds: {}
+                f:successThreshold: {}
+                f:timeoutSeconds: {}
+              f:name: {}
+              f:ports:
+                .: {}
+                k:{"containerPort":8080,"protocol":"TCP"}:
+                  .: {}
+                  f:containerPort: {}
+                  f:protocol: {}
+              f:readinessProbe:
+                .: {}
+                f:failureThreshold: {}
+                f:httpGet:
+                  .: {}
+                  f:path: {}
+                  f:port: {}
+                  f:scheme: {}
+                f:initialDelaySeconds: {}
+                f:periodSeconds: {}
+                f:successThreshold: {}
+                f:timeoutSeconds: {}
+              f:resources:
+                .: {}
+                f:limits:
+                  .: {}
+                  f:cpu: {}
+                  f:memory: {}
+                f:requests:
+                  .: {}
+                  f:cpu: {}
+                  f:memory: {}
+              f:terminationMessagePath: {}
+              f:terminationMessagePolicy: {}
+          f:dnsPolicy: {}
+          f:enableServiceLinks: {}
+          f:nodeSelector:
+            .: {}
+            f:kubernetes.io/os: {}
+          f:restartPolicy: {}
+          f:schedulerName: {}
+          f:securityContext:
+            .: {}
+            f:fsGroup: {}
+            f:runAsGroup: {}
+            f:runAsNonRoot: {}
+            f:runAsUser: {}
+          f:serviceAccount: {}
+          f:serviceAccountName: {}
+          f:terminationGracePeriodSeconds: {}
+          f:tolerations: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:52:05Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            f:cni.projectcalico.org/containerID: {}
+            f:cni.projectcalico.org/podIP: {}
+            f:cni.projectcalico.org/podIPs: {}
+      manager: calico
+      operation: Update
+      time: "2022-03-06T22:52:08Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            f:k8s.v1.cni.cncf.io/network-status: {}
+            f:k8s.v1.cni.cncf.io/networks-status: {}
+      manager: multus
+      operation: Update
+      time: "2022-03-06T22:52:08Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:conditions:
+            k:{"type":"ContainersReady"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:status: {}
+              f:type: {}
+            k:{"type":"Initialized"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:status: {}
+              f:type: {}
+            k:{"type":"Ready"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:status: {}
+              f:type: {}
+          f:containerStatuses: {}
+          f:hostIP: {}
+          f:phase: {}
+          f:podIP: {}
+          f:podIPs:
+            .: {}
+            k:{"ip":"10.52.0.58"}:
+              .: {}
+              f:ip: {}
+          f:startTime: {}
+      manager: kubelet
+      operation: Update
+      time: "2022-03-06T22:52:25Z"
+    name: rancher-monitoring-kube-state-metrics-5bc8bb48bd-dbk5t
+    namespace: cattle-monitoring-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: rancher-monitoring-kube-state-metrics-5bc8bb48bd
+      uid: 9c09d7af-9712-4c75-9a15-aa74286bc599
+    resourceVersion: "5211"
+    uid: 1fbcdfb6-ca64-4285-9dc1-fa9db9e26fc2
+  spec:
+    containers:
+    - args:
+      - --port=8080
+      - --resources=certificatesigningrequests,configmaps,cronjobs,daemonsets,deployments,endpoints,horizontalpodautoscalers,ingresses,jobs,limitranges,mutatingwebhookconfigurations,namespaces,networkpolicies,nodes,persistentvolumeclaims,persistentvolumes,poddisruptionbudgets,pods,replicasets,replicationcontrollers,resourcequotas,secrets,services,statefulsets,storageclasses,validatingwebhookconfigurations,volumeattachments
+      - --telemetry-port=8081
+      image: rancher/mirrored-kube-state-metrics-kube-state-metrics:v2.2.0
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /healthz
+          port: 8080
+          scheme: HTTP
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 5
+      name: kube-state-metrics
+      ports:
+      - containerPort: 8080
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /
+          port: 8080
+          scheme: HTTP
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 5
+      resources:
+        limits:
+          cpu: 100m
+          memory: 200Mi
+        requests:
+          cpu: 100m
+          memory: 130Mi
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-s7d79
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: node1
+    nodeSelector:
+      kubernetes.io/os: linux
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 65534
+      runAsGroup: 65534
+      runAsNonRoot: true
+      runAsUser: 65534
+    serviceAccount: rancher-monitoring-kube-state-metrics
+    serviceAccountName: rancher-monitoring-kube-state-metrics
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoSchedule
+      key: cattle.io/os
+      operator: Equal
+      value: linux
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - name: kube-api-access-s7d79
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:52:05Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:52:25Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:52:25Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:52:05Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://03f82114bd9b692f07cfdb70ee881294a419f0918bffa5adea926e0045e307be
+      image: docker.io/rancher/mirrored-kube-state-metrics-kube-state-metrics:v2.2.0
+      imageID: sha256:8ceaed6e0b5dd0510ab5dae10886c6826d0ba54a4990e4f4c33ab009e630cfbd
+      lastState: {}
+      name: kube-state-metrics
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2022-03-06T22:52:17Z"
+    hostIP: 172.16.132.182
+    phase: Running
+    podIP: 10.52.0.58
+    podIPs:
+    - ip: 10.52.0.58
+    qosClass: Burstable
+    startTime: "2022-03-06T22:52:05Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      cni.projectcalico.org/containerID: 7e632daf36400708454862a413e22ee5c808a9ee85a62483294c92e18f636538
+      cni.projectcalico.org/podIP: 10.52.0.59/32
+      cni.projectcalico.org/podIPs: 10.52.0.59/32
+      k8s.v1.cni.cncf.io/network-status: |-
+        [{
+            "name": "",
+            "ips": [
+                "10.52.0.59"
+            ],
+            "default": true,
+            "dns": {}
+        }]
+      k8s.v1.cni.cncf.io/networks-status: |-
+        [{
+            "name": "",
+            "ips": [
+                "10.52.0.59"
+            ],
+            "default": true,
+            "dns": {}
+        }]
+      kubernetes.io/psp: global-unrestricted-psp
+    creationTimestamp: "2022-03-06T22:52:05Z"
+    generateName: rancher-monitoring-operator-559767d69b-
+    labels:
+      app: rancher-monitoring-operator
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      pod-template-hash: 559767d69b
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:generateName: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:pod-template-hash: {}
+            f:release: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"1034ea7a-aac4-497d-8f32-f1a45041fc22"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:containers:
+            k:{"name":"rancher-monitoring"}:
+              .: {}
+              f:args: {}
+              f:image: {}
+              f:imagePullPolicy: {}
+              f:name: {}
+              f:ports:
+                .: {}
+                k:{"containerPort":8443,"protocol":"TCP"}:
+                  .: {}
+                  f:containerPort: {}
+                  f:name: {}
+                  f:protocol: {}
+              f:resources:
+                .: {}
+                f:limits:
+                  .: {}
+                  f:cpu: {}
+                  f:memory: {}
+                f:requests:
+                  .: {}
+                  f:cpu: {}
+                  f:memory: {}
+              f:securityContext:
+                .: {}
+                f:allowPrivilegeEscalation: {}
+                f:readOnlyRootFilesystem: {}
+              f:terminationMessagePath: {}
+              f:terminationMessagePolicy: {}
+              f:volumeMounts:
+                .: {}
+                k:{"mountPath":"/cert"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+                  f:readOnly: {}
+          f:dnsPolicy: {}
+          f:enableServiceLinks: {}
+          f:nodeSelector:
+            .: {}
+            f:kubernetes.io/os: {}
+          f:restartPolicy: {}
+          f:schedulerName: {}
+          f:securityContext:
+            .: {}
+            f:fsGroup: {}
+            f:runAsGroup: {}
+            f:runAsNonRoot: {}
+            f:runAsUser: {}
+          f:serviceAccount: {}
+          f:serviceAccountName: {}
+          f:terminationGracePeriodSeconds: {}
+          f:tolerations: {}
+          f:volumes:
+            .: {}
+            k:{"name":"tls-secret"}:
+              .: {}
+              f:name: {}
+              f:secret:
+                .: {}
+                f:defaultMode: {}
+                f:secretName: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:52:05Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            f:cni.projectcalico.org/containerID: {}
+            f:cni.projectcalico.org/podIP: {}
+            f:cni.projectcalico.org/podIPs: {}
+      manager: calico
+      operation: Update
+      time: "2022-03-06T22:52:08Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            f:k8s.v1.cni.cncf.io/network-status: {}
+            f:k8s.v1.cni.cncf.io/networks-status: {}
+      manager: multus
+      operation: Update
+      time: "2022-03-06T22:52:09Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:conditions:
+            k:{"type":"ContainersReady"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:status: {}
+              f:type: {}
+            k:{"type":"Initialized"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:status: {}
+              f:type: {}
+            k:{"type":"Ready"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:status: {}
+              f:type: {}
+          f:containerStatuses: {}
+          f:hostIP: {}
+          f:phase: {}
+          f:podIP: {}
+          f:podIPs:
+            .: {}
+            k:{"ip":"10.52.0.59"}:
+              .: {}
+              f:ip: {}
+          f:startTime: {}
+      manager: kubelet
+      operation: Update
+      time: "2022-03-06T22:52:24Z"
+    name: rancher-monitoring-operator-559767d69b-trm9m
+    namespace: cattle-monitoring-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: rancher-monitoring-operator-559767d69b
+      uid: 1034ea7a-aac4-497d-8f32-f1a45041fc22
+    resourceVersion: "5193"
+    uid: 9313eaf0-885a-49ea-8b1f-6809fef614ae
+  spec:
+    containers:
+    - args:
+      - --kubelet-service=kube-system/rancher-monitoring-kubelet
+      - --localhost=127.0.0.1
+      - --prometheus-config-reloader=rancher/mirrored-prometheus-operator-prometheus-config-reloader:v0.50.0
+      - --config-reloader-cpu-request=100m
+      - --config-reloader-cpu-limit=100m
+      - --config-reloader-memory-request=50Mi
+      - --config-reloader-memory-limit=50Mi
+      - --thanos-default-base-image=rancher/mirrored-thanos-thanos:v0.17.2
+      - --web.enable-tls=true
+      - --web.cert-file=/cert/cert
+      - --web.key-file=/cert/key
+      - --web.listen-address=:8443
+      - --web.tls-min-version=VersionTLS13
+      image: rancher/mirrored-prometheus-operator-prometheus-operator:v0.50.0
+      imagePullPolicy: IfNotPresent
+      name: rancher-monitoring
+      ports:
+      - containerPort: 8443
+        name: https
+        protocol: TCP
+      resources:
+        limits:
+          cpu: 200m
+          memory: 500Mi
+        requests:
+          cpu: 100m
+          memory: 100Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /cert
+        name: tls-secret
+        readOnly: true
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-cjknr
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: node1
+    nodeSelector:
+      kubernetes.io/os: linux
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 65534
+      runAsGroup: 65534
+      runAsNonRoot: true
+      runAsUser: 65534
+    serviceAccount: rancher-monitoring-operator
+    serviceAccountName: rancher-monitoring-operator
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoSchedule
+      key: cattle.io/os
+      operator: Equal
+      value: linux
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - name: tls-secret
+      secret:
+        defaultMode: 420
+        secretName: rancher-monitoring-admission
+    - name: kube-api-access-cjknr
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:52:06Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:52:22Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:52:22Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:52:05Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://c32d84f6f7fc8843ca811a65d38d2b56accea18ae376ea1d9fbd5023bcee4ce4
+      image: docker.io/rancher/mirrored-prometheus-operator-prometheus-operator:v0.50.0
+      imageID: docker.io/rancher/mirrored-prometheus-operator-prometheus-operator@sha256:c8a388f3f77efbc58bff52d4a1fc37085e51acb39781cdd262e04bd060289897
+      lastState: {}
+      name: rancher-monitoring
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2022-03-06T22:52:22Z"
+    hostIP: 172.16.132.182
+    phase: Running
+    podIP: 10.52.0.59
+    podIPs:
+    - ip: 10.52.0.59
+    qosClass: Burstable
+    startTime: "2022-03-06T22:52:06Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      checksum/config: bf2e0a34dfbe8bcb0d1c698d7d7328f0fcb606b84ffd801073a978d938fc5ce8
+      cni.projectcalico.org/containerID: 7533d8a80ed8e49979775d4d765058fab231417dc17f93d57c4bd2a29f8eaded
+      cni.projectcalico.org/podIP: 10.52.0.60/32
+      cni.projectcalico.org/podIPs: 10.52.0.60/32
+      k8s.v1.cni.cncf.io/network-status: |-
+        [{
+            "name": "",
+            "ips": [
+                "10.52.0.60"
+            ],
+            "default": true,
+            "dns": {}
+        }]
+      k8s.v1.cni.cncf.io/networks-status: |-
+        [{
+            "name": "",
+            "ips": [
+                "10.52.0.60"
+            ],
+            "default": true,
+            "dns": {}
+        }]
+      kubernetes.io/psp: global-unrestricted-psp
+    creationTimestamp: "2022-03-06T22:52:05Z"
+    generateName: rancher-monitoring-prometheus-adapter-8846d4757-
+    labels:
+      app: prometheus-adapter
+      chart: prometheus-adapter-2.17.0
+      heritage: Helm
+      pod-template-hash: 8846d4757
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:checksum/config: {}
+          f:generateName: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:chart: {}
+            f:heritage: {}
+            f:pod-template-hash: {}
+            f:release: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"1e0e4ab5-1bbf-4792-b397-0bdb3dc36f87"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:affinity: {}
+          f:containers:
+            k:{"name":"prometheus-adapter"}:
+              .: {}
+              f:args: {}
+              f:image: {}
+              f:imagePullPolicy: {}
+              f:livenessProbe:
+                .: {}
+                f:failureThreshold: {}
+                f:httpGet:
+                  .: {}
+                  f:path: {}
+                  f:port: {}
+                  f:scheme: {}
+                f:initialDelaySeconds: {}
+                f:periodSeconds: {}
+                f:successThreshold: {}
+                f:timeoutSeconds: {}
+              f:name: {}
+              f:ports:
+                .: {}
+                k:{"containerPort":6443,"protocol":"TCP"}:
+                  .: {}
+                  f:containerPort: {}
+                  f:name: {}
+                  f:protocol: {}
+              f:readinessProbe:
+                .: {}
+                f:failureThreshold: {}
+                f:httpGet:
+                  .: {}
+                  f:path: {}
+                  f:port: {}
+                  f:scheme: {}
+                f:initialDelaySeconds: {}
+                f:periodSeconds: {}
+                f:successThreshold: {}
+                f:timeoutSeconds: {}
+              f:resources: {}
+              f:securityContext:
+                .: {}
+                f:allowPrivilegeEscalation: {}
+                f:capabilities:
+                  .: {}
+                  f:drop: {}
+                f:readOnlyRootFilesystem: {}
+                f:runAsNonRoot: {}
+                f:runAsUser: {}
+              f:terminationMessagePath: {}
+              f:terminationMessagePolicy: {}
+              f:volumeMounts:
+                .: {}
+                k:{"mountPath":"/etc/adapter/"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+                  f:readOnly: {}
+                k:{"mountPath":"/tmp"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+          f:dnsPolicy: {}
+          f:enableServiceLinks: {}
+          f:nodeSelector:
+            .: {}
+            f:kubernetes.io/os: {}
+          f:restartPolicy: {}
+          f:schedulerName: {}
+          f:securityContext:
+            .: {}
+            f:fsGroup: {}
+          f:serviceAccount: {}
+          f:serviceAccountName: {}
+          f:terminationGracePeriodSeconds: {}
+          f:tolerations: {}
+          f:volumes:
+            .: {}
+            k:{"name":"config"}:
+              .: {}
+              f:configMap:
+                .: {}
+                f:defaultMode: {}
+                f:name: {}
+              f:name: {}
+            k:{"name":"tmp"}:
+              .: {}
+              f:emptyDir: {}
+              f:name: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:52:05Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            f:cni.projectcalico.org/containerID: {}
+            f:cni.projectcalico.org/podIP: {}
+            f:cni.projectcalico.org/podIPs: {}
+      manager: calico
+      operation: Update
+      time: "2022-03-06T22:52:08Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            f:k8s.v1.cni.cncf.io/network-status: {}
+            f:k8s.v1.cni.cncf.io/networks-status: {}
+      manager: multus
+      operation: Update
+      time: "2022-03-06T22:52:09Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:conditions:
+            k:{"type":"ContainersReady"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:status: {}
+              f:type: {}
+            k:{"type":"Initialized"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:status: {}
+              f:type: {}
+            k:{"type":"Ready"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:status: {}
+              f:type: {}
+          f:containerStatuses: {}
+          f:hostIP: {}
+          f:phase: {}
+          f:podIP: {}
+          f:podIPs:
+            .: {}
+            k:{"ip":"10.52.0.60"}:
+              .: {}
+              f:ip: {}
+          f:startTime: {}
+      manager: kubelet
+      operation: Update
+      time: "2022-03-06T22:52:55Z"
+    name: rancher-monitoring-prometheus-adapter-8846d4757-glskx
+    namespace: cattle-monitoring-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: rancher-monitoring-prometheus-adapter-8846d4757
+      uid: 1e0e4ab5-1bbf-4792-b397-0bdb3dc36f87
+    resourceVersion: "5839"
+    uid: 1f006475-0769-4c01-bfb6-b19331247aba
+  spec:
+    affinity: {}
+    containers:
+    - args:
+      - /adapter
+      - --secure-port=6443
+      - --cert-dir=/tmp/cert
+      - --logtostderr=true
+      - --prometheus-url=http://rancher-monitoring-prometheus.cattle-monitoring-system.svc:9090
+      - --metrics-relist-interval=1m
+      - --v=4
+      - --config=/etc/adapter/config.yaml
+      image: rancher/mirrored-prometheus-adapter-prometheus-adapter:v0.9.0
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /healthz
+          port: https
+          scheme: HTTPS
+        initialDelaySeconds: 30
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 5
+      name: prometheus-adapter
+      ports:
+      - containerPort: 6443
+        name: https
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /healthz
+          port: https
+          scheme: HTTPS
+        initialDelaySeconds: 30
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 5
+      resources: {}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - all
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 10001
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /etc/adapter/
+        name: config
+        readOnly: true
+      - mountPath: /tmp
+        name: tmp
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-9tnsz
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: node1
+    nodeSelector:
+      kubernetes.io/os: linux
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 10001
+    serviceAccount: rancher-monitoring-prometheus-adapter
+    serviceAccountName: rancher-monitoring-prometheus-adapter
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoSchedule
+      key: cattle.io/os
+      operator: Equal
+      value: linux
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: rancher-monitoring-prometheus-adapter
+      name: config
+    - emptyDir: {}
+      name: tmp
+    - name: kube-api-access-9tnsz
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:52:05Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:52:55Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:52:55Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:52:05Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://c6b5af96af1dbdbc0c9243257dc3a21a66e8ea5c8cacacccc49284c95cf25ffd
+      image: docker.io/rancher/mirrored-prometheus-adapter-prometheus-adapter:v0.9.0
+      imageID: docker.io/rancher/mirrored-prometheus-adapter-prometheus-adapter@sha256:02b7058a7c9b84347b701da740c2da58a781c2cef8d482c8e8bf91e51896226a
+      lastState: {}
+      name: prometheus-adapter
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2022-03-06T22:52:23Z"
+    hostIP: 172.16.132.182
+    phase: Running
+    podIP: 10.52.0.60
+    podIPs:
+    - ip: 10.52.0.60
+    qosClass: BestEffort
+    startTime: "2022-03-06T22:52:05Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+      kubernetes.io/psp: global-unrestricted-psp
+    creationTimestamp: "2022-03-06T22:52:05Z"
+    generateName: rancher-monitoring-prometheus-node-exporter-
+    labels:
+      app: prometheus-node-exporter
+      chart: prometheus-node-exporter-2.2.0
+      controller-revision-hash: 645767db5
+      heritage: Helm
+      jobLabel: node-exporter
+      pod-template-generation: "1"
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:cluster-autoscaler.kubernetes.io/safe-to-evict: {}
+          f:generateName: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:chart: {}
+            f:controller-revision-hash: {}
+            f:heritage: {}
+            f:jobLabel: {}
+            f:pod-template-generation: {}
+            f:release: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"4a9228c7-a1ef-4006-ab29-a91b1cf2247e"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:affinity:
+            .: {}
+            f:nodeAffinity:
+              .: {}
+              f:requiredDuringSchedulingIgnoredDuringExecution:
+                .: {}
+                f:nodeSelectorTerms: {}
+          f:automountServiceAccountToken: {}
+          f:containers:
+            k:{"name":"node-exporter"}:
+              .: {}
+              f:args: {}
+              f:env:
+                .: {}
+                k:{"name":"HOST_IP"}:
+                  .: {}
+                  f:name: {}
+                  f:value: {}
+              f:image: {}
+              f:imagePullPolicy: {}
+              f:livenessProbe:
+                .: {}
+                f:failureThreshold: {}
+                f:httpGet:
+                  .: {}
+                  f:path: {}
+                  f:port: {}
+                  f:scheme: {}
+                f:periodSeconds: {}
+                f:successThreshold: {}
+                f:timeoutSeconds: {}
+              f:name: {}
+              f:ports:
+                .: {}
+                k:{"containerPort":9796,"protocol":"TCP"}:
+                  .: {}
+                  f:containerPort: {}
+                  f:hostPort: {}
+                  f:name: {}
+                  f:protocol: {}
+              f:readinessProbe:
+                .: {}
+                f:failureThreshold: {}
+                f:httpGet:
+                  .: {}
+                  f:path: {}
+                  f:port: {}
+                  f:scheme: {}
+                f:periodSeconds: {}
+                f:successThreshold: {}
+                f:timeoutSeconds: {}
+              f:resources:
+                .: {}
+                f:limits:
+                  .: {}
+                  f:cpu: {}
+                  f:memory: {}
+                f:requests:
+                  .: {}
+                  f:cpu: {}
+                  f:memory: {}
+              f:terminationMessagePath: {}
+              f:terminationMessagePolicy: {}
+              f:volumeMounts:
+                .: {}
+                k:{"mountPath":"/host/proc"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+                  f:readOnly: {}
+                k:{"mountPath":"/host/root"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:mountPropagation: {}
+                  f:name: {}
+                  f:readOnly: {}
+                k:{"mountPath":"/host/sys"}:
+                  .: {}
+                  f:mountPath: {}
+                  f:name: {}
+                  f:readOnly: {}
+          f:dnsPolicy: {}
+          f:enableServiceLinks: {}
+          f:hostNetwork: {}
+          f:hostPID: {}
+          f:nodeSelector:
+            .: {}
+            f:kubernetes.io/os: {}
+          f:restartPolicy: {}
+          f:schedulerName: {}
+          f:securityContext:
+            .: {}
+            f:fsGroup: {}
+            f:runAsGroup: {}
+            f:runAsNonRoot: {}
+            f:runAsUser: {}
+          f:serviceAccount: {}
+          f:serviceAccountName: {}
+          f:terminationGracePeriodSeconds: {}
+          f:tolerations: {}
+          f:volumes:
+            .: {}
+            k:{"name":"proc"}:
+              .: {}
+              f:hostPath:
+                .: {}
+                f:path: {}
+                f:type: {}
+              f:name: {}
+            k:{"name":"root"}:
+              .: {}
+              f:hostPath:
+                .: {}
+                f:path: {}
+                f:type: {}
+              f:name: {}
+            k:{"name":"sys"}:
+              .: {}
+              f:hostPath:
+                .: {}
+                f:path: {}
+                f:type: {}
+              f:name: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:52:05Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:conditions:
+            k:{"type":"ContainersReady"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:status: {}
+              f:type: {}
+            k:{"type":"Initialized"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:status: {}
+              f:type: {}
+            k:{"type":"Ready"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:status: {}
+              f:type: {}
+          f:containerStatuses: {}
+          f:hostIP: {}
+          f:phase: {}
+          f:podIP: {}
+          f:podIPs:
+            .: {}
+            k:{"ip":"172.16.132.182"}:
+              .: {}
+              f:ip: {}
+          f:startTime: {}
+      manager: kubelet
+      operation: Update
+      time: "2022-03-06T22:52:20Z"
+    name: rancher-monitoring-prometheus-node-exporter-dsvgt
+    namespace: cattle-monitoring-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DaemonSet
+      name: rancher-monitoring-prometheus-node-exporter
+      uid: 4a9228c7-a1ef-4006-ab29-a91b1cf2247e
+    resourceVersion: "5084"
+    uid: 5af16d38-9a06-47d4-af7f-9cb3cdf4eca7
+  spec:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchFields:
+            - key: metadata.name
+              operator: In
+              values:
+              - node1
+    automountServiceAccountToken: false
+    containers:
+    - args:
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --path.rootfs=/host/root
+      - --web.listen-address=$(HOST_IP):9796
+      - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+|var/lib/kubelet/.+)($|/)
+      - --collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$
+      env:
+      - name: HOST_IP
+        value: 0.0.0.0
+      image: rancher/mirrored-prometheus-node-exporter:v1.2.2
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /
+          port: 9796
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: node-exporter
+      ports:
+      - containerPort: 9796
+        hostPort: 9796
+        name: metrics
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /
+          port: 9796
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        limits:
+          cpu: 200m
+          memory: 50Mi
+        requests:
+          cpu: 100m
+          memory: 30Mi
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /host/proc
+        name: proc
+        readOnly: true
+      - mountPath: /host/sys
+        name: sys
+        readOnly: true
+      - mountPath: /host/root
+        mountPropagation: HostToContainer
+        name: root
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    hostNetwork: true
+    hostPID: true
+    nodeName: node1
+    nodeSelector:
+      kubernetes.io/os: linux
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 65534
+      runAsGroup: 65534
+      runAsNonRoot: true
+      runAsUser: 65534
+    serviceAccount: rancher-monitoring-prometheus-node-exporter
+    serviceAccountName: rancher-monitoring-prometheus-node-exporter
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoSchedule
+      key: cattle.io/os
+      operator: Equal
+      value: linux
+    - effect: NoSchedule
+      operator: Exists
+    - effect: NoExecute
+      operator: Exists
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/disk-pressure
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/memory-pressure
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/pid-pressure
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/unschedulable
+      operator: Exists
+    - effect: NoSchedule
+      key: node.kubernetes.io/network-unavailable
+      operator: Exists
+    volumes:
+    - hostPath:
+        path: /proc
+        type: "null"
+      name: proc
+    - hostPath:
+        path: /sys
+        type: "null"
+      name: sys
+    - hostPath:
+        path: /
+        type: "null"
+      name: root
+  status:
+    conditions:
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:52:05Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:52:19Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:52:19Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: "null"
+      lastTransitionTime: "2022-03-06T22:52:05Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://c5ece715218cfa1ecdd9c332f23dca6dfeacb283f330aa9d00b8d7af8592fb55
+      image: docker.io/rancher/mirrored-prometheus-node-exporter:v1.2.2
+      imageID: sha256:0fafea14985942e880dd5b7df98f97f51a2ac25a2eb901a78e53e8b21cfb21c2
+      lastState: {}
+      name: node-exporter
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2022-03-06T22:52:17Z"
+    hostIP: 172.16.132.182
+    phase: Running
+    podIP: 172.16.132.182
+    podIPs:
+    - ip: 172.16.132.182
+    qosClass: Burstable
+    startTime: "2022-03-06T22:52:05Z"
+kind: List
+metadata:
+  resourceVersion: "14659116"

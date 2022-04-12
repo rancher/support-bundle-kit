@@ -1,0 +1,9 @@
+2022-03-06T22:52:16.648644644Z I0306 22:52:16.646266       1 feature_gate.go:243] feature gates: &{map[]}
+2022-03-06T22:52:16.648700204Z I0306 22:52:16.646430       1 csi-provisioner.go:132] Version: v2.1.2
+2022-03-06T22:52:16.648720224Z I0306 22:52:16.646479       1 csi-provisioner.go:155] Building kube configs for running in cluster...
+2022-03-06T22:52:16.724108601Z I0306 22:52:16.720841       1 connection.go:153] Connecting to unix:///csi/csi.sock
+2022-03-06T22:52:19.728661294Z I0306 22:52:19.726092       1 common.go:111] Probing CSI driver for readiness
+2022-03-06T22:52:19.763715871Z I0306 22:52:19.760621       1 csi-provisioner.go:202] Detected CSI driver driver.longhorn.io
+2022-03-06T22:52:19.803501991Z I0306 22:52:19.801284       1 csi-provisioner.go:241] CSI driver supports PUBLISH_UNPUBLISH_VOLUME, watching VolumeAttachments
+2022-03-06T22:52:19.815542480Z I0306 22:52:19.815340       1 controller.go:756] Using saving PVs to API server in background
+2022-03-06T22:52:19.856995732Z I0306 22:52:19.845287       1 leaderelection.go:243] attempting to acquire leader lease longhorn-system/driver-longhorn-io...

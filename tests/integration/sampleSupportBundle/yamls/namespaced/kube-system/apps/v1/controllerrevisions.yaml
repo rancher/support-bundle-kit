@@ -1,0 +1,748 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  data:
+    spec:
+      template:
+        $patch: replace
+        metadata:
+          creationTimestamp: "null"
+          labels:
+            name: multus
+        spec:
+          containers:
+          - args:
+            - --multus-conf-file=auto
+            - --cni-version=0.3.1
+            command:
+            - /entrypoint.sh
+            image: rancher/hardened-multus-cni:v3.7.1-build20211119
+            imagePullPolicy: IfNotPresent
+            name: kube-multus
+            resources:
+              limits:
+                cpu: 100m
+                memory: 50Mi
+              requests:
+                cpu: 100m
+                memory: 50Mi
+            securityContext:
+              privileged: true
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+            - mountPath: /host/etc/cni/net.d
+              name: cni
+            - mountPath: /host/opt/cni/bin
+              name: cnibin
+          dnsPolicy: ClusterFirst
+          hostNetwork: true
+          initContainers:
+          - env:
+            - name: SKIP_CNI_BINARIES
+              value: flannel
+            image: rancher/hardened-cni-plugins:v0.9.1-build20211119
+            imagePullPolicy: IfNotPresent
+            name: cni-plugins
+            resources: {}
+            securityContext:
+              privileged: true
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+            - mountPath: /host/opt/cni/bin
+              name: cnibin
+          nodeSelector:
+            kubernetes.io/os: linux
+          restartPolicy: Always
+          schedulerName: default-scheduler
+          securityContext: {}
+          serviceAccount: multus
+          serviceAccountName: multus
+          terminationGracePeriodSeconds: 10
+          tolerations:
+          - effect: NoSchedule
+            operator: Exists
+          - effect: NoExecute
+            operator: Exists
+          volumes:
+          - hostPath:
+              path: /etc/cni/net.d
+              type: "null"
+            name: cni
+          - hostPath:
+              path: /opt/cni/bin
+              type: "null"
+            name: cnibin
+  kind: ControllerRevision
+  metadata:
+    annotations:
+      deprecated.daemonset.template.generation: "1"
+      meta.helm.sh/release-name: rke2-multus
+      meta.helm.sh/release-namespace: kube-system
+    creationTimestamp: "2022-03-06T22:47:19Z"
+    labels:
+      controller-revision-hash: 588654c788
+      name: multus
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:data: {}
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deprecated.daemonset.template.generation: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+          f:labels:
+            .: {}
+            f:controller-revision-hash: {}
+            f:name: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"3db141f0-75ac-48ce-9dfa-c9a2cfe79b8f"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:revision: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:47:19Z"
+    name: kube-multus-ds-588654c788
+    namespace: kube-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DaemonSet
+      name: kube-multus-ds
+      uid: 3db141f0-75ac-48ce-9dfa-c9a2cfe79b8f
+    resourceVersion: "640"
+    uid: 18156e08-f64e-479d-9ecc-5140f6b2baa1
+  revision: 1
+- apiVersion: apps/v1
+  data:
+    spec:
+      template:
+        $patch: replace
+        metadata:
+          creationTimestamp: "null"
+          labels:
+            k8s-app: canal
+        spec:
+          containers:
+          - command:
+            - start_runit
+            env:
+            - name: DATASTORE_TYPE
+              value: kubernetes
+            - name: USE_POD_CIDR
+              value: "true"
+            - name: WAIT_FOR_DATASTORE
+              value: "true"
+            - name: NODENAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: CALICO_NETWORKING_BACKEND
+              value: none
+            - name: CLUSTER_TYPE
+              value: k8s,canal
+            - name: FELIX_IPTABLESREFRESHINTERVAL
+              value: "60"
+            - name: FELIX_IPTABLESBACKEND
+              value: auto
+            - name: IP
+            - name: CALICO_DISABLE_FILE_LOGGING
+              value: "true"
+            - name: FELIX_DEFAULTENDPOINTTOHOSTACTION
+              value: ACCEPT
+            - name: FELIX_IPV6SUPPORT
+              value: "false"
+            - name: FELIX_LOGSEVERITYSCREEN
+              value: info
+            - name: FELIX_HEALTHENABLED
+              value: "true"
+            - name: FELIX_PROMETHEUSMETRICSENABLED
+              value: "true"
+            - name: FELIX_XDPENABLED
+              value: "false"
+            - name: FELIX_FAILSAFEINBOUNDHOSTPORTS
+            - name: FELIX_FAILSAFEOUTBOUNDHOSTPORTS
+            image: rancher/hardened-calico:v3.20.2-build20211119
+            imagePullPolicy: IfNotPresent
+            livenessProbe:
+              exec:
+                command:
+                - /bin/calico-node
+                - -felix-live
+              failureThreshold: 6
+              initialDelaySeconds: 10
+              periodSeconds: 10
+              successThreshold: 1
+              timeoutSeconds: 1
+            name: calico-node
+            readinessProbe:
+              failureThreshold: 3
+              httpGet:
+                host: localhost
+                path: /readiness
+                port: 9099
+                scheme: HTTP
+              periodSeconds: 10
+              successThreshold: 1
+              timeoutSeconds: 1
+            resources:
+              requests:
+                cpu: 250m
+            securityContext:
+              privileged: true
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+            - mountPath: /lib/modules
+              name: lib-modules
+              readOnly: true
+            - mountPath: /run/xtables.lock
+              name: xtables-lock
+            - mountPath: /var/run/calico
+              name: var-run-calico
+            - mountPath: /var/lib/calico
+              name: var-lib-calico
+            - mountPath: /var/run/nodeagent
+              name: policysync
+          - command:
+            - /opt/bin/flanneld
+            - --ip-masq
+            - --kube-subnet-mgr
+            env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: FLANNELD_IFACE
+              valueFrom:
+                configMapKeyRef:
+                  key: canal_iface
+                  name: rke2-canal-config
+            - name: FLANNELD_IP_MASQ
+              valueFrom:
+                configMapKeyRef:
+                  key: masquerade
+                  name: rke2-canal-config
+            image: rancher/hardened-flannel:v0.15.1-build20211119
+            imagePullPolicy: IfNotPresent
+            name: kube-flannel
+            resources: {}
+            securityContext:
+              privileged: true
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+            - mountPath: /run/xtables.lock
+              name: xtables-lock
+            - mountPath: /etc/kube-flannel/
+              name: flannel-cfg
+          dnsPolicy: ClusterFirst
+          hostNetwork: true
+          initContainers:
+          - command:
+            - /opt/cni/bin/install
+            env:
+            - name: CNI_CONF_NAME
+              value: 10-canal.conflist
+            - name: CNI_NETWORK_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  key: cni_network_config
+                  name: rke2-canal-config
+            - name: KUBERNETES_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: CNI_MTU
+              valueFrom:
+                configMapKeyRef:
+                  key: veth_mtu
+                  name: rke2-canal-config
+            - name: SLEEP
+              value: "false"
+            image: rancher/hardened-calico:v3.20.2-build20211119
+            imagePullPolicy: IfNotPresent
+            name: install-cni
+            resources: {}
+            securityContext:
+              privileged: true
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+            - mountPath: /host/opt/cni/bin
+              name: cni-bin-dir
+            - mountPath: /host/etc/cni/net.d
+              name: cni-net-dir
+          - command:
+            - /usr/local/bin/flexvol.sh
+            - -s
+            - /usr/local/bin/flexvol
+            - -i
+            - flexvoldriver
+            image: rancher/hardened-calico:v3.20.2-build20211119
+            imagePullPolicy: IfNotPresent
+            name: flexvol-driver
+            resources: {}
+            securityContext:
+              privileged: true
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+            - mountPath: /host/driver
+              name: flexvol-driver-host
+          nodeSelector:
+            kubernetes.io/os: linux
+          priorityClassName: system-node-critical
+          restartPolicy: Always
+          schedulerName: default-scheduler
+          securityContext: {}
+          serviceAccount: canal
+          serviceAccountName: canal
+          terminationGracePeriodSeconds: 0
+          tolerations:
+          - effect: NoSchedule
+            operator: Exists
+          - key: CriticalAddonsOnly
+            operator: Exists
+          - effect: NoExecute
+            operator: Exists
+          volumes:
+          - hostPath:
+              path: /lib/modules
+              type: "null"
+            name: lib-modules
+          - hostPath:
+              path: /var/run/calico
+              type: "null"
+            name: var-run-calico
+          - hostPath:
+              path: /var/lib/calico
+              type: "null"
+            name: var-lib-calico
+          - hostPath:
+              path: /run/xtables.lock
+              type: FileOrCreate
+            name: xtables-lock
+          - configMap:
+              defaultMode: 420
+              name: rke2-canal-config
+            name: flannel-cfg
+          - hostPath:
+              path: /opt/cni/bin
+              type: "null"
+            name: cni-bin-dir
+          - hostPath:
+              path: /etc/cni/net.d
+              type: "null"
+            name: cni-net-dir
+          - hostPath:
+              path: /var/run/nodeagent
+              type: DirectoryOrCreate
+            name: policysync
+          - hostPath:
+              path: /var/lib/kubelet/volumeplugins/nodeagent~uds
+              type: DirectoryOrCreate
+            name: flexvol-driver-host
+  kind: ControllerRevision
+  metadata:
+    annotations:
+      deprecated.daemonset.template.generation: "1"
+      meta.helm.sh/release-name: rke2-canal
+      meta.helm.sh/release-namespace: kube-system
+    creationTimestamp: "2022-03-06T22:47:19Z"
+    labels:
+      controller-revision-hash: 57b4cd77
+      k8s-app: canal
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:data: {}
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deprecated.daemonset.template.generation: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+          f:labels:
+            .: {}
+            f:controller-revision-hash: {}
+            f:k8s-app: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"5842c6da-a7e6-4f76-a25c-4eba039b31a2"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:revision: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:47:19Z"
+    name: rke2-canal-57b4cd77
+    namespace: kube-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DaemonSet
+      name: rke2-canal
+      uid: 5842c6da-a7e6-4f76-a25c-4eba039b31a2
+    resourceVersion: "730"
+    uid: eeebf9fc-02bf-4f2a-a08d-d2cf9b486af9
+  revision: 1
+- apiVersion: apps/v1
+  data:
+    spec:
+      template:
+        $patch: replace
+        metadata:
+          creationTimestamp: "null"
+          labels:
+            app.kubernetes.io/component: controller
+            app.kubernetes.io/instance: rke2-ingress-nginx
+            app.kubernetes.io/name: rke2-ingress-nginx
+        spec:
+          containers:
+          - args:
+            - /nginx-ingress-controller
+            - --election-id=ingress-controller-leader
+            - --controller-class=k8s.io/ingress-nginx
+            - --configmap=$(POD_NAMESPACE)/rke2-ingress-nginx-controller
+            - --validating-webhook=:8443
+            - --validating-webhook-certificate=/usr/local/certificates/cert
+            - --validating-webhook-key=/usr/local/certificates/key
+            - --watch-ingress-without-class=true
+            env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: LD_PRELOAD
+              value: /usr/local/lib/libmimalloc.so
+            image: rancher/nginx-ingress-controller:nginx-1.0.2-hardened2
+            imagePullPolicy: IfNotPresent
+            lifecycle:
+              preStop:
+                exec:
+                  command:
+                  - /wait-shutdown
+            livenessProbe:
+              failureThreshold: 5
+              httpGet:
+                path: /healthz
+                port: 10254
+                scheme: HTTP
+              initialDelaySeconds: 10
+              periodSeconds: 10
+              successThreshold: 1
+              timeoutSeconds: 1
+            name: rke2-ingress-nginx-controller
+            ports:
+            - containerPort: 80
+              hostPort: 80
+              name: http
+              protocol: TCP
+            - containerPort: 443
+              hostPort: 443
+              name: https
+              protocol: TCP
+            - containerPort: 8443
+              hostPort: 8443
+              name: webhook
+              protocol: TCP
+            readinessProbe:
+              failureThreshold: 3
+              httpGet:
+                path: /healthz
+                port: 10254
+                scheme: HTTP
+              initialDelaySeconds: 10
+              periodSeconds: 10
+              successThreshold: 1
+              timeoutSeconds: 1
+            resources:
+              requests:
+                cpu: 100m
+                memory: 90Mi
+            securityContext:
+              allowPrivilegeEscalation: true
+              capabilities:
+                add:
+                - NET_BIND_SERVICE
+                drop:
+                - ALL
+              runAsUser: 101
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+            - mountPath: /usr/local/certificates/
+              name: webhook-cert
+              readOnly: true
+          dnsPolicy: ClusterFirstWithHostNet
+          hostNetwork: true
+          nodeSelector:
+            kubernetes.io/os: linux
+          restartPolicy: Always
+          schedulerName: default-scheduler
+          securityContext: {}
+          serviceAccount: rke2-ingress-nginx
+          serviceAccountName: rke2-ingress-nginx
+          terminationGracePeriodSeconds: 300
+          volumes:
+          - name: webhook-cert
+            secret:
+              defaultMode: 420
+              secretName: rke2-ingress-nginx-admission
+  kind: ControllerRevision
+  metadata:
+    annotations:
+      deprecated.daemonset.template.generation: "1"
+      meta.helm.sh/release-name: rke2-ingress-nginx
+      meta.helm.sh/release-namespace: kube-system
+    creationTimestamp: "2022-03-06T22:48:04Z"
+    labels:
+      app.kubernetes.io/component: controller
+      app.kubernetes.io/instance: rke2-ingress-nginx
+      app.kubernetes.io/name: rke2-ingress-nginx
+      controller-revision-hash: 6f84c9bfd
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:data: {}
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deprecated.daemonset.template.generation: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/component: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/name: {}
+            f:controller-revision-hash: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"b7a8dc9a-0c19-464b-85cf-94e006cf7ed3"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:revision: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:48:04Z"
+    name: rke2-ingress-nginx-controller-6f84c9bfd
+    namespace: kube-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DaemonSet
+      name: rke2-ingress-nginx-controller
+      uid: b7a8dc9a-0c19-464b-85cf-94e006cf7ed3
+    resourceVersion: "1055"
+    uid: 489e359b-4a33-4c09-8a58-fdf03c65c242
+  revision: 1
+- apiVersion: apps/v1
+  data:
+    spec:
+      template:
+        $patch: replace
+        metadata:
+          creationTimestamp: "null"
+          labels:
+            app.kubernetes.io/component: controller
+            app.kubernetes.io/instance: rke2-ingress-nginx
+            app.kubernetes.io/name: rke2-ingress-nginx
+        spec:
+          containers:
+          - args:
+            - /nginx-ingress-controller
+            - --election-id=ingress-controller-leader
+            - --controller-class=k8s.io/ingress-nginx
+            - --configmap=$(POD_NAMESPACE)/rke2-ingress-nginx-controller
+            - --validating-webhook=:8444
+            - --validating-webhook-certificate=/usr/local/certificates/cert
+            - --validating-webhook-key=/usr/local/certificates/key
+            - --watch-ingress-without-class=true
+            - --default-ssl-certificate=cattle-system/tls-rancher-internal
+            env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: LD_PRELOAD
+              value: /usr/local/lib/libmimalloc.so
+            image: rancher/nginx-ingress-controller:nginx-1.0.2-hardened2
+            imagePullPolicy: IfNotPresent
+            lifecycle:
+              preStop:
+                exec:
+                  command:
+                  - /wait-shutdown
+            livenessProbe:
+              failureThreshold: 5
+              httpGet:
+                path: /healthz
+                port: 10254
+                scheme: HTTP
+              initialDelaySeconds: 10
+              periodSeconds: 10
+              successThreshold: 1
+              timeoutSeconds: 1
+            name: rke2-ingress-nginx-controller
+            ports:
+            - containerPort: 80
+              hostPort: 80
+              name: http
+              protocol: TCP
+            - containerPort: 443
+              hostPort: 443
+              name: https
+              protocol: TCP
+            - containerPort: 8444
+              hostPort: 8444
+              name: webhook
+              protocol: TCP
+            readinessProbe:
+              failureThreshold: 3
+              httpGet:
+                path: /healthz
+                port: 10254
+                scheme: HTTP
+              initialDelaySeconds: 10
+              periodSeconds: 10
+              successThreshold: 1
+              timeoutSeconds: 1
+            resources:
+              requests:
+                cpu: 100m
+                memory: 90Mi
+            securityContext:
+              allowPrivilegeEscalation: true
+              capabilities:
+                add:
+                - NET_BIND_SERVICE
+                drop:
+                - ALL
+              runAsUser: 101
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+            - mountPath: /usr/local/certificates/
+              name: webhook-cert
+              readOnly: true
+          dnsPolicy: ClusterFirstWithHostNet
+          hostNetwork: true
+          nodeSelector:
+            kubernetes.io/os: linux
+          restartPolicy: Always
+          schedulerName: default-scheduler
+          securityContext: {}
+          serviceAccount: rke2-ingress-nginx
+          serviceAccountName: rke2-ingress-nginx
+          terminationGracePeriodSeconds: 300
+          volumes:
+          - name: webhook-cert
+            secret:
+              defaultMode: 420
+              secretName: rke2-ingress-nginx-admission
+  kind: ControllerRevision
+  metadata:
+    annotations:
+      deprecated.daemonset.template.generation: "2"
+      meta.helm.sh/release-name: rke2-ingress-nginx
+      meta.helm.sh/release-namespace: kube-system
+    creationTimestamp: "2022-03-06T22:49:52Z"
+    labels:
+      app.kubernetes.io/component: controller
+      app.kubernetes.io/instance: rke2-ingress-nginx
+      app.kubernetes.io/name: rke2-ingress-nginx
+      controller-revision-hash: 84ccc46865
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:data: {}
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deprecated.daemonset.template.generation: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/component: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/name: {}
+            f:controller-revision-hash: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"b7a8dc9a-0c19-464b-85cf-94e006cf7ed3"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:revision: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:49:52Z"
+    name: rke2-ingress-nginx-controller-84ccc46865
+    namespace: kube-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DaemonSet
+      name: rke2-ingress-nginx-controller
+      uid: b7a8dc9a-0c19-464b-85cf-94e006cf7ed3
+    resourceVersion: "2462"
+    uid: 71ca84b2-97d9-4392-b428-0222b3450191
+  revision: 2
+kind: List
+metadata:
+  resourceVersion: "14658995"

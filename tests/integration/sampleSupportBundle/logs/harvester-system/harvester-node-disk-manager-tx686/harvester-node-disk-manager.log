@@ -1,0 +1,35 @@
+2022-03-06T22:51:40.543088658Z time="2022-03-06T22:51:40Z" level=info msg="Node Disk Manager bdf3822 (bdf3822) is starting"
+2022-03-06T22:51:40.543189608Z time="2022-03-06T22:51:40Z" level=info msg="Starting node disk manager controller"
+2022-03-06T22:51:40.561502152Z time="2022-03-06T22:51:40Z" level=info msg="register exclude filters"
+2022-03-06T22:51:40.561523312Z time="2022-03-06T22:51:40Z" level=info msg="register auto provision filters"
+2022-03-06T22:51:41.281795081Z time="2022-03-06T22:51:41Z" level=info msg="Starting harvesterhci.io/v1beta1, Kind=BlockDevice controller"
+2022-03-06T22:51:41.326800125Z time="2022-03-06T22:51:41Z" level=info msg="Start monitoring udev processed events"
+2022-03-06T22:51:41.326847536Z time="2022-03-06T22:51:41Z" level=info msg="Starting longhorn.io/v1beta1, Kind=Node controller"
+2022-03-06T23:14:35.158109695Z time="2022-03-06T23:14:35Z" level=error msg="failed to get parent dev name, failed to execute `lsblk -dno pkname /dev/sdd2`: exit status 32"
+2022-03-06T23:14:35.178678230Z WARNING: failed to read int from file: open /sys/block/queue/rotational: no such file or directory
+2022-03-06T23:14:35.529773598Z time="2022-03-06T23:14:35Z" level=error msg="failed to get parent dev name, failed to execute `lsblk -dno pkname /dev/sdd3`: exit status 32"
+2022-03-06T23:14:35.557610340Z WARNING: failed to read int from file: open /sys/block/queue/rotational: no such file or directory
+2022-03-06T23:14:35.957939165Z time="2022-03-06T23:14:35Z" level=error msg="failed to get parent dev name, failed to execute `lsblk -dno pkname /dev/sdd1`: exit status 32"
+2022-03-06T23:14:35.976634969Z WARNING: failed to read int from file: open /sys/block/queue/rotational: no such file or directory
+2022-03-06T23:14:36.249381057Z WARNING: failed to read int from file: open /sys/block/sdd/queue/rotational: no such file or directory
+2022-03-06T23:14:36.263200458Z WARNING: failed to read disk partitions: open /sys/block/sdd: no such file or directory
+2022-03-08T00:02:31.780232630Z WARNING: failed to read int from file: open /sys/block/sdc/queue/rotational: no such file or directory
+2022-03-08T00:02:31.848292362Z WARNING: failed to read disk partitions: open /sys/block/sdc: no such file or directory
+2022-03-08T00:02:32.256577284Z WARNING: failed to read int from file: open /sys/block/sdb/queue/rotational: no such file or directory
+2022-03-08T00:02:32.322415214Z WARNING: failed to read disk partitions: open /sys/block/sdb: no such file or directory
+2022-03-08T00:45:51.744398594Z time="2022-03-08T00:45:51Z" level=error msg="failed to get parent dev name, failed to execute `lsblk -dno pkname /dev/sdd3`: exit status 32"
+2022-03-08T00:45:51.832297651Z WARNING: failed to read int from file: open /sys/block/queue/rotational: no such file or directory
+2022-03-08T00:45:52.654961999Z time="2022-03-08T00:45:52Z" level=error msg="failed to get parent dev name, failed to execute `lsblk -dno pkname /dev/sdd1`: exit status 32"
+2022-03-08T00:45:52.706965098Z WARNING: failed to read int from file: open /sys/block/queue/rotational: no such file or directory
+2022-03-08T00:45:53.163688967Z time="2022-03-08T00:45:53Z" level=error msg="failed to get parent dev name, failed to execute `lsblk -dno pkname /dev/sdd2`: exit status 32"
+2022-03-08T00:45:53.195715341Z WARNING: failed to read int from file: open /sys/block/queue/rotational: no such file or directory
+2022-03-08T00:45:53.697476284Z WARNING: failed to read int from file: open /sys/block/sdd/queue/rotational: no such file or directory
+2022-03-08T00:45:53.704291589Z WARNING: failed to read disk partitions: open /sys/block/sdd: no such file or directory
+2022-03-08T02:16:22.535664046Z time="2022-03-08T02:16:22Z" level=error msg="failed to get parent dev name, failed to execute `lsblk -dno pkname /dev/sdd3`: exit status 32"
+2022-03-08T02:16:22.543227051Z WARNING: failed to read int from file: open /sys/block/queue/rotational: no such file or directory
+2022-03-08T02:16:22.887503294Z time="2022-03-08T02:16:22Z" level=error msg="failed to get parent dev name, failed to execute `lsblk -dno pkname /dev/sdd2`: exit status 32"
+2022-03-08T02:16:22.908123030Z WARNING: failed to read int from file: open /sys/block/queue/rotational: no such file or directory
+2022-03-08T02:16:23.157874650Z time="2022-03-08T02:16:23Z" level=error msg="failed to get parent dev name, failed to execute `lsblk -dno pkname /dev/sdd1`: exit status 32"
+2022-03-08T02:16:23.176331354Z WARNING: failed to read int from file: open /sys/block/queue/rotational: no such file or directory
+2022-03-08T02:16:23.481105937Z WARNING: failed to read int from file: open /sys/block/sdd/queue/rotational: no such file or directory
+2022-03-08T02:16:23.494460447Z WARNING: failed to read disk partitions: open /sys/block/sdd: no such file or directory

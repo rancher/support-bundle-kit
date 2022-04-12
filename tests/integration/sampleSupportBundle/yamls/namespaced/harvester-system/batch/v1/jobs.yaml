@@ -1,0 +1,132 @@
+apiVersion: v1
+items:
+- apiVersion: batch/v1
+  kind: Job
+  metadata:
+    creationTimestamp: "2022-03-06T23:10:38Z"
+    finalizers:
+    - wrangler.cattle.io/promote-node-controller
+    labels:
+      controller-uid: d995bf7d-d9d8-4645-81e2-48f8388dee2f
+      job-name: default-default
+    managedFields:
+    - apiVersion: batch/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:finalizers:
+            .: {}
+            v:"wrangler.cattle.io/promote-node-controller"null: {}
+      manager: harvester
+      operation: Update
+      time: "2022-03-06T23:10:38Z"
+    - apiVersion: batch/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:spec:
+          f:backoffLimit: {}
+          f:completions: {}
+          f:parallelism: {}
+          f:template:
+            f:metadata:
+              f:annotations:
+                .: {}
+                f:k8s.v1.cni.cncf.io/networks: {}
+            f:spec:
+              f:containers:
+                k:{"name":"network-helper"}:
+                  .: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"DHCP_SERVER"}:
+                      .: {}
+                      f:name: {}
+                    k:{"name":"NAD_NETWORKS"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:resources: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+              f:dnsPolicy: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+      manager: harvester-network-controller
+      operation: Update
+      time: "2022-03-06T23:10:38Z"
+    - apiVersion: batch/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:completionTime: {}
+          f:conditions: {}
+          f:startTime: {}
+          f:succeeded: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T23:10:48Z"
+    name: default-default
+    namespace: harvester-system
+    resourceVersion: "17831"
+    uid: d995bf7d-d9d8-4645-81e2-48f8388dee2f
+  spec:
+    backoffLimit: 1
+    completions: 1
+    parallelism: 1
+    selector:
+      matchLabels:
+        controller-uid: d995bf7d-d9d8-4645-81e2-48f8388dee2f
+    template:
+      metadata:
+        annotations:
+          k8s.v1.cni.cncf.io/networks: '[{"name":"default","namespace":"default","interface":"net1","cni-args":null}]'
+        creationTimestamp: "null"
+        labels:
+          controller-uid: d995bf7d-d9d8-4645-81e2-48f8388dee2f
+          job-name: default-default
+      spec:
+        containers:
+        - env:
+          - name: NAD_NETWORKS
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.annotations['k8s.v1.cni.cncf.io/networks']
+          - name: DHCP_SERVER
+          image: rancher/harvester-network-helper:master-head
+          imagePullPolicy: IfNotPresent
+          name: network-helper
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Never
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: harvester-network-helper
+        serviceAccountName: harvester-network-helper
+        terminationGracePeriodSeconds: 30
+  status:
+    completionTime: "2022-03-06T23:10:48Z"
+    conditions:
+    - lastProbeTime: "2022-03-06T23:10:48Z"
+      lastTransitionTime: "2022-03-06T23:10:48Z"
+      status: "True"
+      type: Complete
+    startTime: "2022-03-06T23:10:38Z"
+    succeeded: 1
+kind: List
+metadata:
+  resourceVersion: "14659188"

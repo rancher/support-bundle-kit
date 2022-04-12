@@ -1,0 +1,357 @@
+apiVersion: v1
+items:
+- addressType: IPv4
+  apiVersion: discovery.k8s.io/v1
+  endpoints:
+  - addresses:
+    - 10.52.0.112
+    conditions:
+      ready: true
+    nodeName: node1
+    targetRef:
+      kind: Pod
+      name: cattle-cluster-agent-6df46b7b5c-k4kqv
+      namespace: cattle-system
+      resourceVersion: "876636"
+      uid: f97a3cca-3c60-4bac-b30f-e03fb1603427
+  kind: EndpointSlice
+  metadata:
+    creationTimestamp: "2022-03-07T22:15:34Z"
+    generateName: cattle-cluster-agent-
+    generation: 10
+    labels:
+      endpointslice.kubernetes.io/managed-by: endpointslice-controller.k8s.io
+      kubernetes.io/service-name: cattle-cluster-agent
+      objectset.rio.cattle.io/hash: 5aad1a050dcd69e80fd3fab11655a0521958c07a
+    managedFields:
+    - apiVersion: discovery.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:addressType: {}
+        f:endpoints: {}
+        f:metadata:
+          f:generateName: {}
+          f:labels:
+            .: {}
+            f:endpointslice.kubernetes.io/managed-by: {}
+            f:kubernetes.io/service-name: {}
+            f:objectset.rio.cattle.io/hash: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"5f60c509-f43f-450a-8ef7-1ef0e4417eee"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:ports: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-08T00:38:06Z"
+    name: cattle-cluster-agent-w7wt6
+    namespace: cattle-system
+    ownerReferences:
+    - apiVersion: v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Service
+      name: cattle-cluster-agent
+      uid: 5f60c509-f43f-450a-8ef7-1ef0e4417eee
+    resourceVersion: "1025058"
+    uid: b8b964c2-5eeb-41b6-a7ce-0691edfc2656
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+  - name: https-internal
+    port: 444
+    protocol: TCP
+- addressType: IPv4
+  apiVersion: discovery.k8s.io/v1
+  endpoints:
+  - addresses:
+    - 10.52.0.18
+    conditions:
+      ready: true
+    nodeName: node1
+    targetRef:
+      kind: Pod
+      name: harvester-cluster-repo-54b6486849-pjjbp
+      namespace: cattle-system
+      resourceVersion: "2490"
+      uid: 75bb94c6-fd01-4843-9b64-170bd3bbcddc
+  kind: EndpointSlice
+  metadata:
+    annotations:
+      endpoints.kubernetes.io/last-change-trigger-time: "2022-03-06T22:49:53Z"
+    creationTimestamp: "2022-03-06T22:49:41Z"
+    generateName: harvester-cluster-repo-
+    generation: 2
+    labels:
+      endpointslice.kubernetes.io/managed-by: endpointslice-controller.k8s.io
+      kubernetes.io/service-name: harvester-cluster-repo
+    managedFields:
+    - apiVersion: discovery.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:addressType: {}
+        f:endpoints: {}
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:endpoints.kubernetes.io/last-change-trigger-time: {}
+          f:generateName: {}
+          f:labels:
+            .: {}
+            f:endpointslice.kubernetes.io/managed-by: {}
+            f:kubernetes.io/service-name: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"f6be9b56-0653-4094-aaaf-55a6fb4aad88"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:ports: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:49:53Z"
+    name: harvester-cluster-repo-h2bvj
+    namespace: cattle-system
+    ownerReferences:
+    - apiVersion: v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Service
+      name: harvester-cluster-repo
+      uid: f6be9b56-0653-4094-aaaf-55a6fb4aad88
+    resourceVersion: "2493"
+    uid: 64daabf5-cb5f-4c36-94ba-178fa8023cba
+  ports:
+  - name: "null"
+    port: 80
+    protocol: TCP
+- addressType: IPv4
+  apiVersion: discovery.k8s.io/v1
+  endpoints:
+  - addresses:
+    - 10.52.0.74
+    conditions:
+      ready: true
+    nodeName: node1
+    targetRef:
+      kind: Pod
+      name: rancher-775b48bfd-shxsh
+      namespace: cattle-system
+      resourceVersion: "7559"
+      uid: ed65d8a4-1f85-4737-b439-661d39dcb18f
+  kind: EndpointSlice
+  metadata:
+    creationTimestamp: "2022-03-06T22:47:09Z"
+    generateName: rancher-
+    generation: 14
+    labels:
+      app: rancher
+      app.kubernetes.io/managed-by: Helm
+      chart: rancher-2.6.3
+      endpointslice.kubernetes.io/managed-by: endpointslice-controller.k8s.io
+      heritage: Helm
+      kubernetes.io/service-name: rancher
+      release: rancher
+    managedFields:
+    - apiVersion: discovery.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:addressType: {}
+        f:endpoints: {}
+        f:metadata:
+          f:generateName: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:chart: {}
+            f:endpointslice.kubernetes.io/managed-by: {}
+            f:heritage: {}
+            f:kubernetes.io/service-name: {}
+            f:release: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"1e9f11f7-a911-4bab-a071-2946e48911ce"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:ports: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-08T00:38:06Z"
+    name: rancher-625rz
+    namespace: cattle-system
+    ownerReferences:
+    - apiVersion: v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Service
+      name: rancher
+      uid: 1e9f11f7-a911-4bab-a071-2946e48911ce
+    resourceVersion: "1025043"
+    uid: a47dfadf-12ce-42c0-8d7e-5de6ad940d7f
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+  - name: https-internal
+    port: 444
+    protocol: TCP
+- addressType: IPv4
+  apiVersion: discovery.k8s.io/v1
+  endpoints:
+  - addresses:
+    - 10.52.0.17
+    conditions:
+      ready: true
+    nodeName: node1
+    targetRef:
+      kind: Pod
+      name: rancher-webhook-7c9c5cc887-kf7bw
+      namespace: cattle-system
+      resourceVersion: "2109"
+      uid: 0ef2e906-bcc5-42ad-8825-8b912b780bd7
+  kind: EndpointSlice
+  metadata:
+    annotations:
+      endpoints.kubernetes.io/last-change-trigger-time: "2022-03-06T22:49:35Z"
+    creationTimestamp: "2022-03-06T22:49:30Z"
+    generateName: rancher-webhook-
+    generation: 2
+    labels:
+      app.kubernetes.io/managed-by: Helm
+      endpointslice.kubernetes.io/managed-by: endpointslice-controller.k8s.io
+      kubernetes.io/service-name: rancher-webhook
+    managedFields:
+    - apiVersion: discovery.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:addressType: {}
+        f:endpoints: {}
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:endpoints.kubernetes.io/last-change-trigger-time: {}
+          f:generateName: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:endpointslice.kubernetes.io/managed-by: {}
+            f:kubernetes.io/service-name: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"30d53119-14f5-4b7c-a865-490ec68041b4"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:ports: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:49:35Z"
+    name: rancher-webhook-4s2nb
+    namespace: cattle-system
+    ownerReferences:
+    - apiVersion: v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Service
+      name: rancher-webhook
+      uid: 30d53119-14f5-4b7c-a865-490ec68041b4
+    resourceVersion: "2114"
+    uid: fd42db3b-a198-48d3-ad83-d2b5e6a408a6
+  ports:
+  - name: https
+    port: 9443
+    protocol: TCP
+- addressType: IPv4
+  apiVersion: discovery.k8s.io/v1
+  endpoints:
+  - addresses:
+    - 10.52.0.17
+    conditions:
+      ready: true
+    nodeName: node1
+    targetRef:
+      kind: Pod
+      name: rancher-webhook-7c9c5cc887-kf7bw
+      namespace: cattle-system
+      resourceVersion: "2109"
+      uid: 0ef2e906-bcc5-42ad-8825-8b912b780bd7
+  kind: EndpointSlice
+  metadata:
+    annotations:
+      endpoints.kubernetes.io/last-change-trigger-time: "2022-03-06T22:49:35Z"
+    creationTimestamp: "2022-03-06T22:49:30Z"
+    generateName: webhook-service-
+    generation: 2
+    labels:
+      app.kubernetes.io/managed-by: Helm
+      endpointslice.kubernetes.io/managed-by: endpointslice-controller.k8s.io
+      kubernetes.io/service-name: webhook-service
+    managedFields:
+    - apiVersion: discovery.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:addressType: {}
+        f:endpoints: {}
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:endpoints.kubernetes.io/last-change-trigger-time: {}
+          f:generateName: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:endpointslice.kubernetes.io/managed-by: {}
+            f:kubernetes.io/service-name: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"bc66f248-e5c6-4db4-b984-792fa40c4516"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:ports: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:49:35Z"
+    name: webhook-service-fszvz
+    namespace: cattle-system
+    ownerReferences:
+    - apiVersion: v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Service
+      name: webhook-service
+      uid: bc66f248-e5c6-4db4-b984-792fa40c4516
+    resourceVersion: "2113"
+    uid: 61e245cc-4d93-4f68-82c8-315d0439150e
+  ports:
+  - name: https
+    port: 8777
+    protocol: TCP
+kind: List
+metadata:
+  resourceVersion: "14659029"

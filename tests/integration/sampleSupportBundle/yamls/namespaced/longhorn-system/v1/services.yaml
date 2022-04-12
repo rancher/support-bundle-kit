@@ -1,0 +1,533 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      driver.longhorn.io/kubernetes-version: v1.21.7+rke2r1
+      driver.longhorn.io/version: v1.2.3
+    creationTimestamp: "2022-03-06T22:51:59Z"
+    labels:
+      app: csi-attacher
+      longhorn.io/managed-by: longhorn-manager
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:driver.longhorn.io/kubernetes-version: {}
+            f:driver.longhorn.io/version: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:longhorn.io/managed-by: {}
+        f:spec:
+          f:ports:
+            .: {}
+            k:{"port":12345,"protocol":"TCP"}:
+              .: {}
+              f:name: {}
+              f:port: {}
+              f:protocol: {}
+              f:targetPort: {}
+          f:selector:
+            .: {}
+            f:app: {}
+          f:sessionAffinity: {}
+          f:type: {}
+      manager: longhorn-manager
+      operation: Update
+      time: "2022-03-06T22:51:59Z"
+    name: csi-attacher
+    namespace: longhorn-system
+    resourceVersion: "4414"
+    uid: 3c71c25b-23b5-480e-bf06-f9832204ad8c
+  spec:
+    clusterIP: 10.53.53.98
+    clusterIPs:
+    - 10.53.53.98
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: dummy
+      port: 12345
+      protocol: TCP
+      targetPort: 12345
+    selector:
+      app: csi-attacher
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      driver.longhorn.io/kubernetes-version: v1.21.7+rke2r1
+      driver.longhorn.io/version: v1.2.3
+    creationTimestamp: "2022-03-06T22:51:59Z"
+    labels:
+      app: csi-provisioner
+      longhorn.io/managed-by: longhorn-manager
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:driver.longhorn.io/kubernetes-version: {}
+            f:driver.longhorn.io/version: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:longhorn.io/managed-by: {}
+        f:spec:
+          f:ports:
+            .: {}
+            k:{"port":12345,"protocol":"TCP"}:
+              .: {}
+              f:name: {}
+              f:port: {}
+              f:protocol: {}
+              f:targetPort: {}
+          f:selector:
+            .: {}
+            f:app: {}
+          f:sessionAffinity: {}
+          f:type: {}
+      manager: longhorn-manager
+      operation: Update
+      time: "2022-03-06T22:51:59Z"
+    name: csi-provisioner
+    namespace: longhorn-system
+    resourceVersion: "4442"
+    uid: 3ef4d1bf-31f5-4f16-a46f-0a447a882d46
+  spec:
+    clusterIP: 10.53.43.4
+    clusterIPs:
+    - 10.53.43.4
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: dummy
+      port: 12345
+      protocol: TCP
+      targetPort: 12345
+    selector:
+      app: csi-provisioner
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      driver.longhorn.io/kubernetes-version: v1.21.7+rke2r1
+      driver.longhorn.io/version: v1.2.3
+    creationTimestamp: "2022-03-06T22:52:00Z"
+    labels:
+      app: csi-resizer
+      longhorn.io/managed-by: longhorn-manager
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:driver.longhorn.io/kubernetes-version: {}
+            f:driver.longhorn.io/version: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:longhorn.io/managed-by: {}
+        f:spec:
+          f:ports:
+            .: {}
+            k:{"port":12345,"protocol":"TCP"}:
+              .: {}
+              f:name: {}
+              f:port: {}
+              f:protocol: {}
+              f:targetPort: {}
+          f:selector:
+            .: {}
+            f:app: {}
+          f:sessionAffinity: {}
+          f:type: {}
+      manager: longhorn-manager
+      operation: Update
+      time: "2022-03-06T22:52:00Z"
+    name: csi-resizer
+    namespace: longhorn-system
+    resourceVersion: "4482"
+    uid: f52cb3e2-d87d-4bd2-aec5-faf3d92f851f
+  spec:
+    clusterIP: 10.53.89.9
+    clusterIPs:
+    - 10.53.89.9
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: dummy
+      port: 12345
+      protocol: TCP
+      targetPort: 12345
+    selector:
+      app: csi-resizer
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      driver.longhorn.io/kubernetes-version: v1.21.7+rke2r1
+      driver.longhorn.io/version: v1.2.3
+    creationTimestamp: "2022-03-06T22:52:00Z"
+    labels:
+      app: csi-snapshotter
+      longhorn.io/managed-by: longhorn-manager
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:driver.longhorn.io/kubernetes-version: {}
+            f:driver.longhorn.io/version: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:longhorn.io/managed-by: {}
+        f:spec:
+          f:ports:
+            .: {}
+            k:{"port":12345,"protocol":"TCP"}:
+              .: {}
+              f:name: {}
+              f:port: {}
+              f:protocol: {}
+              f:targetPort: {}
+          f:selector:
+            .: {}
+            f:app: {}
+          f:sessionAffinity: {}
+          f:type: {}
+      manager: longhorn-manager
+      operation: Update
+      time: "2022-03-06T22:52:00Z"
+    name: csi-snapshotter
+    namespace: longhorn-system
+    resourceVersion: "4512"
+    uid: a4de00af-8e23-43a1-b0c4-4b5ab6fe0abc
+  spec:
+    clusterIP: 10.53.113.22
+    clusterIPs:
+    - 10.53.113.22
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: dummy
+      port: 12345
+      protocol: TCP
+      targetPort: 12345
+    selector:
+      app: csi-snapshotter
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: harvester
+      meta.helm.sh/release-namespace: harvester-system
+      objectset.rio.cattle.io/id: default-mcc-harvester-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:50:37Z"
+    labels:
+      app: longhorn-manager
+      app.kubernetes.io/instance: harvester
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: longhorn
+      app.kubernetes.io/version: v1.2.3
+      helm.sh/chart: longhorn-1.2.3
+      objectset.rio.cattle.io/hash: e852fa897f5eae59a44b4bfe186aad80b10b94b3
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:app.kubernetes.io/version: {}
+            f:helm.sh/chart: {}
+            f:objectset.rio.cattle.io/hash: {}
+        f:spec:
+          f:ports:
+            .: {}
+            k:{"port":9500,"protocol":"TCP"}:
+              .: {}
+              f:name: {}
+              f:port: {}
+              f:protocol: {}
+              f:targetPort: {}
+          f:selector:
+            .: {}
+            f:app: {}
+          f:sessionAffinity: {}
+          f:sessionAffinityConfig:
+            .: {}
+            f:clientIP:
+              .: {}
+              f:timeoutSeconds: {}
+          f:type: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:50:37Z"
+    name: longhorn-backend
+    namespace: longhorn-system
+    resourceVersion: "3181"
+    uid: fd5b806f-e969-4616-9cdb-7e678bd80c2f
+  spec:
+    clusterIP: 10.53.135.220
+    clusterIPs:
+    - 10.53.135.220
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: manager
+      port: 9500
+      protocol: TCP
+      targetPort: manager
+    selector:
+      app: longhorn-manager
+    sessionAffinity: ClientIP
+    sessionAffinityConfig:
+      clientIP:
+        timeoutSeconds: 10800
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: harvester
+      meta.helm.sh/release-namespace: harvester-system
+      objectset.rio.cattle.io/id: default-mcc-harvester-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:50:37Z"
+    labels:
+      app.kubernetes.io/instance: harvester
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: longhorn
+      app.kubernetes.io/version: v1.2.3
+      helm.sh/chart: longhorn-1.2.3
+      objectset.rio.cattle.io/hash: e852fa897f5eae59a44b4bfe186aad80b10b94b3
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:app.kubernetes.io/version: {}
+            f:helm.sh/chart: {}
+            f:objectset.rio.cattle.io/hash: {}
+        f:spec:
+          f:clusterIP: {}
+          f:selector:
+            .: {}
+            f:longhorn.io/component: {}
+            f:longhorn.io/instance-manager-type: {}
+          f:sessionAffinity: {}
+          f:type: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:50:37Z"
+    name: longhorn-engine-manager
+    namespace: longhorn-system
+    resourceVersion: "3165"
+    uid: aec079be-a84a-469f-97d0-9993a37f836b
+  spec:
+    clusterIP: None
+    clusterIPs:
+    - None
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    selector:
+      longhorn.io/component: instance-manager
+      longhorn.io/instance-manager-type: engine
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: harvester
+      meta.helm.sh/release-namespace: harvester-system
+      objectset.rio.cattle.io/id: default-mcc-harvester-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:50:37Z"
+    labels:
+      app: longhorn-ui
+      app.kubernetes.io/instance: harvester
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: longhorn
+      app.kubernetes.io/version: v1.2.3
+      helm.sh/chart: longhorn-1.2.3
+      objectset.rio.cattle.io/hash: e852fa897f5eae59a44b4bfe186aad80b10b94b3
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:app.kubernetes.io/version: {}
+            f:helm.sh/chart: {}
+            f:objectset.rio.cattle.io/hash: {}
+        f:spec:
+          f:ports:
+            .: {}
+            k:{"port":80,"protocol":"TCP"}:
+              .: {}
+              f:name: {}
+              f:port: {}
+              f:protocol: {}
+              f:targetPort: {}
+          f:selector:
+            .: {}
+            f:app: {}
+          f:sessionAffinity: {}
+          f:type: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:50:37Z"
+    name: longhorn-frontend
+    namespace: longhorn-system
+    resourceVersion: "3189"
+    uid: 23b4f211-6a7a-4ca1-96f0-ba5d6db82552
+  spec:
+    clusterIP: 10.53.250.86
+    clusterIPs:
+    - 10.53.250.86
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: http
+    selector:
+      app: longhorn-ui
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: harvester
+      meta.helm.sh/release-namespace: harvester-system
+      objectset.rio.cattle.io/id: default-mcc-harvester-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:50:37Z"
+    labels:
+      app.kubernetes.io/instance: harvester
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: longhorn
+      app.kubernetes.io/version: v1.2.3
+      helm.sh/chart: longhorn-1.2.3
+      objectset.rio.cattle.io/hash: e852fa897f5eae59a44b4bfe186aad80b10b94b3
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:app.kubernetes.io/version: {}
+            f:helm.sh/chart: {}
+            f:objectset.rio.cattle.io/hash: {}
+        f:spec:
+          f:clusterIP: {}
+          f:selector:
+            .: {}
+            f:longhorn.io/component: {}
+            f:longhorn.io/instance-manager-type: {}
+          f:sessionAffinity: {}
+          f:type: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:50:37Z"
+    name: longhorn-replica-manager
+    namespace: longhorn-system
+    resourceVersion: "3162"
+    uid: 5a23b9ab-0432-4cf4-a6ea-844fb9cb8966
+  spec:
+    clusterIP: None
+    clusterIPs:
+    - None
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    selector:
+      longhorn.io/component: instance-manager
+      longhorn.io/instance-manager-type: replica
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+kind: List
+metadata:
+  resourceVersion: "14659213"

@@ -1,0 +1,477 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: "2022-03-06T22:53:26Z"
+    finalizers:
+    - service.kubernetes.io/load-balancer-cleanup
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:loadBalancer:
+            f:ingress: {}
+      manager: Go-http-client
+      operation: Update
+      time: "2022-03-06T22:53:26Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:spec:
+          f:externalTrafficPolicy: {}
+          f:loadBalancerIP: {}
+          f:ports:
+            .: {}
+            k:{"port":80,"protocol":"TCP"}:
+              .: {}
+              f:name: {}
+              f:port: {}
+              f:protocol: {}
+              f:targetPort: {}
+            k:{"port":443,"protocol":"TCP"}:
+              .: {}
+              f:name: {}
+              f:port: {}
+              f:protocol: {}
+              f:targetPort: {}
+          f:selector:
+            .: {}
+            f:app.kubernetes.io/name: {}
+          f:sessionAffinity: {}
+          f:type: {}
+      manager: harvester
+      operation: Update
+      time: "2022-03-06T22:53:26Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:finalizers:
+            .: {}
+            v:"service.kubernetes.io/load-balancer-cleanup"null: {}
+      manager: kube-vip-cloud-provider
+      operation: Update
+      time: "2022-03-06T22:53:26Z"
+    name: ingress-expose
+    namespace: kube-system
+    resourceVersion: "6312"
+    uid: a37c5865-0b77-4015-b349-3711ab4b0eb6
+  spec:
+    clusterIP: 10.53.238.21
+    clusterIPs:
+    - 10.53.238.21
+    externalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    loadBalancerIP: 172.16.128.7
+    ports:
+    - name: https-internal
+      nodePort: 31058
+      port: 443
+      protocol: TCP
+      targetPort: 443
+    - name: http
+      nodePort: 30348
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    selector:
+      app.kubernetes.io/name: rke2-ingress-nginx
+    sessionAffinity: None
+    type: LoadBalancer
+  status:
+    loadBalancer:
+      ingress:
+      - ip: 172.16.128.7
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:52:04Z"
+    labels:
+      app: rancher-monitoring-coredns
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      jobLabel: coredns
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:jobLabel: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          f:clusterIP: {}
+          f:ports:
+            .: {}
+            k:{"port":9153,"protocol":"TCP"}:
+              .: {}
+              f:name: {}
+              f:port: {}
+              f:protocol: {}
+              f:targetPort: {}
+          f:selector:
+            .: {}
+            f:k8s-app: {}
+          f:sessionAffinity: {}
+          f:type: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:04Z"
+    name: rancher-monitoring-coredns
+    namespace: kube-system
+    resourceVersion: "4678"
+    uid: 9cc4de5e-1e69-4171-9617-5f59da3db66e
+  spec:
+    clusterIP: None
+    clusterIPs:
+    - None
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http-metrics
+      port: 9153
+      protocol: TCP
+      targetPort: 9153
+    selector:
+      k8s-app: kube-dns
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: "2022-03-06T22:52:29Z"
+    labels:
+      app.kubernetes.io/managed-by: prometheus-operator
+      app.kubernetes.io/name: kubelet
+      k8s-app: kubelet
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:k8s-app: {}
+        f:spec:
+          f:clusterIP: {}
+          f:ports:
+            .: {}
+            k:{"port":4194,"protocol":"TCP"}:
+              .: {}
+              f:name: {}
+              f:port: {}
+              f:protocol: {}
+              f:targetPort: {}
+            k:{"port":10250,"protocol":"TCP"}:
+              .: {}
+              f:name: {}
+              f:port: {}
+              f:protocol: {}
+              f:targetPort: {}
+            k:{"port":10255,"protocol":"TCP"}:
+              .: {}
+              f:name: {}
+              f:port: {}
+              f:protocol: {}
+              f:targetPort: {}
+          f:sessionAffinity: {}
+          f:type: {}
+      manager: operator
+      operation: Update
+      time: "2022-03-06T22:52:29Z"
+    name: rancher-monitoring-kubelet
+    namespace: kube-system
+    resourceVersion: "5286"
+    uid: 09f0edfd-3fce-48e0-ba42-2bac65d32e8c
+  spec:
+    clusterIP: None
+    clusterIPs:
+    - None
+    ipFamilies:
+    - IPv4
+    - IPv6
+    ipFamilyPolicy: RequireDualStack
+    ports:
+    - name: https-metrics
+      port: 10250
+      protocol: TCP
+      targetPort: 10250
+    - name: http-metrics
+      port: 10255
+      protocol: TCP
+      targetPort: 10255
+    - name: cadvisor
+      port: 4194
+      protocol: TCP
+      targetPort: 4194
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rke2-coredns
+      meta.helm.sh/release-namespace: kube-system
+    creationTimestamp: "2022-03-06T22:47:19Z"
+    labels:
+      app.kubernetes.io/instance: rke2-coredns
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: rke2-coredns
+      helm.sh/chart: rke2-coredns-1.16.401-build2021111901
+      k8s-app: kube-dns
+      kubernetes.io/cluster-service: "true"
+      kubernetes.io/name: CoreDNS
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:helm.sh/chart: {}
+            f:k8s-app: {}
+            f:kubernetes.io/cluster-service: {}
+            f:kubernetes.io/name: {}
+        f:spec:
+          f:clusterIP: {}
+          f:ports:
+            .: {}
+            k:{"port":53,"protocol":"TCP"}:
+              .: {}
+              f:name: {}
+              f:port: {}
+              f:protocol: {}
+              f:targetPort: {}
+            k:{"port":53,"protocol":"UDP"}:
+              .: {}
+              f:name: {}
+              f:port: {}
+              f:protocol: {}
+              f:targetPort: {}
+          f:selector:
+            .: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/name: {}
+            f:k8s-app: {}
+          f:sessionAffinity: {}
+          f:type: {}
+      manager: helm
+      operation: Update
+      time: "2022-03-06T22:47:19Z"
+    name: rke2-coredns-rke2-coredns
+    namespace: kube-system
+    resourceVersion: "661"
+    uid: a4b4c10a-1075-453a-945e-8802421d425e
+  spec:
+    clusterIP: 10.53.0.10
+    clusterIPs:
+    - 10.53.0.10
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: udp-53
+      port: 53
+      protocol: UDP
+      targetPort: 53
+    - name: tcp-53
+      port: 53
+      protocol: TCP
+      targetPort: 53
+    selector:
+      app.kubernetes.io/instance: rke2-coredns
+      app.kubernetes.io/name: rke2-coredns
+      k8s-app: kube-dns
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rke2-ingress-nginx
+      meta.helm.sh/release-namespace: kube-system
+    creationTimestamp: "2022-03-06T22:48:04Z"
+    labels:
+      app.kubernetes.io/component: controller
+      app.kubernetes.io/instance: rke2-ingress-nginx
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: rke2-ingress-nginx
+      app.kubernetes.io/version: 1.0.2
+      helm.sh/chart: rke2-ingress-nginx-4.0.306
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/component: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:app.kubernetes.io/version: {}
+            f:helm.sh/chart: {}
+        f:spec:
+          f:ports:
+            .: {}
+            k:{"port":443,"protocol":"TCP"}:
+              .: {}
+              f:appProtocol: {}
+              f:name: {}
+              f:port: {}
+              f:protocol: {}
+              f:targetPort: {}
+          f:selector:
+            .: {}
+            f:app.kubernetes.io/component: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/name: {}
+          f:sessionAffinity: {}
+          f:type: {}
+      manager: helm
+      operation: Update
+      time: "2022-03-06T22:48:04Z"
+    name: rke2-ingress-nginx-controller-admission
+    namespace: kube-system
+    resourceVersion: "1051"
+    uid: 58021c8f-0be5-4fb2-970c-3f9de5e72039
+  spec:
+    clusterIP: 10.53.250.23
+    clusterIPs:
+    - 10.53.250.23
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - appProtocol: https
+      name: https-webhook
+      port: 443
+      protocol: TCP
+      targetPort: webhook
+    selector:
+      app.kubernetes.io/component: controller
+      app.kubernetes.io/instance: rke2-ingress-nginx
+      app.kubernetes.io/name: rke2-ingress-nginx
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rke2-metrics-server
+      meta.helm.sh/release-namespace: kube-system
+    creationTimestamp: "2022-03-06T22:47:58Z"
+    labels:
+      app: rke2-metrics-server
+      app.kubernetes.io/managed-by: Helm
+      chart: rke2-metrics-server-2.11.100-build2021111904
+      heritage: Helm
+      release: rke2-metrics-server
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:chart: {}
+            f:heritage: {}
+            f:release: {}
+        f:spec:
+          f:ports:
+            .: {}
+            k:{"port":443,"protocol":"TCP"}:
+              .: {}
+              f:port: {}
+              f:protocol: {}
+              f:targetPort: {}
+          f:selector:
+            .: {}
+            f:app: {}
+            f:release: {}
+          f:sessionAffinity: {}
+          f:type: {}
+      manager: helm
+      operation: Update
+      time: "2022-03-06T22:47:58Z"
+    name: rke2-metrics-server
+    namespace: kube-system
+    resourceVersion: "957"
+    uid: 519649e1-9e0d-4166-b706-4e190773a6db
+  spec:
+    clusterIP: 10.53.244.143
+    clusterIPs:
+    - 10.53.244.143
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 443
+      protocol: TCP
+      targetPort: https
+    selector:
+      app: rke2-metrics-server
+      release: rke2-metrics-server
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+kind: List
+metadata:
+  resourceVersion: "14658989"

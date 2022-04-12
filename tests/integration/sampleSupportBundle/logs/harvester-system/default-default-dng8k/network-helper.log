@@ -1,0 +1,1 @@
+2022-03-06T23:10:46.224130342Z W0306 23:10:46.223657       1 client_config.go:614] Neither --kubeconfig nor --master was specified.  Using the inClusterConfig.  This might not work.

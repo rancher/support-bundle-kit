@@ -1,0 +1,173 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    annotations:
+      pv.kubernetes.io/bind-completed: "yes"
+      pv.kubernetes.io/bound-by-controller: "yes"
+      volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+    creationTimestamp: "2022-03-06T22:52:38Z"
+    deletionGracePeriodSeconds: 0
+    deletionTimestamp: "2022-03-08T00:02:33Z"
+    finalizers:
+    - kubernetes.io/pvc-protection
+    labels:
+      app: prometheus
+      app.kubernetes.io/instance: rancher-monitoring-prometheus
+      app.kubernetes.io/managed-by: prometheus-operator
+      app.kubernetes.io/name: prometheus
+      operator.prometheus.io/name: rancher-monitoring-prometheus
+      operator.prometheus.io/shard: "0"
+      prometheus: rancher-monitoring-prometheus
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:pv.kubernetes.io/bind-completed: {}
+            f:pv.kubernetes.io/bound-by-controller: {}
+            f:volume.beta.kubernetes.io/storage-provisioner: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:operator.prometheus.io/name: {}
+            f:operator.prometheus.io/shard: {}
+            f:prometheus: {}
+        f:spec:
+          f:accessModes: {}
+          f:resources:
+            f:requests:
+              .: {}
+              f:storage: {}
+          f:storageClassName: {}
+          f:volumeMode: {}
+          f:volumeName: {}
+        f:status:
+          f:accessModes: {}
+          f:capacity:
+            .: {}
+            f:storage: {}
+          f:phase: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:52:42Z"
+    name: prometheus-rancher-monitoring-prometheus-db-prometheus-rancher-monitoring-prometheus-0
+    namespace: cattle-monitoring-system
+    resourceVersion: "1001707"
+    uid: 232180f3-6740-4682-ba5c-f4b57a75512b
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 50Gi
+    storageClassName: longhorn
+    volumeMode: Filesystem
+    volumeName: pvc-232180f3-6740-4682-ba5c-f4b57a75512b
+  status:
+    accessModes:
+    - ReadWriteOnce
+    capacity:
+      storage: 50Gi
+    phase: Bound
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      pv.kubernetes.io/bind-completed: "yes"
+      pv.kubernetes.io/bound-by-controller: "yes"
+      volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+    creationTimestamp: "2022-03-06T22:52:00Z"
+    deletionGracePeriodSeconds: 0
+    deletionTimestamp: "2022-03-08T00:02:31Z"
+    finalizers:
+    - kubernetes.io/pvc-protection
+    labels:
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: grafana
+      app.kubernetes.io/version: 7.5.11
+      helm.sh/chart: grafana-6.16.14
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:finalizers:
+            .: {}
+            v:"kubernetes.io/pvc-protection"null: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:app.kubernetes.io/version: {}
+            f:helm.sh/chart: {}
+            f:objectset.rio.cattle.io/hash: {}
+        f:spec:
+          f:accessModes: {}
+          f:resources:
+            f:requests:
+              .: {}
+              f:storage: {}
+          f:storageClassName: {}
+          f:volumeMode: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:00Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            f:pv.kubernetes.io/bind-completed: {}
+            f:pv.kubernetes.io/bound-by-controller: {}
+            f:volume.beta.kubernetes.io/storage-provisioner: {}
+        f:spec:
+          f:volumeName: {}
+        f:status:
+          f:accessModes: {}
+          f:capacity:
+            .: {}
+            f:storage: {}
+          f:phase: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:52:38Z"
+    name: rancher-monitoring-grafana
+    namespace: cattle-monitoring-system
+    resourceVersion: "1001671"
+    uid: ce3fa571-6642-4018-b7fd-9eb2c1e56191
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: "10"
+    storageClassName: longhorn
+    volumeMode: Filesystem
+    volumeName: pvc-ce3fa571-6642-4018-b7fd-9eb2c1e56191
+  status:
+    accessModes:
+    - ReadWriteOnce
+    capacity:
+      storage: 10Mi
+    phase: Bound
+kind: List
+metadata:
+  resourceVersion: "14659115"

@@ -1,0 +1,88 @@
+apiVersion: v1
+items:
+- apiVersion: helm.cattle.io/v1
+  kind: HelmChartConfig
+  metadata:
+    annotations:
+      objectset.rio.cattle.io/applied: H4sIAAAAAAAA/4SPQWvzMAxA/0rQOemXL1nb1LDDyGWw+067KLaSeLHlYKsZo+S/jzAGG6PrURLv8XQBnO0zxWQDg4KRnN9pFHG0s+Hf8h9ymCwbUPBIzrcjRmkD93aAHDwJGhQEdQFkDoJiA6dtDN0raUkku2jDN6HdTJBfvYc3plgMywQKpjr9SMmzJ8vm/sGYwDcVjJ5AQZyoKjQyukJ/Zd8G04x6o6dzR0V6T0Ie1hwcduT+fG/ENIKCfVPXBzw2hrTZo2mq0uDpcKjKfdPclccTmqos677bpL9C4XN3pSHNpLeCBd2ZUhtYiAUU9A6ZyakXzjLboyaVjRgXSkKx8IMXWNePAAAA//8yDepp7AEAAA
+      objectset.rio.cattle.io/id: "null"
+      objectset.rio.cattle.io/owner-gvk: k3s.cattle.io/v1, Kind=Addon
+      objectset.rio.cattle.io/owner-name: rke2-canal-config
+      objectset.rio.cattle.io/owner-namespace: kube-system
+    creationTimestamp: "2022-03-06T22:46:56Z"
+    generation: 1
+    labels:
+      objectset.rio.cattle.io/hash: 58336a78decd5ad820da966205884079ad2003fb
+    managedFields:
+    - apiVersion: helm.cattle.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:objectset.rio.cattle.io/applied: {}
+            f:objectset.rio.cattle.io/id: {}
+            f:objectset.rio.cattle.io/owner-gvk: {}
+            f:objectset.rio.cattle.io/owner-name: {}
+            f:objectset.rio.cattle.io/owner-namespace: {}
+          f:labels:
+            .: {}
+            f:objectset.rio.cattle.io/hash: {}
+        f:spec: {}
+      manager: deploy@node1
+      operation: Update
+      time: "2022-03-06T22:46:56Z"
+    name: rke2-canal
+    namespace: kube-system
+    resourceVersion: "264"
+    uid: dd0ce567-c9aa-4abe-8f0a-59037a7e5130
+  spec:
+    valuesContent: |-
+      flannel:
+        iface: harvester-mgmt
+- apiVersion: helm.cattle.io/v1
+  kind: HelmChartConfig
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"helm.cattle.io/v1","kind":"HelmChartConfig","metadata":{"annotations":{},"name":"rke2-ingress-nginx","namespace":"kube-system"},"spec":{"valuesContent":"controller:\n  config:\n    proxy-body-size: \"0\"\n    proxy-request-buffering: \"off\"\n  admissionWebhooks:\n    port: 8444\n  publishService:\n    pathOverride: kube-system/ingress-expose\n  extraArgs:\n    default-ssl-certificate: cattle-system/tls-rancher-internal"}}
+    creationTimestamp: "2022-03-06T22:49:41Z"
+    generation: 2
+    managedFields:
+    - apiVersion: helm.cattle.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:kubectl.kubernetes.io/last-applied-configuration: {}
+      manager: kubectl-client-side-apply
+      operation: Update
+      time: "2022-03-06T22:49:41Z"
+    - apiVersion: helm.cattle.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:spec: {}
+      manager: harvester
+      operation: Update
+      time: "2022-03-06T22:53:28Z"
+    name: rke2-ingress-nginx
+    namespace: kube-system
+    resourceVersion: "6350"
+    uid: 8f7b2be9-962d-4ac0-ae14-97ca16d4d3c4
+  spec:
+    valuesContent: |
+      controller:
+          admissionWebhooks:
+              port: 8444
+          config:
+              proxy-body-size: "0"
+              proxy-request-buffering: "off"
+          extraArgs:
+              default-ssl-certificate: cattle-system/tls-rancher-internal
+          publishService:
+              pathOverride: kube-system/ingress-expose
+kind: List
+metadata:
+  continue: "null"
+  resourceVersion: "14659003"

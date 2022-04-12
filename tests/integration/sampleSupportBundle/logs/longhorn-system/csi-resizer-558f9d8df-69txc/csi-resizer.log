@@ -1,0 +1,5 @@
+2022-03-06T22:52:16.549125168Z I0306 22:52:16.547874       1 main.go:90] Version : v1.2.0
+2022-03-06T22:52:16.549204178Z I0306 22:52:16.548953       1 feature_gate.go:243] feature gates: &{map[]}
+2022-03-06T22:52:19.782432295Z I0306 22:52:19.781469       1 common.go:111] Probing CSI driver for readiness
+2022-03-06T22:52:19.864233217Z I0306 22:52:19.859949       1 main.go:138] CSI driver name: "driver.longhorn.io"
+2022-03-06T22:52:19.954776356Z I0306 22:52:19.934871       1 leaderelection.go:243] attempting to acquire leader lease longhorn-system/external-resizer-driver-longhorn-io...
