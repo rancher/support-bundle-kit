@@ -1,0 +1,1814 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "3"
+      deployment.kubernetes.io/revision: "1"
+      management.cattle.io/scale-available: "3"
+      meta.helm.sh/release-name: harvester
+      meta.helm.sh/release-namespace: harvester-system
+      objectset.rio.cattle.io/id: default-mcc-harvester-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:50:37Z"
+    generation: 3
+    labels:
+      app.kubernetes.io/component: apiserver
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: harvester
+      app.kubernetes.io/part-of: harvester
+      app.kubernetes.io/version: 0.1.x
+      helm.sh/chart: harvester-0.0.0-dev
+      helm.sh/release: harvester
+      pod-template-hash: d544ddb6f
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deployment.kubernetes.io/desired-replicas: {}
+            f:deployment.kubernetes.io/max-replicas: {}
+            f:deployment.kubernetes.io/revision: {}
+            f:management.cattle.io/scale-available: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/component: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:helm.sh/chart: {}
+            f:helm.sh/release: {}
+            f:pod-template-hash: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"94683781-af37-4cce-b5d0-91dca38a4f7a"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:replicas: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:annotations:
+                .: {}
+                f:container.apparmor.security.beta.kubernetes.io/apiserver: {}
+              f:labels:
+                .: {}
+                f:app.kubernetes.io/component: {}
+                f:app.kubernetes.io/managed-by: {}
+                f:app.kubernetes.io/name: {}
+                f:app.kubernetes.io/part-of: {}
+                f:app.kubernetes.io/version: {}
+                f:helm.sh/chart: {}
+                f:helm.sh/release: {}
+                f:pod-template-hash: {}
+            f:spec:
+              f:affinity:
+                .: {}
+                f:nodeAffinity:
+                  .: {}
+                  f:requiredDuringSchedulingIgnoredDuringExecution:
+                    .: {}
+                    f:nodeSelectorTerms: {}
+                f:podAntiAffinity:
+                  .: {}
+                  f:requiredDuringSchedulingIgnoredDuringExecution: {}
+              f:containers:
+                k:{"name":"apiserver"}:
+                  .: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"HARVESTER_DEBUG"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"HARVESTER_SERVER_HTTP_PORT"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"HARVESTER_SERVER_HTTPS_PORT"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"HCI_MODE"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"NAMESPACE"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                    k:{"name":"RANCHER_EMBEDDED"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:ports:
+                    .: {}
+                    k:{"containerPort":6060,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:name: {}
+                      f:protocol: {}
+                    k:{"containerPort":8443,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:name: {}
+                      f:protocol: {}
+                  f:resources:
+                    .: {}
+                    f:requests:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                  f:securityContext:
+                    .: {}
+                    f:capabilities:
+                      .: {}
+                      f:add: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+              f:dnsPolicy: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+        f:status:
+          f:availableReplicas: {}
+          f:fullyLabeledReplicas: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:51:51Z"
+    name: harvester-d544ddb6f
+    namespace: harvester-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: harvester
+      uid: 94683781-af37-4cce-b5d0-91dca38a4f7a
+    resourceVersion: "1025095"
+    uid: 2e19347f-a69d-48ae-82c5-210299e04211
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app.kubernetes.io/component: apiserver
+        app.kubernetes.io/name: harvester
+        app.kubernetes.io/part-of: harvester
+        helm.sh/release: harvester
+        pod-template-hash: d544ddb6f
+    template:
+      metadata:
+        annotations:
+          container.apparmor.security.beta.kubernetes.io/apiserver: unconfined
+        creationTimestamp: "null"
+        labels:
+          app.kubernetes.io/component: apiserver
+          app.kubernetes.io/managed-by: Helm
+          app.kubernetes.io/name: harvester
+          app.kubernetes.io/part-of: harvester
+          app.kubernetes.io/version: 0.1.x
+          helm.sh/chart: harvester-0.0.0-dev
+          helm.sh/release: harvester
+          pod-template-hash: d544ddb6f
+      spec:
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: beta.kubernetes.io/os
+                  operator: In
+                  values:
+                  - linux
+              - matchExpressions:
+                - key: kubernetes.io/os
+                  operator: In
+                  values:
+                  - linux
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                  - harvester
+                - key: app.kubernetes.io/component
+                  operator: In
+                  values:
+                  - apiserver
+                - key: app.kubernetes.io/version
+                  operator: In
+                  values:
+                  - 0.1.x
+              topologyKey: kubernetes.io/hostname
+        containers:
+        - env:
+          - name: HARVESTER_SERVER_HTTPS_PORT
+            value: "8443"
+          - name: HARVESTER_DEBUG
+            value: "false"
+          - name: HARVESTER_SERVER_HTTP_PORT
+            value: "0"
+          - name: HCI_MODE
+            value: "true"
+          - name: RANCHER_EMBEDDED
+            value: "true"
+          - name: NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          image: rancher/harvester:master-head
+          imagePullPolicy: IfNotPresent
+          name: apiserver
+          ports:
+          - containerPort: 8443
+            name: https
+            protocol: TCP
+          - containerPort: 6060
+            name: profile
+            protocol: TCP
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+          securityContext:
+            capabilities:
+              add:
+              - SYS_ADMIN
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: harvester
+        serviceAccountName: harvester
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 3
+    readyReplicas: 1
+    replicas: 1
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "1"
+      meta.helm.sh/release-name: harvester
+      meta.helm.sh/release-namespace: harvester-system
+      objectset.rio.cattle.io/id: default-mcc-harvester-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:50:37Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/instance: harvester
+      app.kubernetes.io/name: harvester-load-balancer
+      pod-template-hash: 59bf75f489
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deployment.kubernetes.io/desired-replicas: {}
+            f:deployment.kubernetes.io/max-replicas: {}
+            f:deployment.kubernetes.io/revision: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/name: {}
+            f:pod-template-hash: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"9dffc88b-93f8-48bc-bc84-b834b9716324"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:replicas: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:app.kubernetes.io/instance: {}
+                f:app.kubernetes.io/name: {}
+                f:pod-template-hash: {}
+            f:spec:
+              f:containers:
+                k:{"name":"harvester-load-balancer"}:
+                  .: {}
+                  f:command: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:resources: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+              f:dnsPolicy: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+        f:status:
+          f:availableReplicas: {}
+          f:fullyLabeledReplicas: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:51:51Z"
+    name: harvester-load-balancer-59bf75f489
+    namespace: harvester-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: harvester-load-balancer
+      uid: 9dffc88b-93f8-48bc-bc84-b834b9716324
+    resourceVersion: "4177"
+    uid: 9a87caaa-35a7-4f3a-8950-2d66f887e661
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app.kubernetes.io/instance: harvester
+        app.kubernetes.io/name: harvester-load-balancer
+        pod-template-hash: 59bf75f489
+    template:
+      metadata:
+        creationTimestamp: "null"
+        labels:
+          app.kubernetes.io/instance: harvester
+          app.kubernetes.io/name: harvester-load-balancer
+          pod-template-hash: 59bf75f489
+      spec:
+        containers:
+        - command:
+          - harvester-load-balancer
+          image: rancher/harvester-load-balancer:master-head
+          imagePullPolicy: IfNotPresent
+          name: harvester-load-balancer
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: harvester-load-balancer
+        serviceAccountName: harvester-load-balancer
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "1"
+      deployment.kubernetes.io/revision: "1"
+      management.cattle.io/scale-available: "2"
+      meta.helm.sh/release-name: harvester
+      meta.helm.sh/release-namespace: harvester-system
+      objectset.rio.cattle.io/id: default-mcc-harvester-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:50:37Z"
+    generation: 3
+    labels:
+      app.kubernetes.io/instance: harvester
+      app.kubernetes.io/name: harvester-network-controller-manager
+      pod-template-hash: 99677f8fd
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deployment.kubernetes.io/desired-replicas: {}
+            f:deployment.kubernetes.io/max-replicas: {}
+            f:deployment.kubernetes.io/revision: {}
+            f:management.cattle.io/scale-available: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/name: {}
+            f:pod-template-hash: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"61447280-a03e-42b5-9dff-e73470f6666a"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:replicas: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:app.kubernetes.io/instance: {}
+                f:app.kubernetes.io/name: {}
+                f:pod-template-hash: {}
+            f:spec:
+              f:affinity:
+                .: {}
+                f:nodeAffinity:
+                  .: {}
+                  f:requiredDuringSchedulingIgnoredDuringExecution:
+                    .: {}
+                    f:nodeSelectorTerms: {}
+                f:podAntiAffinity:
+                  .: {}
+                  f:requiredDuringSchedulingIgnoredDuringExecution: {}
+              f:containers:
+                k:{"name":"harvester-network-manager"}:
+                  .: {}
+                  f:args: {}
+                  f:command: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"NAMESPACE"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:resources:
+                    .: {}
+                    f:limits:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                    f:requests:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                  f:securityContext:
+                    .: {}
+                    f:capabilities:
+                      .: {}
+                      f:add: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+              f:dnsPolicy: {}
+              f:hostNetwork: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:tolerations: {}
+        f:status:
+          f:availableReplicas: {}
+          f:fullyLabeledReplicas: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:51:51Z"
+    name: harvester-network-controller-manager-99677f8fd
+    namespace: harvester-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: harvester-network-controller-manager
+      uid: 61447280-a03e-42b5-9dff-e73470f6666a
+    resourceVersion: "1025096"
+    uid: 3091efa8-0838-448d-a048-7ed9b00c55fb
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app.kubernetes.io/instance: harvester
+        app.kubernetes.io/name: harvester-network-controller-manager
+        pod-template-hash: 99677f8fd
+    template:
+      metadata:
+        creationTimestamp: "null"
+        labels:
+          app.kubernetes.io/instance: harvester
+          app.kubernetes.io/name: harvester-network-controller-manager
+          pod-template-hash: 99677f8fd
+      spec:
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: beta.kubernetes.io/os
+                  operator: In
+                  values:
+                  - linux
+              - matchExpressions:
+                - key: kubernetes.io/os
+                  operator: In
+                  values:
+                  - linux
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                  - harvester-network-controller-manager
+              topologyKey: kubernetes.io/hostname
+        containers:
+        - args:
+          - manager
+          - --enable-vip-controller
+          - --helper-image=rancher/harvester-network-helper:master-head
+          command:
+          - harvester-network-controller
+          env:
+          - name: NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          image: rancher/harvester-network-controller:master-head
+          imagePullPolicy: IfNotPresent
+          name: harvester-network-manager
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 10m
+              memory: 64Mi
+          securityContext:
+            capabilities:
+              add:
+              - NET_RAW
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        hostNetwork: true
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: harvester-network-controller
+        serviceAccountName: harvester-network-controller
+        terminationGracePeriodSeconds: 30
+        tolerations:
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/master
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 3
+    readyReplicas: 1
+    replicas: 1
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "1"
+      management.cattle.io/scale-available: "3"
+      meta.helm.sh/release-name: harvester
+      meta.helm.sh/release-namespace: harvester-system
+      objectset.rio.cattle.io/id: default-mcc-harvester-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:50:37Z"
+    generation: 3
+    labels:
+      app.kubernetes.io/component: webhook-server
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: harvester
+      app.kubernetes.io/part-of: harvester
+      app.kubernetes.io/version: 0.1.x
+      helm.sh/chart: harvester-0.0.0-dev
+      helm.sh/release: harvester
+      pod-template-hash: 67744f845f
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deployment.kubernetes.io/desired-replicas: {}
+            f:deployment.kubernetes.io/max-replicas: {}
+            f:deployment.kubernetes.io/revision: {}
+            f:management.cattle.io/scale-available: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/component: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:helm.sh/chart: {}
+            f:helm.sh/release: {}
+            f:pod-template-hash: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"18f37a88-7cb1-456c-86de-46a051b0d441"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:replicas: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:annotations:
+                .: {}
+                f:container.apparmor.security.beta.kubernetes.io/harvester-webhook: {}
+              f:labels:
+                .: {}
+                f:app.kubernetes.io/component: {}
+                f:app.kubernetes.io/managed-by: {}
+                f:app.kubernetes.io/name: {}
+                f:app.kubernetes.io/part-of: {}
+                f:app.kubernetes.io/version: {}
+                f:helm.sh/chart: {}
+                f:helm.sh/release: {}
+                f:pod-template-hash: {}
+            f:spec:
+              f:affinity:
+                .: {}
+                f:nodeAffinity:
+                  .: {}
+                  f:requiredDuringSchedulingIgnoredDuringExecution:
+                    .: {}
+                    f:nodeSelectorTerms: {}
+                f:podAntiAffinity:
+                  .: {}
+                  f:requiredDuringSchedulingIgnoredDuringExecution: {}
+              f:containers:
+                k:{"name":"harvester-webhook"}:
+                  .: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"HARVESTER_CONTROLLER_USER_NAME"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"HARVESTER_DEBUG"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"HARVESTER_WEBHOOK_SERVER_HTTPS_PORT"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"NAMESPACE"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:ports:
+                    .: {}
+                    k:{"containerPort":9443,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:name: {}
+                      f:protocol: {}
+                  f:resources: {}
+                  f:securityContext:
+                    .: {}
+                    f:capabilities:
+                      .: {}
+                      f:add: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+              f:dnsPolicy: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+        f:status:
+          f:availableReplicas: {}
+          f:fullyLabeledReplicas: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:51:51Z"
+    name: harvester-webhook-67744f845f
+    namespace: harvester-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: harvester-webhook
+      uid: 18f37a88-7cb1-456c-86de-46a051b0d441
+    resourceVersion: "1025112"
+    uid: 12166de7-172c-4cba-a8e3-1600ecb033f9
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app.kubernetes.io/component: webhook-server
+        app.kubernetes.io/name: harvester
+        app.kubernetes.io/part-of: harvester
+        helm.sh/release: harvester
+        pod-template-hash: 67744f845f
+    template:
+      metadata:
+        annotations:
+          container.apparmor.security.beta.kubernetes.io/harvester-webhook: unconfined
+        creationTimestamp: "null"
+        labels:
+          app.kubernetes.io/component: webhook-server
+          app.kubernetes.io/managed-by: Helm
+          app.kubernetes.io/name: harvester
+          app.kubernetes.io/part-of: harvester
+          app.kubernetes.io/version: 0.1.x
+          helm.sh/chart: harvester-0.0.0-dev
+          helm.sh/release: harvester
+          pod-template-hash: 67744f845f
+      spec:
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: beta.kubernetes.io/os
+                  operator: In
+                  values:
+                  - linux
+              - matchExpressions:
+                - key: kubernetes.io/os
+                  operator: In
+                  values:
+                  - linux
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                  - harvester
+                - key: app.kubernetes.io/component
+                  operator: In
+                  values:
+                  - webhook-server
+                - key: app.kubernetes.io/version
+                  operator: In
+                  values:
+                  - 0.1.x
+              topologyKey: kubernetes.io/hostname
+        containers:
+        - env:
+          - name: HARVESTER_WEBHOOK_SERVER_HTTPS_PORT
+            value: "9443"
+          - name: NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: HARVESTER_DEBUG
+            value: "false"
+          - name: HARVESTER_CONTROLLER_USER_NAME
+            value: system:serviceaccount:harvester-system:harvester
+          image: rancher/harvester-webhook:master-head
+          imagePullPolicy: IfNotPresent
+          name: harvester-webhook
+          ports:
+          - containerPort: 9443
+            name: https
+            protocol: TCP
+          resources: {}
+          securityContext:
+            capabilities:
+              add:
+              - SYS_ADMIN
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: harvester
+        serviceAccountName: harvester
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 3
+    readyReplicas: 1
+    replicas: 1
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "1"
+    creationTimestamp: "2022-03-22T23:49:13Z"
+    generation: 1
+    labels:
+      app: support-bundle-manager
+      pod-template-hash: 7d6d44c544
+      rancher/supportbundle: bundle-o3n28
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deployment.kubernetes.io/desired-replicas: {}
+            f:deployment.kubernetes.io/max-replicas: {}
+            f:deployment.kubernetes.io/revision: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:pod-template-hash: {}
+            f:rancher/supportbundle: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"cafc50d3-e506-4ea1-af55-8784911510b7"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:replicas: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:app: {}
+                f:pod-template-hash: {}
+                f:rancher/supportbundle: {}
+            f:spec:
+              f:containers:
+                k:{"name":"manager"}:
+                  .: {}
+                  f:args: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"SUPPORT_BUNDLE_DEBUG"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"SUPPORT_BUNDLE_EXCLUDE_RESOURCES"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"SUPPORT_BUNDLE_IMAGE"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"SUPPORT_BUNDLE_IMAGE_PULL_POLICY"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"SUPPORT_BUNDLE_MANAGER_POD_IP"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef:
+                          .: {}
+                          f:apiVersion: {}
+                          f:fieldPath: {}
+                    k:{"name":"SUPPORT_BUNDLE_NAME"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"SUPPORT_BUNDLE_NODE_SELECTOR"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"SUPPORT_BUNDLE_TARGET_NAMESPACES"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:ports:
+                    .: {}
+                    k:{"containerPort":8080,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:protocol: {}
+                  f:resources: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+              f:dnsPolicy: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+        f:status:
+          f:availableReplicas: {}
+          f:fullyLabeledReplicas: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-22T23:49:33Z"
+    name: supportbundle-manager-bundle-o3n28-7d6d44c544
+    namespace: harvester-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: supportbundle-manager-bundle-o3n28
+      uid: cafc50d3-e506-4ea1-af55-8784911510b7
+    resourceVersion: "14658878"
+    uid: ec2abb8f-9e67-46e1-b6d0-f78cb55caf75
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: support-bundle-manager
+        pod-template-hash: 7d6d44c544
+    template:
+      metadata:
+        creationTimestamp: "null"
+        labels:
+          app: support-bundle-manager
+          pod-template-hash: 7d6d44c544
+          rancher/supportbundle: bundle-o3n28
+      spec:
+        containers:
+        - args:
+          - /usr/bin/support-bundle-kit
+          - manager
+          env:
+          - name: SUPPORT_BUNDLE_TARGET_NAMESPACES
+            value: cattle-dashboards,cattle-fleet-clusters-system,cattle-monitoring-system,fleet-local,harvester-system,local,longhorn-system
+          - name: SUPPORT_BUNDLE_NAME
+            value: bundle-o3n28
+          - name: SUPPORT_BUNDLE_DEBUG
+            value: "true"
+          - name: SUPPORT_BUNDLE_MANAGER_POD_IP
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: status.podIP
+          - name: SUPPORT_BUNDLE_IMAGE
+            value: rancher/support-bundle-kit:master-head
+          - name: SUPPORT_BUNDLE_IMAGE_PULL_POLICY
+            value: IfNotPresent
+          - name: SUPPORT_BUNDLE_NODE_SELECTOR
+            value: harvesterhci.io/managed=true
+          - name: SUPPORT_BUNDLE_EXCLUDE_RESOURCES
+            value: settings.harvesterhci.io,authconfigs.management.cattle.io,authtokens.management.cattle.io,samltokens.management.cattle.io,tokens.management.cattle.io,users.management.cattle.io
+          image: rancher/support-bundle-kit:master-head
+          imagePullPolicy: IfNotPresent
+          name: manager
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: harvester
+        serviceAccountName: harvester
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "2"
+      deployment.kubernetes.io/max-replicas: "3"
+      deployment.kubernetes.io/revision: "1"
+      kubevirt.io/customizer-identifier: 0564c24f745ced6f94bf8fe15c474566be27acf3
+      kubevirt.io/generation: "2"
+      kubevirt.io/install-strategy-identifier: d3df7f87ee723ed71ca49f6c5cab7566dd4dc500
+      kubevirt.io/install-strategy-registry: registry.suse.com/suse/sles/15.3
+      kubevirt.io/install-strategy-version: 0.45.0-8.4.3
+    creationTimestamp: "2022-03-06T22:53:00Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/component: kubevirt
+      app.kubernetes.io/managed-by: kubevirt-operator
+      app.kubernetes.io/version: 0.45.0-8.4.3
+      kubevirt.io: virt-api
+      pod-template-hash: 86455cdb7d
+      prometheus.kubevirt.io: "null"
+    name: virt-api-86455cdb7d
+    namespace: harvester-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: virt-api
+      uid: 44db30cd-8446-4781-84d7-6137251e2161
+    resourceVersion: "6191"
+    uid: 47d85d61-1f7e-46a0-a90e-3eb7a7e671e9
+  spec:
+    replicas: 2
+    selector:
+      matchLabels:
+        kubevirt.io: virt-api
+        pod-template-hash: 86455cdb7d
+    template:
+      metadata:
+        annotations:
+          kubevirt.io/install-strategy-identifier: d3df7f87ee723ed71ca49f6c5cab7566dd4dc500
+          kubevirt.io/install-strategy-registry: registry.suse.com/suse/sles/15.3
+          kubevirt.io/install-strategy-version: 0.45.0-8.4.3
+          scheduler.alpha.kubernetes.io/critical-pod: "null"
+        creationTimestamp: "null"
+        labels:
+          app.kubernetes.io/component: kubevirt
+          app.kubernetes.io/managed-by: kubevirt-operator
+          app.kubernetes.io/version: 0.45.0-8.4.3
+          kubevirt.io: virt-api
+          pod-template-hash: 86455cdb7d
+          prometheus.kubevirt.io: "null"
+        name: virt-api
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: kubevirt.io
+                    operator: In
+                    values:
+                    - virt-api
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        containers:
+        - command:
+          - virt-api
+          - --port
+          - "8443"
+          - --console-server-port
+          - "8186"
+          - --subresources-only
+          - -v
+          - "2"
+          image: registry.suse.com/suse/sles/15.3/virt-api:0.45.0-8.4.3
+          imagePullPolicy: IfNotPresent
+          name: virt-api
+          ports:
+          - containerPort: 8443
+            name: virt-api
+            protocol: TCP
+          - containerPort: 8443
+            name: metrics
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /apis/subresources.kubevirt.io/v1/healthz
+              port: 8443
+              scheme: HTTPS
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            requests:
+              cpu: 5m
+              memory: 150Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/virt-api/certificates
+            name: kubevirt-virt-api-certs
+            readOnly: true
+          - mountPath: /etc/virt-handler/clientcertificates
+            name: kubevirt-virt-handler-certs
+            readOnly: true
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          kubernetes.io/os: linux
+        priorityClassName: kubevirt-cluster-critical
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          runAsNonRoot: true
+        serviceAccount: kubevirt-apiserver
+        serviceAccountName: kubevirt-apiserver
+        terminationGracePeriodSeconds: 30
+        tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+        volumes:
+        - name: kubevirt-virt-api-certs
+          secret:
+            defaultMode: 420
+            optional: true
+            secretName: kubevirt-virt-api-certs
+        - name: kubevirt-virt-handler-certs
+          secret:
+            defaultMode: 420
+            optional: true
+            secretName: kubevirt-virt-handler-certs
+  status:
+    availableReplicas: 2
+    fullyLabeledReplicas: 2
+    observedGeneration: 1
+    readyReplicas: 2
+    replicas: 2
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "2"
+      deployment.kubernetes.io/max-replicas: "3"
+      deployment.kubernetes.io/revision: "1"
+      kubevirt.io/customizer-identifier: 0564c24f745ced6f94bf8fe15c474566be27acf3
+      kubevirt.io/generation: "2"
+      kubevirt.io/install-strategy-identifier: d3df7f87ee723ed71ca49f6c5cab7566dd4dc500
+      kubevirt.io/install-strategy-registry: registry.suse.com/suse/sles/15.3
+      kubevirt.io/install-strategy-version: 0.45.0-8.4.3
+    creationTimestamp: "2022-03-06T22:53:26Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/component: kubevirt
+      app.kubernetes.io/managed-by: kubevirt-operator
+      app.kubernetes.io/version: 0.45.0-8.4.3
+      kubevirt.io: virt-controller
+      pod-template-hash: 5f649999dd
+      prometheus.kubevirt.io: "null"
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deployment.kubernetes.io/desired-replicas: {}
+            f:deployment.kubernetes.io/max-replicas: {}
+            f:deployment.kubernetes.io/revision: {}
+            f:kubevirt.io/customizer-identifier: {}
+            f:kubevirt.io/generation: {}
+            f:kubevirt.io/install-strategy-identifier: {}
+            f:kubevirt.io/install-strategy-registry: {}
+            f:kubevirt.io/install-strategy-version: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/component: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/version: {}
+            f:kubevirt.io: {}
+            f:pod-template-hash: {}
+            f:prometheus.kubevirt.io: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"656ea8ca-4be2-42f3-87ac-3fd8aa390e4f"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:replicas: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:annotations:
+                .: {}
+                f:kubevirt.io/install-strategy-identifier: {}
+                f:kubevirt.io/install-strategy-registry: {}
+                f:kubevirt.io/install-strategy-version: {}
+                f:scheduler.alpha.kubernetes.io/critical-pod: {}
+              f:labels:
+                .: {}
+                f:app.kubernetes.io/component: {}
+                f:app.kubernetes.io/managed-by: {}
+                f:app.kubernetes.io/version: {}
+                f:kubevirt.io: {}
+                f:pod-template-hash: {}
+                f:prometheus.kubevirt.io: {}
+              f:name: {}
+            f:spec:
+              f:affinity:
+                .: {}
+                f:podAntiAffinity:
+                  .: {}
+                  f:preferredDuringSchedulingIgnoredDuringExecution: {}
+              f:containers:
+                k:{"name":"virt-controller"}:
+                  .: {}
+                  f:command: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:livenessProbe:
+                    .: {}
+                    f:failureThreshold: {}
+                    f:httpGet:
+                      .: {}
+                      f:path: {}
+                      f:port: {}
+                      f:scheme: {}
+                    f:initialDelaySeconds: {}
+                    f:periodSeconds: {}
+                    f:successThreshold: {}
+                    f:timeoutSeconds: {}
+                  f:name: {}
+                  f:ports:
+                    .: {}
+                    k:{"containerPort":8443,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:name: {}
+                      f:protocol: {}
+                  f:readinessProbe:
+                    .: {}
+                    f:failureThreshold: {}
+                    f:httpGet:
+                      .: {}
+                      f:path: {}
+                      f:port: {}
+                      f:scheme: {}
+                    f:initialDelaySeconds: {}
+                    f:periodSeconds: {}
+                    f:successThreshold: {}
+                    f:timeoutSeconds: {}
+                  f:resources:
+                    .: {}
+                    f:requests:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/etc/virt-controller/certificates"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                      f:readOnly: {}
+              f:dnsPolicy: {}
+              f:nodeSelector:
+                .: {}
+                f:kubernetes.io/os: {}
+              f:priorityClassName: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext:
+                .: {}
+                f:runAsNonRoot: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:tolerations: {}
+              f:volumes:
+                .: {}
+                k:{"name":"kubevirt-controller-certs"}:
+                  .: {}
+                  f:name: {}
+                  f:secret:
+                    .: {}
+                    f:defaultMode: {}
+                    f:optional: {}
+                    f:secretName: {}
+        f:status:
+          f:availableReplicas: {}
+          f:fullyLabeledReplicas: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:53:56Z"
+    name: virt-controller-5f649999dd
+    namespace: harvester-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: virt-controller
+      uid: 656ea8ca-4be2-42f3-87ac-3fd8aa390e4f
+    resourceVersion: "6854"
+    uid: 1591ee4a-2e65-4da0-b023-92425720120e
+  spec:
+    replicas: 2
+    selector:
+      matchLabels:
+        kubevirt.io: virt-controller
+        pod-template-hash: 5f649999dd
+    template:
+      metadata:
+        annotations:
+          kubevirt.io/install-strategy-identifier: d3df7f87ee723ed71ca49f6c5cab7566dd4dc500
+          kubevirt.io/install-strategy-registry: registry.suse.com/suse/sles/15.3
+          kubevirt.io/install-strategy-version: 0.45.0-8.4.3
+          scheduler.alpha.kubernetes.io/critical-pod: "null"
+        creationTimestamp: "null"
+        labels:
+          app.kubernetes.io/component: kubevirt
+          app.kubernetes.io/managed-by: kubevirt-operator
+          app.kubernetes.io/version: 0.45.0-8.4.3
+          kubevirt.io: virt-controller
+          pod-template-hash: 5f649999dd
+          prometheus.kubevirt.io: "null"
+        name: virt-controller
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: kubevirt.io
+                    operator: In
+                    values:
+                    - virt-controller
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        containers:
+        - command:
+          - virt-controller
+          - --launcher-image
+          - registry.suse.com/suse/sles/15.3/virt-launcher:0.45.0-8.4.3
+          - --port
+          - "8443"
+          - -v
+          - "2"
+          image: registry.suse.com/suse/sles/15.3/virt-controller:0.45.0-8.4.3
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 8
+            httpGet:
+              path: /healthz
+              port: 8443
+              scheme: HTTPS
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 10
+          name: virt-controller
+          ports:
+          - containerPort: 8443
+            name: metrics
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /leader
+              port: 8443
+              scheme: HTTPS
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 10
+          resources:
+            requests:
+              cpu: 10m
+              memory: 150Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/virt-controller/certificates
+            name: kubevirt-controller-certs
+            readOnly: true
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          kubernetes.io/os: linux
+        priorityClassName: kubevirt-cluster-critical
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          runAsNonRoot: true
+        serviceAccount: kubevirt-controller
+        serviceAccountName: kubevirt-controller
+        terminationGracePeriodSeconds: 30
+        tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+        volumes:
+        - name: kubevirt-controller-certs
+          secret:
+            defaultMode: 420
+            optional: true
+            secretName: kubevirt-controller-certs
+  status:
+    availableReplicas: 2
+    fullyLabeledReplicas: 2
+    observedGeneration: 1
+    readyReplicas: 2
+    replicas: 2
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "1"
+      meta.helm.sh/release-name: harvester
+      meta.helm.sh/release-namespace: harvester-system
+      objectset.rio.cattle.io/id: default-mcc-harvester-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:50:37Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/component: operator
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: virt-operator
+      app.kubernetes.io/part-of: kubevirt-operator
+      app.kubernetes.io/version: 0.30.x
+      helm.sh/chart: kubevirt-operator-0.1.0
+      helm.sh/release: harvester
+      kubevirt.io: virt-operator
+      pod-template-hash: 56c5bdc7b8
+      prometheus.kubevirt.io: "null"
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deployment.kubernetes.io/desired-replicas: {}
+            f:deployment.kubernetes.io/max-replicas: {}
+            f:deployment.kubernetes.io/revision: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/component: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:helm.sh/chart: {}
+            f:helm.sh/release: {}
+            f:kubevirt.io: {}
+            f:pod-template-hash: {}
+            f:prometheus.kubevirt.io: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"18915031-671d-408c-98bb-8d640c3478d4"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:replicas: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:app.kubernetes.io/component: {}
+                f:app.kubernetes.io/managed-by: {}
+                f:app.kubernetes.io/name: {}
+                f:app.kubernetes.io/part-of: {}
+                f:app.kubernetes.io/version: {}
+                f:helm.sh/chart: {}
+                f:helm.sh/release: {}
+                f:kubevirt.io: {}
+                f:pod-template-hash: {}
+                f:prometheus.kubevirt.io: {}
+            f:spec:
+              f:affinity:
+                .: {}
+                f:nodeAffinity:
+                  .: {}
+                  f:requiredDuringSchedulingIgnoredDuringExecution:
+                    .: {}
+                    f:nodeSelectorTerms: {}
+                f:podAntiAffinity:
+                  .: {}
+                  f:preferredDuringSchedulingIgnoredDuringExecution: {}
+              f:containers:
+                k:{"name":"virt-operator"}:
+                  .: {}
+                  f:command: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"OPERATOR_IMAGE"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:livenessProbe:
+                    .: {}
+                    f:failureThreshold: {}
+                    f:httpGet:
+                      .: {}
+                      f:path: {}
+                      f:port: {}
+                      f:scheme: {}
+                    f:initialDelaySeconds: {}
+                    f:periodSeconds: {}
+                    f:successThreshold: {}
+                    f:timeoutSeconds: {}
+                  f:name: {}
+                  f:ports:
+                    .: {}
+                    k:{"containerPort":8443,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:name: {}
+                      f:protocol: {}
+                    k:{"containerPort":8444,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:name: {}
+                      f:protocol: {}
+                  f:readinessProbe:
+                    .: {}
+                    f:failureThreshold: {}
+                    f:httpGet:
+                      .: {}
+                      f:path: {}
+                      f:port: {}
+                      f:scheme: {}
+                    f:initialDelaySeconds: {}
+                    f:periodSeconds: {}
+                    f:successThreshold: {}
+                    f:timeoutSeconds: {}
+                  f:resources:
+                    .: {}
+                    f:limits:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                    f:requests:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/etc/virt-operator/certificates"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                      f:readOnly: {}
+              f:dnsPolicy: {}
+              f:priorityClassName: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext:
+                .: {}
+                f:runAsNonRoot: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:volumes:
+                .: {}
+                k:{"name":"kubevirt-operator-certs"}:
+                  .: {}
+                  f:name: {}
+                  f:secret:
+                    .: {}
+                    f:defaultMode: {}
+                    f:optional: {}
+                    f:secretName: {}
+        f:status:
+          f:availableReplicas: {}
+          f:fullyLabeledReplicas: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:52:14Z"
+    name: virt-operator-56c5bdc7b8
+    namespace: harvester-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: virt-operator
+      uid: 18915031-671d-408c-98bb-8d640c3478d4
+    resourceVersion: "4897"
+    uid: 9322ea24-2330-4bd4-88db-7f86a736fe5c
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app.kubernetes.io/component: operator
+        app.kubernetes.io/name: virt-operator
+        app.kubernetes.io/part-of: kubevirt-operator
+        helm.sh/release: harvester
+        kubevirt.io: virt-operator
+        pod-template-hash: 56c5bdc7b8
+    template:
+      metadata:
+        creationTimestamp: "null"
+        labels:
+          app.kubernetes.io/component: operator
+          app.kubernetes.io/managed-by: Helm
+          app.kubernetes.io/name: virt-operator
+          app.kubernetes.io/part-of: kubevirt-operator
+          app.kubernetes.io/version: 0.30.x
+          helm.sh/chart: kubevirt-operator-0.1.0
+          helm.sh/release: harvester
+          kubevirt.io: virt-operator
+          pod-template-hash: 56c5bdc7b8
+          prometheus.kubevirt.io: "null"
+      spec:
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: beta.kubernetes.io/os
+                  operator: In
+                  values:
+                  - linux
+              - matchExpressions:
+                - key: kubernetes.io/os
+                  operator: In
+                  values:
+                  - linux
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: kubevirt.io
+                    operator: In
+                    values:
+                    - virt-operator
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        containers:
+        - command:
+          - virt-operator
+          - --port
+          - "8443"
+          - -v
+          - "2"
+          env:
+          - name: OPERATOR_IMAGE
+            value: registry.suse.com/suse/sles/15.3/virt-operator:0.45.0-8.4.3
+          image: registry.suse.com/suse/sles/15.3/virt-operator:0.45.0-8.4.3
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /metrics
+              port: 8443
+              scheme: HTTPS
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 10
+          name: virt-operator
+          ports:
+          - containerPort: 8443
+            name: metrics
+            protocol: TCP
+          - containerPort: 8444
+            name: webhooks
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /metrics
+              port: 8443
+              scheme: HTTPS
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 10
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/virt-operator/certificates
+            name: kubevirt-operator-certs
+            readOnly: true
+        dnsPolicy: ClusterFirst
+        priorityClassName: kubevirt-cluster-critical
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          runAsNonRoot: true
+        serviceAccount: kubevirt-operator
+        serviceAccountName: kubevirt-operator
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: kubevirt-operator-certs
+          secret:
+            defaultMode: 420
+            optional: true
+            secretName: kubevirt-operator-certs
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+kind: List
+metadata:
+  resourceVersion: "14659186"

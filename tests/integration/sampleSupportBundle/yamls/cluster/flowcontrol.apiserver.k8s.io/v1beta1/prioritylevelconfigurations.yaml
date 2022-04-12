@@ -1,0 +1,250 @@
+apiVersion: v1
+items:
+- apiVersion: flowcontrol.apiserver.k8s.io/v1beta1
+  kind: PriorityLevelConfiguration
+  metadata:
+    creationTimestamp: "2022-03-06T22:46:51Z"
+    generation: 1
+    managedFields:
+    - apiVersion: flowcontrol.apiserver.k8s.io/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:spec:
+          f:limited:
+            .: {}
+            f:assuredConcurrencyShares: {}
+            f:limitResponse:
+              .: {}
+              f:type: {}
+          f:type: {}
+      manager: api-priority-and-fairness-config-producer-v1
+      operation: Update
+      time: "2022-03-06T22:46:51Z"
+    name: catch-all
+    resourceVersion: "77"
+    uid: ff6c9ed8-2670-479e-8aa1-bc274c6f4131
+  spec:
+    limited:
+      assuredConcurrencyShares: 5
+      limitResponse:
+        type: Reject
+    type: Limited
+  status: {}
+- apiVersion: flowcontrol.apiserver.k8s.io/v1beta1
+  kind: PriorityLevelConfiguration
+  metadata:
+    creationTimestamp: "2022-03-06T22:46:51Z"
+    generation: 1
+    managedFields:
+    - apiVersion: flowcontrol.apiserver.k8s.io/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:spec:
+          f:type: {}
+      manager: api-priority-and-fairness-config-producer-v1
+      operation: Update
+      time: "2022-03-06T22:46:51Z"
+    name: exempt
+    resourceVersion: "79"
+    uid: d7184d00-9a88-4ad0-a31a-5f2470dc2372
+  spec:
+    type: Exempt
+  status: {}
+- apiVersion: flowcontrol.apiserver.k8s.io/v1beta1
+  kind: PriorityLevelConfiguration
+  metadata:
+    creationTimestamp: "2022-03-06T22:46:51Z"
+    generation: 1
+    managedFields:
+    - apiVersion: flowcontrol.apiserver.k8s.io/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:spec:
+          f:limited:
+            .: {}
+            f:assuredConcurrencyShares: {}
+            f:limitResponse:
+              .: {}
+              f:queuing:
+                .: {}
+                f:handSize: {}
+                f:queueLengthLimit: {}
+                f:queues: {}
+              f:type: {}
+          f:type: {}
+      manager: api-priority-and-fairness-config-producer-v1
+      operation: Update
+      time: "2022-03-06T22:46:51Z"
+    name: global-default
+    resourceVersion: "69"
+    uid: 64a0de9d-ae21-4afe-85d2-78daf7585f15
+  spec:
+    limited:
+      assuredConcurrencyShares: 20
+      limitResponse:
+        queuing:
+          handSize: 6
+          queueLengthLimit: 50
+          queues: 128
+        type: Queue
+    type: Limited
+  status: {}
+- apiVersion: flowcontrol.apiserver.k8s.io/v1beta1
+  kind: PriorityLevelConfiguration
+  metadata:
+    creationTimestamp: "2022-03-06T22:46:51Z"
+    generation: 1
+    managedFields:
+    - apiVersion: flowcontrol.apiserver.k8s.io/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:spec:
+          f:limited:
+            .: {}
+            f:assuredConcurrencyShares: {}
+            f:limitResponse:
+              .: {}
+              f:queuing:
+                .: {}
+                f:handSize: {}
+                f:queueLengthLimit: {}
+                f:queues: {}
+              f:type: {}
+          f:type: {}
+      manager: api-priority-and-fairness-config-producer-v1
+      operation: Update
+      time: "2022-03-06T22:46:51Z"
+    name: leader-election
+    resourceVersion: "62"
+    uid: c2dcb528-3247-454d-acd5-c5a65bdd0a98
+  spec:
+    limited:
+      assuredConcurrencyShares: 10
+      limitResponse:
+        queuing:
+          handSize: 4
+          queueLengthLimit: 50
+          queues: 16
+        type: Queue
+    type: Limited
+  status: {}
+- apiVersion: flowcontrol.apiserver.k8s.io/v1beta1
+  kind: PriorityLevelConfiguration
+  metadata:
+    creationTimestamp: "2022-03-06T22:46:51Z"
+    generation: 1
+    managedFields:
+    - apiVersion: flowcontrol.apiserver.k8s.io/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:spec:
+          f:limited:
+            .: {}
+            f:assuredConcurrencyShares: {}
+            f:limitResponse:
+              .: {}
+              f:queuing:
+                .: {}
+                f:handSize: {}
+                f:queueLengthLimit: {}
+                f:queues: {}
+              f:type: {}
+          f:type: {}
+      manager: api-priority-and-fairness-config-producer-v1
+      operation: Update
+      time: "2022-03-06T22:46:51Z"
+    name: system
+    resourceVersion: "61"
+    uid: dfb2e65b-830b-44e5-a378-60a6fa795014
+  spec:
+    limited:
+      assuredConcurrencyShares: 30
+      limitResponse:
+        queuing:
+          handSize: 6
+          queueLengthLimit: 50
+          queues: 64
+        type: Queue
+    type: Limited
+  status: {}
+- apiVersion: flowcontrol.apiserver.k8s.io/v1beta1
+  kind: PriorityLevelConfiguration
+  metadata:
+    creationTimestamp: "2022-03-06T22:46:51Z"
+    generation: 1
+    managedFields:
+    - apiVersion: flowcontrol.apiserver.k8s.io/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:spec:
+          f:limited:
+            .: {}
+            f:assuredConcurrencyShares: {}
+            f:limitResponse:
+              .: {}
+              f:queuing:
+                .: {}
+                f:handSize: {}
+                f:queueLengthLimit: {}
+                f:queues: {}
+              f:type: {}
+          f:type: {}
+      manager: api-priority-and-fairness-config-producer-v1
+      operation: Update
+      time: "2022-03-06T22:46:51Z"
+    name: workload-high
+    resourceVersion: "64"
+    uid: 2e11ae78-f9cc-4960-ae5a-8895c601b77d
+  spec:
+    limited:
+      assuredConcurrencyShares: 40
+      limitResponse:
+        queuing:
+          handSize: 6
+          queueLengthLimit: 50
+          queues: 128
+        type: Queue
+    type: Limited
+  status: {}
+- apiVersion: flowcontrol.apiserver.k8s.io/v1beta1
+  kind: PriorityLevelConfiguration
+  metadata:
+    creationTimestamp: "2022-03-06T22:46:51Z"
+    generation: 1
+    managedFields:
+    - apiVersion: flowcontrol.apiserver.k8s.io/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:spec:
+          f:limited:
+            .: {}
+            f:assuredConcurrencyShares: {}
+            f:limitResponse:
+              .: {}
+              f:queuing:
+                .: {}
+                f:handSize: {}
+                f:queueLengthLimit: {}
+                f:queues: {}
+              f:type: {}
+          f:type: {}
+      manager: api-priority-and-fairness-config-producer-v1
+      operation: Update
+      time: "2022-03-06T22:46:51Z"
+    name: workload-low
+    resourceVersion: "65"
+    uid: 358a6c76-680c-4a56-ab03-631cadf38ee4
+  spec:
+    limited:
+      assuredConcurrencyShares: 100
+      limitResponse:
+        queuing:
+          handSize: 6
+          queueLengthLimit: 50
+          queues: 128
+        type: Queue
+    type: Limited
+  status: {}
+kind: List
+metadata:
+  resourceVersion: "14658905"

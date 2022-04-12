@@ -1,0 +1,462 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  data:
+    spec:
+      template:
+        $patch: replace
+        metadata:
+          annotations:
+            kubectl.kubernetes.io/default-container: prometheus
+          creationTimestamp: "null"
+          labels:
+            app: prometheus
+            app.kubernetes.io/instance: rancher-monitoring-prometheus
+            app.kubernetes.io/managed-by: prometheus-operator
+            app.kubernetes.io/name: prometheus
+            app.kubernetes.io/version: 2.28.1
+            operator.prometheus.io/name: rancher-monitoring-prometheus
+            operator.prometheus.io/shard: "0"
+            prometheus: rancher-monitoring-prometheus
+        spec:
+          containers:
+          - args:
+            - --web.console.templates=/etc/prometheus/consoles
+            - --web.console.libraries=/etc/prometheus/console_libraries
+            - --storage.tsdb.retention.size=50GiB
+            - --config.file=/etc/prometheus/config_out/prometheus.env.yaml
+            - --storage.tsdb.path=/prometheus
+            - --storage.tsdb.retention.time=5d
+            - --web.enable-lifecycle
+            - --web.external-url=http://rancher-monitoring-prometheus.cattle-monitoring-system:9090
+            - --web.route-prefix=/
+            - --web.config.file=/etc/prometheus/web_config/web-config.yaml
+            image: rancher/mirrored-prometheus-prometheus:v2.28.1
+            imagePullPolicy: IfNotPresent
+            name: prometheus
+            ports:
+            - containerPort: 9090
+              name: nginx-http
+              protocol: TCP
+            readinessProbe:
+              failureThreshold: 120
+              httpGet:
+                path: /-/ready
+                port: nginx-http
+                scheme: HTTP
+              periodSeconds: 5
+              successThreshold: 1
+              timeoutSeconds: 3
+            resources:
+              limits:
+                cpu: "1"
+                memory: 3000Mi
+              requests:
+                cpu: 500m
+                memory: 750Mi
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: FallbackToLogsOnError
+            volumeMounts:
+            - mountPath: /etc/prometheus/config_out
+              name: config-out
+              readOnly: true
+            - mountPath: /etc/prometheus/certs
+              name: tls-assets
+              readOnly: true
+            - mountPath: /prometheus
+              name: prometheus-rancher-monitoring-prometheus-db
+              subPath: prometheus-db
+            - mountPath: /etc/prometheus/rules/prometheus-rancher-monitoring-prometheus-rulefiles-0
+              name: prometheus-rancher-monitoring-prometheus-rulefiles-0
+            - mountPath: /etc/prometheus/web_config/web-config.yaml
+              name: web-config
+              readOnly: true
+              subPath: web-config.yaml
+          - args:
+            - --listen-address=:8080
+            - --reload-url=http://127.0.0.1:9090/-/reload
+            - --config-file=/etc/prometheus/config/prometheus.yaml.gz
+            - --config-envsubst-file=/etc/prometheus/config_out/prometheus.env.yaml
+            - --watched-dir=/etc/prometheus/rules/prometheus-rancher-monitoring-prometheus-rulefiles-0
+            command:
+            - /bin/prometheus-config-reloader
+            env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: SHARD
+              value: "0"
+            image: rancher/mirrored-prometheus-operator-prometheus-config-reloader:v0.50.0
+            imagePullPolicy: IfNotPresent
+            name: config-reloader
+            ports:
+            - containerPort: 8080
+              name: reloader-web
+              protocol: TCP
+            resources:
+              limits:
+                cpu: 100m
+                memory: 50Mi
+              requests:
+                cpu: 100m
+                memory: 50Mi
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: FallbackToLogsOnError
+            volumeMounts:
+            - mountPath: /etc/prometheus/config
+              name: config
+            - mountPath: /etc/prometheus/config_out
+              name: config-out
+            - mountPath: /etc/prometheus/rules/prometheus-rancher-monitoring-prometheus-rulefiles-0
+              name: prometheus-rancher-monitoring-prometheus-rulefiles-0
+          - args:
+            - nginx
+            - -g
+            - daemon off;
+            - -c
+            - /nginx/nginx.conf
+            image: rancher/mirrored-library-nginx:1.21.1-alpine
+            imagePullPolicy: IfNotPresent
+            name: prometheus-proxy
+            ports:
+            - containerPort: 8081
+              name: nginx-http
+              protocol: TCP
+            resources: {}
+            securityContext:
+              runAsGroup: 101
+              runAsUser: 101
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+            - mountPath: /nginx
+              name: prometheus-nginx
+            - mountPath: /var/cache/nginx
+              name: nginx-home
+          dnsPolicy: ClusterFirst
+          initContainers:
+          - args:
+            - --watch-interval=0
+            - --listen-address=:8080
+            - --config-file=/etc/prometheus/config/prometheus.yaml.gz
+            - --config-envsubst-file=/etc/prometheus/config_out/prometheus.env.yaml
+            - --watched-dir=/etc/prometheus/rules/prometheus-rancher-monitoring-prometheus-rulefiles-0
+            command:
+            - /bin/prometheus-config-reloader
+            env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: SHARD
+              value: "0"
+            image: rancher/mirrored-prometheus-operator-prometheus-config-reloader:v0.50.0
+            imagePullPolicy: IfNotPresent
+            name: init-config-reloader
+            ports:
+            - containerPort: 8080
+              name: reloader-web
+              protocol: TCP
+            resources:
+              limits:
+                cpu: 100m
+                memory: 50Mi
+              requests:
+                cpu: 100m
+                memory: 50Mi
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: FallbackToLogsOnError
+            volumeMounts:
+            - mountPath: /etc/prometheus/config
+              name: config
+            - mountPath: /etc/prometheus/config_out
+              name: config-out
+            - mountPath: /etc/prometheus/rules/prometheus-rancher-monitoring-prometheus-rulefiles-0
+              name: prometheus-rancher-monitoring-prometheus-rulefiles-0
+          nodeSelector:
+            kubernetes.io/os: linux
+          restartPolicy: Always
+          schedulerName: default-scheduler
+          securityContext:
+            fsGroup: 2000
+            runAsGroup: 2000
+            runAsNonRoot: true
+            runAsUser: 1000
+          serviceAccount: rancher-monitoring-prometheus
+          serviceAccountName: rancher-monitoring-prometheus
+          terminationGracePeriodSeconds: 600
+          tolerations:
+          - effect: NoSchedule
+            key: cattle.io/os
+            operator: Equal
+            value: linux
+          volumes:
+          - name: config
+            secret:
+              defaultMode: 420
+              secretName: prometheus-rancher-monitoring-prometheus
+          - name: tls-assets
+            secret:
+              defaultMode: 420
+              secretName: prometheus-rancher-monitoring-prometheus-tls-assets
+          - emptyDir: {}
+            name: config-out
+          - configMap:
+              defaultMode: 420
+              name: prometheus-rancher-monitoring-prometheus-rulefiles-0
+            name: prometheus-rancher-monitoring-prometheus-rulefiles-0
+          - name: web-config
+            secret:
+              defaultMode: 420
+              secretName: prometheus-rancher-monitoring-prometheus-web-config
+          - emptyDir: {}
+            name: nginx-home
+          - configMap:
+              defaultMode: 438
+              name: prometheus-nginx-proxy-config
+            name: prometheus-nginx
+  kind: ControllerRevision
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+      prometheus-operator-input-hash: "1752296277925467704"
+    creationTimestamp: "2022-03-06T22:52:38Z"
+    labels:
+      app: prometheus
+      app.kubernetes.io/instance: rancher-monitoring-prometheus
+      app.kubernetes.io/managed-by: prometheus-operator
+      app.kubernetes.io/name: prometheus
+      app.kubernetes.io/version: 2.28.1
+      controller.kubernetes.io/hash: 5d65c8544
+      operator.prometheus.io/name: rancher-monitoring-prometheus
+      operator.prometheus.io/shard: "0"
+      prometheus: rancher-monitoring-prometheus
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:data: {}
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+            f:prometheus-operator-input-hash: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:app.kubernetes.io/version: {}
+            f:controller.kubernetes.io/hash: {}
+            f:operator.prometheus.io/name: {}
+            f:operator.prometheus.io/shard: {}
+            f:prometheus: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"9bdef9f5-25d3-41ca-8898-1f662228d5d7"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:revision: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:52:38Z"
+    name: prometheus-rancher-monitoring-prometheus-5d65c8544
+    namespace: cattle-monitoring-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: StatefulSet
+      name: prometheus-rancher-monitoring-prometheus
+      uid: 9bdef9f5-25d3-41ca-8898-1f662228d5d7
+    resourceVersion: "5431"
+    uid: e533ec03-fb42-486e-984d-946e71dcb535
+  revision: 1
+- apiVersion: apps/v1
+  data:
+    spec:
+      template:
+        $patch: replace
+        metadata:
+          annotations:
+            cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+          creationTimestamp: "null"
+          labels:
+            app: prometheus-node-exporter
+            chart: prometheus-node-exporter-2.2.0
+            heritage: Helm
+            jobLabel: node-exporter
+            release: rancher-monitoring
+        spec:
+          automountServiceAccountToken: false
+          containers:
+          - args:
+            - --path.procfs=/host/proc
+            - --path.sysfs=/host/sys
+            - --path.rootfs=/host/root
+            - --web.listen-address=$(HOST_IP):9796
+            - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+|var/lib/kubelet/.+)($|/)
+            - --collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$
+            env:
+            - name: HOST_IP
+              value: 0.0.0.0
+            image: rancher/mirrored-prometheus-node-exporter:v1.2.2
+            imagePullPolicy: IfNotPresent
+            livenessProbe:
+              failureThreshold: 3
+              httpGet:
+                path: /
+                port: 9796
+                scheme: HTTP
+              periodSeconds: 10
+              successThreshold: 1
+              timeoutSeconds: 1
+            name: node-exporter
+            ports:
+            - containerPort: 9796
+              hostPort: 9796
+              name: metrics
+              protocol: TCP
+            readinessProbe:
+              failureThreshold: 3
+              httpGet:
+                path: /
+                port: 9796
+                scheme: HTTP
+              periodSeconds: 10
+              successThreshold: 1
+              timeoutSeconds: 1
+            resources:
+              limits:
+                cpu: 200m
+                memory: 50Mi
+              requests:
+                cpu: 100m
+                memory: 30Mi
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+            - mountPath: /host/proc
+              name: proc
+              readOnly: true
+            - mountPath: /host/sys
+              name: sys
+              readOnly: true
+            - mountPath: /host/root
+              mountPropagation: HostToContainer
+              name: root
+              readOnly: true
+          dnsPolicy: ClusterFirst
+          hostNetwork: true
+          hostPID: true
+          nodeSelector:
+            kubernetes.io/os: linux
+          restartPolicy: Always
+          schedulerName: default-scheduler
+          securityContext:
+            fsGroup: 65534
+            runAsGroup: 65534
+            runAsNonRoot: true
+            runAsUser: 65534
+          serviceAccount: rancher-monitoring-prometheus-node-exporter
+          serviceAccountName: rancher-monitoring-prometheus-node-exporter
+          terminationGracePeriodSeconds: 30
+          tolerations:
+          - effect: NoSchedule
+            key: cattle.io/os
+            operator: Equal
+            value: linux
+          - effect: NoSchedule
+            operator: Exists
+          - effect: NoExecute
+            operator: Exists
+          volumes:
+          - hostPath:
+              path: /proc
+              type: "null"
+            name: proc
+          - hostPath:
+              path: /sys
+              type: "null"
+            name: sys
+          - hostPath:
+              path: /
+              type: "null"
+            name: root
+  kind: ControllerRevision
+  metadata:
+    annotations:
+      deprecated.daemonset.template.generation: "1"
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:52:04Z"
+    labels:
+      app: prometheus-node-exporter
+      chart: prometheus-node-exporter-2.2.0
+      controller-revision-hash: 645767db5
+      heritage: Helm
+      jobLabel: node-exporter
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:data: {}
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deprecated.daemonset.template.generation: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:chart: {}
+            f:controller-revision-hash: {}
+            f:heritage: {}
+            f:jobLabel: {}
+            f:release: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"4a9228c7-a1ef-4006-ab29-a91b1cf2247e"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:revision: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:52:04Z"
+    name: rancher-monitoring-prometheus-node-exporter-645767db5
+    namespace: cattle-monitoring-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DaemonSet
+      name: rancher-monitoring-prometheus-node-exporter
+      uid: 4a9228c7-a1ef-4006-ab29-a91b1cf2247e
+    resourceVersion: "4706"
+    uid: cdf703f0-afdb-42b2-998f-75008a9f5a71
+  revision: 1
+kind: List
+metadata:
+  resourceVersion: "14659119"

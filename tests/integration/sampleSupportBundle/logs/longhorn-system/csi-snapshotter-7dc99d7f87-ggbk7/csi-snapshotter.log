@@ -1,0 +1,7 @@
+2022-03-06T22:52:17.170459332Z I0306 22:52:17.170120       1 main.go:87] Version: v3.0.3
+2022-03-06T22:52:17.184211332Z I0306 22:52:17.181248       1 connection.go:153] Connecting to unix:///csi/csi.sock
+2022-03-06T22:52:19.448446370Z I0306 22:52:19.435394       1 main.go:136] CSI driver name: "driver.longhorn.io"
+2022-03-06T22:52:19.448474830Z W0306 22:52:19.435436       1 metrics.go:333] metrics endpoint will not be started because `metrics-address` was not specified.
+2022-03-06T22:52:19.448490740Z I0306 22:52:19.435451       1 common.go:111] Probing CSI driver for readiness
+2022-03-06T22:52:19.484195937Z I0306 22:52:19.476618       1 main.go:162] Start NewCSISnapshotSideCarController with snapshotter [driver.longhorn.io] kubeconfig [] csiTimeout [1m50s] csiAddress [/csi/csi.sock] resyncPeriod [1m0s] snapshotNamePrefix [snapshot] snapshotNameUUIDLength [824634933632]
+2022-03-06T22:52:19.484250517Z I0306 22:52:19.479520       1 leaderelection.go:243] attempting to acquire leader lease  longhorn-system/external-snapshotter-leader-driver-longhorn-io...

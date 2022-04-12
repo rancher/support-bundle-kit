@@ -158,7 +158,7 @@ func (m *SupportBundleManager) phaseInit() error {
 		return err
 	}
 
-	m.context = signals.SetupSignalHandler(context.Background())
+	m.context = signals.SetupSignalContext()
 	err := m.initClients()
 	if err != nil {
 		return err

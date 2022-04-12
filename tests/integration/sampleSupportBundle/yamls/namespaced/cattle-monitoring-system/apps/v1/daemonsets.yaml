@@ -1,0 +1,326 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: DaemonSet
+  metadata:
+    annotations:
+      deprecated.daemonset.template.generation: "1"
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:52:04Z"
+    generation: 1
+    labels:
+      app: prometheus-node-exporter
+      app.kubernetes.io/managed-by: Helm
+      chart: prometheus-node-exporter-2.2.0
+      heritage: Helm
+      jobLabel: node-exporter
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deprecated.daemonset.template.generation: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:chart: {}
+            f:heritage: {}
+            f:jobLabel: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          f:revisionHistoryLimit: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:annotations:
+                .: {}
+                f:cluster-autoscaler.kubernetes.io/safe-to-evict: {}
+              f:labels:
+                .: {}
+                f:app: {}
+                f:chart: {}
+                f:heritage: {}
+                f:jobLabel: {}
+                f:release: {}
+            f:spec:
+              f:automountServiceAccountToken: {}
+              f:containers:
+                k:{"name":"node-exporter"}:
+                  .: {}
+                  f:args: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"HOST_IP"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:livenessProbe:
+                    .: {}
+                    f:failureThreshold: {}
+                    f:httpGet:
+                      .: {}
+                      f:path: {}
+                      f:port: {}
+                      f:scheme: {}
+                    f:periodSeconds: {}
+                    f:successThreshold: {}
+                    f:timeoutSeconds: {}
+                  f:name: {}
+                  f:ports:
+                    .: {}
+                    k:{"containerPort":9796,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:hostPort: {}
+                      f:name: {}
+                      f:protocol: {}
+                  f:readinessProbe:
+                    .: {}
+                    f:failureThreshold: {}
+                    f:httpGet:
+                      .: {}
+                      f:path: {}
+                      f:port: {}
+                      f:scheme: {}
+                    f:periodSeconds: {}
+                    f:successThreshold: {}
+                    f:timeoutSeconds: {}
+                  f:resources:
+                    .: {}
+                    f:limits:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                    f:requests:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/host/proc"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                      f:readOnly: {}
+                    k:{"mountPath":"/host/root"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:mountPropagation: {}
+                      f:name: {}
+                      f:readOnly: {}
+                    k:{"mountPath":"/host/sys"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                      f:readOnly: {}
+              f:dnsPolicy: {}
+              f:hostNetwork: {}
+              f:hostPID: {}
+              f:nodeSelector:
+                .: {}
+                f:kubernetes.io/os: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext:
+                .: {}
+                f:fsGroup: {}
+                f:runAsGroup: {}
+                f:runAsNonRoot: {}
+                f:runAsUser: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:tolerations: {}
+              f:volumes:
+                .: {}
+                k:{"name":"proc"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+                k:{"name":"root"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+                k:{"name":"sys"}:
+                  .: {}
+                  f:hostPath:
+                    .: {}
+                    f:path: {}
+                    f:type: {}
+                  f:name: {}
+          f:updateStrategy:
+            f:rollingUpdate:
+              .: {}
+              f:maxSurge: {}
+              f:maxUnavailable: {}
+            f:type: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:04Z"
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:currentNumberScheduled: {}
+          f:desiredNumberScheduled: {}
+          f:numberAvailable: {}
+          f:numberReady: {}
+          f:observedGeneration: {}
+          f:updatedNumberScheduled: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-08T00:12:33Z"
+    name: rancher-monitoring-prometheus-node-exporter
+    namespace: cattle-monitoring-system
+    resourceVersion: "1026246"
+    uid: 4a9228c7-a1ef-4006-ab29-a91b1cf2247e
+  spec:
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: prometheus-node-exporter
+        release: rancher-monitoring
+    template:
+      metadata:
+        annotations:
+          cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        creationTimestamp: "null"
+        labels:
+          app: prometheus-node-exporter
+          chart: prometheus-node-exporter-2.2.0
+          heritage: Helm
+          jobLabel: node-exporter
+          release: rancher-monitoring
+      spec:
+        automountServiceAccountToken: false
+        containers:
+        - args:
+          - --path.procfs=/host/proc
+          - --path.sysfs=/host/sys
+          - --path.rootfs=/host/root
+          - --web.listen-address=$(HOST_IP):9796
+          - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+|var/lib/kubelet/.+)($|/)
+          - --collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$
+          env:
+          - name: HOST_IP
+            value: 0.0.0.0
+          image: rancher/mirrored-prometheus-node-exporter:v1.2.2
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 9796
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: node-exporter
+          ports:
+          - containerPort: 9796
+            hostPort: 9796
+            name: metrics
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 9796
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 200m
+              memory: 50Mi
+            requests:
+              cpu: 100m
+              memory: 30Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /host/proc
+            name: proc
+            readOnly: true
+          - mountPath: /host/sys
+            name: sys
+            readOnly: true
+          - mountPath: /host/root
+            mountPropagation: HostToContainer
+            name: root
+            readOnly: true
+        dnsPolicy: ClusterFirst
+        hostNetwork: true
+        hostPID: true
+        nodeSelector:
+          kubernetes.io/os: linux
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 65534
+          runAsGroup: 65534
+          runAsNonRoot: true
+          runAsUser: 65534
+        serviceAccount: rancher-monitoring-prometheus-node-exporter
+        serviceAccountName: rancher-monitoring-prometheus-node-exporter
+        terminationGracePeriodSeconds: 30
+        tolerations:
+        - effect: NoSchedule
+          key: cattle.io/os
+          operator: Equal
+          value: linux
+        - effect: NoSchedule
+          operator: Exists
+        - effect: NoExecute
+          operator: Exists
+        volumes:
+        - hostPath:
+            path: /proc
+            type: "null"
+          name: proc
+        - hostPath:
+            path: /sys
+            type: "null"
+          name: sys
+        - hostPath:
+            path: /
+            type: "null"
+          name: root
+    updateStrategy:
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 1
+      type: RollingUpdate
+  status:
+    currentNumberScheduled: 1
+    desiredNumberScheduled: 1
+    numberAvailable: 1
+    numberMisscheduled: 0
+    numberReady: 1
+    observedGeneration: 1
+    updatedNumberScheduled: 1
+kind: List
+metadata:
+  resourceVersion: "14659119"

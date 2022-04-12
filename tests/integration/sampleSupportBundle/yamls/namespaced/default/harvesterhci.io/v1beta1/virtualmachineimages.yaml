@@ -1,0 +1,66 @@
+apiVersion: v1
+items:
+- apiVersion: harvesterhci.io/v1beta1
+  kind: VirtualMachineImage
+  metadata:
+    creationTimestamp: "2022-03-06T23:09:58Z"
+    finalizers:
+    - wrangler.cattle.io/vm-image-controller
+    generateName: image-
+    generation: 11
+    managedFields:
+    - apiVersion: harvesterhci.io/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:finalizers:
+            .: {}
+            v:"wrangler.cattle.io/vm-image-controller"null: {}
+          f:generateName: {}
+        f:spec:
+          .: {}
+          f:checksum: {}
+          f:displayName: {}
+          f:pvcName: {}
+          f:pvcNamespace: {}
+          f:sourceType: {}
+          f:url: {}
+        f:status:
+          .: {}
+          f:appliedUrl: {}
+          f:conditions: {}
+          f:progress: {}
+          f:size: {}
+          f:storageClassName: {}
+      manager: harvester
+      operation: Update
+      time: "2022-03-06T23:10:24Z"
+    name: image-kzndn
+    namespace: default
+    resourceVersion: "17838"
+    uid: de62d3f3-c35d-43eb-928a-52dad58db633
+  spec:
+    checksum: "null"
+    displayName: opensuse
+    pvcName: "null"
+    pvcNamespace: "null"
+    sourceType: download
+    url: https://downloadcontent.opensuse.org/distribution/leap/15.3/appliances/openSUSE-Leap-15.3-JeOS.x86_64-OpenStack-Cloud.qcow2
+  status:
+    appliedUrl: https://downloadcontent.opensuse.org/distribution/leap/15.3/appliances/openSUSE-Leap-15.3-JeOS.x86_64-OpenStack-Cloud.qcow2
+    conditions:
+    - lastUpdateTime: "2022-03-06T23:10:48Z"
+      reason: Imported
+      status: "True"
+      type: Imported
+    - lastUpdateTime: "2022-03-06T23:09:59Z"
+      reason: Initialized
+      status: "True"
+      type: Initialized
+    progress: 100
+    size: 2.31131136e+08
+    storageClassName: longhorn-image-kzndn
+kind: List
+metadata:
+  continue: "null"
+  resourceVersion: "14658982"

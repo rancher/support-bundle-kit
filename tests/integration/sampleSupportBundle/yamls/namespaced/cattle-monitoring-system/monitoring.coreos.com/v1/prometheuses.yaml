@@ -1,0 +1,210 @@
+apiVersion: v1
+items:
+- apiVersion: monitoring.coreos.com/v1
+  kind: Prometheus
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:52:06Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring-prometheus
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:alerting:
+            .: {}
+            f:alertmanagers: {}
+          f:containers: {}
+          f:enableAdminAPI: {}
+          f:evaluationInterval: {}
+          f:externalUrl: {}
+          f:image: {}
+          f:listenLocal: {}
+          f:logFormat: {}
+          f:logLevel: {}
+          f:nodeSelector:
+            .: {}
+            f:kubernetes.io/os: {}
+          f:paused: {}
+          f:podMonitorNamespaceSelector: {}
+          f:podMonitorSelector: {}
+          f:portName: {}
+          f:probeNamespaceSelector: {}
+          f:probeSelector:
+            .: {}
+            f:matchLabels:
+              .: {}
+              f:release: {}
+          f:replicas: {}
+          f:resources:
+            .: {}
+            f:limits:
+              .: {}
+              f:cpu: {}
+              f:memory: {}
+            f:requests:
+              .: {}
+              f:cpu: {}
+              f:memory: {}
+          f:retention: {}
+          f:retentionSize: {}
+          f:routePrefix: {}
+          f:ruleNamespaceSelector: {}
+          f:ruleSelector: {}
+          f:scrapeInterval: {}
+          f:securityContext:
+            .: {}
+            f:fsGroup: {}
+            f:runAsGroup: {}
+            f:runAsNonRoot: {}
+            f:runAsUser: {}
+          f:serviceAccountName: {}
+          f:serviceMonitorNamespaceSelector: {}
+          f:serviceMonitorSelector: {}
+          f:shards: {}
+          f:storage:
+            .: {}
+            f:volumeClaimTemplate:
+              .: {}
+              f:spec:
+                .: {}
+                f:accessModes: {}
+                f:resources:
+                  .: {}
+                  f:requests:
+                    .: {}
+                    f:storage: {}
+                f:storageClassName: {}
+                f:volumeMode: {}
+          f:tolerations: {}
+          f:version: {}
+          f:volumes: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:06Z"
+    name: rancher-monitoring-prometheus
+    namespace: cattle-monitoring-system
+    resourceVersion: "4792"
+    uid: 0ff17fe9-72e5-4c92-86b2-41e83b206f99
+  spec:
+    alerting:
+      alertmanagers: []
+    containers:
+    - args:
+      - nginx
+      - -g
+      - daemon off;
+      - -c
+      - /nginx/nginx.conf
+      image: rancher/mirrored-library-nginx:1.21.1-alpine
+      name: prometheus-proxy
+      ports:
+      - containerPort: 8081
+        name: nginx-http
+        protocol: TCP
+      securityContext:
+        runAsGroup: 101
+        runAsUser: 101
+      volumeMounts:
+      - mountPath: /nginx
+        name: prometheus-nginx
+      - mountPath: /var/cache/nginx
+        name: nginx-home
+    enableAdminAPI: false
+    evaluationInterval: 1m
+    externalUrl: http://rancher-monitoring-prometheus.cattle-monitoring-system:9090
+    image: rancher/mirrored-prometheus-prometheus:v2.28.1
+    listenLocal: false
+    logFormat: logfmt
+    logLevel: info
+    nodeSelector:
+      kubernetes.io/os: linux
+    paused: false
+    podMonitorNamespaceSelector: {}
+    podMonitorSelector: {}
+    portName: nginx-http
+    probeNamespaceSelector: {}
+    probeSelector:
+      matchLabels:
+        release: rancher-monitoring
+    replicas: 1
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 3000Mi
+      requests:
+        cpu: 500m
+        memory: 750Mi
+    retention: 5d
+    retentionSize: 50GiB
+    routePrefix: /
+    ruleNamespaceSelector: {}
+    ruleSelector: {}
+    scrapeInterval: 1m
+    securityContext:
+      fsGroup: 2000
+      runAsGroup: 2000
+      runAsNonRoot: true
+      runAsUser: 1000
+    serviceAccountName: rancher-monitoring-prometheus
+    serviceMonitorNamespaceSelector: {}
+    serviceMonitorSelector: {}
+    shards: 1
+    storage:
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: 50Gi
+          storageClassName: longhorn
+          volumeMode: Filesystem
+    tolerations:
+    - effect: NoSchedule
+      key: cattle.io/os
+      operator: Equal
+      value: linux
+    version: v2.28.1
+    volumes:
+    - emptyDir: {}
+      name: nginx-home
+    - configMap:
+        defaultMode: 438
+        name: prometheus-nginx-proxy-config
+      name: prometheus-nginx
+kind: List
+metadata:
+  continue: "null"
+  resourceVersion: "14659123"

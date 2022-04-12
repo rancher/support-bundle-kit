@@ -1,0 +1,216 @@
+apiVersion: v1
+items:
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: Role
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:52:03Z"
+    labels:
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: rbac.authorization.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:rules: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:03Z"
+    name: monitoring-config-admin
+    namespace: cattle-monitoring-system
+    resourceVersion: "4622"
+    uid: 47f06194-8c3c-472d-8878-a4f2c8622ba2
+  rules:
+  - apiGroups:
+    - "null"
+    resources:
+    - configmaps
+    - secrets
+    verbs:
+    - '*'
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: Role
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:52:03Z"
+    labels:
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: rbac.authorization.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:rules: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:03Z"
+    name: monitoring-config-edit
+    namespace: cattle-monitoring-system
+    resourceVersion: "4631"
+    uid: eea02718-d465-4313-9e21-f5078d3639c5
+  rules:
+  - apiGroups:
+    - "null"
+    resources:
+    - configmaps
+    - secrets
+    verbs:
+    - '*'
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: Role
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:52:03Z"
+    labels:
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: rbac.authorization.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:rules: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:03Z"
+    name: monitoring-config-view
+    namespace: cattle-monitoring-system
+    resourceVersion: "4634"
+    uid: 3e1acf38-5f29-4e57-a007-95d5dd791e67
+  rules:
+  - apiGroups:
+    - "null"
+    resources:
+    - configmaps
+    - secrets
+    verbs:
+    - get
+    - list
+    - watch
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: Role
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:52:03Z"
+    labels:
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: grafana
+      app.kubernetes.io/version: 7.5.11
+      helm.sh/chart: grafana-6.16.14
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+    managedFields:
+    - apiVersion: rbac.authorization.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:app.kubernetes.io/version: {}
+            f:helm.sh/chart: {}
+            f:objectset.rio.cattle.io/hash: {}
+        f:rules: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:03Z"
+    name: rancher-monitoring-grafana
+    namespace: cattle-monitoring-system
+    resourceVersion: "4621"
+    uid: 9356afc6-1050-4bdd-8d7a-3744639287d4
+  rules:
+  - apiGroups:
+    - extensions
+    resourceNames:
+    - rancher-monitoring-grafana
+    resources:
+    - podsecuritypolicies
+    verbs:
+    - use
+kind: List
+metadata:
+  resourceVersion: "14659119"

@@ -1,0 +1,143 @@
+2022-03-06T22:51:41.311041043Z I0306 22:51:41.309643       1 main.go:112] Starting network controller with 2 threads.
+2022-03-06T22:51:41.311154614Z I0306 22:51:41.309819       1 main.go:117] Starting network controller in namespace: harvester-system.
+2022-03-06T22:51:41.311175494Z W0306 22:51:41.310274       1 client_config.go:614] Neither --kubeconfig nor --master was specified.  Using the inClusterConfig.  This might not work.
+2022-03-06T22:51:41.402945344Z I0306 22:51:41.402751       1 leaderelection.go:243] attempting to acquire leader lease kube-system/harvester-network-controllers...
+2022-03-06T22:51:41.964292922Z I0306 22:51:41.957768       1 leaderelection.go:253] successfully acquired lease kube-system/harvester-network-controllers
+2022-03-06T22:51:55.805004701Z time="2022-03-06T22:51:55Z" level=info msg="Do not update the existing CRD NodeNetwork"
+2022-03-06T22:51:56.320319925Z time="2022-03-06T22:51:56Z" level=info msg="Do not update the existing CRD NetworkAttachmentDefinition"
+2022-03-06T22:52:04.601776633Z time="2022-03-06T22:52:04Z" level=info msg="Starting network.harvesterhci.io/v1beta1, Kind=ClusterNetwork controller"
+2022-03-06T22:52:04.601882923Z I0306 22:52:04.600383       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-06T22:52:04.601904493Z time="2022-03-06T22:52:04Z" level=info msg="Starting k8s.cni.cncf.io/v1, Kind=NetworkAttachmentDefinition controller"
+2022-03-06T22:52:04.601949243Z time="2022-03-06T22:52:04Z" level=info msg="Starting network.harvesterhci.io/v1beta1, Kind=NodeNetwork controller"
+2022-03-06T22:52:04.601966893Z time="2022-03-06T22:52:04Z" level=info msg="Starting /v1, Kind=Node controller"
+2022-03-06T22:52:04.601992043Z time="2022-03-06T22:52:04Z" level=info msg="Starting batch/v1, Kind=Job controller"
+2022-03-06T22:52:04.740491779Z I0306 22:52:04.708677       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-06T23:10:38.350275275Z I0306 23:10:38.344725       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-06T23:10:38.380931378Z I0306 23:10:38.377869       1 controller.go:110] netconf: &{Mode:auto CIDR: Gateway: ServerIPAddr: Connectivity:}
+2022-03-06T23:10:38.435365880Z I0306 23:10:38.435182       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-06T23:10:38.435451770Z I0306 23:10:38.435262       1 controller.go:110] netconf: &{Mode:auto CIDR: Gateway: ServerIPAddr: Connectivity:}
+2022-03-06T23:10:38.501531260Z I0306 23:10:38.501329       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-06T23:10:38.501594560Z I0306 23:10:38.501401       1 controller.go:110] netconf: &{Mode:auto CIDR: Gateway: ServerIPAddr: Connectivity:}
+2022-03-06T23:10:38.546007234Z I0306 23:10:38.544631       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-06T23:10:38.546069944Z I0306 23:10:38.544695       1 controller.go:110] netconf: &{Mode:auto CIDR: Gateway: ServerIPAddr: Connectivity:}
+2022-03-06T23:10:38.610449473Z I0306 23:10:38.609963       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-06T23:10:38.610511093Z I0306 23:10:38.610030       1 controller.go:110] netconf: &{Mode:auto CIDR: Gateway: ServerIPAddr: Connectivity:}
+2022-03-06T23:10:47.392383913Z I0306 23:10:47.389148       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-06T23:10:47.392446164Z I0306 23:10:47.389281       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:}
+2022-03-06T23:10:51.480735113Z I0306 23:10:51.480510       1 controller.go:118] initialize connectivity of nad default/default successfully
+2022-03-06T23:10:51.480805813Z I0306 23:10:51.480602       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-06T23:10:51.480857543Z I0306 23:10:51.480676       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-07T08:52:04.006842838Z I0307 08:52:04.006629       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-07T08:52:04.007026038Z I0307 08:52:04.006767       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-07T08:52:04.206728031Z I0307 08:52:04.206547       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-07T18:52:04.024118061Z I0307 18:52:04.015086       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-07T18:52:04.024192821Z I0307 18:52:04.015239       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-07T18:52:04.216159037Z I0307 18:52:04.212276       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-08T04:52:04.015991564Z I0308 04:52:04.015706       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-08T04:52:04.016141864Z I0308 04:52:04.015843       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-08T04:52:04.215949627Z I0308 04:52:04.213035       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-08T14:52:04.036157009Z I0308 14:52:04.023585       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-08T14:52:04.036236999Z I0308 14:52:04.023730       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-08T14:52:04.220294559Z I0308 14:52:04.214115       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-09T00:52:04.027915852Z I0309 00:52:04.027562       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-09T00:52:04.028037062Z I0309 00:52:04.027700       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-09T00:52:04.224188682Z I0309 00:52:04.216172       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-09T10:52:04.041893852Z I0309 10:52:04.028260       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-09T10:52:04.041985832Z I0309 10:52:04.028405       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-09T10:52:04.217897656Z I0309 10:52:04.217204       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-09T20:52:04.032158444Z I0309 20:52:04.028349       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-09T20:52:04.032228774Z I0309 20:52:04.028496       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-09T20:52:04.223957170Z I0309 20:52:04.220242       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-10T06:52:04.029186831Z I0310 06:52:04.028865       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-10T06:52:04.029256421Z I0310 06:52:04.029013       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-10T06:52:04.248545478Z I0310 06:52:04.223732       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-10T16:52:04.036310896Z I0310 16:52:04.032192       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-10T16:52:04.036346726Z I0310 16:52:04.032343       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-10T16:52:04.235720358Z I0310 16:52:04.224244       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-11T02:52:04.032850982Z I0311 02:52:04.032616       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-11T02:52:04.036491685Z I0311 02:52:04.032771       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-11T02:52:04.225850730Z I0311 02:52:04.225232       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-11T12:52:04.044246160Z I0311 12:52:04.033742       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-11T12:52:04.044348041Z I0311 12:52:04.033886       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-11T12:52:04.232176304Z I0311 12:52:04.225581       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-11T22:52:04.034955093Z I0311 22:52:04.034736       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-11T22:52:04.035293993Z I0311 22:52:04.035133       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-11T22:52:04.240184509Z I0311 22:52:04.229197       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-12T08:52:04.041943197Z I0312 08:52:04.036462       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-12T08:52:04.046223461Z I0312 08:52:04.036610       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-12T08:52:04.232231973Z I0312 08:52:04.229372       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-12T18:52:04.046775900Z I0312 18:52:04.037060       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-12T18:52:04.046846711Z I0312 18:52:04.037207       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-12T18:52:04.232122992Z I0312 18:52:04.229988       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-13T04:52:04.052766954Z I0313 04:52:04.037234       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-13T04:52:04.052807224Z I0313 04:52:04.037383       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-13T04:52:04.232205431Z I0313 04:52:04.231692       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-13T14:52:04.050055702Z I0313 14:52:04.040391       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-13T14:52:04.050126972Z I0313 14:52:04.040534       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-13T14:52:04.240158867Z I0313 14:52:04.231879       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-14T00:52:04.041768965Z I0314 00:52:04.041530       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-14T00:52:04.041864045Z I0314 00:52:04.041724       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-14T00:52:04.236146193Z I0314 00:52:04.232569       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-14T10:52:04.042451875Z I0314 10:52:04.041830       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-14T10:52:04.042528665Z I0314 10:52:04.041974       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-14T10:52:04.235551002Z I0314 10:52:04.233767       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-14T20:52:04.042985534Z I0314 20:52:04.042708       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-14T20:52:04.043117064Z I0314 20:52:04.042976       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-14T20:52:04.243705717Z I0314 20:52:04.240198       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-15T06:52:04.045992996Z I0315 06:52:04.045734       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-15T06:52:04.046097026Z I0315 06:52:04.045877       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-15T06:52:04.241172805Z I0315 06:52:04.240907       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-15T16:52:04.046765586Z I0315 16:52:04.046530       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-15T16:52:04.046881036Z I0315 16:52:04.046670       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-15T16:52:04.242742255Z I0315 16:52:04.241566       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-16T02:52:04.047494716Z I0316 02:52:04.047240       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-16T02:52:04.047756136Z I0316 02:52:04.047396       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-16T02:52:04.243810726Z I0316 02:52:04.243572       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-16T12:52:04.060149425Z I0316 12:52:04.047407       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-16T12:52:04.060223425Z I0316 12:52:04.047547       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-16T12:52:04.248292168Z I0316 12:52:04.244354       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-16T22:52:04.056145851Z I0316 22:52:04.047630       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-16T22:52:04.056215191Z I0316 22:52:04.047780       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-16T22:52:04.251336900Z I0316 22:52:04.245290       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-17T08:52:04.053183858Z I0317 08:52:04.052754       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-17T08:52:04.053285308Z I0317 08:52:04.052943       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-17T08:52:04.250830089Z I0317 08:52:04.245459       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-17T18:52:04.062470665Z I0317 18:52:04.053565       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-17T18:52:04.062554435Z I0317 18:52:04.053723       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-17T18:52:04.249828558Z I0317 18:52:04.246585       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-18T04:52:04.054807398Z I0318 04:52:04.054606       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-18T04:52:04.054998078Z I0318 04:52:04.054747       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-18T04:52:04.247654075Z I0318 04:52:04.247028       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-18T14:52:04.060178482Z I0318 14:52:04.056186       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-18T14:52:04.060241182Z I0318 14:52:04.056334       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-18T14:52:04.254678640Z I0318 14:52:04.254120       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-19T00:52:04.057364159Z I0319 00:52:04.057092       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-19T00:52:04.057463039Z I0319 00:52:04.057255       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-19T00:52:04.254912910Z I0319 00:52:04.254587       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-19T10:52:04.058316439Z I0319 10:52:04.057226       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-19T10:52:04.058384469Z I0319 10:52:04.057385       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-19T10:52:04.268870700Z I0319 10:52:04.255566       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-19T20:52:04.124154719Z I0319 20:52:04.117432       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-19T20:52:04.124223459Z I0319 20:52:04.117574       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-19T20:52:04.260592043Z I0319 20:52:04.260369       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-20T06:52:04.124246698Z I0320 06:52:04.117515       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-20T06:52:04.124318918Z I0320 06:52:04.117665       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-20T06:52:04.272823971Z I0320 06:52:04.265418       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-20T16:52:04.121420065Z I0320 16:52:04.118054       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-20T16:52:04.121518085Z I0320 16:52:04.118233       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-20T16:52:04.270750359Z I0320 16:52:04.266510       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-21T02:52:04.128135440Z I0321 02:52:04.123793       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-21T02:52:04.128200230Z I0321 02:52:04.123940       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-21T02:52:04.267928216Z I0321 02:52:04.267620       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-21T12:52:04.126428428Z I0321 12:52:04.124522       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-21T12:52:04.126503738Z I0321 12:52:04.124671       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-21T12:52:04.268369816Z I0321 12:52:04.268172       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-21T22:52:04.136274755Z I0321 22:52:04.125732       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-21T22:52:04.136341365Z I0321 22:52:04.125881       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-21T22:52:04.275480611Z I0321 22:52:04.269208       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-22T08:52:04.126307806Z I0322 08:52:04.126117       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-22T08:52:04.126409656Z I0322 08:52:04.126260       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-22T08:52:04.271261507Z I0322 08:52:04.270318       1 controller.go:59] cluster network configuration vlan has been changed
+2022-03-22T18:52:04.127766007Z I0322 18:52:04.127112       1 controller.go:96] nad configuration default has been changed: {"cniVersion":"0.3.1","name":"default","type":"bridge","bridge":"harvester-br0","promiscMode":true,"vlan":1,"ipam":{}}
+2022-03-22T18:52:04.127829237Z I0322 18:52:04.127268       1 controller.go:110] netconf: &{Mode:auto CIDR:172.16.128.0/21 Gateway:172.16.128.1 ServerIPAddr: Connectivity:true}
+2022-03-22T18:52:04.272240457Z I0322 18:52:04.271463       1 controller.go:59] cluster network configuration vlan has been changed

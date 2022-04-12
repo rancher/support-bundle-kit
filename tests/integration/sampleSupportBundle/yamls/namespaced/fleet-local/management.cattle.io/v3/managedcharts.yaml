@@ -1,0 +1,1572 @@
+apiVersion: v1
+items:
+- apiVersion: management.cattle.io/v3
+  kind: ManagedChart
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"management.cattle.io/v3","kind":"ManagedChart","metadata":{"annotations":{},"name":"harvester","namespace":"fleet-local"},"spec":{"chart":"harvester","defaultNamespace":"harvester-system","releaseName":"harvester","repoName":"harvester-charts","targets":[{"clusterName":"local","clusterSelector":{"matchExpressions":[{"key":"provisioning.cattle.io/unmanaged-system-agent","operator":"DoesNotExist"}]}}],"values":{"containers":{"apiserver":{"hciMode":true,"image":{"imagePullPolicy":"IfNotPresent"}}},"harvester-load-balancer":{"enabled":true},"harvester-network-controller":{"enabled":true,"image":{"pullPolicy":"IfNotPresent"},"vipEnabled":true},"harvester-node-disk-manager":{"enabled":true,"image":{"pullPolicy":"IfNotPresent"},"labelFilter":["COS_*","HARV_*"]},"kube-vip":{"enabled":true},"kube-vip-cloud-provider":{"enabled":true},"kubevirt":{"spec":{"monitorAccount":"rancher-monitoring-operator","monitorNamespace":"cattle-monitoring-system"}},"longhorn":{"defaultSettings":{"defaultDataPath":"/var/lib/harvester/defaultdisk","taintToleration":"kubevirt.io/drain:NoSchedule"},"enabled":true},"multus":{"enabled":false},"rancherEmbedded":true,"service":{"vip":{"enabled":true,"hwAddress":"","ip":"172.16.128.7","mode":"static"}},"webhook":{"image":{"imagePullPolicy":"IfNotPresent"}}},"version":"0.0.0-dev"}}
+    creationTimestamp: "2022-03-06T22:49:42Z"
+    generation: 1
+    managedFields:
+    - apiVersion: management.cattle.io/v3
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:kubectl.kubernetes.io/last-applied-configuration: {}
+        f:spec:
+          .: {}
+          f:chart: {}
+          f:defaultNamespace: {}
+          f:releaseName: {}
+          f:repoName: {}
+          f:targets: {}
+          f:values:
+            .: {}
+            f:containers: {}
+            f:harvester-load-balancer: {}
+            f:harvester-network-controller: {}
+            f:harvester-node-disk-manager: {}
+            f:kube-vip: {}
+            f:kube-vip-cloud-provider: {}
+            f:kubevirt: {}
+            f:longhorn: {}
+            f:multus: {}
+            f:rancherEmbedded: {}
+            f:service: {}
+            f:webhook: {}
+          f:version: {}
+      manager: kubectl-client-side-apply
+      operation: Update
+      time: "2022-03-06T22:49:42Z"
+    - apiVersion: management.cattle.io/v3
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          .: {}
+          f:conditions: {}
+          f:display:
+            .: {}
+            f:readyClusters: {}
+            f:state: {}
+          f:maxNew: {}
+          f:maxUnavailable: {}
+          f:maxUnavailablePartitions: {}
+          f:observedGeneration: {}
+          f:partitions: {}
+          f:resourceKey: {}
+          f:summary:
+            .: {}
+            f:desiredReady: {}
+            f:modified: {}
+            f:nonReadyResources: {}
+            f:ready: {}
+          f:unavailable: {}
+          f:unavailablePartitions: {}
+      manager: rancher
+      operation: Update
+      time: "2022-03-22T18:55:01Z"
+    name: harvester
+    namespace: fleet-local
+    resourceVersion: "14658805"
+    uid: 1b43050d-3428-4b9c-aff1-290b2fa6d8d4
+  spec:
+    chart: harvester
+    defaultNamespace: harvester-system
+    releaseName: harvester
+    repoName: harvester-charts
+    targets:
+    - clusterName: local
+      clusterSelector:
+        matchExpressions:
+        - key: provisioning.cattle.io/unmanaged-system-agent
+          operator: DoesNotExist
+    values:
+      containers:
+        apiserver:
+          hciMode: true
+          image:
+            imagePullPolicy: IfNotPresent
+      harvester-load-balancer:
+        enabled: true
+      harvester-network-controller:
+        enabled: true
+        image:
+          pullPolicy: IfNotPresent
+        vipEnabled: true
+      harvester-node-disk-manager:
+        enabled: true
+        image:
+          pullPolicy: IfNotPresent
+        labelFilter:
+        - COS_*
+        - HARV_*
+      kube-vip:
+        enabled: true
+      kube-vip-cloud-provider:
+        enabled: true
+      kubevirt:
+        spec:
+          monitorAccount: rancher-monitoring-operator
+          monitorNamespace: cattle-monitoring-system
+      longhorn:
+        defaultSettings:
+          defaultDataPath: /var/lib/harvester/defaultdisk
+          taintToleration: kubevirt.io/drain:NoSchedule
+        enabled: true
+      multus:
+        enabled: false
+      rancherEmbedded: true
+      service:
+        vip:
+          enabled: true
+          hwAddress: "null"
+          ip: 172.16.128.7
+          mode: static
+      webhook:
+        image:
+          imagePullPolicy: IfNotPresent
+    version: 0.0.0-dev
+  status:
+    conditions:
+    - lastUpdateTime: "2022-03-22T18:55:00Z"
+      message: Modified(1) [Cluster fleet-local/local]; configmap.v1 longhorn-system/longhorn-storageclass
+        missing
+      status: "False"
+      type: Ready
+    - lastUpdateTime: "2022-03-22T18:55:00Z"
+      status: "True"
+      type: Processed
+    - lastUpdateTime: "2022-03-22T23:49:27Z"
+      status: "True"
+      type: Defined
+    display:
+      readyClusters: 0/1
+      state: Modified
+    maxNew: 50
+    maxUnavailable: 1
+    maxUnavailablePartitions: 0
+    observedGeneration: 1
+    partitions:
+    - count: 1
+      maxUnavailable: 1
+      name: All
+      summary:
+        desiredReady: 1
+        modified: 1
+        nonReadyResources:
+        - bundleState: Modified
+          modifiedStatus:
+          - apiVersion: v1
+            kind: ConfigMap
+            missing: true
+            name: longhorn-storageclass
+            namespace: longhorn-system
+          name: fleet-local/local
+        ready: 0
+    resourceKey:
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: backingimagedatasources.longhorn.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: backingimagemanagers.longhorn.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: backingimages.longhorn.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: backups.longhorn.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: backuptargets.longhorn.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: backupvolumes.longhorn.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: blockdevices.harvesterhci.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: clusternetworks.network.harvesterhci.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: engineimages.longhorn.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: engines.longhorn.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: instancemanagers.longhorn.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: loadbalancers.loadbalancer.harvesterhci.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: nodenetworks.network.harvesterhci.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: nodes.longhorn.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: recurringjobs.longhorn.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: replicas.longhorn.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: settings.longhorn.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: sharemanagers.longhorn.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: volumes.longhorn.io
+    - apiVersion: apps/v1
+      kind: DaemonSet
+      name: harvester-network-controller
+      namespace: harvester-system
+    - apiVersion: apps/v1
+      kind: DaemonSet
+      name: harvester-node-disk-manager
+      namespace: harvester-system
+    - apiVersion: apps/v1
+      kind: DaemonSet
+      name: kube-vip
+      namespace: harvester-system
+    - apiVersion: apps/v1
+      kind: DaemonSet
+      name: longhorn-manager
+      namespace: longhorn-system
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: harvester
+      namespace: harvester-system
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: harvester-load-balancer
+      namespace: harvester-system
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: harvester-network-controller-manager
+      namespace: harvester-system
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: harvester-webhook
+      namespace: harvester-system
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: virt-operator
+      namespace: harvester-system
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: snapshot-controller
+      namespace: kube-system
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: longhorn-driver-deployer
+      namespace: longhorn-system
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: longhorn-ui
+      namespace: longhorn-system
+    - apiVersion: apps/v1
+      kind: StatefulSet
+      name: kube-vip-cloud-provider
+      namespace: harvester-system
+    - apiVersion: kubevirt.io/v1
+      kind: KubeVirt
+      name: kubevirt
+      namespace: harvester-system
+    - apiVersion: policy/v1beta1
+      kind: PodSecurityPolicy
+      name: longhorn-psp
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: harvester-load-balancer
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: harvester-network-controller
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: harvester-network-helper
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: harvester-node-disk-manager
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: harvesterhci.io:cloudprovider
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: harvesterhci.io:edit
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: harvesterhci.io:view
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: kube-vip
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: kube-vip-cloud-provider
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: kubevirt-operator
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: kubevirt.io:operator
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: longhorn-role
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: snapshot-controller-runner
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: harvester
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: harvester-load-balancer
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: harvester-network-controller
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: harvester-network-helper
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: harvester-node-disk-manager
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: kube-vip
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: kube-vip-cloud-provider
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: kubevirt-operator
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: longhorn-bind
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: snapshot-controller-role
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: Role
+      name: kubevirt-operator
+      namespace: harvester-system
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: Role
+      name: snapshot-controller-leaderelection
+      namespace: kube-system
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: Role
+      name: longhorn-psp-role
+      namespace: longhorn-system
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: RoleBinding
+      name: kubevirt-operator-rolebinding
+      namespace: harvester-system
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: RoleBinding
+      name: snapshot-controller-leaderelection
+      namespace: kube-system
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: RoleBinding
+      name: longhorn-psp-binding
+      namespace: longhorn-system
+    - apiVersion: scheduling.k8s.io/v1
+      kind: PriorityClass
+      name: kubevirt-cluster-critical
+    - apiVersion: snapshot.storage.k8s.io/v1beta1
+      kind: VolumeSnapshotClass
+      name: longhorn
+      namespace: harvester-system
+    - apiVersion: v1
+      kind: ConfigMap
+      name: harvester-helpers
+      namespace: harvester-system
+    - apiVersion: v1
+      kind: ConfigMap
+      name: vip
+      namespace: harvester-system
+    - apiVersion: v1
+      kind: ConfigMap
+      name: longhorn-default-setting
+      namespace: longhorn-system
+    - apiVersion: v1
+      kind: ConfigMap
+      name: longhorn-storageclass
+      namespace: longhorn-system
+    - apiVersion: v1
+      kind: Namespace
+      name: longhorn-system
+    - apiVersion: v1
+      kind: Service
+      name: harvester
+      namespace: harvester-system
+    - apiVersion: v1
+      kind: Service
+      name: harvester-webhook
+      namespace: harvester-system
+    - apiVersion: v1
+      kind: Service
+      name: longhorn-backend
+      namespace: longhorn-system
+    - apiVersion: v1
+      kind: Service
+      name: longhorn-engine-manager
+      namespace: longhorn-system
+    - apiVersion: v1
+      kind: Service
+      name: longhorn-frontend
+      namespace: longhorn-system
+    - apiVersion: v1
+      kind: Service
+      name: longhorn-replica-manager
+      namespace: longhorn-system
+    - apiVersion: v1
+      kind: ServiceAccount
+      name: harvester
+      namespace: harvester-system
+    - apiVersion: v1
+      kind: ServiceAccount
+      name: harvester-load-balancer
+      namespace: harvester-system
+    - apiVersion: v1
+      kind: ServiceAccount
+      name: harvester-network-controller
+      namespace: harvester-system
+    - apiVersion: v1
+      kind: ServiceAccount
+      name: harvester-network-helper
+      namespace: harvester-system
+    - apiVersion: v1
+      kind: ServiceAccount
+      name: harvester-node-disk-manager
+      namespace: harvester-system
+    - apiVersion: v1
+      kind: ServiceAccount
+      name: kube-vip
+      namespace: harvester-system
+    - apiVersion: v1
+      kind: ServiceAccount
+      name: kube-vip-cloud-provider
+      namespace: harvester-system
+    - apiVersion: v1
+      kind: ServiceAccount
+      name: kubevirt-operator
+      namespace: harvester-system
+    - apiVersion: v1
+      kind: ServiceAccount
+      name: snapshot-controller
+      namespace: kube-system
+    - apiVersion: v1
+      kind: ServiceAccount
+      name: longhorn-service-account
+      namespace: longhorn-system
+    summary:
+      desiredReady: 1
+      modified: 1
+      nonReadyResources:
+      - bundleState: Modified
+        modifiedStatus:
+        - apiVersion: v1
+          kind: ConfigMap
+          missing: true
+          name: longhorn-storageclass
+          namespace: longhorn-system
+        name: fleet-local/local
+      ready: 0
+    unavailable: 0
+    unavailablePartitions: 0
+- apiVersion: management.cattle.io/v3
+  kind: ManagedChart
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"management.cattle.io/v3","kind":"ManagedChart","metadata":{"annotations":{},"name":"harvester-crd","namespace":"fleet-local"},"spec":{"chart":"harvester-crd","defaultNamespace":"harvester-system","releaseName":"harvester-crd","repoName":"harvester-charts","takeOwnership":true,"targets":[{"clusterName":"local","clusterSelector":{"matchExpressions":[{"key":"provisioning.cattle.io/unmanaged-system-agent","operator":"DoesNotExist"}]}}],"values":{},"version":"0.0.0-dev"}}
+    creationTimestamp: "2022-03-06T22:49:42Z"
+    generation: 1
+    managedFields:
+    - apiVersion: management.cattle.io/v3
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:kubectl.kubernetes.io/last-applied-configuration: {}
+        f:spec:
+          .: {}
+          f:chart: {}
+          f:defaultNamespace: {}
+          f:releaseName: {}
+          f:repoName: {}
+          f:takeOwnership: {}
+          f:targets: {}
+          f:values: {}
+          f:version: {}
+      manager: kubectl-client-side-apply
+      operation: Update
+      time: "2022-03-06T22:49:42Z"
+    - apiVersion: management.cattle.io/v3
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          .: {}
+          f:conditions: {}
+          f:display:
+            .: {}
+            f:readyClusters: {}
+          f:maxNew: {}
+          f:maxUnavailable: {}
+          f:maxUnavailablePartitions: {}
+          f:observedGeneration: {}
+          f:partitions: {}
+          f:resourceKey: {}
+          f:summary:
+            .: {}
+            f:desiredReady: {}
+            f:ready: {}
+          f:unavailable: {}
+          f:unavailablePartitions: {}
+      manager: rancher
+      operation: Update
+      time: "2022-03-22T18:55:26Z"
+    name: harvester-crd
+    namespace: fleet-local
+    resourceVersion: "14658781"
+    uid: d27c6c13-ee15-46a3-9299-a7dce6428a1a
+  spec:
+    chart: harvester-crd
+    defaultNamespace: harvester-system
+    releaseName: harvester-crd
+    repoName: harvester-charts
+    takeOwnership: true
+    targets:
+    - clusterName: local
+      clusterSelector:
+        matchExpressions:
+        - key: provisioning.cattle.io/unmanaged-system-agent
+          operator: DoesNotExist
+    values: {}
+    version: 0.0.0-dev
+  status:
+    conditions:
+    - lastUpdateTime: "2022-03-22T18:55:26Z"
+      status: "True"
+      type: Ready
+    - lastUpdateTime: "2022-03-22T18:55:26Z"
+      status: "True"
+      type: Processed
+    - lastUpdateTime: "2022-03-22T23:49:25Z"
+      status: "True"
+      type: Defined
+    display:
+      readyClusters: 1/1
+    maxNew: 50
+    maxUnavailable: 1
+    maxUnavailablePartitions: 0
+    observedGeneration: 1
+    partitions:
+    - count: 1
+      maxUnavailable: 1
+      name: All
+      summary:
+        desiredReady: 1
+        ready: 1
+    resourceKey:
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: keypairs.harvesterhci.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: preferences.harvesterhci.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: settings.harvesterhci.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: supportbundles.harvesterhci.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: upgrades.harvesterhci.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: versions.harvesterhci.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: virtualmachinebackups.harvesterhci.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: virtualmachineimages.harvesterhci.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: virtualmachinerestores.harvesterhci.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: virtualmachinetemplates.harvesterhci.io
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: virtualmachinetemplateversions.harvesterhci.io
+    summary:
+      desiredReady: 1
+      ready: 1
+    unavailable: 0
+    unavailablePartitions: 0
+- apiVersion: management.cattle.io/v3
+  kind: ManagedChart
+  metadata:
+    annotations:
+      objectset.rio.cattle.io/applied: H4sIAAAAAAAA/4yUz27bOBDGX2UxZ8pLObajCNjTJtjDAm6R/rkEOYzIkcyaIgVypMYw9O4FJbd1DdjIjRpxvvn4myGP0BKjRkYoj4DOeUY23sX06atvpDgSL4LxC4XMlhbG/200lNCiw4ayeIhMbdZ3TUBNmfKOg7eWAoir+f67o5A1wx5K6IIfTDTeGdecbRly8df/xul//rV95HeoOWwJSrBeoX3X5tihShm1JeJszhsFqEATgM+mpcjYdlC63loBFiuyN7HsMO6ghPtCFtV69YBYLNd4Jwtd5HRf12vKK7khWa1lpahYpWrnrrOZqL6J9JpzAdPJnqmmQE5RhPLlCNiZrxQS3VukQUBlvdp/SAqPZImnhBptJAFn5X+G9salCfjdmgv4/TQgVGjEfF1kK6nrbHW3eciwqJbZfb5ZPsh6s8HlEsbXUUDsSCWwaoeBoYRbADTV2FvennGYz3LCBgICdX47Owro1I5CNilHEMAYGuKZjpr9b/80f4p+IkuKfUi+WmS1e3rrAsU4342XI+zpcB1q7y6aiQ05Tl3qKOAkC4+e4tbz05uJnDiMrwIGtD1NQ9ZYX6GdqEyqaTVrPc4EnqkxkUMyAeM4Chh+dTqXciEXeRqwyMj9JKhN7CweoDyOAlp8++JwQGOxStryMvQRA5vTQyDTdYoUBtL/kUv+pzJSQOzbFpOFI2iKJpB+JtSH6V84rUYB/UWp/kqdcfwRAAD//xJlfi+PBAAA
+      objectset.rio.cattle.io/id: manage-system-upgrade-controller
+      objectset.rio.cattle.io/owner-gvk: provisioning.cattle.io/v1, Kind=Cluster
+      objectset.rio.cattle.io/owner-name: local
+      objectset.rio.cattle.io/owner-namespace: fleet-local
+    creationTimestamp: "2022-03-06T22:49:42Z"
+    generation: 1
+    labels:
+      objectset.rio.cattle.io/hash: 7808b549aa825a308d81e7ff5e1b06e0b50bce84
+    managedFields:
+    - apiVersion: management.cattle.io/v3
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:objectset.rio.cattle.io/applied: {}
+            f:objectset.rio.cattle.io/id: {}
+            f:objectset.rio.cattle.io/owner-gvk: {}
+            f:objectset.rio.cattle.io/owner-name: {}
+            f:objectset.rio.cattle.io/owner-namespace: {}
+          f:labels:
+            .: {}
+            f:objectset.rio.cattle.io/hash: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"e8daa158-40df-4369-a8b2-716290f66a22"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          .: {}
+          f:chart: {}
+          f:defaultNamespace: {}
+          f:repoName: {}
+          f:targets: {}
+          f:values:
+            .: {}
+            f:global: {}
+          f:version: {}
+        f:status:
+          .: {}
+          f:conditions: {}
+          f:display:
+            .: {}
+            f:readyClusters: {}
+          f:maxNew: {}
+          f:maxUnavailable: {}
+          f:maxUnavailablePartitions: {}
+          f:observedGeneration: {}
+          f:partitions: {}
+          f:resourceKey: {}
+          f:summary:
+            .: {}
+            f:desiredReady: {}
+            f:ready: {}
+          f:unavailable: {}
+          f:unavailablePartitions: {}
+      manager: rancher
+      operation: Update
+      time: "2022-03-22T18:54:31Z"
+    name: local-managed-system-upgrade-controller
+    namespace: fleet-local
+    ownerReferences:
+    - apiVersion: provisioning.cattle.io/v1
+      blockOwnerDeletion: false
+      controller: false
+      kind: Cluster
+      name: local
+      uid: e8daa158-40df-4369-a8b2-716290f66a22
+    resourceVersion: "14658628"
+    uid: d696f2a4-5181-40da-9e58-a85614d287fa
+  spec:
+    chart: system-upgrade-controller
+    defaultNamespace: cattle-system
+    repoName: rancher-charts
+    targets:
+    - clusterName: local
+      clusterSelector:
+        matchExpressions:
+        - key: provisioning.cattle.io/unmanaged-system-agent
+          operator: DoesNotExist
+    values:
+      global:
+        cattle:
+          systemDefaultRegistry: "null"
+    version: 100.0.1
+  status:
+    conditions:
+    - lastUpdateTime: "2022-03-22T18:54:31Z"
+      status: "True"
+      type: Ready
+    - lastUpdateTime: "2022-03-22T18:54:31Z"
+      status: "True"
+      type: Processed
+    - lastUpdateTime: "2022-03-22T23:49:12Z"
+      status: "True"
+      type: Defined
+    display:
+      readyClusters: 1/1
+    maxNew: 50
+    maxUnavailable: 1
+    maxUnavailablePartitions: 0
+    observedGeneration: 1
+    partitions:
+    - count: 1
+      maxUnavailable: 1
+      name: All
+      summary:
+        desiredReady: 1
+        ready: 1
+    resourceKey:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: system-upgrade-controller
+      namespace: cattle-system
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: system-upgrade-controller
+    - apiVersion: v1
+      kind: ConfigMap
+      name: system-upgrade-controller-config
+      namespace: cattle-system
+    - apiVersion: v1
+      kind: ServiceAccount
+      name: system-upgrade-controller
+      namespace: cattle-system
+    summary:
+      desiredReady: 1
+      ready: 1
+    unavailable: 0
+    unavailablePartitions: 0
+- apiVersion: management.cattle.io/v3
+  kind: ManagedChart
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"management.cattle.io/v3","kind":"ManagedChart","metadata":{"annotations":{},"name":"rancher-monitoring","namespace":"fleet-local"},"spec":{"chart":"rancher-monitoring","defaultNamespace":"cattle-monitoring-system","releaseName":"rancher-monitoring","repoName":"harvester-charts","targets":[{"clusterName":"local","clusterSelector":{"matchExpressions":[{"key":"provisioning.cattle.io/unmanaged-system-agent","operator":"DoesNotExist"}]}}],"values":{"alertmanager":{"enabled":false},"grafana":{"persistence":{"accessModes":["ReadWriteOnce"],"enabled":true,"size":"10","storageClassName":"longhorn","type":"pvc"}},"prometheus":{"prometheusSpec":{"evaluationInterval":"1m","resources":{"requests":{"cpu":"500m"}},"retention":"5d","retentionSize":"50GiB","scrapeInterval":"1m","storageSpec":{"volumeClaimTemplate":{"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"50Gi"}},"storageClassName":"longhorn","volumeMode":"Filesystem"}}}}}},"version":"100.1.0+up19.0.3"}}
+    creationTimestamp: "2022-03-06T22:49:42Z"
+    generation: 1
+    managedFields:
+    - apiVersion: management.cattle.io/v3
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:kubectl.kubernetes.io/last-applied-configuration: {}
+        f:spec:
+          .: {}
+          f:chart: {}
+          f:defaultNamespace: {}
+          f:releaseName: {}
+          f:repoName: {}
+          f:targets: {}
+          f:values:
+            .: {}
+            f:alertmanager: {}
+            f:grafana: {}
+            f:prometheus: {}
+          f:version: {}
+      manager: kubectl-client-side-apply
+      operation: Update
+      time: "2022-03-06T22:49:42Z"
+    - apiVersion: management.cattle.io/v3
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          .: {}
+          f:conditions: {}
+          f:display:
+            .: {}
+            f:readyClusters: {}
+            f:state: {}
+          f:maxNew: {}
+          f:maxUnavailable: {}
+          f:maxUnavailablePartitions: {}
+          f:observedGeneration: {}
+          f:partitions: {}
+          f:resourceKey: {}
+          f:summary:
+            .: {}
+            f:desiredReady: {}
+            f:nonReadyResources: {}
+            f:notReady: {}
+            f:ready: {}
+          f:unavailable: {}
+          f:unavailablePartitions: {}
+      manager: rancher
+      operation: Update
+      time: "2022-03-22T18:57:11Z"
+    name: rancher-monitoring
+    namespace: fleet-local
+    resourceVersion: "14659162"
+    uid: e13135a9-8f72-4fa8-9916-39b190f1297e
+  spec:
+    chart: rancher-monitoring
+    defaultNamespace: cattle-monitoring-system
+    releaseName: rancher-monitoring
+    repoName: harvester-charts
+    targets:
+    - clusterName: local
+      clusterSelector:
+        matchExpressions:
+        - key: provisioning.cattle.io/unmanaged-system-agent
+          operator: DoesNotExist
+    values:
+      alertmanager:
+        enabled: false
+      grafana:
+        persistence:
+          accessModes:
+          - ReadWriteOnce
+          enabled: true
+          size: "10"
+          storageClassName: longhorn
+          type: pvc
+      prometheus:
+        prometheusSpec:
+          evaluationInterval: 1m
+          resources:
+            requests:
+              cpu: 500m
+          retention: 5d
+          retentionSize: 50GiB
+          scrapeInterval: 1m
+          storageSpec:
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 50Gi
+                storageClassName: longhorn
+                volumeMode: Filesystem
+    version: 100.1.0+up19.0.3
+  status:
+    conditions:
+    - lastUpdateTime: "2022-03-22T18:57:09Z"
+      message: NotReady(1) [Cluster fleet-local/local]; mutatingwebhookconfiguration.admissionregistration.k8s.io
+        rancher-monitoring-admission modified {"webhooks":[{"admissionReviewVersions":["v1","v1beta1"],"clientConfig":{"caBundle":"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJkakNDQVJ1Z0F3SUJBZ0lRQVJwd2FyYS8xNmZPQUNMV2NVSjhKVEFLQmdncWhrak9QUVFEQWpBUE1RMHcKQ3dZRFZRUUtFd1J1YVd3eE1DQVhEVEl5TURNd05qSXlORFkxTkZvWUR6SXhNakl3TWpFd01qSTBOalUwV2pBUApNUTB3Q3dZRFZRUUtFd1J1YVd3eE1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMERBUWNEUWdBRXltRHlLWEliCkxkR2toUzVZT0wvblJ1ZjNHUTBtSG9hWEVPVXU2eHNvbFhxVmN3c05BS0lUTWVDS2JGTTFLeWdqMkJTSVBZZXgKL2greEFoUWhBMU9ZUjZOWE1GVXdEZ1lEVlIwUEFRSC9CQVFEQWdJRU1CTUdBMVVkSlFRTU1Bb0dDQ3NHQVFVRgpCd01CTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3SFFZRFZSME9CQllFRkZWWnFaRHdMeUJOWWgrZ25TTFhBWFA2Ck0rN2JNQW9HQ0NxR1NNNDlCQU1DQTBrQU1FWUNJUURNYWZtM2FueUdaaElRT0FQZmV0RDFnL2czZTlIdzJwbWoKN2NCRDJmUU5SQUloQU14MTdVZTFmY1VJMGhxbUhNRndFQll3YmNwTEgrSnMxSDhRS1h6MWtvMWcKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=","service":{"name":"rancher-monitoring-operator","namespace":"cattle-monitoring-system","path":"/admission-prometheusrules/mutate","port":443}},"failurePolicy":"Ignore","matchPolicy":"Equivalent","name":"prometheusrulemutate.monitoring.coreos.com","namespaceSelector":{},"objectSelector":{},"reinvocationPolicy":"Never","rules":[{"apiGroups":["monitoring.coreos.com"],"apiVersions":["*"],"operations":["CREATE","UPDATE"],"resources":["prometheusrules"],"scope":"*"}],"sideEffects":"None","timeoutSeconds":10}]};
+        persistentvolumeclaim.v1 cattle-monitoring-system/rancher-monitoring-grafana
+        [progressing] Resource scheduled for deletion; validatingwebhookconfiguration.admissionregistration.k8s.io
+        rancher-monitoring-admission modified {"webhooks":[{"admissionReviewVersions":["v1","v1beta1"],"clientConfig":{"caBundle":"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJkakNDQVJ1Z0F3SUJBZ0lRQVJwd2FyYS8xNmZPQUNMV2NVSjhKVEFLQmdncWhrak9QUVFEQWpBUE1RMHcKQ3dZRFZRUUtFd1J1YVd3eE1DQVhEVEl5TURNd05qSXlORFkxTkZvWUR6SXhNakl3TWpFd01qSTBOalUwV2pBUApNUTB3Q3dZRFZRUUtFd1J1YVd3eE1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMERBUWNEUWdBRXltRHlLWEliCkxkR2toUzVZT0wvblJ1ZjNHUTBtSG9hWEVPVXU2eHNvbFhxVmN3c05BS0lUTWVDS2JGTTFLeWdqMkJTSVBZZXgKL2greEFoUWhBMU9ZUjZOWE1GVXdEZ1lEVlIwUEFRSC9CQVFEQWdJRU1CTUdBMVVkSlFRTU1Bb0dDQ3NHQVFVRgpCd01CTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3SFFZRFZSME9CQllFRkZWWnFaRHdMeUJOWWgrZ25TTFhBWFA2Ck0rN2JNQW9HQ0NxR1NNNDlCQU1DQTBrQU1FWUNJUURNYWZtM2FueUdaaElRT0FQZmV0RDFnL2czZTlIdzJwbWoKN2NCRDJmUU5SQUloQU14MTdVZTFmY1VJMGhxbUhNRndFQll3YmNwTEgrSnMxSDhRS1h6MWtvMWcKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=","service":{"name":"rancher-monitoring-operator","namespace":"cattle-monitoring-system","path":"/admission-prometheusrules/validate","port":443}},"failurePolicy":"Ignore","matchPolicy":"Equivalent","name":"prometheusrulemutate.monitoring.coreos.com","namespaceSelector":{},"objectSelector":{},"rules":[{"apiGroups":["monitoring.coreos.com"],"apiVersions":["*"],"operations":["CREATE","UPDATE"],"resources":["prometheusrules"],"scope":"*"}],"sideEffects":"None","timeoutSeconds":10}]}
+      status: "False"
+      type: Ready
+    - lastUpdateTime: "2022-03-22T18:57:09Z"
+      status: "True"
+      type: Processed
+    - lastUpdateTime: "2022-03-22T23:49:58Z"
+      status: "True"
+      type: Defined
+    display:
+      readyClusters: 0/1
+      state: NotReady
+    maxNew: 50
+    maxUnavailable: 1
+    maxUnavailablePartitions: 0
+    observedGeneration: 1
+    partitions:
+    - count: 1
+      maxUnavailable: 1
+      name: All
+      summary:
+        desiredReady: 1
+        nonReadyResources:
+        - bundleState: NotReady
+          modifiedStatus:
+          - apiVersion: admissionregistration.k8s.io/v1
+            kind: MutatingWebhookConfiguration
+            name: rancher-monitoring-admission
+            patch: '{"webhooks":[{"admissionReviewVersions":["v1","v1beta1"],"clientConfig":{"caBundle":"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJkakNDQVJ1Z0F3SUJBZ0lRQVJwd2FyYS8xNmZPQUNMV2NVSjhKVEFLQmdncWhrak9QUVFEQWpBUE1RMHcKQ3dZRFZRUUtFd1J1YVd3eE1DQVhEVEl5TURNd05qSXlORFkxTkZvWUR6SXhNakl3TWpFd01qSTBOalUwV2pBUApNUTB3Q3dZRFZRUUtFd1J1YVd3eE1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMERBUWNEUWdBRXltRHlLWEliCkxkR2toUzVZT0wvblJ1ZjNHUTBtSG9hWEVPVXU2eHNvbFhxVmN3c05BS0lUTWVDS2JGTTFLeWdqMkJTSVBZZXgKL2greEFoUWhBMU9ZUjZOWE1GVXdEZ1lEVlIwUEFRSC9CQVFEQWdJRU1CTUdBMVVkSlFRTU1Bb0dDQ3NHQVFVRgpCd01CTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3SFFZRFZSME9CQllFRkZWWnFaRHdMeUJOWWgrZ25TTFhBWFA2Ck0rN2JNQW9HQ0NxR1NNNDlCQU1DQTBrQU1FWUNJUURNYWZtM2FueUdaaElRT0FQZmV0RDFnL2czZTlIdzJwbWoKN2NCRDJmUU5SQUloQU14MTdVZTFmY1VJMGhxbUhNRndFQll3YmNwTEgrSnMxSDhRS1h6MWtvMWcKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=","service":{"name":"rancher-monitoring-operator","namespace":"cattle-monitoring-system","path":"/admission-prometheusrules/mutate","port":443}},"failurePolicy":"Ignore","matchPolicy":"Equivalent","name":"prometheusrulemutate.monitoring.coreos.com","namespaceSelector":{},"objectSelector":{},"reinvocationPolicy":"Never","rules":[{"apiGroups":["monitoring.coreos.com"],"apiVersions":["*"],"operations":["CREATE","UPDATE"],"resources":["prometheusrules"],"scope":"*"}],"sideEffects":"None","timeoutSeconds":10}]}'
+          - apiVersion: admissionregistration.k8s.io/v1
+            kind: ValidatingWebhookConfiguration
+            name: rancher-monitoring-admission
+            patch: '{"webhooks":[{"admissionReviewVersions":["v1","v1beta1"],"clientConfig":{"caBundle":"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJkakNDQVJ1Z0F3SUJBZ0lRQVJwd2FyYS8xNmZPQUNMV2NVSjhKVEFLQmdncWhrak9QUVFEQWpBUE1RMHcKQ3dZRFZRUUtFd1J1YVd3eE1DQVhEVEl5TURNd05qSXlORFkxTkZvWUR6SXhNakl3TWpFd01qSTBOalUwV2pBUApNUTB3Q3dZRFZRUUtFd1J1YVd3eE1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMERBUWNEUWdBRXltRHlLWEliCkxkR2toUzVZT0wvblJ1ZjNHUTBtSG9hWEVPVXU2eHNvbFhxVmN3c05BS0lUTWVDS2JGTTFLeWdqMkJTSVBZZXgKL2greEFoUWhBMU9ZUjZOWE1GVXdEZ1lEVlIwUEFRSC9CQVFEQWdJRU1CTUdBMVVkSlFRTU1Bb0dDQ3NHQVFVRgpCd01CTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3SFFZRFZSME9CQllFRkZWWnFaRHdMeUJOWWgrZ25TTFhBWFA2Ck0rN2JNQW9HQ0NxR1NNNDlCQU1DQTBrQU1FWUNJUURNYWZtM2FueUdaaElRT0FQZmV0RDFnL2czZTlIdzJwbWoKN2NCRDJmUU5SQUloQU14MTdVZTFmY1VJMGhxbUhNRndFQll3YmNwTEgrSnMxSDhRS1h6MWtvMWcKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=","service":{"name":"rancher-monitoring-operator","namespace":"cattle-monitoring-system","path":"/admission-prometheusrules/validate","port":443}},"failurePolicy":"Ignore","matchPolicy":"Equivalent","name":"prometheusrulemutate.monitoring.coreos.com","namespaceSelector":{},"objectSelector":{},"rules":[{"apiGroups":["monitoring.coreos.com"],"apiVersions":["*"],"operations":["CREATE","UPDATE"],"resources":["prometheusrules"],"scope":"*"}],"sideEffects":"None","timeoutSeconds":10}]}'
+          name: fleet-local/local
+          nonReadyStatus:
+          - apiVersion: v1
+            kind: PersistentVolumeClaim
+            name: rancher-monitoring-grafana
+            namespace: cattle-monitoring-system
+            summary:
+              message:
+              - Resource scheduled for deletion
+              state: bound
+              transitioning: true
+            uid: ce3fa571-6642-4018-b7fd-9eb2c1e56191
+        notReady: 1
+        ready: 0
+      unavailable: 1
+    resourceKey:
+    - apiVersion: admissionregistration.k8s.io/v1
+      kind: MutatingWebhookConfiguration
+      name: rancher-monitoring-admission
+    - apiVersion: admissionregistration.k8s.io/v1
+      kind: ValidatingWebhookConfiguration
+      name: rancher-monitoring-admission
+    - apiVersion: apiregistration.k8s.io/v1beta1
+      kind: APIService
+      name: v1beta1.custom.metrics.k8s.io
+    - apiVersion: apps/v1
+      kind: DaemonSet
+      name: rancher-monitoring-prometheus-node-exporter
+      namespace: cattle-monitoring-system
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: rancher-monitoring-grafana
+      namespace: cattle-monitoring-system
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: rancher-monitoring-kube-state-metrics
+      namespace: cattle-monitoring-system
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: rancher-monitoring-operator
+      namespace: cattle-monitoring-system
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: rancher-monitoring-prometheus-adapter
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: Prometheus
+      name: rancher-monitoring-prometheus
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-general.rules
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-k8s.rules
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-kube-apiserver-availability.rules
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-kube-apiserver-burnrate.rules
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-kube-apiserver-histogram.rules
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-kube-apiserver-slos
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-kube-apiserver.rules
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-kube-prometheus-general.rules
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-kube-prometheus-node-recording.rules
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-kube-state-metrics
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-kubelet.rules
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-kubernetes-apps
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-kubernetes-resources
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-kubernetes-storage
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-kubernetes-system
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-kubernetes-system-apiserver
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-kubernetes-system-kubelet
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-node-exporter
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-node-exporter.rules
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-node-network
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-node.rules
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-prometheus
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: PrometheusRule
+      name: rancher-monitoring-prometheus-operator
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: ServiceMonitor
+      name: rancher-monitoring-grafana
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: ServiceMonitor
+      name: rancher-monitoring-kube-state-metrics
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: ServiceMonitor
+      name: rancher-monitoring-node-exporter
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: ServiceMonitor
+      name: rancher-monitoring-operator
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: ServiceMonitor
+      name: rancher-monitoring-prometheus
+      namespace: cattle-monitoring-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: ServiceMonitor
+      name: rancher-monitoring-apiserver
+      namespace: default
+    - apiVersion: monitoring.coreos.com/v1
+      kind: ServiceMonitor
+      name: rancher-monitoring-coredns
+      namespace: kube-system
+    - apiVersion: monitoring.coreos.com/v1
+      kind: ServiceMonitor
+      name: rancher-monitoring-kubelet
+      namespace: kube-system
+    - apiVersion: networking.k8s.io/v1
+      kind: NetworkPolicy
+      name: default-allow-all
+      namespace: cattle-dashboards
+    - apiVersion: networking.k8s.io/v1
+      kind: NetworkPolicy
+      name: default-allow-all
+      namespace: cattle-monitoring-system
+    - apiVersion: policy/v1beta1
+      kind: PodSecurityPolicy
+      name: rancher-monitoring-grafana
+    - apiVersion: policy/v1beta1
+      kind: PodSecurityPolicy
+      name: rancher-monitoring-kube-state-metrics
+    - apiVersion: policy/v1beta1
+      kind: PodSecurityPolicy
+      name: rancher-monitoring-operator
+    - apiVersion: policy/v1beta1
+      kind: PodSecurityPolicy
+      name: rancher-monitoring-prometheus
+    - apiVersion: policy/v1beta1
+      kind: PodSecurityPolicy
+      name: rancher-monitoring-prometheus-adapter
+    - apiVersion: policy/v1beta1
+      kind: PodSecurityPolicy
+      name: rancher-monitoring-patch-sa
+      namespace: cattle-monitoring-system
+    - apiVersion: policy/v1beta1
+      kind: PodSecurityPolicy
+      name: rancher-monitoring-prometheus-node-exporter
+      namespace: cattle-monitoring-system
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: monitoring-admin
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: monitoring-edit
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: monitoring-ui-view
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: monitoring-view
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: prometheus-adapter-psp
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: prometheus-adapter-resource-reader
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: prometheus-adapter-server-resources
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: psp-rancher-monitoring-kube-state-metrics
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: psp-rancher-monitoring-prometheus-node-exporter
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: rancher-monitoring-grafana-clusterrole
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: rancher-monitoring-kube-state-metrics
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: rancher-monitoring-operator
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: rancher-monitoring-operator-psp
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: rancher-monitoring-patch-sa
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: rancher-monitoring-prometheus
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: rancher-monitoring-prometheus-psp
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: prometheus-adapter-hpa-controller
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: prometheus-adapter-psp
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: prometheus-adapter-resource-reader
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: prometheus-adapter-system-auth-delegator
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: psp-rancher-monitoring-kube-state-metrics
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: psp-rancher-monitoring-prometheus-node-exporter
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: rancher-monitoring-grafana-clusterrolebinding
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: rancher-monitoring-kube-state-metrics
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: rancher-monitoring-operator
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: rancher-monitoring-operator-psp
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: rancher-monitoring-patch-sa
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: rancher-monitoring-prometheus
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: rancher-monitoring-prometheus-psp
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: Role
+      name: monitoring-dashboard-admin
+      namespace: cattle-dashboards
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: Role
+      name: monitoring-dashboard-edit
+      namespace: cattle-dashboards
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: Role
+      name: monitoring-dashboard-view
+      namespace: cattle-dashboards
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: Role
+      name: monitoring-config-admin
+      namespace: cattle-monitoring-system
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: Role
+      name: monitoring-config-edit
+      namespace: cattle-monitoring-system
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: Role
+      name: monitoring-config-view
+      namespace: cattle-monitoring-system
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: Role
+      name: rancher-monitoring-grafana
+      namespace: cattle-monitoring-system
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: RoleBinding
+      name: rancher-monitoring-grafana
+      namespace: cattle-monitoring-system
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: RoleBinding
+      name: prometheus-adapter-auth-reader
+      namespace: kube-system
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-default-dashboards-cluster
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-default-dashboards-home
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-default-dashboards-k8s
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-default-dashboards-nodes
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-default-dashboards-pods
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-default-dashboards-workloads
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-apiserver
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-cluster-total
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-k8s-coredns
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-k8s-resources-cluster
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-k8s-resources-namespace
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-k8s-resources-node
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-k8s-resources-pod
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-k8s-resources-workload
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-k8s-resources-workloads-namespace
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-kubelet
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-namespace-by-pod
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-namespace-by-workload
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-node-cluster-rsrc-use
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-node-rsrc-use
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-nodes
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-persistentvolumesusage
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-pod-total
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-prometheus
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-statefulset
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-workload-total
+      namespace: cattle-dashboards
+    - apiVersion: v1
+      kind: ConfigMap
+      name: grafana-nginx-proxy-config
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: ConfigMap
+      name: prometheus-nginx-proxy-config
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-grafana
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-grafana-config-dashboards
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-grafana-datasource
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-prometheus-adapter
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: Namespace
+      name: cattle-dashboards
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      name: rancher-monitoring-grafana
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: Secret
+      name: rancher-monitoring-grafana
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: Service
+      name: rancher-monitoring-grafana
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: Service
+      name: rancher-monitoring-kube-state-metrics
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: Service
+      name: rancher-monitoring-operator
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: Service
+      name: rancher-monitoring-prometheus
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: Service
+      name: rancher-monitoring-prometheus-adapter
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: Service
+      name: rancher-monitoring-prometheus-node-exporter
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: Service
+      name: rancher-monitoring-coredns
+      namespace: kube-system
+    - apiVersion: v1
+      kind: ServiceAccount
+      name: rancher-monitoring-grafana
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: ServiceAccount
+      name: rancher-monitoring-kube-state-metrics
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: ServiceAccount
+      name: rancher-monitoring-operator
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: ServiceAccount
+      name: rancher-monitoring-patch-sa
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: ServiceAccount
+      name: rancher-monitoring-prometheus
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: ServiceAccount
+      name: rancher-monitoring-prometheus-adapter
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: ServiceAccount
+      name: rancher-monitoring-prometheus-node-exporter
+      namespace: cattle-monitoring-system
+    summary:
+      desiredReady: 1
+      nonReadyResources:
+      - bundleState: NotReady
+        modifiedStatus:
+        - apiVersion: admissionregistration.k8s.io/v1
+          kind: MutatingWebhookConfiguration
+          name: rancher-monitoring-admission
+          patch: '{"webhooks":[{"admissionReviewVersions":["v1","v1beta1"],"clientConfig":{"caBundle":"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJkakNDQVJ1Z0F3SUJBZ0lRQVJwd2FyYS8xNmZPQUNMV2NVSjhKVEFLQmdncWhrak9QUVFEQWpBUE1RMHcKQ3dZRFZRUUtFd1J1YVd3eE1DQVhEVEl5TURNd05qSXlORFkxTkZvWUR6SXhNakl3TWpFd01qSTBOalUwV2pBUApNUTB3Q3dZRFZRUUtFd1J1YVd3eE1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMERBUWNEUWdBRXltRHlLWEliCkxkR2toUzVZT0wvblJ1ZjNHUTBtSG9hWEVPVXU2eHNvbFhxVmN3c05BS0lUTWVDS2JGTTFLeWdqMkJTSVBZZXgKL2greEFoUWhBMU9ZUjZOWE1GVXdEZ1lEVlIwUEFRSC9CQVFEQWdJRU1CTUdBMVVkSlFRTU1Bb0dDQ3NHQVFVRgpCd01CTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3SFFZRFZSME9CQllFRkZWWnFaRHdMeUJOWWgrZ25TTFhBWFA2Ck0rN2JNQW9HQ0NxR1NNNDlCQU1DQTBrQU1FWUNJUURNYWZtM2FueUdaaElRT0FQZmV0RDFnL2czZTlIdzJwbWoKN2NCRDJmUU5SQUloQU14MTdVZTFmY1VJMGhxbUhNRndFQll3YmNwTEgrSnMxSDhRS1h6MWtvMWcKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=","service":{"name":"rancher-monitoring-operator","namespace":"cattle-monitoring-system","path":"/admission-prometheusrules/mutate","port":443}},"failurePolicy":"Ignore","matchPolicy":"Equivalent","name":"prometheusrulemutate.monitoring.coreos.com","namespaceSelector":{},"objectSelector":{},"reinvocationPolicy":"Never","rules":[{"apiGroups":["monitoring.coreos.com"],"apiVersions":["*"],"operations":["CREATE","UPDATE"],"resources":["prometheusrules"],"scope":"*"}],"sideEffects":"None","timeoutSeconds":10}]}'
+        - apiVersion: admissionregistration.k8s.io/v1
+          kind: ValidatingWebhookConfiguration
+          name: rancher-monitoring-admission
+          patch: '{"webhooks":[{"admissionReviewVersions":["v1","v1beta1"],"clientConfig":{"caBundle":"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJkakNDQVJ1Z0F3SUJBZ0lRQVJwd2FyYS8xNmZPQUNMV2NVSjhKVEFLQmdncWhrak9QUVFEQWpBUE1RMHcKQ3dZRFZRUUtFd1J1YVd3eE1DQVhEVEl5TURNd05qSXlORFkxTkZvWUR6SXhNakl3TWpFd01qSTBOalUwV2pBUApNUTB3Q3dZRFZRUUtFd1J1YVd3eE1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMERBUWNEUWdBRXltRHlLWEliCkxkR2toUzVZT0wvblJ1ZjNHUTBtSG9hWEVPVXU2eHNvbFhxVmN3c05BS0lUTWVDS2JGTTFLeWdqMkJTSVBZZXgKL2greEFoUWhBMU9ZUjZOWE1GVXdEZ1lEVlIwUEFRSC9CQVFEQWdJRU1CTUdBMVVkSlFRTU1Bb0dDQ3NHQVFVRgpCd01CTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3SFFZRFZSME9CQllFRkZWWnFaRHdMeUJOWWgrZ25TTFhBWFA2Ck0rN2JNQW9HQ0NxR1NNNDlCQU1DQTBrQU1FWUNJUURNYWZtM2FueUdaaElRT0FQZmV0RDFnL2czZTlIdzJwbWoKN2NCRDJmUU5SQUloQU14MTdVZTFmY1VJMGhxbUhNRndFQll3YmNwTEgrSnMxSDhRS1h6MWtvMWcKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=","service":{"name":"rancher-monitoring-operator","namespace":"cattle-monitoring-system","path":"/admission-prometheusrules/validate","port":443}},"failurePolicy":"Ignore","matchPolicy":"Equivalent","name":"prometheusrulemutate.monitoring.coreos.com","namespaceSelector":{},"objectSelector":{},"rules":[{"apiGroups":["monitoring.coreos.com"],"apiVersions":["*"],"operations":["CREATE","UPDATE"],"resources":["prometheusrules"],"scope":"*"}],"sideEffects":"None","timeoutSeconds":10}]}'
+        name: fleet-local/local
+        nonReadyStatus:
+        - apiVersion: v1
+          kind: PersistentVolumeClaim
+          name: rancher-monitoring-grafana
+          namespace: cattle-monitoring-system
+          summary:
+            message:
+            - Resource scheduled for deletion
+            state: bound
+            transitioning: true
+          uid: ce3fa571-6642-4018-b7fd-9eb2c1e56191
+      notReady: 1
+      ready: 0
+    unavailable: 1
+    unavailablePartitions: 0
+- apiVersion: management.cattle.io/v3
+  kind: ManagedChart
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"management.cattle.io/v3","kind":"ManagedChart","metadata":{"annotations":{},"name":"rancher-monitoring-crd","namespace":"fleet-local"},"spec":{"chart":"rancher-monitoring-crd","defaultNamespace":"cattle-monitoring-system","releaseName":"rancher-monitoring-crd","repoName":"harvester-charts","targets":[{"clusterName":"local","clusterSelector":{"matchExpressions":[{"key":"provisioning.cattle.io/unmanaged-system-agent","operator":"DoesNotExist"}]}}],"version":"100.1.0+up19.0.3"}}
+    creationTimestamp: "2022-03-06T22:49:42Z"
+    generation: 1
+    managedFields:
+    - apiVersion: management.cattle.io/v3
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:kubectl.kubernetes.io/last-applied-configuration: {}
+        f:spec:
+          .: {}
+          f:chart: {}
+          f:defaultNamespace: {}
+          f:releaseName: {}
+          f:repoName: {}
+          f:targets: {}
+          f:version: {}
+      manager: kubectl-client-side-apply
+      operation: Update
+      time: "2022-03-06T22:49:42Z"
+    - apiVersion: management.cattle.io/v3
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          .: {}
+          f:conditions: {}
+          f:display:
+            .: {}
+            f:readyClusters: {}
+          f:maxNew: {}
+          f:maxUnavailable: {}
+          f:maxUnavailablePartitions: {}
+          f:observedGeneration: {}
+          f:partitions: {}
+          f:resourceKey: {}
+          f:summary:
+            .: {}
+            f:desiredReady: {}
+            f:ready: {}
+          f:unavailable: {}
+          f:unavailablePartitions: {}
+      manager: rancher
+      operation: Update
+      time: "2022-03-22T18:57:20Z"
+    name: rancher-monitoring-crd
+    namespace: fleet-local
+    resourceVersion: "14658804"
+    uid: 60f14381-0147-4517-9883-8e96952e83b6
+  spec:
+    chart: rancher-monitoring-crd
+    defaultNamespace: cattle-monitoring-system
+    releaseName: rancher-monitoring-crd
+    repoName: harvester-charts
+    targets:
+    - clusterName: local
+      clusterSelector:
+        matchExpressions:
+        - key: provisioning.cattle.io/unmanaged-system-agent
+          operator: DoesNotExist
+    version: 100.1.0+up19.0.3
+  status:
+    conditions:
+    - lastUpdateTime: "2022-03-22T18:57:19Z"
+      status: "True"
+      type: Ready
+    - lastUpdateTime: "2022-03-22T18:57:19Z"
+      status: "True"
+      type: Processed
+    - lastUpdateTime: "2022-03-22T23:49:27Z"
+      status: "True"
+      type: Defined
+    display:
+      readyClusters: 1/1
+    maxNew: 50
+    maxUnavailable: 1
+    maxUnavailablePartitions: 0
+    observedGeneration: 1
+    partitions:
+    - count: 1
+      maxUnavailable: 1
+      name: All
+      summary:
+        desiredReady: 1
+        ready: 1
+    resourceKey:
+    - apiVersion: policy/v1beta1
+      kind: PodSecurityPolicy
+      name: rancher-monitoring-crd-manager
+      namespace: cattle-monitoring-system
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      name: rancher-monitoring-crd-manager
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      name: rancher-monitoring-crd-manager
+    - apiVersion: v1
+      kind: ConfigMap
+      name: rancher-monitoring-crd-manifest
+      namespace: cattle-monitoring-system
+    - apiVersion: v1
+      kind: ServiceAccount
+      name: rancher-monitoring-crd-manager
+      namespace: cattle-monitoring-system
+    summary:
+      desiredReady: 1
+      ready: 1
+    unavailable: 0
+    unavailablePartitions: 0
+kind: List
+metadata:
+  continue: "null"
+  resourceVersion: "14659172"

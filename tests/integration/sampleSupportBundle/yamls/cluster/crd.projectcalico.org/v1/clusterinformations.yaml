@@ -1,0 +1,36 @@
+apiVersion: v1
+items:
+- apiVersion: crd.projectcalico.org/v1
+  kind: ClusterInformation
+  metadata:
+    annotations:
+      projectcalico.org/metadata: '{"uid":"493a4335-2e60-44f9-a144-3129aad234c6","creationTimestamp":"2022-03-06T22:47:33Z"}'
+    creationTimestamp: "2022-03-06T22:47:33Z"
+    generation: 1
+    managedFields:
+    - apiVersion: crd.projectcalico.org/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:projectcalico.org/metadata: {}
+        f:spec:
+          .: {}
+          f:clusterGUID: {}
+          f:clusterType: {}
+          f:datastoreReady: {}
+      manager: Go-http-client
+      operation: Update
+      time: "2022-03-06T22:47:33Z"
+    name: default
+    resourceVersion: "824"
+    uid: a378c1b1-ee6e-4661-acf6-be77a58ee187
+  spec:
+    clusterGUID: 22dfcb12d22b4f9896befeed4ce5502f
+    clusterType: k8s,canal,kdd
+    datastoreReady: true
+kind: List
+metadata:
+  continue: "null"
+  resourceVersion: "14658906"

@@ -1,0 +1,165 @@
+apiVersion: v1
+items:
+- apiVersion: policy/v1
+  kind: PodDisruptionBudget
+  metadata:
+    annotations:
+      kubevirt.io/generation: "2"
+      kubevirt.io/install-strategy-identifier: d3df7f87ee723ed71ca49f6c5cab7566dd4dc500
+      kubevirt.io/install-strategy-registry: registry.suse.com/suse/sles/15.3
+      kubevirt.io/install-strategy-version: 0.45.0-8.4.3
+    creationTimestamp: "2022-03-06T22:53:00Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/component: kubevirt
+      app.kubernetes.io/managed-by: kubevirt-operator
+      kubevirt.io: virt-api-pdb
+    managedFields:
+    - apiVersion: policy/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:kubevirt.io/generation: {}
+            f:kubevirt.io/install-strategy-identifier: {}
+            f:kubevirt.io/install-strategy-registry: {}
+            f:kubevirt.io/install-strategy-version: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/component: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:kubevirt.io: {}
+        f:spec:
+          f:minAvailable: {}
+          f:selector: {}
+      manager: virt-operator
+      operation: Update
+      time: "2022-03-06T22:53:00Z"
+    - apiVersion: policy/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:conditions:
+            .: {}
+            k:{"type":"DisruptionAllowed"}:
+              .: {}
+              f:lastTransitionTime: {}
+              f:message: {}
+              f:observedGeneration: {}
+              f:reason: {}
+              f:status: {}
+              f:type: {}
+          f:currentHealthy: {}
+          f:desiredHealthy: {}
+          f:disruptionsAllowed: {}
+          f:expectedPods: {}
+          f:observedGeneration: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:53:20Z"
+    name: virt-api-pdb
+    namespace: harvester-system
+    resourceVersion: "6190"
+    uid: a798c103-5ef5-4ef6-a6bf-726e935a01a4
+  spec:
+    minAvailable: 1
+    selector:
+      matchLabels:
+        kubevirt.io: virt-api
+  status:
+    conditions:
+    - lastTransitionTime: "2022-03-06T22:53:20Z"
+      message: "null"
+      observedGeneration: 1
+      reason: SufficientPods
+      status: "True"
+      type: DisruptionAllowed
+    currentHealthy: 2
+    desiredHealthy: 1
+    disruptionsAllowed: 1
+    expectedPods: 2
+    observedGeneration: 1
+- apiVersion: policy/v1
+  kind: PodDisruptionBudget
+  metadata:
+    annotations:
+      kubevirt.io/generation: "2"
+      kubevirt.io/install-strategy-identifier: d3df7f87ee723ed71ca49f6c5cab7566dd4dc500
+      kubevirt.io/install-strategy-registry: registry.suse.com/suse/sles/15.3
+      kubevirt.io/install-strategy-version: 0.45.0-8.4.3
+    creationTimestamp: "2022-03-06T22:53:26Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/component: kubevirt
+      app.kubernetes.io/managed-by: kubevirt-operator
+      kubevirt.io: virt-controller-pdb
+    managedFields:
+    - apiVersion: policy/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:kubevirt.io/generation: {}
+            f:kubevirt.io/install-strategy-identifier: {}
+            f:kubevirt.io/install-strategy-registry: {}
+            f:kubevirt.io/install-strategy-version: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/component: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:kubevirt.io: {}
+        f:spec:
+          f:minAvailable: {}
+          f:selector: {}
+      manager: virt-operator
+      operation: Update
+      time: "2022-03-06T22:53:26Z"
+    - apiVersion: policy/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:conditions:
+            .: {}
+            k:{"type":"DisruptionAllowed"}:
+              .: {}
+              f:lastTransitionTime: {}
+              f:message: {}
+              f:observedGeneration: {}
+              f:reason: {}
+              f:status: {}
+              f:type: {}
+          f:currentHealthy: {}
+          f:desiredHealthy: {}
+          f:disruptionsAllowed: {}
+          f:expectedPods: {}
+          f:observedGeneration: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:53:56Z"
+    name: virt-controller-pdb
+    namespace: harvester-system
+    resourceVersion: "6857"
+    uid: b3f7677d-1a81-468a-bda7-2e1f42802b63
+  spec:
+    minAvailable: 1
+    selector:
+      matchLabels:
+        kubevirt.io: virt-controller
+  status:
+    conditions:
+    - lastTransitionTime: "2022-03-06T22:53:56Z"
+      message: "null"
+      observedGeneration: 1
+      reason: SufficientPods
+      status: "True"
+      type: DisruptionAllowed
+    currentHealthy: 2
+    desiredHealthy: 1
+    disruptionsAllowed: 1
+    expectedPods: 2
+    observedGeneration: 1
+kind: List
+metadata:
+  resourceVersion: "14659188"

@@ -1,0 +1,118 @@
+apiVersion: v1
+items:
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    annotations:
+      objectset.rio.cattle.io/applied: H4sIAAAAAAAA/5SQwU7DMAyG38XntqxslC0vwH3ihjg4nruFpXEVu0gw9d1RG2nHSRyj/Pq+3/8NBjY8oSG4G2BKYmhBki5P8V9MpmxNDtIQmkVugjyFEzjoI7PVXsTUMo71ypgroMwr4T0MrIbDCC5NMVYQ0XN8yL2gXsDB7qXdbDfbvj34jjz2dNhs23a39+2+6/q2o2fPr4irLeHA9zJ45mT1ma2mzCcovzoiLZGiqUuS4qTGWWv9UeNhIWWJfOR+nWEMb1mmERxkj9TgZBfJ4Xe9q7nutQkCFVxDWoY4SmR43GSuQKdyNLiP/wpK9G4olZ1y/g7ESCRTMoX5c/4LAAD//7yzSffNAQAA
+      objectset.rio.cattle.io/id: fleet-bootstrap-data
+    creationTimestamp: "2022-03-06T22:49:12Z"
+    labels:
+      objectset.rio.cattle.io/hash: 4510303f19b6cbafc9031148b1866f16c2be7aaa
+    managedFields:
+    - apiVersion: rbac.authorization.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:objectset.rio.cattle.io/applied: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:objectset.rio.cattle.io/hash: {}
+        f:roleRef:
+          f:apiGroup: {}
+          f:kind: {}
+          f:name: {}
+        f:subjects: {}
+      manager: fleetcontroller
+      operation: Update
+      time: "2022-03-06T22:49:12Z"
+    name: fleet-agent-get-cred
+    namespace: cattle-fleet-clusters-system
+    resourceVersion: "1709"
+    uid: 6b4044fb-0e5e-4eb4-8d92-598d3eaf0589
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: Role
+    name: fleet-agent-get-cred
+  subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: system:serviceaccounts
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: "2022-03-07T22:16:08Z"
+    labels:
+      authz.cluster.cattle.io/rtb-owner-updated: p-jn8sl_creator-project-owner
+      cattle.io/creator: norman
+    managedFields:
+    - apiVersion: rbac.authorization.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:labels:
+            .: {}
+            f:authz.cluster.cattle.io/rtb-owner-updated: {}
+            f:cattle.io/creator: {}
+        f:roleRef:
+          f:apiGroup: {}
+          f:kind: {}
+          f:name: {}
+        f:subjects: {}
+      manager: rancher
+      operation: Update
+      time: "2022-03-07T22:16:08Z"
+    name: rb-el66bdecaz
+    namespace: cattle-fleet-clusters-system
+    resourceVersion: "874949"
+    uid: ccce4b38-748a-47e9-9fe4-cfed8550332a
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: admin
+  subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: user-4dqnw
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: "2022-03-07T22:16:08Z"
+    labels:
+      authz.cluster.cattle.io/rtb-owner-updated: p-jn8sl_creator-project-owner
+      cattle.io/creator: norman
+    managedFields:
+    - apiVersion: rbac.authorization.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:labels:
+            .: {}
+            f:authz.cluster.cattle.io/rtb-owner-updated: {}
+            f:cattle.io/creator: {}
+        f:roleRef:
+          f:apiGroup: {}
+          f:kind: {}
+          f:name: {}
+        f:subjects: {}
+      manager: rancher
+      operation: Update
+      time: "2022-03-07T22:16:08Z"
+    name: rb-vpgi7w2vo3
+    namespace: cattle-fleet-clusters-system
+    resourceVersion: "874936"
+    uid: 28d95d5c-63ec-427b-bd36-d28b054b1bfb
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: project-owner
+  subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: user-4dqnw
+kind: List
+metadata:
+  resourceVersion: "14659096"

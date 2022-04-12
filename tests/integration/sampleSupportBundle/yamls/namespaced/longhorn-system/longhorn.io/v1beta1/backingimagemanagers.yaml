@@ -1,0 +1,132 @@
+apiVersion: v1
+items:
+- apiVersion: longhorn.io/v1beta1
+  kind: BackingImageManager
+  metadata:
+    creationTimestamp: "2022-03-06T23:09:58Z"
+    finalizers:
+    - longhorn.io
+    generation: 1
+    labels:
+      longhorn.io/component: backing-image-manager
+      longhorn.io/disk-uuid: a3c70e08-bfc1-4915-927a-8a6b80cc12b4
+      longhorn.io/managed-by: longhorn-manager
+      longhorn.io/node: node1
+    managedFields:
+    - apiVersion: longhorn.io/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:finalizers:
+            .: {}
+            v:"longhorn.io"null: {}
+          f:labels:
+            .: {}
+            f:longhorn.io/component: {}
+            f:longhorn.io/disk-uuid: {}
+            f:longhorn.io/managed-by: {}
+            f:longhorn.io/node: {}
+        f:spec: {}
+        f:status: {}
+      manager: longhorn-manager
+      operation: Update
+      time: "2022-03-06T23:09:59Z"
+    name: backing-image-manager-c00e-a3c7
+    namespace: longhorn-system
+    resourceVersion: "1002475"
+    uid: 0bee3d85-6078-4eee-90fc-3bcda60db0d5
+  spec:
+    backingImages:
+      default-image-kzndn: d94e22d1
+    diskPath: /var/lib/harvester/defaultdisk
+    diskUUID: a3c70e08-bfc1-4915-927a-8a6b80cc12b4
+    image: longhornio/backing-image-manager:v2_20210820
+    nodeID: node1
+  status:
+    apiMinVersion: 2
+    apiVersion: 2
+    backingImageFileMap:
+      default-image-kzndn:
+        currentChecksum: ea23e0d8e1afae16bd6ede66d59b3dcd0d0525166383176d8330525ef7d1c5b5d68f789b71c40d489a49cb8ecfe3951c22449f41bb7c0fcb42daa7603e67be41
+        directory: "null"
+        downloadProgress: 0
+        message: "null"
+        name: default-image-kzndn
+        progress: 100
+        senderManagerAddress: "null"
+        sendingReference: 0
+        size: 2.31131136e+08
+        state: ready
+        url: "null"
+        uuid: d94e22d1
+    currentState: running
+    ip: 10.52.0.88
+    ownerID: node1
+- apiVersion: longhorn.io/v1beta1
+  kind: BackingImageManager
+  metadata:
+    creationTimestamp: "2022-03-07T22:31:22Z"
+    finalizers:
+    - longhorn.io
+    generation: 1
+    labels:
+      longhorn.io/component: backing-image-manager
+      longhorn.io/disk-uuid: f0de1080-8c12-405f-ad3b-9beb074b1198
+      longhorn.io/managed-by: longhorn-manager
+      longhorn.io/node: node2
+    managedFields:
+    - apiVersion: longhorn.io/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:finalizers:
+            .: {}
+            v:"longhorn.io"null: {}
+          f:labels:
+            .: {}
+            f:longhorn.io/component: {}
+            f:longhorn.io/disk-uuid: {}
+            f:longhorn.io/managed-by: {}
+            f:longhorn.io/node: {}
+        f:spec: {}
+        f:status: {}
+      manager: longhorn-manager
+      operation: Update
+      time: "2022-03-07T22:31:23Z"
+    name: backing-image-manager-c00e-f0de
+    namespace: longhorn-system
+    resourceVersion: "1026247"
+    uid: 9e0872da-1f3b-48f6-8cd6-9fc5ae60b742
+  spec:
+    backingImages:
+      default-image-kzndn: d94e22d1
+    diskPath: /var/lib/harvester/defaultdisk
+    diskUUID: f0de1080-8c12-405f-ad3b-9beb074b1198
+    image: longhornio/backing-image-manager:v2_20210820
+    nodeID: node2
+  status:
+    apiMinVersion: 2
+    apiVersion: 2
+    backingImageFileMap:
+      default-image-kzndn:
+        currentChecksum: "null"
+        directory: "null"
+        downloadProgress: 0
+        message: 'failed to process backing image file: failed to calculate checksum
+          for the tmp file after processing: open /data/backing-images/default-image-kzndn-d94e22d1/backing.tmp:
+          invalid argument'
+        name: default-image-kzndn
+        progress: 100
+        senderManagerAddress: 10.52.0.88:8000
+        sendingReference: 0
+        size: 2.31131136e+08
+        state: failed
+        url: "null"
+        uuid: d94e22d1
+    currentState: unknown
+    ip: 10.52.1.19
+    ownerID: node1
+kind: List
+metadata:
+  continue: "null"
+  resourceVersion: "14659229"

@@ -13,6 +13,11 @@ This project contains support bundle scripts and utilities for applications runn
     - It starts a daemonset on each node. The agents in the daemonset collect node bundles and push them back to the manager.
 
     The manager is designed to be spawned as a Kubernetes deployment by the application. But it can also be deployed manually from a manifest file. Please check [standalone mode](./docs/standalone.md) for more information.
+  - `simulate`: the command allows users to simulate a end user environment by loading the support bundle into a minimal apiserver allowing end users to browse the objects and logs from the support bundle. It will do the following things
+    - It runs an embedded etcd server
+    - It runs a minimal apiserver only
+    - It runs a minimal kubelet
+  
 
 ## Support bundle contents
 
@@ -67,3 +72,7 @@ The Harvester support bundle is structured as the following layout:
   - node2.zip
   - ...
 ```
+
+## Simulate command
+
+The simulate command expects the following flags

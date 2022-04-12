@@ -1,0 +1,346 @@
+apiVersion: v1
+items:
+- apiVersion: monitoring.coreos.com/v1
+  kind: PrometheusRule
+  metadata:
+    annotations:
+      kubevirt.io/generation: "2"
+      kubevirt.io/install-strategy-identifier: d3df7f87ee723ed71ca49f6c5cab7566dd4dc500
+      kubevirt.io/install-strategy-registry: registry.suse.com/suse/sles/15.3
+      kubevirt.io/install-strategy-version: 0.45.0-8.4.3
+      prometheus-operator-validated: "true"
+    creationTimestamp: "2022-03-06T22:52:44Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/component: kubevirt
+      app.kubernetes.io/managed-by: kubevirt-operator
+      k8s-app: kubevirt
+      prometheus.kubevirt.io: "null"
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:kubevirt.io/generation: {}
+            f:kubevirt.io/install-strategy-identifier: {}
+            f:kubevirt.io/install-strategy-registry: {}
+            f:kubevirt.io/install-strategy-version: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/component: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:k8s-app: {}
+            f:prometheus.kubevirt.io: {}
+        f:spec:
+          .: {}
+          f:groups: {}
+      manager: virt-operator
+      operation: Update
+      time: "2022-03-06T22:52:44Z"
+    name: prometheus-kubevirt-rules
+    namespace: harvester-system
+    resourceVersion: "5615"
+    uid: 25760ad0-cce1-4267-8776-048bb8a79bd4
+  spec:
+    groups:
+    - name: kubevirt.rules
+      rules:
+      - expr: sum(up{namespace='harvester-system', pod=~'virt-api-.*'})
+        record: kubevirt_virt_api_up_total
+      - alert: VirtAPIDown
+        annotations:
+          runbook_url: https://kubevirt.io/monitoring/runbooks/VirtAPIDown
+          summary: All virt-api servers are down.
+        expr: kubevirt_virt_api_up_total == 0
+        for: 5m
+        labels:
+          severity: critical
+      - expr: count(count (kube_node_status_allocatable) by (node))
+        record: num_of_allocatable_nodes
+      - alert: LowVirtAPICount
+        annotations:
+          runbook_url: https://kubevirt.io/monitoring/runbooks/LowVirtAPICount
+          summary: More than one virt-api should be running if more than one worker
+            nodes exist.
+        expr: (num_of_allocatable_nodes > 1) and (kubevirt_virt_api_up_total < 2)
+        for: 60m
+        labels:
+          severity: warning
+      - expr: num_of_allocatable_nodes - count(kube_node_status_allocatable{resource="devices_kubevirt_io_kvm"}
+          == 0)
+        record: num_of_kvm_available_nodes
+      - alert: LowKVMNodesCount
+        annotations:
+          description: Low number of nodes with KVM resource available.
+          runbook_url: https://kubevirt.io/monitoring/runbooks/LowKVMNodesCount
+          summary: At least two nodes with kvm resource required for VM life migration.
+        expr: (num_of_allocatable_nodes > 1) and (num_of_kvm_available_nodes < 2)
+        for: 5m
+        labels:
+          severity: warning
+      - expr: sum(up{pod=~'virt-controller-.*', namespace='harvester-system'})
+        record: kubevirt_virt_controller_up_total
+      - expr: sum(kubevirt_virt_controller_ready{namespace='harvester-system'})
+        record: kubevirt_virt_controller_ready_total
+      - alert: LowReadyVirtControllersCount
+        annotations:
+          runbook_url: https://kubevirt.io/monitoring/runbooks/LowReadyVirtControllersCount
+          summary: Some virt controllers are running but not ready.
+        expr: kubevirt_virt_controller_ready_total <  kubevirt_virt_controller_up_total
+        for: 5m
+        labels:
+          severity: warning
+      - alert: NoReadyVirtController
+        annotations:
+          runbook_url: https://kubevirt.io/monitoring/runbooks/NoReadyVirtController
+          summary: No ready virt-controller was detected for the last 5 min.
+        expr: kubevirt_virt_controller_ready_total == 0
+        for: 5m
+        labels:
+          severity: critical
+      - alert: VirtControllerDown
+        annotations:
+          runbook_url: https://kubevirt.io/monitoring/runbooks/VirtControllerDown
+          summary: No running virt-controller was detected for the last 5 min.
+        expr: kubevirt_virt_controller_up_total == 0
+        for: 5m
+        labels:
+          severity: critical
+      - alert: LowVirtControllersCount
+        annotations:
+          runbook_url: https://kubevirt.io/monitoring/runbooks/LowVirtControllersCount
+          summary: More than one virt-controller should be ready if more than one
+            worker node.
+        expr: (num_of_allocatable_nodes > 1) and (kubevirt_virt_controller_ready_total
+          < 2)
+        for: 5m
+        labels:
+          severity: warning
+      - expr: sum by (pod) (sum_over_time(rest_client_requests_total{pod=~'virt-controller-.*',
+          namespace='harvester-system'}[60m]))
+        record: vec_by_virt_controllers_all_client_rest_requests_in_last_hour
+      - expr: sum by (pod) (sum_over_time(rest_client_requests_total{pod=~'virt-controller-.*',
+          namespace='harvester-system', code=~'(4|5)[0-9][0-9]'}[60m]))
+        record: vec_by_virt_controllers_failed_client_rest_requests_in_last_hour
+      - expr: sum by (pod) (sum_over_time(rest_client_requests_total{pod=~'virt-controller-.*',
+          namespace='harvester-system'}[5m]))
+        record: vec_by_virt_controllers_all_client_rest_requests_in_last_5m
+      - expr: sum by (pod) (sum_over_time(rest_client_requests_total{pod=~'virt-controller-.*',
+          namespace='harvester-system', code=~'(4|5)[0-9][0-9]'}[5m]))
+        record: vec_by_virt_controllers_failed_client_rest_requests_in_last_5m
+      - alert: VirtControllerRESTErrorsHigh
+        annotations:
+          runbook_url: https://kubevirt.io/monitoring/runbooks/VirtControllerRESTErrorsHigh
+          summary: More than 5% of the rest calls failed in virt-controller for the
+            last hour
+        expr: (vec_by_virt_controllers_failed_client_rest_requests_in_last_hour /
+          vec_by_virt_controllers_all_client_rest_requests_in_last_hour) >= 0.05
+        for: 5m
+        labels:
+          severity: warning
+      - alert: VirtControllerRESTErrorsBurst
+        annotations:
+          runbook_url: https://kubevirt.io/monitoring/runbooks/VirtControllerRESTErrorsBurst
+          summary: More than 80% of the rest calls failed in virt-controller for the
+            last 5 minutes
+        expr: (vec_by_virt_controllers_failed_client_rest_requests_in_last_5m / vec_by_virt_controllers_all_client_rest_requests_in_last_5m)
+          >= 0.8
+        for: 5m
+        labels:
+          severity: critical
+      - expr: sum(up{namespace='harvester-system', pod=~'virt-operator-.*'})
+        record: kubevirt_virt_operator_up_total
+      - alert: VirtOperatorDown
+        annotations:
+          runbook_url: https://kubevirt.io/monitoring/runbooks/VirtOperatorDown
+          summary: All virt-operator servers are down.
+        expr: kubevirt_virt_operator_up_total == 0
+        for: 5m
+        labels:
+          severity: critical
+      - alert: LowVirtOperatorCount
+        annotations:
+          runbook_url: https://kubevirt.io/monitoring/runbooks/LowVirtOperatorCount
+          summary: More than one virt-operator should be running if more than one
+            worker nodes exist.
+        expr: (num_of_allocatable_nodes > 1) and (kubevirt_virt_operator_up_total
+          < 2)
+        for: 60m
+        labels:
+          severity: warning
+      - expr: sum by (pod) (sum_over_time(rest_client_requests_total{pod=~'virt-operator-.*',
+          namespace='harvester-system'}[60m]))
+        record: vec_by_virt_operators_all_client_rest_requests_in_last_hour
+      - expr: sum by (pod) (sum_over_time(rest_client_requests_total{pod=~'virt-operator-.*',
+          namespace='harvester-system', code=~'(4|5)[0-9][0-9]'}[60m]))
+        record: vec_by_virt_operators_failed_client_rest_requests_in_last_hour
+      - expr: sum by (pod) (sum_over_time(rest_client_requests_total{pod=~'virt-operator-.*',
+          namespace='harvester-system'}[5m]))
+        record: vec_by_virt_operators_all_client_rest_requests_in_last_5m
+      - expr: sum by (pod) (sum_over_time(rest_client_requests_total{pod=~'virt-operator-.*',
+          namespace='harvester-system', code=~'(4|5)[0-9][0-9]'}[5m]))
+        record: vec_by_virt_operators_failed_client_rest_requests_in_last_5m
+      - alert: VirtOperatorRESTErrorsHigh
+        annotations:
+          runbook_url: https://kubevirt.io/monitoring/runbooks/VirtOperatorRESTErrorsHigh
+          summary: More than 5% of the rest calls failed in virt-operator for the
+            last hour
+        expr: (vec_by_virt_operators_failed_client_rest_requests_in_last_hour / vec_by_virt_operators_all_client_rest_requests_in_last_hour)
+          >= 0.05
+        for: 5m
+        labels:
+          severity: warning
+      - alert: VirtOperatorRESTErrorsBurst
+        annotations:
+          runbook_url: https://kubevirt.io/monitoring/runbooks/VirtOperatorRESTErrorsBurst
+          summary: More than 80% of the rest calls failed in virt-operator for the
+            last 5 minutes
+        expr: (vec_by_virt_operators_failed_client_rest_requests_in_last_5m / vec_by_virt_operators_all_client_rest_requests_in_last_5m)
+          >= 0.8
+        for: 5m
+        labels:
+          severity: critical
+      - expr: sum(kubevirt_virt_operator_ready{namespace='harvester-system'})
+        record: kubevirt_virt_operator_ready_total
+      - expr: sum(kubevirt_virt_operator_leading{namespace='harvester-system'})
+        record: kubevirt_virt_operator_leading_total
+      - alert: LowReadyVirtOperatorsCount
+        annotations:
+          runbook_url: https://kubevirt.io/monitoring/runbooks/LowReadyVirtOperatorsCount
+          summary: Some virt-operators are running but not ready.
+        expr: kubevirt_virt_operator_ready_total <  kubevirt_virt_operator_up_total
+        for: 5m
+        labels:
+          severity: warning
+      - alert: NoReadyVirtOperator
+        annotations:
+          runbook_url: https://kubevirt.io/monitoring/runbooks/NoReadyVirtOperator
+          summary: No ready virt-operator was detected for the last 5 min.
+        expr: kubevirt_virt_operator_up_total == 0
+        for: 5m
+        labels:
+          severity: critical
+      - alert: NoLeadingVirtOperator
+        annotations:
+          runbook_url: https://kubevirt.io/monitoring/runbooks/NoLeadingVirtOperator
+          summary: No leading virt-operator was detected for the last 5 min.
+        expr: kubevirt_virt_operator_leading_total == 0
+        for: 5m
+        labels:
+          severity: critical
+      - expr: sum(up{pod=~'virt-handler-.*', namespace='harvester-system'})
+        record: kubevirt_virt_handler_up_total
+      - alert: VirtHandlerDaemonSetRolloutFailing
+        annotations:
+          runbook_url: https://kubevirt.io/monitoring/runbooks/VirtHandlerDaemonSetRolloutFailing
+          summary: Some virt-handlers failed to roll out
+        expr: (kube_daemonset_status_number_ready{namespace='harvester-system', daemonset='virt-handler'}
+          - kube_daemonset_status_desired_number_scheduled{namespace='harvester-system',
+          daemonset='virt-handler'}) != 0
+        for: 15m
+        labels:
+          severity: warning
+      - expr: sum by (pod) (sum_over_time(rest_client_requests_total{pod=~'virt-handler-.*',
+          namespace='harvester-system'}[5m]))
+        record: vec_by_virt_handlers_all_client_rest_requests_in_last_5m
+      - expr: sum by (pod) (sum_over_time(rest_client_requests_total{pod=~'virt-handler-.*',
+          namespace='harvester-system'}[60m]))
+        record: vec_by_virt_handlers_all_client_rest_requests_in_last_hour
+      - expr: sum by (pod) (sum_over_time(rest_client_requests_total{pod=~'virt-handler-.*',
+          namespace='harvester-system', code=~'(4|5)[0-9][0-9]'}[5m]))
+        record: vec_by_virt_handlers_failed_client_rest_requests_in_last_5m
+      - expr: sum by (pod) (sum_over_time(rest_client_requests_total{pod=~'virt-handler-.*',
+          namespace='harvester-system', code=~'(4|5)[0-9][0-9]'}[60m]))
+        record: vec_by_virt_handlers_failed_client_rest_requests_in_last_hour
+      - alert: VirtHandlerRESTErrorsHigh
+        annotations:
+          runbook_url: https://kubevirt.io/monitoring/runbooks/VirtHandlerRESTErrorsHigh
+          summary: More than 5% of the rest calls failed in virt-handler for the last
+            hour
+        expr: (vec_by_virt_handlers_failed_client_rest_requests_in_last_hour / vec_by_virt_handlers_all_client_rest_requests_in_last_hour)
+          >= 0.05
+        for: 5m
+        labels:
+          severity: warning
+      - alert: VirtHandlerRESTErrorsBurst
+        annotations:
+          runbook_url: https://kubevirt.io/monitoring/runbooks/VirtHandlerRESTErrorsBurst
+          summary: More than 80% of the rest calls failed in virt-handler for the
+            last 5 minutes
+        expr: (vec_by_virt_handlers_failed_client_rest_requests_in_last_5m / vec_by_virt_handlers_all_client_rest_requests_in_last_5m)
+          >= 0.8
+        for: 5m
+        labels:
+          severity: critical
+      - expr: sum by(pod, container) ( kube_pod_container_resource_limits_memory_bytes{pod=~'virt-launcher-.*',
+          container='compute'} - on(pod,container) container_memory_working_set_bytes{pod=~'virt-launcher-.*',
+          container='compute'})
+        record: kubevirt_vm_container_free_memory_bytes
+      - alert: KubevirtVmHighMemoryUsage
+        annotations:
+          description: Container {{ $labels.container }} in pod {{ $labels.pod }}
+            free memory is less than 20 MB and it is close to memory limit
+          runbook_url: https://kubevirt.io/monitoring/runbooks/KubevirtVmHighMemoryUsage
+          summary: VM is at risk of being terminated by the runtime.
+        expr: kubevirt_vm_container_free_memory_bytes < 20971520
+        for: 1m
+        labels:
+          severity: warning
+      - expr: count by(node)(node_namespace_pod:kube_pod_info:{pod=~'virt-launcher-.*'}
+          ) * on (node) group_left(pod) (1*(kube_pod_container_status_ready{pod=~'virt-handler-.*'}
+          + on (pod) group_left(node) (0 * node_namespace_pod:kube_pod_info:{pod=~'virt-handler-.*'}
+          ))) or on (node) (0 * node_namespace_pod:kube_pod_info:{pod=~'virt-launcher-.*'}
+          )
+        record: kubevirt_num_virt_handlers_by_node_running_virt_launcher
+      - alert: OrphanedVirtualMachineImages
+        annotations:
+          runbook_url: https://kubevirt.io/monitoring/runbooks/OrphanedVirtualMachineImages
+          summary: No virt-handler pod detected on node {{ $labels.node }} with running
+            vmis for more than an hour
+        expr: (kubevirt_num_virt_handlers_by_node_running_virt_launcher) == 0
+        for: 60m
+        labels:
+          severity: warning
+      - alert: VMCannotBeEvicted
+        annotations:
+          description: Eviction policy for {{ $labels.name }} (on node {{ $labels.node
+            }}) is set to Live Migration but the VM is not migratable
+          runbook_url: https://kubevirt.io/monitoring/runbooks/VMCannotBeEvicted
+          summary: The VM's eviction strategy is set to Live Migration but the VM
+            is not migratable
+        expr: kubevirt_vmi_non_evictable > 0
+        for: 1m
+        labels:
+          severity: warning
+      - alert: KubeVirtComponentExceedsRequestedMemory
+        annotations:
+          description: Container {{ $labels.container }} in pod {{ $labels.pod }}
+            memory usage exceeds the memory requested
+          runbook_url: https://kubevirt.io/monitoring/runbooks/KubeVirtComponentExceedsRequestedMemory
+          summary: The container is using more memory than what is defined in the
+            containers resource requests
+        expr: ((kube_pod_container_resource_requests{namespace="harvester-system",container=~"virt-controller|virt-api|virt-handler|virt-operator",resource="memory"})
+          - on(pod) group_left(node) container_memory_usage_bytes{namespace="harvester-system"})
+          < 0
+        for: 5m
+        labels:
+          severity: warning
+      - alert: KubeVirtComponentExceedsRequestedCPU
+        annotations:
+          description: Container {{ $labels.container }} in pod {{ $labels.pod }}
+            cpu usage exceeds the CPU requested
+          runbook_url: https://kubevirt.io/monitoring/runbooks/KubeVirtComponentExceedsRequestedCPU
+          summary: The container is using more CPU than what is defined in the containers
+            resource requests
+        expr: ((kube_pod_container_resource_requests{namespace="harvester-system",container=~"virt-controller|virt-api|virt-handler|virt-operator",resource="cpu"})
+          - on(pod) group_left(node) node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{namespace="harvester-system"})
+          < 0
+        for: 5m
+        labels:
+          severity: warning
+kind: List
+metadata:
+  continue: "null"
+  resourceVersion: "14659189"

@@ -1,0 +1,124 @@
+apiVersion: v1
+items:
+- apiVersion: longhorn.io/v1beta1
+  kind: InstanceManager
+  metadata:
+    creationTimestamp: "2022-03-06T22:51:51Z"
+    generation: 1
+    labels:
+      longhorn.io/component: instance-manager
+      longhorn.io/instance-manager-image: imi-2ff8743e
+      longhorn.io/instance-manager-type: engine
+      longhorn.io/managed-by: longhorn-manager
+      longhorn.io/node: node1
+    managedFields:
+    - apiVersion: longhorn.io/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:labels:
+            .: {}
+            f:longhorn.io/component: {}
+            f:longhorn.io/instance-manager-image: {}
+            f:longhorn.io/instance-manager-type: {}
+            f:longhorn.io/managed-by: {}
+            f:longhorn.io/node: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"29d28350-03f1-4f31-809a-5cd5a1b0ecb2"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec: {}
+        f:status: {}
+      manager: longhorn-manager
+      operation: Update
+      time: "2022-03-06T22:51:52Z"
+    name: instance-manager-e-5708ef52
+    namespace: longhorn-system
+    ownerReferences:
+    - apiVersion: longhorn.io/v1beta1
+      blockOwnerDeletion: true
+      kind: Node
+      name: node1
+      uid: 29d28350-03f1-4f31-809a-5cd5a1b0ecb2
+    resourceVersion: "1109730"
+    uid: 1c6df051-ec00-495b-b178-22cd1f4fff2c
+  spec:
+    engineImage: "null"
+    image: longhornio/longhorn-instance-manager:v1_20211210
+    nodeID: node1
+    type: engine
+  status:
+    apiMinVersion: 1
+    apiVersion: 1
+    currentState: running
+    instances: {}
+    ip: 10.52.0.43
+    ownerID: node1
+- apiVersion: longhorn.io/v1beta1
+  kind: InstanceManager
+  metadata:
+    creationTimestamp: "2022-03-06T22:51:52Z"
+    generation: 1
+    labels:
+      longhorn.io/component: instance-manager
+      longhorn.io/instance-manager-image: imi-2ff8743e
+      longhorn.io/instance-manager-type: replica
+      longhorn.io/managed-by: longhorn-manager
+      longhorn.io/node: node1
+    managedFields:
+    - apiVersion: longhorn.io/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:labels:
+            .: {}
+            f:longhorn.io/component: {}
+            f:longhorn.io/instance-manager-image: {}
+            f:longhorn.io/instance-manager-type: {}
+            f:longhorn.io/managed-by: {}
+            f:longhorn.io/node: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"29d28350-03f1-4f31-809a-5cd5a1b0ecb2"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec: {}
+        f:status: {}
+      manager: longhorn-manager
+      operation: Update
+      time: "2022-03-06T22:51:53Z"
+    name: instance-manager-r-9d910deb
+    namespace: longhorn-system
+    ownerReferences:
+    - apiVersion: longhorn.io/v1beta1
+      blockOwnerDeletion: true
+      kind: Node
+      name: node1
+      uid: 29d28350-03f1-4f31-809a-5cd5a1b0ecb2
+    resourceVersion: "1109742"
+    uid: c955c66b-05f5-49dd-b680-c2ba1e594813
+  spec:
+    engineImage: "null"
+    image: longhornio/longhorn-instance-manager:v1_20211210
+    nodeID: node1
+    type: replica
+  status:
+    apiMinVersion: 1
+    apiVersion: 1
+    currentState: running
+    instances: {}
+    ip: 10.52.0.44
+    ownerID: node1
+kind: List
+metadata:
+  continue: "null"
+  resourceVersion: "14659230"

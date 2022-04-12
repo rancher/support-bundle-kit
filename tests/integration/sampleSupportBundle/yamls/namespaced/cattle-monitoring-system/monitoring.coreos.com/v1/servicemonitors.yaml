@@ -1,0 +1,440 @@
+apiVersion: v1
+items:
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    annotations:
+      kubevirt.io/generation: "2"
+      kubevirt.io/install-strategy-identifier: d3df7f87ee723ed71ca49f6c5cab7566dd4dc500
+      kubevirt.io/install-strategy-registry: registry.suse.com/suse/sles/15.3
+      kubevirt.io/install-strategy-version: 0.45.0-8.4.3
+    creationTimestamp: "2022-03-06T22:52:44Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/component: kubevirt
+      app.kubernetes.io/managed-by: kubevirt-operator
+      k8s-app: kubevirt
+      openshift.io/cluster-monitoring: "null"
+      prometheus.kubevirt.io: "null"
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:kubevirt.io/generation: {}
+            f:kubevirt.io/install-strategy-identifier: {}
+            f:kubevirt.io/install-strategy-registry: {}
+            f:kubevirt.io/install-strategy-version: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/component: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:k8s-app: {}
+            f:openshift.io/cluster-monitoring: {}
+            f:prometheus.kubevirt.io: {}
+        f:spec:
+          .: {}
+          f:endpoints: {}
+          f:namespaceSelector:
+            .: {}
+            f:matchNames: {}
+          f:selector:
+            .: {}
+            f:matchLabels:
+              .: {}
+              f:prometheus.kubevirt.io: {}
+      manager: virt-operator
+      operation: Update
+      time: "2022-03-06T22:52:44Z"
+    name: prometheus-kubevirt-rules
+    namespace: cattle-monitoring-system
+    resourceVersion: "5591"
+    uid: 61c84220-38d0-48d5-8507-90d7e903d6c9
+  spec:
+    endpoints:
+    - bearerTokenSecret:
+        key: "null"
+      port: metrics
+      relabelings:
+      - action: labeldrop
+        regex: namespace
+      scheme: https
+      tlsConfig:
+        ca: {}
+        cert: {}
+        insecureSkipVerify: true
+    namespaceSelector:
+      matchNames:
+      - harvester-system
+    selector:
+      matchLabels:
+        prometheus.kubevirt.io: "null"
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:52:26Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring-grafana
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:endpoints: {}
+          f:namespaceSelector:
+            .: {}
+            f:matchNames: {}
+          f:selector:
+            .: {}
+            f:matchLabels:
+              .: {}
+              f:app.kubernetes.io/instance: {}
+              f:app.kubernetes.io/name: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:26Z"
+    name: rancher-monitoring-grafana
+    namespace: cattle-monitoring-system
+    resourceVersion: "5231"
+    uid: 55340f57-e5f6-495a-9951-a84bf1f2ddd2
+  spec:
+    endpoints:
+    - path: /metrics
+      port: nginx-http
+    namespaceSelector:
+      matchNames:
+      - cattle-monitoring-system
+    selector:
+      matchLabels:
+        app.kubernetes.io/instance: rancher-monitoring
+        app.kubernetes.io/name: grafana
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:52:25Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring-kube-state-metrics
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:endpoints: {}
+          f:jobLabel: {}
+          f:namespaceSelector:
+            .: {}
+            f:matchNames: {}
+          f:selector:
+            .: {}
+            f:matchLabels:
+              .: {}
+              f:app.kubernetes.io/instance: {}
+              f:app.kubernetes.io/name: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:25Z"
+    name: rancher-monitoring-kube-state-metrics
+    namespace: cattle-monitoring-system
+    resourceVersion: "5226"
+    uid: 1b3fe50b-767d-4d66-b291-e1417531e184
+  spec:
+    endpoints:
+    - honorLabels: true
+      port: http
+    jobLabel: app.kubernetes.io/name
+    namespaceSelector:
+      matchNames:
+      - cattle-monitoring-system
+    selector:
+      matchLabels:
+        app.kubernetes.io/instance: rancher-monitoring
+        app.kubernetes.io/name: kube-state-metrics
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:52:26Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring-node-exporter
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:endpoints: {}
+          f:jobLabel: {}
+          f:namespaceSelector:
+            .: {}
+            f:matchNames: {}
+          f:selector:
+            .: {}
+            f:matchLabels:
+              .: {}
+              f:app: {}
+              f:release: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:26Z"
+    name: rancher-monitoring-node-exporter
+    namespace: cattle-monitoring-system
+    resourceVersion: "5228"
+    uid: 3cfb7453-6edd-4348-af32-3145d748cf6a
+  spec:
+    endpoints:
+    - port: metrics
+    jobLabel: jobLabel
+    namespaceSelector:
+      matchNames:
+      - cattle-monitoring-system
+    selector:
+      matchLabels:
+        app: prometheus-node-exporter
+        release: rancher-monitoring
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:52:26Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring-operator
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:endpoints: {}
+          f:namespaceSelector:
+            .: {}
+            f:matchNames: {}
+          f:selector:
+            .: {}
+            f:matchLabels:
+              .: {}
+              f:app: {}
+              f:release: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:26Z"
+    name: rancher-monitoring-operator
+    namespace: cattle-monitoring-system
+    resourceVersion: "5233"
+    uid: 30f91c3f-6818-493f-a369-35653b4b1a60
+  spec:
+    endpoints:
+    - honorLabels: true
+      port: https
+      scheme: https
+      tlsConfig:
+        ca:
+          secret:
+            key: ca
+            name: rancher-monitoring-admission
+            optional: false
+        serverName: rancher-monitoring-operator
+    namespaceSelector:
+      matchNames:
+      - cattle-monitoring-system
+    selector:
+      matchLabels:
+        app: rancher-monitoring-operator
+        release: rancher-monitoring
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: rancher-monitoring
+      meta.helm.sh/release-namespace: cattle-monitoring-system
+      objectset.rio.cattle.io/id: default-mcc-rancher-monitoring-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:52:26Z"
+    generation: 1
+    labels:
+      app: rancher-monitoring-prometheus
+      app.kubernetes.io/instance: rancher-monitoring
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: rancher-monitoring
+      app.kubernetes.io/version: 100.1.0_up19.0.3
+      chart: rancher-monitoring-100.1.0_up19.0.3
+      heritage: Helm
+      objectset.rio.cattle.io/hash: a8c87f2d01731fdad3b988f675a7c8a7da10d382
+      release: rancher-monitoring
+    managedFields:
+    - apiVersion: monitoring.coreos.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:chart: {}
+            f:heritage: {}
+            f:objectset.rio.cattle.io/hash: {}
+            f:release: {}
+        f:spec:
+          .: {}
+          f:endpoints: {}
+          f:namespaceSelector:
+            .: {}
+            f:matchNames: {}
+          f:selector:
+            .: {}
+            f:matchLabels:
+              .: {}
+              f:app: {}
+              f:release: {}
+              f:self-monitor: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:52:26Z"
+    name: rancher-monitoring-prometheus
+    namespace: cattle-monitoring-system
+    resourceVersion: "5235"
+    uid: e41a89bb-2e12-4e7e-9a66-83d885f6d748
+  spec:
+    endpoints:
+    - path: /metrics
+      port: nginx-http
+    namespaceSelector:
+      matchNames:
+      - cattle-monitoring-system
+    selector:
+      matchLabels:
+        app: rancher-monitoring-prometheus
+        release: rancher-monitoring
+        self-monitor: "true"
+kind: List
+metadata:
+  continue: "null"
+  resourceVersion: "14659123"

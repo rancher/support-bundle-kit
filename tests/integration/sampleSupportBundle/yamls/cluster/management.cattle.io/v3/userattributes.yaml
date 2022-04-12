@@ -1,0 +1,66 @@
+apiVersion: v1
+items:
+- ExtraByProvider:
+    local:
+      principalid:
+      - local://user-jk4nh
+      username:
+      - admin
+  GroupPrincipals:
+    local:
+      Items: []
+  LastRefresh: "null"
+  NeedsRefresh: true
+  UserName: "null"
+  apiVersion: management.cattle.io/v3
+  kind: UserAttribute
+  metadata:
+    creationTimestamp: "2022-03-06T22:50:51Z"
+    generation: 2
+    labels:
+      cattle.io/creator: norman
+    managedFields:
+    - apiVersion: management.cattle.io/v3
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:ExtraByProvider:
+          .: {}
+          f:local:
+            .: {}
+            f:principalid: {}
+            f:username: {}
+        f:GroupPrincipals:
+          .: {}
+          f:local:
+            .: {}
+            f:Items: {}
+        f:LastRefresh: {}
+        f:NeedsRefresh: {}
+        f:UserName: {}
+        f:metadata:
+          f:labels:
+            .: {}
+            f:cattle.io/creator: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"cd6bdf5d-834c-4c19-a060-62d9d5a0c809"}:
+              .: {}
+              f:apiVersion: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+      manager: rancher
+      operation: Update
+      time: "2022-03-06T22:50:51Z"
+    name: user-jk4nh
+    ownerReferences:
+    - apiVersion: management.cattle.io/v3
+      kind: User
+      name: user-jk4nh
+      uid: cd6bdf5d-834c-4c19-a060-62d9d5a0c809
+    resourceVersion: "3527"
+    uid: e93937b7-9532-4f5e-a143-2fa08b804a6f
+kind: List
+metadata:
+  continue: "null"
+  resourceVersion: "14658915"

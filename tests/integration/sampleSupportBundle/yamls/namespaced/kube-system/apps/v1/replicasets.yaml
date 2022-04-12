@@ -1,0 +1,838 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "1"
+      meta.helm.sh/release-name: rke2-coredns
+      meta.helm.sh/release-namespace: kube-system
+    creationTimestamp: "2022-03-06T22:47:19Z"
+    generation: 3
+    labels:
+      app.kubernetes.io/instance: rke2-coredns
+      app.kubernetes.io/name: rke2-coredns
+      k8s-app: kube-dns
+      pod-template-hash: 5679c85bbb
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deployment.kubernetes.io/desired-replicas: {}
+            f:deployment.kubernetes.io/max-replicas: {}
+            f:deployment.kubernetes.io/revision: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/name: {}
+            f:k8s-app: {}
+            f:pod-template-hash: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"b031048a-6bd4-4ca7-82d0-593c04673ea2"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:replicas: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:annotations:
+                .: {}
+                f:checksum/config: {}
+                f:scheduler.alpha.kubernetes.io/critical-pod: {}
+              f:labels:
+                .: {}
+                f:app.kubernetes.io/instance: {}
+                f:app.kubernetes.io/name: {}
+                f:k8s-app: {}
+                f:pod-template-hash: {}
+            f:spec:
+              f:affinity:
+                .: {}
+                f:podAntiAffinity:
+                  .: {}
+                  f:requiredDuringSchedulingIgnoredDuringExecution: {}
+              f:containers:
+                k:{"name":"coredns"}:
+                  .: {}
+                  f:args: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:livenessProbe:
+                    .: {}
+                    f:failureThreshold: {}
+                    f:httpGet:
+                      .: {}
+                      f:path: {}
+                      f:port: {}
+                      f:scheme: {}
+                    f:initialDelaySeconds: {}
+                    f:periodSeconds: {}
+                    f:successThreshold: {}
+                    f:timeoutSeconds: {}
+                  f:name: {}
+                  f:ports:
+                    .: {}
+                    k:{"containerPort":53,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:name: {}
+                      f:protocol: {}
+                    k:{"containerPort":53,"protocol":"UDP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:name: {}
+                      f:protocol: {}
+                  f:readinessProbe:
+                    .: {}
+                    f:failureThreshold: {}
+                    f:httpGet:
+                      .: {}
+                      f:path: {}
+                      f:port: {}
+                      f:scheme: {}
+                    f:initialDelaySeconds: {}
+                    f:periodSeconds: {}
+                    f:successThreshold: {}
+                    f:timeoutSeconds: {}
+                  f:resources:
+                    .: {}
+                    f:limits:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                    f:requests:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/etc/coredns"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+              f:dnsPolicy: {}
+              f:nodeSelector:
+                .: {}
+                f:kubernetes.io/os: {}
+              f:priorityClassName: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:tolerations: {}
+              f:volumes:
+                .: {}
+                k:{"name":"config-volume"}:
+                  .: {}
+                  f:configMap:
+                    .: {}
+                    f:defaultMode: {}
+                    f:items: {}
+                    f:name: {}
+                  f:name: {}
+        f:status:
+          f:availableReplicas: {}
+          f:fullyLabeledReplicas: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:48:24Z"
+    name: rke2-coredns-rke2-coredns-5679c85bbb
+    namespace: kube-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: rke2-coredns-rke2-coredns
+      uid: b031048a-6bd4-4ca7-82d0-593c04673ea2
+    resourceVersion: "1025110"
+    uid: 390838b6-3094-459d-af8d-dec76d0ee49a
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app.kubernetes.io/instance: rke2-coredns
+        app.kubernetes.io/name: rke2-coredns
+        k8s-app: kube-dns
+        pod-template-hash: 5679c85bbb
+    template:
+      metadata:
+        annotations:
+          checksum/config: fd478e784870b3bcf632fdec443247b0ef73afc57b80f95bb585b6aafb30c50c
+          scheduler.alpha.kubernetes.io/critical-pod: "null"
+        creationTimestamp: "null"
+        labels:
+          app.kubernetes.io/instance: rke2-coredns
+          app.kubernetes.io/name: rke2-coredns
+          k8s-app: kube-dns
+          pod-template-hash: 5679c85bbb
+      spec:
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                - key: k8s-app
+                  operator: In
+                  values:
+                  - kube-dns
+              topologyKey: kubernetes.io/hostname
+        containers:
+        - args:
+          - -conf
+          - /etc/coredns/Corefile
+          image: rancher/hardened-coredns:v1.8.5-build20211119
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: coredns
+          ports:
+          - containerPort: 53
+            name: udp-53
+            protocol: UDP
+          - containerPort: 53
+            name: tcp-53
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /ready
+              port: 8181
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/coredns
+            name: config-volume
+        dnsPolicy: Default
+        nodeSelector:
+          kubernetes.io/os: linux
+        priorityClassName: system-cluster-critical
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: coredns
+        serviceAccountName: coredns
+        terminationGracePeriodSeconds: 30
+        tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/control-plane
+          operator: Exists
+        - effect: NoExecute
+          key: node-role.kubernetes.io/etcd
+          operator: Exists
+        volumes:
+        - configMap:
+            defaultMode: 420
+            items:
+            - key: Corefile
+              path: Corefile
+            name: rke2-coredns-rke2-coredns
+          name: config-volume
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 3
+    readyReplicas: 1
+    replicas: 1
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "1"
+      meta.helm.sh/release-name: rke2-coredns
+      meta.helm.sh/release-namespace: kube-system
+    creationTimestamp: "2022-03-06T22:47:19Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/instance: rke2-coredns
+      app.kubernetes.io/name: rke2-coredns-autoscaler
+      k8s-app: kube-dns-autoscaler
+      pod-template-hash: "6889866896"
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deployment.kubernetes.io/desired-replicas: {}
+            f:deployment.kubernetes.io/max-replicas: {}
+            f:deployment.kubernetes.io/revision: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/name: {}
+            f:k8s-app: {}
+            f:pod-template-hash: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"7a09d01f-43b5-486a-9683-c6bb0e2edda9"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:replicas: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:annotations:
+                .: {}
+                f:checksum/configmap: {}
+                f:scheduler.alpha.kubernetes.io/critical-pod: {}
+                f:scheduler.alpha.kubernetes.io/tolerations: {}
+              f:labels:
+                .: {}
+                f:app.kubernetes.io/instance: {}
+                f:app.kubernetes.io/name: {}
+                f:k8s-app: {}
+                f:pod-template-hash: {}
+            f:spec:
+              f:containers:
+                k:{"name":"autoscaler"}:
+                  .: {}
+                  f:command: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:livenessProbe:
+                    .: {}
+                    f:failureThreshold: {}
+                    f:httpGet:
+                      .: {}
+                      f:path: {}
+                      f:port: {}
+                      f:scheme: {}
+                    f:initialDelaySeconds: {}
+                    f:periodSeconds: {}
+                    f:successThreshold: {}
+                    f:timeoutSeconds: {}
+                  f:name: {}
+                  f:resources:
+                    .: {}
+                    f:limits:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                    f:requests:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+              f:dnsPolicy: {}
+              f:nodeSelector:
+                .: {}
+                f:kubernetes.io/os: {}
+              f:priorityClassName: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:tolerations: {}
+        f:status:
+          f:availableReplicas: {}
+          f:fullyLabeledReplicas: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:47:54Z"
+    name: rke2-coredns-rke2-coredns-autoscaler-6889866896
+    namespace: kube-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: rke2-coredns-rke2-coredns-autoscaler
+      uid: 7a09d01f-43b5-486a-9683-c6bb0e2edda9
+    resourceVersion: "932"
+    uid: c0676de2-ce84-4b59-bf15-cf10abf62f20
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app.kubernetes.io/instance: rke2-coredns
+        app.kubernetes.io/name: rke2-coredns-autoscaler
+        k8s-app: kube-dns-autoscaler
+        pod-template-hash: "6889866896"
+    template:
+      metadata:
+        annotations:
+          checksum/configmap: 302890d39c0765f3d9fd90a403a965cc309ed8232e87a6d6e191049b84453b92
+          scheduler.alpha.kubernetes.io/critical-pod: "null"
+          scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly",
+            "operator":"Exists"}]'
+        creationTimestamp: "null"
+        labels:
+          app.kubernetes.io/instance: rke2-coredns
+          app.kubernetes.io/name: rke2-coredns-autoscaler
+          k8s-app: kube-dns-autoscaler
+          pod-template-hash: "6889866896"
+      spec:
+        containers:
+        - command:
+          - /cluster-proportional-autoscaler
+          - --namespace=kube-system
+          - --configmap=rke2-coredns-rke2-coredns-autoscaler
+          - --target=Deployment/rke2-coredns-rke2-coredns
+          - --logtostderr=true
+          - --v=2
+          image: rancher/hardened-cluster-autoscaler:v1.8.5-build20211119
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 10
+          name: autoscaler
+          resources:
+            limits:
+              cpu: 20m
+              memory: 20Mi
+            requests:
+              cpu: 20m
+              memory: 20Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          kubernetes.io/os: linux
+        priorityClassName: system-cluster-critical
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: rke2-coredns-rke2-coredns-autoscaler
+        serviceAccountName: rke2-coredns-rke2-coredns-autoscaler
+        terminationGracePeriodSeconds: 30
+        tolerations:
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/control-plane
+          operator: Exists
+        - effect: NoExecute
+          key: node-role.kubernetes.io/etcd
+          operator: Exists
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "1"
+      meta.helm.sh/release-name: rke2-metrics-server
+      meta.helm.sh/release-namespace: kube-system
+    creationTimestamp: "2022-03-06T22:47:58Z"
+    generation: 1
+    labels:
+      app: rke2-metrics-server
+      pod-template-hash: 8574659c85
+      release: rke2-metrics-server
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deployment.kubernetes.io/desired-replicas: {}
+            f:deployment.kubernetes.io/max-replicas: {}
+            f:deployment.kubernetes.io/revision: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:pod-template-hash: {}
+            f:release: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"b64562e8-ad39-4d96-88cb-cc1f73acfcd5"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:replicas: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:app: {}
+                f:pod-template-hash: {}
+                f:release: {}
+            f:spec:
+              f:affinity: {}
+              f:containers:
+                k:{"name":"metrics-server"}:
+                  .: {}
+                  f:command: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:livenessProbe:
+                    .: {}
+                    f:failureThreshold: {}
+                    f:httpGet:
+                      .: {}
+                      f:path: {}
+                      f:port: {}
+                      f:scheme: {}
+                    f:initialDelaySeconds: {}
+                    f:periodSeconds: {}
+                    f:successThreshold: {}
+                    f:timeoutSeconds: {}
+                  f:name: {}
+                  f:ports:
+                    .: {}
+                    k:{"containerPort":8443,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:name: {}
+                      f:protocol: {}
+                  f:readinessProbe:
+                    .: {}
+                    f:failureThreshold: {}
+                    f:httpGet:
+                      .: {}
+                      f:path: {}
+                      f:port: {}
+                      f:scheme: {}
+                    f:initialDelaySeconds: {}
+                    f:periodSeconds: {}
+                    f:successThreshold: {}
+                    f:timeoutSeconds: {}
+                  f:resources: {}
+                  f:securityContext:
+                    .: {}
+                    f:allowPrivilegeEscalation: {}
+                    f:capabilities:
+                      .: {}
+                      f:drop: {}
+                    f:readOnlyRootFilesystem: {}
+                    f:runAsGroup: {}
+                    f:runAsNonRoot: {}
+                    f:runAsUser: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/tmp"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+              f:dnsPolicy: {}
+              f:nodeSelector:
+                .: {}
+                f:kubernetes.io/os: {}
+              f:priorityClassName: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:volumes:
+                .: {}
+                k:{"name":"tmp"}:
+                  .: {}
+                  f:emptyDir: {}
+                  f:name: {}
+        f:status:
+          f:availableReplicas: {}
+          f:fullyLabeledReplicas: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:48:29Z"
+    name: rke2-metrics-server-8574659c85
+    namespace: kube-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: rke2-metrics-server
+      uid: b64562e8-ad39-4d96-88cb-cc1f73acfcd5
+    resourceVersion: "1171"
+    uid: fc2edff2-107d-450e-a315-fe5e95965e96
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: rke2-metrics-server
+        pod-template-hash: 8574659c85
+        release: rke2-metrics-server
+    template:
+      metadata:
+        creationTimestamp: "null"
+        labels:
+          app: rke2-metrics-server
+          pod-template-hash: 8574659c85
+          release: rke2-metrics-server
+      spec:
+        affinity: {}
+        containers:
+        - command:
+          - /metrics-server
+          - --cert-dir=/tmp
+          - --logtostderr
+          - --secure-port=8443
+          - --kubelet-preferred-address-types=InternalIP
+          image: rancher/hardened-k8s-metrics-server:v0.5.0-build20211119
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: https
+              scheme: HTTPS
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: metrics-server
+          ports:
+          - containerPort: 8443
+            name: https
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: https
+              scheme: HTTPS
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - all
+            readOnlyRootFilesystem: true
+            runAsGroup: 10001
+            runAsNonRoot: true
+            runAsUser: 10001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          kubernetes.io/os: linux
+        priorityClassName: system-node-critical
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: rke2-metrics-server
+        serviceAccountName: rke2-metrics-server
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: tmp
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "2"
+      deployment.kubernetes.io/max-replicas: "3"
+      deployment.kubernetes.io/revision: "1"
+      meta.helm.sh/release-name: harvester
+      meta.helm.sh/release-namespace: harvester-system
+      objectset.rio.cattle.io/id: default-mcc-harvester-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:50:37Z"
+    generation: 1
+    labels:
+      app: snapshot-controller
+      pod-template-hash: 9f68fdd9
+    managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deployment.kubernetes.io/desired-replicas: {}
+            f:deployment.kubernetes.io/max-replicas: {}
+            f:deployment.kubernetes.io/revision: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:pod-template-hash: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"e4d5e946-1b54-407f-b1de-06e22060db43"}:
+              .: {}
+              f:apiVersion: {}
+              f:blockOwnerDeletion: {}
+              f:controller: {}
+              f:kind: {}
+              f:name: {}
+              f:uid: {}
+        f:spec:
+          f:replicas: {}
+          f:selector: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:app: {}
+                f:pod-template-hash: {}
+            f:spec:
+              f:containers:
+                k:{"name":"snapshot-controller"}:
+                  .: {}
+                  f:args: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:resources: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+              f:dnsPolicy: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+        f:status:
+          f:availableReplicas: {}
+          f:fullyLabeledReplicas: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2022-03-06T22:51:51Z"
+    name: snapshot-controller-9f68fdd9
+    namespace: kube-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: snapshot-controller
+      uid: e4d5e946-1b54-407f-b1de-06e22060db43
+    resourceVersion: "4179"
+    uid: 8c2b0ca4-787d-40fa-94b7-52cd32aa763c
+  spec:
+    replicas: 2
+    selector:
+      matchLabels:
+        app: snapshot-controller
+        pod-template-hash: 9f68fdd9
+    template:
+      metadata:
+        creationTimestamp: "null"
+        labels:
+          app: snapshot-controller
+          pod-template-hash: 9f68fdd9
+      spec:
+        containers:
+        - args:
+          - --v=5
+          - --leader-election=true
+          image: k8s.gcr.io/sig-storage/snapshot-controller:v4.0.0
+          imagePullPolicy: IfNotPresent
+          name: snapshot-controller
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: snapshot-controller
+        serviceAccountName: snapshot-controller
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 2
+    fullyLabeledReplicas: 2
+    observedGeneration: 1
+    readyReplicas: 2
+    replicas: 2
+kind: List
+metadata:
+  resourceVersion: "14658994"

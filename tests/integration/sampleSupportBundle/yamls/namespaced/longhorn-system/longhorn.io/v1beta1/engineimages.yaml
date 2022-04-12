@@ -1,0 +1,66 @@
+apiVersion: v1
+items:
+- apiVersion: longhorn.io/v1beta1
+  kind: EngineImage
+  metadata:
+    creationTimestamp: "2022-03-06T22:51:51Z"
+    finalizers:
+    - longhorn.io
+    generation: 1
+    labels:
+      longhorn.io/component: engine-image
+      longhorn.io/engine-image: ei-fa2dfbf0
+      longhorn.io/managed-by: longhorn-manager
+    managedFields:
+    - apiVersion: longhorn.io/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:finalizers:
+            .: {}
+            v:"longhorn.io"null: {}
+          f:labels:
+            .: {}
+            f:longhorn.io/component: {}
+            f:longhorn.io/engine-image: {}
+            f:longhorn.io/managed-by: {}
+        f:spec: {}
+        f:status: {}
+      manager: longhorn-manager
+      operation: Update
+      time: "2022-03-06T22:51:51Z"
+    name: ei-fa2dfbf0
+    namespace: longhorn-system
+    resourceVersion: "1109830"
+    uid: 44c4e724-9cba-43ae-843d-a26aa216a988
+  spec:
+    image: longhornio/longhorn-engine:v1.2.3
+  status:
+    buildDate: "2021-12-16T01:49:27+00:00"
+    cliAPIMinVersion: 3
+    cliAPIVersion: 5
+    conditions:
+      ready:
+        lastProbeTime: "null"
+        lastTransitionTime: "2022-03-08T00:12:53Z"
+        message: Engine image ei-fa2dfbf0 (longhornio/longhorn-engine:v1.2.3) is fully
+          deployed on all ready nodes
+        reason: "null"
+        status: "True"
+        type: ready
+    controllerAPIMinVersion: 3
+    controllerAPIVersion: 3
+    dataFormatMinVersion: 1
+    dataFormatVersion: 1
+    gitCommit: d9b87bed2172b93ab463287d33f988bba67d441c
+    noRefSince: "2022-03-08T02:16:29Z"
+    nodeDeploymentMap:
+      node1: true
+    ownerID: node1
+    refCount: 0
+    state: deployed
+    version: v1.2.3
+kind: List
+metadata:
+  continue: "null"
+  resourceVersion: "14659229"

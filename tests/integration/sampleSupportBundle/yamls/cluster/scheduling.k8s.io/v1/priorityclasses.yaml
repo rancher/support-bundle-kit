@@ -1,0 +1,99 @@
+apiVersion: v1
+items:
+- apiVersion: scheduling.k8s.io/v1
+  description: This priority class should be used for core kubevirt components only.
+  kind: PriorityClass
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: harvester
+      meta.helm.sh/release-namespace: harvester-system
+      objectset.rio.cattle.io/id: default-mcc-harvester-cattle-fleet-local-system
+    creationTimestamp: "2022-03-06T22:50:38Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/component: operator
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: virt-operator
+      app.kubernetes.io/part-of: kubevirt-operator
+      app.kubernetes.io/version: 0.30.x
+      helm.sh/chart: kubevirt-operator-0.1.0
+      helm.sh/release: harvester
+      objectset.rio.cattle.io/hash: e852fa897f5eae59a44b4bfe186aad80b10b94b3
+    managedFields:
+    - apiVersion: scheduling.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:description: {}
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+            f:objectset.rio.cattle.io/id: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/component: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:helm.sh/chart: {}
+            f:helm.sh/release: {}
+            f:objectset.rio.cattle.io/hash: {}
+        f:preemptionPolicy: {}
+        f:value: {}
+      manager: fleetagent
+      operation: Update
+      time: "2022-03-06T22:50:38Z"
+    name: kubevirt-cluster-critical
+    resourceVersion: "3296"
+    uid: e78b4909-fb3e-4844-9e82-d2cf614d466f
+  preemptionPolicy: PreemptLowerPriority
+  value: 1e+09
+- apiVersion: scheduling.k8s.io/v1
+  description: Used for system critical pods that must run in the cluster, but can
+    be moved to another node if necessary.
+  kind: PriorityClass
+  metadata:
+    creationTimestamp: "2022-03-06T22:46:52Z"
+    generation: 1
+    managedFields:
+    - apiVersion: scheduling.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:description: {}
+        f:preemptionPolicy: {}
+        f:value: {}
+      manager: kube-apiserver
+      operation: Update
+      time: "2022-03-06T22:46:52Z"
+    name: system-cluster-critical
+    resourceVersion: "87"
+    uid: 4b57fd16-2c3a-4e51-88f6-f36947f6e114
+  preemptionPolicy: PreemptLowerPriority
+  value: 2e+09
+- apiVersion: scheduling.k8s.io/v1
+  description: Used for system critical pods that must not be moved from their current
+    node.
+  kind: PriorityClass
+  metadata:
+    creationTimestamp: "2022-03-06T22:46:52Z"
+    generation: 1
+    managedFields:
+    - apiVersion: scheduling.k8s.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:description: {}
+        f:preemptionPolicy: {}
+        f:value: {}
+      manager: kube-apiserver
+      operation: Update
+      time: "2022-03-06T22:46:52Z"
+    name: system-node-critical
+    resourceVersion: "86"
+    uid: 6c10d0d7-a6c3-4113-8599-dd4481d679df
+  preemptionPolicy: PreemptLowerPriority
+  value: 2.000001e+09
+kind: List
+metadata:
+  resourceVersion: "14658905"
