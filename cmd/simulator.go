@@ -24,7 +24,7 @@ var (
 )
 
 var simulatorCmd = &cobra.Command{
-	Use:   "simulate",
+	Use:   "simulator",
 	Short: "Simulate a support bundle",
 	Long: `Simulate a support bundle by loading into an empty apiserver
 The simulator will 	run an embedded etcd, apiserver and a minimal virtual kubelet.
@@ -117,8 +117,7 @@ func init() {
 
 	dir := filepath.Join(home, ".sim")
 	rootCmd.AddCommand(simulatorCmd)
-	simulatorCmd.PersistentFlags().StringVar(&simHome, "sim-home", dir, "default home directory where sim stores its configuration. default is $HOME/.sim"+
-		"")
+	simulatorCmd.PersistentFlags().StringVar(&simHome, "sim-home", dir, "default home directory where sim stores its configuration. default is $HOME/.sim")
 	simulatorCmd.PersistentFlags().StringVar(&bundlePath, "bundle-path", ".", "location to support bundle. default is .")
 	simulatorCmd.PersistentFlags().BoolVar(&resetHome, "reset", false, "reset sim-home, will clear the contents and start a clean etcd + apiserver instance")
 	simulatorCmd.PersistentFlags().BoolVar(&skipLoad, "skip-load", false, "skip load / re-load of bundle. this will ensure current etcd contents are only accessible")

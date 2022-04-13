@@ -37,14 +37,13 @@ const (
 // this map helps speed up the process and is easier to maintain
 var (
 	skippedGroups = map[string]bool{
-		//"events.k8s.io":                true,
+		"events.k8s.io":                true,
 		"admissionregistration.k8s.io": true,
 		"apiregistration.k8s.io":       true,
 		"metrics.k8s.io":               true,
 	}
 
 	skippedKinds = map[string]bool{
-		"Ingress":         true, // only skipped due to baseline version of sim
 		"ComponentStatus": true,
 	}
 )

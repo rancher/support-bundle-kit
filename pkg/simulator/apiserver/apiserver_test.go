@@ -19,7 +19,7 @@ func TestRunAPIServer(t *testing.T) {
 		t.Fatalf("error setting up temp directory for apiserver %v", err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
 	a := APIServerConfig{}
@@ -30,7 +30,7 @@ func TestRunAPIServer(t *testing.T) {
 	}
 	a.Certs = generatedCerts
 
-	etcdConfig, err := etcd.RunEmbeddedEtcd(ctx, filepath.Join(dir), a.Certs)
+	etcdConfig, err := etcd.RunEmbeddedEtcd(context.TODO(), filepath.Join(dir), a.Certs)
 	if err != nil {
 		t.Fatalf("error setting up embedded etcdserver")
 	}
