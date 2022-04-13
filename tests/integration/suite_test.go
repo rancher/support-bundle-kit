@@ -18,7 +18,7 @@ import (
 const (
 	setupTimeout  = 600
 	samplesPath   = "./sampleSupportBundle"
-	samplePodSpec = ".sampleSupportBundle/yamls/namespaced/harvester-system/v1/pods.yaml"
+	samplePodSpec = "./sampleSupportBundle/yamls/namespaced/harvester-system/v1/pods.yaml"
 )
 
 func TestSim(t *testing.T) {

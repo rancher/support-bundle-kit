@@ -6,12 +6,14 @@ import (
 	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/etcd"
 	"io/ioutil"
+	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	kubeconfig "k8s.io/client-go/tools/clientcmd/api"
 	"k8s.io/kubernetes/cmd/kube-apiserver/app"
-	"strings"
+	"k8s.io/kubernetes/cmd/kube-apiserver/app/options"
+	"net"
 )
 
 type APIServerConfig struct {
@@ -29,70 +31,42 @@ const (
 // No additional controllers will be scheduled
 func (a *APIServerConfig) RunAPIServer(ctx context.Context) error {
 	var err error
-	apiServer := app.NewAPIServerCommand()
+	s := options.NewServerRunOptions()
+	s.Etcd.StorageConfig.Transport.ServerList = a.Etcd.Endpoints
+	s.Etcd.StorageConfig.Transport.KeyFile = a.Certs.EtcdPeerCertKey
+	s.Etcd.StorageConfig.Transport.CertFile = a.Certs.EtcdPeerCert
+	s.Etcd.StorageConfig.Transport.TrustedCAFile = a.Certs.CACert
 
-	//set flag values
-	if err = apiServer.Flags().Set("tls-cert-file", a.Certs.APICert); err != nil {
-		return err
+	s.APIEnablement.RuntimeConfig = map[string]string{
+		"v1":       "true",
+		"api/beta": "true",
 	}
-	if err = apiServer.Flags().Set("tls-private-key-file", a.Certs.APICert); err != nil {
-		return err
-	}
-	if err = apiServer.Flags().Set("client-ca-file", a.Certs.CACert); err != nil {
-		return err
-	}
-	if err = apiServer.Flags().Set("service-account-key-file", a.Certs.ServiceAccountCert); err != nil {
-		return err
-	}
-	if err = apiServer.Flags().Set("service-account-signing-key-file", a.Certs.ServiceAccountCertKey); err != nil {
-		return err
-	}
-	if err = apiServer.Flags().Set("service-account-issuer", "https://localhost:6443"); err != nil {
-		return err
-	}
-	if err = apiServer.Flags().Set("tls-cert-file", a.Certs.APICert); err != nil {
-		return err
-	}
-	if err = apiServer.Flags().Set("tls-private-key-file", a.Certs.APICertKey); err != nil {
-		return err
-	}
-	if err = apiServer.Flags().Set("runtime-config", APIVersionsSupported); err != nil {
-		return err
-	}
-	if err = apiServer.Flags().Set("enable-priority-and-fairness", "false"); err != nil {
-		return err
-	}
-	if err = apiServer.Flags().Set("service-cluster-ip-range", "10.53.0.0/16"); err != nil {
-		return err
-	}
-	if err = apiServer.Flags().Set("allow-privileged", "true"); err != nil {
+	s.ServiceClusterIPRanges = "10.53.0.1/16"
+	s.AllowPrivileged = true
+	s.ServiceAccountSigningKeyFile = a.Certs.ServiceAccountCertKey
+	s.SecureServing.SecureServingOptions.ServerCert.CertKey.CertFile = a.Certs.APICert
+	s.SecureServing.SecureServingOptions.ServerCert.CertKey.KeyFile = a.Certs.APICertKey
+	s.SecureServing.SecureServingOptions.BindAddress = net.ParseIP("127.0.0.1")
+	s.SecureServing.SecureServingOptions.BindPort = 6443
+	s.Authentication.ServiceAccounts.KeyFiles = []string{a.Certs.ServiceAccountCertKey}
+	s.Authentication.ServiceAccounts.Issuer = "https://localhost:6443"
+	s.Authentication.ClientCert.ClientCA = a.Certs.CACert
+
+	completedOptions, err := app.Complete(s)
+	if err != nil {
 		return err
 	}
 
-	etcdList := strings.Join(a.Etcd.Endpoints, ",")
-	if err = apiServer.Flags().Set("etcd-servers", etcdList); err != nil {
-		return err
+	if errs := completedOptions.Validate(); len(errs) != 0 {
+		return utilerrors.NewAggregate(errs)
 	}
-
-	if a.Etcd.TLS != nil {
-		if err = apiServer.Flags().Set("etcd-cafile", a.Certs.CACert); err != nil {
-			return err
-		}
-		if err = apiServer.Flags().Set("etcd-certfile", a.Certs.EtcdClientCert); err != nil {
-			return err
-		}
-		if err = apiServer.Flags().Set("etcd-keyfile", a.Certs.EtcdClientCertKey); err != nil {
-			return err
-		}
-	}
-
 	// Shutdown when context is closed
 	go func() {
 		<-ctx.Done()
 		genericapiserver.RequestShutdown()
 	}()
 
-	return apiServer.ExecuteContext(ctx)
+	return app.Run(completedOptions, genericapiserver.SetupSignalHandler())
 }
 
 // GenerateKubeConfig will generate KubeConfig to allow access to cluster
@@ -123,13 +97,13 @@ func (a *APIServerConfig) GenerateKubeConfig(path string) error {
 	authInfo.ClientCertificateData = adminCertByte
 	authInfo.ClientKeyData = adminCertKeyByte
 
-	context := kubeconfig.NewContext()
-	context.AuthInfo = "default"
-	context.Cluster = "default"
+	kcContext := kubeconfig.NewContext()
+	kcContext.AuthInfo = "default"
+	kcContext.Cluster = "default"
 
 	kc.Clusters["default"] = cluster
 	kc.AuthInfos["default"] = authInfo
-	kc.Contexts["default"] = context
+	kc.Contexts["default"] = kcContext
 	kc.CurrentContext = "default"
 
 	err = clientcmd.WriteToFile(*kc, path)

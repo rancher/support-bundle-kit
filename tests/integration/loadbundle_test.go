@@ -5,7 +5,6 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/objects"
-	"github.com/sirupsen/logrus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"time"
@@ -45,11 +44,10 @@ var _ = Describe("Process Support Bundle", func() {
 					return err
 				}
 				for _, obj := range objs {
-					unstructObj, err := o.FetchObject(obj)
+					_, err := o.FetchObject(obj)
 					if err != nil {
 						return err
 					}
-					logrus.Info(unstructObj.Object["status"])
 				}
 				return nil
 			}, 5, 60).ShouldNot(HaveOccurred())

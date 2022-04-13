@@ -13,7 +13,7 @@ This project contains support bundle scripts and utilities for applications runn
     - It starts a daemonset on each node. The agents in the daemonset collect node bundles and push them back to the manager.
 
     The manager is designed to be spawned as a Kubernetes deployment by the application. But it can also be deployed manually from a manifest file. Please check [standalone mode](./docs/standalone.md) for more information.
-  - `simulate`: the command allows users to simulate a end user environment by loading the support bundle into a minimal apiserver allowing end users to browse the objects and logs from the support bundle. It will do the following things
+  - `simulator`: the command allows users to simulate an end user environment by loading the support bundle into a minimal apiserver allowing end users to browse the objects and logs from the support bundle. It will do the following things
     - It runs an embedded etcd server
     - It runs a minimal apiserver only
     - It runs a minimal kubelet
@@ -73,6 +73,29 @@ The Harvester support bundle is structured as the following layout:
   - ...
 ```
 
-## Simulate command
+## Simulator command
 
-The simulate command expects the following flags
+The simulator command loads the contents of the support bundle into the apiserver, and updates the status of objects to reflect the contents of the support bundle.
+
+The bundle-path should be the location of the extracted support bundle
+
+The simulator command expects the following flags
+
+```
+Usage:
+  support-bundle-kit simulator [flags]
+
+Flags:
+      --bundle-path string   location to support bundle. default is . (default ".")
+  -h, --help                 help for simulator
+      --reset                reset sim-home, will clear the contents and start a clean etcd + apiserver instance
+      --sim-home string      default home directory where sim stores its configuration. default is $HOME/.sim (default "$HOME/.sim")
+      --skip-load            skip load / re-load of bundle. this will ensure current etcd contents are only accessible
+
+```
+
+Known Issues: 
+The following are known issues with the simulator at the moment:
+* creationTimepstamps of objects are reset, however the original creationTimestamp is copied into the object annoations.
+* to enable log parsing the node addresses are updated to localhost, to point them to the in process kubelet. The original addresses are again copied into annotations for future reference.
+* APIServices are skipped during the load processes as api aggregation cannot be replicated at the moment.

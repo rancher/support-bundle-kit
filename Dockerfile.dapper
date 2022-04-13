@@ -11,6 +11,7 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
         curl \
         gnupg \
         lsb-release \
+        rsync \
     && rm -rf /var/lib/apt/lists/* \
     && curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
     && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
@@ -22,6 +23,14 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
 RUN if [ "${ARCH}" = "amd64" ]; then \
         curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "$(go env GOPATH)/bin" v1.42.0; \
     fi
+
+## install k8s.io and generate openapi spec
+RUN mkdir -p /go/src/github.com/kubernetes && \
+    cd /go/src/github.com/kubernetes && \
+    git clone https://github.com/kubernetes/kubernetes && \
+    cd kubernetes && \
+    git checkout v1.21.7 && \
+    make generated_files
 
 # -- for dapper
 ENV DAPPER_RUN_ARGS --privileged --network host -v /run/containerd/containerd.sock:/run/containerd/containerd.sock
