@@ -220,9 +220,9 @@ func objectHousekeeping(obj *unstructured.Unstructured) error {
 	}
 
 	switch obj.GetKind() {
-	case "Ingress":
-		// Ingress specific housekeeping
-		err = ingressCleanup(obj)
+	//case "Ingress":
+	// Ingress specific housekeeping
+	//	err = ingressCleanup(obj)
 	case "Job", "Batch":
 		err = jobCleanup(obj)
 	case "APIService":
