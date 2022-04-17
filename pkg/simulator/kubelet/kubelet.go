@@ -1,12 +1,14 @@
 package kubelet
 
 import (
+	"archive/zip"
 	"bytes"
 	"context"
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
+	"github.com/rancher/support-bundle-kit/pkg/simulator/objects"
 	"github.com/virtual-kubelet/node-cli/opts"
 	"github.com/virtual-kubelet/virtual-kubelet/node/api"
 	"io"
@@ -100,6 +102,12 @@ func (k *KubeletSimulator) getContainerLogs(ctx context.Context, namespace, podN
 }
 
 func readLogFiles(path, namespace, name, container string) (io.Reader, error) {
+
+	// node.zip files need to be handled using the zip file reader
+	if namespace == objects.DefaultPodNamespace {
+		return readZipFiles(path, name, container)
+	}
+
 	abs, err := filepath.Abs(filepath.Join(path, "logs", namespace, name, container+".log"))
 	if err != nil {
 		return nil, err
@@ -108,6 +116,40 @@ func readLogFiles(path, namespace, name, container string) (io.Reader, error) {
 	content, err := ioutil.ReadFile(abs)
 	if err != nil {
 		return nil, err
+	}
+	return bytes.NewReader(content), nil
+}
+
+func readZipFiles(path, name, container string) (io.Reader, error) {
+	// generate zip file name
+	abs, err := filepath.Abs(filepath.Join(path, "nodes", fmt.Sprintf("%s.zip", name)))
+
+	if err != nil {
+		return nil, err
+	}
+
+	r, err := zip.OpenReader(abs)
+	defer r.Close()
+
+	if err != nil {
+		return nil, fmt.Errorf("error reading node zip file %s: %v", name, err)
+	}
+
+	var content []byte
+	var found bool
+	for _, f := range r.File {
+		if filepath.Base(f.Name) == fmt.Sprintf("%s.log", container) {
+			content, err = objects.ReadContent(f)
+			if err != nil {
+				return nil, err
+			}
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		return nil, fmt.Errorf("could not find log file name %s.log", container)
 	}
 	return bytes.NewReader(content), nil
 }

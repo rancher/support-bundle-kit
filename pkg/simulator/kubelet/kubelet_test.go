@@ -60,7 +60,16 @@ func TestKubeletSimulator(t *testing.T) {
 	}
 
 	if resp.StatusCode != 200 {
-		t.Fatalf("expected to get status code 200 but got %d", resp.StatusCode)
+		t.Fatalf("expected to get status code 200 while reading container log but got %d", resp.StatusCode)
 	}
 
+	// read log from zip file as well
+	resp, err = client.Get("https://localhost:10250/containerLogs/support-bundle-node-info/node1/rke2-server")
+	if err != nil {
+		t.Fatalf("error fetching logs from kubelet: %v", err)
+	}
+
+	if resp.StatusCode != 200 {
+		t.Fatalf("expected to get status code 200 while reading node logs from zip file but got %d", resp.StatusCode)
+	}
 }
