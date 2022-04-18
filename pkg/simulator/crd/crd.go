@@ -64,9 +64,6 @@ func List() []crd.CRD {
 		newCRD(&supportbundlekit.NodeConfig{}, func(c crd.CRD) crd.CRD {
 			return c
 		}),
-		newCRD(&supportbundlekit.NodeConfigList{}, func(c crd.CRD) crd.CRD {
-			return c
-		}),
 	}
 }
 
@@ -85,7 +82,7 @@ func newCRD(obj interface{}, customize func(crd.CRD) crd.CRD) crd.CRD {
 			Group:   "supportbundlekit.io",
 			Version: "v1",
 		},
-		Status:       false,
+		Status:       true,
 		NonNamespace: false,
 		SchemaObject: obj,
 	}

@@ -16,6 +16,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"time"
 )
@@ -126,6 +127,11 @@ func readZipFiles(path, name, container string) (io.Reader, error) {
 
 	if err != nil {
 		return nil, err
+	}
+
+	_, err = os.Stat(abs)
+	if err != nil {
+		return nil, fmt.Errorf("unable to find zip file corresponding to pod at path abs: %v", err)
 	}
 
 	r, err := zip.OpenReader(abs)
