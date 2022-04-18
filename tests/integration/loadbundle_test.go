@@ -35,12 +35,6 @@ var _ = Describe("Process Support Bundle", func() {
 		}, 5, 60).ShouldNot(HaveOccurred())
 	})
 
-	It("Create Node objects from zip file", func() {
-		Eventually(func() error {
-			return o.CreateNodeZipObjects()
-		}, 5, 60).ShouldNot(HaveOccurred())
-	})
-
 	It("Verify Pods", func() {
 		By("Verify pod objects")
 		{
@@ -91,4 +85,11 @@ var _ = Describe("Process Support Bundle", func() {
 			}, 5, 60).ShouldNot(HaveOccurred())
 		}
 	})
+
+	It("Create Node objects from zip file", func() {
+		Eventually(func() error {
+			return o.CreateNodeZipObjects()
+		}, 5, 60).ShouldNot(HaveOccurred())
+	})
+
 })

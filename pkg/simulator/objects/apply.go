@@ -206,16 +206,20 @@ func objectHousekeeping(obj *unstructured.Unstructured) error {
 		annotations = make(map[string]string)
 	}
 
-	orgCreationTimestamp, ok, err := unstructured.NestedString(obj.Object, "metadata", "creationTimestamp")
+	metadataMap, ok, err := unstructured.NestedMap(obj.Object, "metadata")
 	if err != nil {
 		return err
 	}
+
 	if ok {
-		annotations[simCreationTimeStamp] = orgCreationTimestamp
-		unstructured.RemoveNestedField(obj.Object, "metadata", "resourceVersion")
-		err = unstructured.SetNestedStringMap(obj.Object, annotations, "metadata", "annotations")
-		if err != nil {
-			return err
+		orgCreationTimestamp, innerOK := metadataMap["creationTimestamp"]
+		if innerOK && orgCreationTimestamp != nil {
+			annotations[simCreationTimeStamp] = orgCreationTimestamp.(string)
+			unstructured.RemoveNestedField(obj.Object, "metadata", "resourceVersion")
+			err = unstructured.SetNestedStringMap(obj.Object, annotations, "metadata", "annotations")
+			if err != nil {
+				return err
+			}
 		}
 	}
 

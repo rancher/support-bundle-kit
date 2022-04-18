@@ -32,12 +32,12 @@ func TestGenerateNodeZipObjects(t *testing.T) {
 	}
 
 	// verify pod
-	if len(podList.Items) != 1 {
-		t.Fatalf("expected to find 1 pod created to match the node, but found %d", len(podList.Items))
+	if len(podList) != 1 {
+		t.Fatalf("expected to find 1 pod created to match the node, but found %d", len(podList))
 	}
 
 	// parse containers in the pod
-	node1Pod := podList.Items[0]
+	node1Pod := podList[0]
 	if node1Pod.Name != "node1" {
 		t.Fatalf("expected pod name to be node1 but got %s", node1Pod.Name)
 	}
@@ -46,12 +46,12 @@ func TestGenerateNodeZipObjects(t *testing.T) {
 		t.Fatalf("expected 8 containers but found %d", len(node1Pod.Spec.Containers))
 	}
 
-	if len(nodeConfig.Items) != 1 {
-		t.Fatalf("expected to find 1 node but found %d", len(nodeConfig.Items))
+	if len(nodeConfig) != 1 {
+		t.Fatalf("expected to find 1 node but found %d", len(nodeConfig))
 	}
 
 	// parse content
-	if len(nodeConfig.Items[0].Spec) != 18 {
-		t.Fatalf("expected to find 18 files, but found %d", len(nodeConfig.Items[0].Spec))
+	if len(nodeConfig[0].Spec) != 18 {
+		t.Fatalf("expected to find 18 files, but found %d", len(nodeConfig[0].Spec))
 	}
 }
