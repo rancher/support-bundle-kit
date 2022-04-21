@@ -33,7 +33,7 @@ The simulator will also load the contents of the same into a CRD named `NodeConf
 
 The CRD spec is as follows:
 
-```json
+```
 
 type NodeConfig struct {
 	metav1.TypeMeta   `json:",inline"`
