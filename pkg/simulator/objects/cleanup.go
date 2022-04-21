@@ -163,3 +163,10 @@ func cleanupDeviceOrStatus(obj *unstructured.Unstructured, fields ...string) err
 
 	return nil
 }
+
+// cleanupSecret is needed to clean up secrets which have no data
+// and are represented as a string rather than a map[string]string
+func cleanupSecret(obj *unstructured.Unstructured) error {
+	unstructured.RemoveNestedField(obj.Object, "metadata", "managedFields")
+	return nil
+}

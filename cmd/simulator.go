@@ -99,6 +99,10 @@ support bundle contents using native k8s tooling like kubectl`,
 				logrus.Fatalf("error loading namespacedobjects %v", err)
 			}
 
+			err = o.CreateNodeZipObjects()
+			if err != nil {
+				logrus.Fatalf("error loading node zip objects %v", err)
+			}
 			logrus.Info("all resources loaded successfully")
 		}
 
