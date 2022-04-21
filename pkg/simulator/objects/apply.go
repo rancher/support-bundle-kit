@@ -237,6 +237,8 @@ func objectHousekeeping(obj *unstructured.Unstructured) error {
 		err = loadBalancerCleanup(obj)
 	case "BlockDevice":
 		err = blockDevicesCleanup(obj)
+	case "Secret":
+		err = cleanupSecret(obj)
 	}
 	return err
 }

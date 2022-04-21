@@ -13,7 +13,6 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
-	"time"
 )
 
 const (
@@ -77,7 +76,6 @@ var _ = BeforeSuite(func(done Done) {
 }, setupTimeout)
 
 var _ = AfterSuite(func(done Done) {
-	time.Sleep(300 * time.Second)
 	defer os.RemoveAll(dir)
 	defer close(done)
 	cancel()
