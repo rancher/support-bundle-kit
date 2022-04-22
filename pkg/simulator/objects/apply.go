@@ -37,7 +37,6 @@ const (
 // this map helps speed up the process and is easier to maintain
 var (
 	skippedGroups = map[string]bool{
-		"events.k8s.io":                true,
 		"admissionregistration.k8s.io": true,
 		"apiregistration.k8s.io":       true,
 		"metrics.k8s.io":               true,
@@ -239,6 +238,8 @@ func objectHousekeeping(obj *unstructured.Unstructured) error {
 		err = blockDevicesCleanup(obj)
 	case "Secret":
 		err = cleanupSecret(obj)
+	case "Event":
+		err = cleanupEvent(obj)
 	}
 	return err
 }
