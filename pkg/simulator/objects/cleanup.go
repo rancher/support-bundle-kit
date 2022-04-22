@@ -8,12 +8,6 @@ import (
 	"time"
 )
 
-// ingressCleanup object specific cleanup
-func ingressCleanup(obj *unstructured.Unstructured) error {
-	obj.SetAPIVersion("networking.k8s.io/v1")
-	return nil
-}
-
 // jobCleanup performs job specific cleanup
 func jobCleanup(obj *unstructured.Unstructured) error {
 	labels := obj.GetLabels()
