@@ -2,8 +2,10 @@ package objects
 
 import (
 	"fmt"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"strings"
+	"time"
 )
 
 // ingressCleanup object specific cleanup
@@ -168,5 +170,80 @@ func cleanupDeviceOrStatus(obj *unstructured.Unstructured, fields ...string) err
 // and are represented as a string rather than a map[string]string
 func cleanupSecret(obj *unstructured.Unstructured) error {
 	unstructured.RemoveNestedField(obj.Object, "metadata", "managedFields")
+	return nil
+}
+
+// cleanupEvents will remove the fields firstTimestamp, lastTimestamp from the core Event
+func cleanupEvent(obj *unstructured.Unstructured) error {
+	if obj.GroupVersionKind().Group == "events.k8s.io" {
+		unstructured.RemoveNestedField(obj.Object, "deprecatedFirstTimestamp")
+		unstructured.RemoveNestedField(obj.Object, "deprecatedLastTimestamp")
+		unstructured.RemoveNestedField(obj.Object, "deprecatedCount")
+		unstructured.RemoveNestedField(obj.Object, "deprecatedSource")
+		unstructured.RemoveNestedField(obj.Object, "series")
+	} else {
+		// cleanup corev1 Events
+		unstructured.RemoveNestedField(obj.Object, "firstTimestamp")
+		unstructured.RemoveNestedField(obj.Object, "lastTimestamp")
+		unstructured.RemoveNestedField(obj.Object, "count")
+		unstructured.RemoveNestedField(obj.Object, "source")
+	}
+
+	unstructured.RemoveNestedField(obj.Object, "series")
+
+	orgEventTime, eventOk, err := unstructured.NestedString(obj.Object, "eventTime")
+	if err != nil {
+		return err
+	}
+
+	// apply an eventTime if none is present or is empty
+	if !eventOk || orgEventTime == "" {
+		creationTimeStamp, ok, err := unstructured.NestedString(obj.Object, "metadata", "creationTimestamp")
+		if err != nil {
+			return err
+		}
+
+		// create a new time or convert existing time to UnixMicro
+		var tmpTime time.Time
+		if !ok {
+			tmpTime = time.Now()
+		} else {
+			tmpTime, err = time.Parse(time.RFC3339, creationTimeStamp)
+			if err != nil {
+				return err
+			}
+		}
+		creationTimeStamp = tmpTime.Format(metav1.RFC3339Micro)
+		err = unstructured.SetNestedField(obj.Object, creationTimeStamp, "eventTime")
+		if err != nil {
+			return err
+		}
+	}
+
+	if err := checkAndSetDefaultValue(obj, []string{"reportingController"}, "sim-generated"); err != nil {
+		return err
+	}
+
+	if err := checkAndSetDefaultValue(obj, []string{"reportingInstance"}, "sim-generated"); err != nil {
+		return err
+	}
+
+	if err := checkAndSetDefaultValue(obj, []string{"action"}, "sim-generated"); err != nil {
+		return err
+	}
+	return nil
+}
+
+func checkAndSetDefaultValue(obj *unstructured.Unstructured, field []string, defaultVal string) error {
+	val, ok, err := unstructured.NestedString(obj.Object, field...)
+	if err != nil {
+		return err
+	}
+
+	if !ok || val == "" {
+		val = defaultVal
+		return unstructured.SetNestedField(obj.Object, val, field...)
+	}
+
 	return nil
 }
