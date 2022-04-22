@@ -177,7 +177,10 @@ func (o *ObjectManager) ApplyObjects(objs []runtime.Object, patchStatus bool, sk
 				if err != nil && !apierrors.IsNotFound(err) {
 					return fmt.Errorf("error looking up resource %s with gvr %v with error %v", unstructuredObj.GetName(), unstructuredObj.GroupVersionKind(), err)
 				}*/
-				unstructured.SetNestedField(resp.Object, status, "status")
+				err = unstructured.SetNestedField(resp.Object, status, "status")
+				if err != nil {
+					return err
+				}
 				_, err = dr.UpdateStatus(o.ctx, resp, metav1.UpdateOptions{})
 				// update sometimes returns this object not found error
 				// the 404 lookup is to try and work around the same.

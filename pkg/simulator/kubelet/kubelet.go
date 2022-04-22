@@ -22,8 +22,7 @@ import (
 )
 
 const (
-	defaultStreamIdleTimeout     = 10 * time.Second
-	defaultStreamCreationTimeout = 10 * time.Second
+	defaultStreamIdleTimeout = 10 * time.Second
 )
 
 type KubeletSimulator struct {
@@ -74,7 +73,9 @@ func (k *KubeletSimulator) RunFakeKubelet() error {
 
 	go func() {
 		<-k.ctx.Done()
-		s.Shutdown(k.ctx)
+		if err := s.Shutdown(k.ctx); err != nil {
+			log.Fatalf("error shutting down kubelet: %v", err)
+		}
 	}()
 
 	return s.Serve(l)
@@ -135,7 +136,6 @@ func readZipFiles(path, name, container string) (io.Reader, error) {
 	}
 
 	r, err := zip.OpenReader(abs)
-	defer r.Close()
 
 	if err != nil {
 		return nil, fmt.Errorf("error reading node zip file %s: %v", name, err)
@@ -157,7 +157,7 @@ func readZipFiles(path, name, container string) (io.Reader, error) {
 	if !found {
 		return nil, fmt.Errorf("could not find log file name %s.log", container)
 	}
-	return bytes.NewReader(content), nil
+	return bytes.NewReader(content), r.Close()
 }
 
 func loadTLSConfig(ctx context.Context, certPath, keyPath, caPath string, allowUnauthenticatedClients, authWebhookEnabled bool) (*tls.Config, error) {
