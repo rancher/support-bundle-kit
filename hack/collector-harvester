@@ -87,4 +87,5 @@ for unit in ${units[@]}; do
     chroot $HOST_PATH /usr/bin/journalctl -b all -u $unit | tail -c 10m > $unit.log
 done
 
+cp ${HOST_PATH}/var/lib/rancher/rke2/agent/logs/kubelet.log .
 cp ${HOST_PATH}/var/log/console.log .
