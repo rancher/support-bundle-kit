@@ -27,7 +27,8 @@ import (
 )
 
 var (
-	NodeConfigResourceName = "nodeconfigs"
+	FailedObjectResourceName = "failedobjects"
+	NodeConfigResourceName   = "nodeconfigs"
 )
 
 // SchemeGroupVersion is group version used to register these objects
@@ -51,6 +52,8 @@ var (
 // Adds the list of known types to Scheme.
 func addKnownTypes(scheme *runtime.Scheme) error {
 	scheme.AddKnownTypes(SchemeGroupVersion,
+		&FailedObject{},
+		&FailedObjectList{},
 		&NodeConfig{},
 		&NodeConfigList{},
 	)

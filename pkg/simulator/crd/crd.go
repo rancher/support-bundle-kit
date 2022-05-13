@@ -64,6 +64,10 @@ func List() []crd.CRD {
 		newCRD(&supportbundlekit.NodeConfig{}, func(c crd.CRD) crd.CRD {
 			return c
 		}),
+		newCRD(&supportbundlekit.FailedObject{}, func(c crd.CRD) crd.CRD {
+			c.NonNamespace = true
+			return c
+		}),
 	}
 }
 

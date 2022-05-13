@@ -29,6 +29,7 @@ func init() {
 }
 
 type Interface interface {
+	FailedObject() FailedObjectController
 	NodeConfig() NodeConfigController
 }
 
@@ -42,6 +43,9 @@ type version struct {
 	controllerFactory controller.SharedControllerFactory
 }
 
+func (c *version) FailedObject() FailedObjectController {
+	return NewFailedObjectController(schema.GroupVersionKind{Group: "supportbundlekit.io", Version: "v1", Kind: "FailedObject"}, "failedobjects", false, c.controllerFactory)
+}
 func (c *version) NodeConfig() NodeConfigController {
 	return NewNodeConfigController(schema.GroupVersionKind{Group: "supportbundlekit.io", Version: "v1", Kind: "NodeConfig"}, "nodeconfigs", true, c.controllerFactory)
 }
