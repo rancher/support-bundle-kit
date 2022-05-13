@@ -3,6 +3,7 @@ package objects
 import (
 	"context"
 	"fmt"
+	supportbundlekit "github.com/rancher/support-bundle-kit/pkg/simulator/apis/supportbundlekit.io/v1"
 	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
 	"github.com/sirupsen/logrus"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
@@ -21,11 +22,12 @@ import (
 )
 
 type ObjectManager struct {
-	ctx    context.Context
-	path   string
-	config *rest.Config
-	kc     *kubernetes.Clientset
-	dc     dynamic.Interface
+	ctx        context.Context
+	path       string
+	config     *rest.Config
+	kc         *kubernetes.Clientset
+	dc         dynamic.Interface
+	failedObjs []supportbundlekit.FailedObjectSpec
 }
 
 const (
@@ -153,20 +155,23 @@ func (o *ObjectManager) ApplyObjects(objs []runtime.Object, patchStatus bool, sk
 		}
 
 		resp, err = dr.Get(o.ctx, unstructuredObj.GetName(), metav1.GetOptions{})
+		var skipPatchStatus bool
 		if err != nil {
 			if apierrors.IsNotFound(err) {
 				resp, err = dr.Create(o.ctx, unstructuredObj, metav1.CreateOptions{})
 				if err != nil {
 					logrus.Errorf("error during creation of resource %s with gvr %s", unstructuredObj.GetName(), restMapping.Resource.String())
 					logrus.Error(unstructuredObj.Object)
-					return fmt.Errorf("error during creation of unstructured resource %v", err)
+					o.addToFailedObjects(unstructuredObj, err)
+					// no need to patch status when object errors out
+					skipPatchStatus = true
 				}
 			} else {
 				return fmt.Errorf("error looking up object before creating the same %v", err)
 			}
 		}
 
-		if patchStatus {
+		if patchStatus && !skipPatchStatus {
 			// we will patch the status here later
 			status, ok, err := unstructured.NestedFieldCopy(unstructuredObj.Object, "status")
 			if err != nil {
@@ -185,7 +190,7 @@ func (o *ObjectManager) ApplyObjects(objs []runtime.Object, patchStatus bool, sk
 				// update sometimes returns this object not found error
 				// the 404 lookup is to try and work around the same.
 				if err != nil && !apierrors.IsNotFound(err) {
-					return fmt.Errorf("error updating status on resource %s with gvr %v with error %v", resp.GetName(), resp.GroupVersionKind(), err)
+					o.addToFailedObjects(unstructuredObj, err)
 				}
 			}
 
@@ -354,4 +359,29 @@ func (o *ObjectManager) WaitForNamespaces(timeout time.Duration) error {
 	}
 
 	return fmt.Errorf("timed out waiting for apiserver to be ready")
+}
+
+func (o *ObjectManager) CreatedFailedObjectsList() error {
+	failedObject := supportbundlekit.FailedObject{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "failedobjects",
+		},
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "FailedObject",
+			APIVersion: "supportbundlekit.io/v1",
+		},
+	}
+	failedObject.Spec = o.failedObjs
+	return o.ApplyObjects([]runtime.Object{&failedObject}, false, nil)
+}
+
+func (o *ObjectManager) addToFailedObjects(obj *unstructured.Unstructured, err error) {
+	fObj := supportbundlekit.FailedObjectSpec{
+		GVK:       obj.GroupVersionKind().String(),
+		Name:      obj.GetName(),
+		Namespace: obj.GetNamespace(),
+		Error:     err.Error(),
+	}
+
+	o.failedObjs = append(o.failedObjs, fObj)
 }

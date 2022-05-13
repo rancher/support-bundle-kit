@@ -35,6 +35,18 @@ var _ = Describe("Process Support Bundle", func() {
 		}, 5, 60).ShouldNot(HaveOccurred())
 	})
 
+	It("Generate nodezip objects", func() {
+		Eventually(func() error {
+			return o.CreateNodeZipObjects()
+		}, 5, 60).ShouldNot(HaveOccurred())
+	})
+
+	It("Generate list of failed objects", func() {
+		Eventually(func() error {
+			return o.CreatedFailedObjectsList()
+		}, 5, 60).ShouldNot(HaveOccurred())
+	})
+
 	It("Verify Pods", func() {
 		By("Verify pod objects")
 		{

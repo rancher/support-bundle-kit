@@ -25,6 +25,23 @@ import (
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
+// FailedObjectList is a list of FailedObject resources
+type FailedObjectList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata"`
+
+	Items []FailedObject `json:"items"`
+}
+
+func NewFailedObject(namespace, name string, obj FailedObject) *FailedObject {
+	obj.APIVersion, obj.Kind = SchemeGroupVersion.WithKind("FailedObject").ToAPIVersionAndKind()
+	obj.Name = name
+	obj.Namespace = namespace
+	return &obj
+}
+
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
 // NodeConfigList is a list of NodeConfig resources
 type NodeConfigList struct {
 	metav1.TypeMeta `json:",inline"`

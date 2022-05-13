@@ -216,3 +216,25 @@ Apr 19 07:03:55 harvester-pxe-1 iscsid[23921]: iscsid: Connection1:0 to [target:
 Apr 19 07:03:58 harvester-pxe-1 iscsid[23921]: iscsid: Connection2:0 to [target: iqn.2019-10.io.longhorn:pvc-d77f3f5b-24cf-4afe-84d5-b109007422d5, portal: 10.52.0.36,3260] through [iface: default] is operational now
 
 ```
+
+Objects in the support bundle which cannot be loaded due to any error, are recorded in a CRD `failedobjects.supportbundlekit.io`
+
+A sample would be as follows:
+
+```yaml
+apiVersion: supportbundlekit.io/v1
+kind: FailedObject
+metadata:
+  creationTimestamp: "2022-05-13T02:15:53Z"
+  generation: 1
+  name: failedobjects
+  resourceVersion: "3764"
+  uid: 3638a38d-de0b-43af-a3ed-998f8f380c68
+spec:
+- error: 'Cluster.cluster.x-k8s.io "local" is invalid: spec.controlPlaneEndpoint.host:
+    Required value'
+  gvk: cluster.x-k8s.io/v1beta1, Kind=Cluster
+  name: local
+  namespace: fleet-local
+
+```

@@ -103,6 +103,9 @@ support bundle contents using native k8s tooling like kubectl`,
 			if err != nil {
 				logrus.Fatalf("error loading node zip objects %v", err)
 			}
+
+			// ignore the error creation
+			_ = o.CreatedFailedObjectsList()
 			logrus.Info("all resources loaded successfully")
 		}
 
