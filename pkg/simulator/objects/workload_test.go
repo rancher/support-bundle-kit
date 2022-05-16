@@ -181,8 +181,8 @@ func TestVerifyNode(t *testing.T) {
 				t.Fatal("unable to assert address into map[string]interface")
 			}
 			value, ok := address["address"]
-			if !ok || value.(string) != "localhost" {
-				t.Fatalf("expected address to be localhost but found %v", address)
+			if !ok || value.(string) == "localhost" {
+				t.Fatalf("expected address to be %v but found localhost", address)
 			}
 		}
 

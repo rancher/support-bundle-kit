@@ -238,8 +238,6 @@ func objectHousekeeping(obj *unstructured.Unstructured) error {
 		err = jobCleanup(obj)
 	case "APIService":
 		err = apiServiceCleanup(obj)
-	case "Node":
-		err = nodeCleanup(obj)
 	case "LoadBalancer":
 		err = loadBalancerCleanup(obj)
 	case "BlockDevice":
