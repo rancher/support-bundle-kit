@@ -88,7 +88,7 @@ var _ = Describe("Process Support Bundle", func() {
 					}
 
 					for _, address := range nodeObj.Status.Addresses {
-						if address.Address != "localhost" {
+						if address.Address == "localhost" {
 							return fmt.Errorf("expect addresses to be localhost but found %s for node %s", address.Address, nodeObj.GetName())
 						}
 					}
