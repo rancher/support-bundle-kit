@@ -82,39 +82,6 @@ items:
     generation: 4
     labels:
       cloudprovider.harvesterhci.io/cluster: bhofmann-test
-    managedFields:
-    - apiVersion: loadbalancer.harvesterhci.io/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:annotations:
-            .: {}
-            f:cloudprovider.harvesterhci.io/service-uuid: {}
-          f:labels:
-            .: {}
-            f:cloudprovider.harvesterhci.io/cluster: {}
-        f:spec:
-          .: {}
-          f:backendServers: {}
-          f:ipam: {}
-          f:listeners: {}
-        f:status: {}
-      manager: harvester-cloud-provider
-      operation: Update
-      time: "2022-01-04T17:34:49Z"
-    - apiVersion: loadbalancer.harvesterhci.io/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-lb-controller"null: {}
-        f:status:
-          f:address: {}
-          f:conditions: {}
-      manager: harvester-load-balancer
-      operation: Update
-      time: "2022-01-04T17:34:54Z"
     name: bhofmann-test-default-nginxlb-f358377f
     namespace: default
     resourceVersion: "10863662"
@@ -147,39 +114,6 @@ items:
     generation: 29
     labels:
       cloudprovider.harvesterhci.io/cluster: demo
-    managedFields:
-    - apiVersion: loadbalancer.harvesterhci.io/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:annotations:
-            .: {}
-            f:cloudprovider.harvesterhci.io/service-uuid: {}
-          f:labels:
-            .: {}
-            f:cloudprovider.harvesterhci.io/cluster: {}
-        f:spec:
-          .: {}
-          f:backendServers: {}
-          f:ipam: {}
-          f:listeners: {}
-        f:status: {}
-      manager: harvester-cloud-provider
-      operation: Update
-      time: "2022-01-13T16:58:11Z"
-    - apiVersion: loadbalancer.harvesterhci.io/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-lb-controller"null: {}
-        f:status:
-          f:address: {}
-          f:conditions: {}
-      manager: harvester-load-balancer
-      operation: Update
-      time: "2022-01-13T16:58:16Z"
     name: demo-default-nginx-loadbalancer-26a82b4e
     namespace: default
     resourceVersion: "21588258"
@@ -215,39 +149,6 @@ items:
     generation: 168
     labels:
       cloudprovider.harvesterhci.io/cluster: demo
-    managedFields:
-    - apiVersion: loadbalancer.harvesterhci.io/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:annotations:
-            .: {}
-            f:cloudprovider.harvesterhci.io/service-uuid: {}
-          f:labels:
-            .: {}
-            f:cloudprovider.harvesterhci.io/cluster: {}
-        f:spec:
-          .: {}
-          f:backendServers: {}
-          f:ipam: {}
-          f:listeners: {}
-        f:status: {}
-      manager: harvester-cloud-provider
-      operation: Update
-      time: "2022-01-06T17:57:00Z"
-    - apiVersion: loadbalancer.harvesterhci.io/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-lb-controller"null: {}
-        f:status:
-          f:address: {}
-          f:conditions: {}
-      manager: harvester-load-balancer
-      operation: Update
-      time: "2022-01-06T17:57:05Z"
     name: demo-default-web-loadbalancer-834c8d16
     namespace: default
     resourceVersion: "21588165"
@@ -283,39 +184,6 @@ items:
     generation: 124
     labels:
       cloudprovider.harvesterhci.io/cluster: demo
-    managedFields:
-    - apiVersion: loadbalancer.harvesterhci.io/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:annotations:
-            .: {}
-            f:cloudprovider.harvesterhci.io/service-uuid: {}
-          f:labels:
-            .: {}
-            f:cloudprovider.harvesterhci.io/cluster: {}
-        f:spec:
-          .: {}
-          f:backendServers: {}
-          f:ipam: {}
-          f:listeners: {}
-        f:status: {}
-      manager: harvester-cloud-provider
-      operation: Update
-      time: "2022-01-07T11:12:19Z"
-    - apiVersion: loadbalancer.harvesterhci.io/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-lb-controller"null: {}
-        f:status:
-          f:address: {}
-          f:conditions: {}
-      manager: harvester-load-balancer
-      operation: Update
-      time: "2022-01-07T11:12:24Z"
     name: demo-default-web2-ca0ef8ec
     namespace: default
     resourceVersion: "21588167"
@@ -351,35 +219,6 @@ items:
     generation: 124
     labels:
       cloudprovider.harvesterhci.io/cluster: production-cluster
-    managedFields:
-    - apiVersion: loadbalancer.harvesterhci.io/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:annotations:
-            .: {}
-            f:cloudprovider.harvesterhci.io/service-uuid: {}
-          f:labels:
-            .: {}
-            f:cloudprovider.harvesterhci.io/cluster: {}
-        f:spec:
-          .: {}
-          f:backendServers: {}
-          f:ipam: {}
-          f:listeners: {}
-        f:status: {}
-      manager: harvester-cloud-provider
-      operation: Update
-      time: "2022-01-05T08:48:09Z"
-    - apiVersion: loadbalancer.harvesterhci.io/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-lb-controller"null: {}
-        f:status:
-          f:conditions: {}
       manager: harvester-load-balancer
       operation: Update
       time: "2022-01-05T08:48:10Z"
@@ -417,36 +256,6 @@ items:
     generation: 6
     labels:
       cloudprovider.harvesterhci.io/cluster: production-cluster
-    managedFields:
-    - apiVersion: loadbalancer.harvesterhci.io/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:annotations:
-            .: {}
-            f:cloudprovider.harvesterhci.io/service-uuid: {}
-          f:labels:
-            .: {}
-            f:cloudprovider.harvesterhci.io/cluster: {}
-        f:spec:
-          .: {}
-          f:backendServers: {}
-          f:ipam: {}
-          f:listeners: {}
-        f:status: {}
-      manager: harvester-cloud-provider
-      operation: Update
-      time: "2022-01-04T12:13:03Z"
-    - apiVersion: loadbalancer.harvesterhci.io/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-lb-controller"null: {}
-        f:status:
-          f:address: {}
-          f:conditions: {}
       manager: harvester-load-balancer
       operation: Update
       time: "2022-01-04T12:13:08Z"
@@ -486,39 +295,6 @@ items:
     generation: 6
     labels:
       cloudprovider.harvesterhci.io/cluster: production-cluster
-    managedFields:
-    - apiVersion: loadbalancer.harvesterhci.io/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:annotations:
-            .: {}
-            f:cloudprovider.harvesterhci.io/service-uuid: {}
-          f:labels:
-            .: {}
-            f:cloudprovider.harvesterhci.io/cluster: {}
-        f:spec:
-          .: {}
-          f:backendServers: {}
-          f:ipam: {}
-          f:listeners: {}
-        f:status: {}
-      manager: harvester-cloud-provider
-      operation: Update
-      time: "2022-01-05T08:56:40Z"
-    - apiVersion: loadbalancer.harvesterhci.io/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-lb-controller"null: {}
-        f:status:
-          f:address: {}
-          f:conditions: {}
-      manager: harvester-load-balancer
-      operation: Update
-      time: "2022-01-05T08:56:45Z"
     name: production-cluster-kube-system-rke2-ingress-1e0fea5a
     namespace: default
     resourceVersion: "10863597"
@@ -551,38 +327,6 @@ items:
     generation: 147
     labels:
       cloudprovider.harvesterhci.io/cluster: production-cluster
-    managedFields:
-    - apiVersion: loadbalancer.harvesterhci.io/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:annotations:
-            .: {}
-            f:cloudprovider.harvesterhci.io/service-uuid: {}
-          f:labels:
-            .: {}
-            f:cloudprovider.harvesterhci.io/cluster: {}
-        f:spec:
-          .: {}
-          f:backendServers: {}
-          f:ipam: {}
-          f:listeners: {}
-        f:status: {}
-      manager: harvester-cloud-provider
-      operation: Update
-      time: "2022-01-05T08:55:30Z"
-    - apiVersion: loadbalancer.harvesterhci.io/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-lb-controller"null: {}
-        f:status:
-          f:conditions: {}
-      manager: harvester-load-balancer
-      operation: Update
-      time: "2022-01-05T08:55:30Z"
     name: production-cluster-kube-system-rke2-ingress-nginx-controller-54288d09
     namespace: default
     resourceVersion: "10062930"
@@ -617,36 +361,6 @@ items:
     generation: 42
     labels:
       cloudprovider.harvesterhci.io/cluster: test-mgmt-net
-    managedFields:
-    - apiVersion: loadbalancer.harvesterhci.io/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:annotations:
-            .: {}
-            f:cloudprovider.harvesterhci.io/service-uuid: {}
-          f:labels:
-            .: {}
-            f:cloudprovider.harvesterhci.io/cluster: {}
-        f:spec:
-          .: {}
-          f:backendServers: {}
-          f:ipam: {}
-          f:listeners: {}
-        f:status: {}
-      manager: harvester-cloud-provider
-      operation: Update
-      time: "2022-01-07T11:54:43Z"
-    - apiVersion: loadbalancer.harvesterhci.io/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-lb-controller"null: {}
-        f:status:
-          f:address: {}
-          f:conditions: {}
       manager: harvester-load-balancer
       operation: Update
       time: "2022-01-07T11:54:48Z"
@@ -682,39 +396,6 @@ items:
     generation: 7
     labels:
       cloudprovider.harvesterhci.io/cluster: ubuntu
-    managedFields:
-    - apiVersion: loadbalancer.harvesterhci.io/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:annotations:
-            .: {}
-            f:cloudprovider.harvesterhci.io/service-uuid: {}
-          f:labels:
-            .: {}
-            f:cloudprovider.harvesterhci.io/cluster: {}
-        f:spec:
-          .: {}
-          f:backendServers: {}
-          f:ipam: {}
-          f:listeners: {}
-        f:status: {}
-      manager: harvester-cloud-provider
-      operation: Update
-      time: "2022-01-04T13:48:21Z"
-    - apiVersion: loadbalancer.harvesterhci.io/v1alpha1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-lb-controller"null: {}
-        f:status:
-          f:address: {}
-          f:conditions: {}
-      manager: harvester-load-balancer
-      operation: Update
-      time: "2022-01-04T13:48:26Z"
     name: ubuntu-default-wp-wordpress-7422040c
     namespace: default
     resourceVersion: "10863626"

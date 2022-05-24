@@ -12,7 +12,7 @@ drwxr-xr-x   5 gaurav gaurav     4096 Apr 19 18:19  supportbundle_101310ea-583b-
 change directory to the unzipped support bundle directory and run `support-bundle-kit simulator`
 
 ```shell
-(⎈ |default:default)➜  supportbundle_101310ea-583b-4191-b33e-d265002214ea_2022-04-19T08-18-38Z support-bundle-kit simulator 
+$ support-bundle-kit simulator 
 INFO[0000] Creating embedded etcd server                
 {"level":"warn","ts":"2022-04-21T11:25:40.672+1000","caller":"etcdserver/util.go:121","msg":"failed to apply request","took":"656.527µs","request":"header:<ID:16984622604441375451 > lease_revoke:<id:6bb5804535cc52be>","response":"size:30","error":"lease not found"}
 I0421 11:25:42.462055  688330 server.go:629] external host was not specified, using 192.168.1.129
@@ -33,8 +33,7 @@ The simulator will also load the contents of the same into a CRD named `NodeConf
 
 The CRD spec is as follows:
 
-```
-
+```go
 type NodeConfig struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -53,7 +52,7 @@ In addition, the simulator will also create pods corresponding to each node in t
 
 For example:
 ```shell
-(⎈ |default:default)➜  ~ kubectl get pods -n support-bundle-node-info
+$ kubectl get pods -n support-bundle-node-info
 NAME              READY   STATUS    RESTARTS   AGE
 harvester-pxe-1   8/8     Running   0          41h
 harvester-pxe-2   8/8     Running   0          41h
@@ -62,7 +61,7 @@ harvester-pxe-2   8/8     Running   0          41h
 
 A quick description of the pods shows the following:
 ```
-(⎈ |default:default)➜  ~ kubectl describe pod harvester-pxe-1 -n support-bundle-node-info
+$ kubectl describe pod harvester-pxe-1 -n support-bundle-node-info
 
 Name:         harvester-pxe-1
 Namespace:    support-bundle-node-info
@@ -202,7 +201,7 @@ Events:                      <none>
 Users can now browse the node logs as follows:
 
 ```shell
-(⎈ |default:default)➜  ~ kubectl  logs harvester-pxe-1 -c iscsid -n support-bundle-node-info 
+$ kubectl  logs harvester-pxe-1 -c iscsid -n support-bundle-node-info 
 -- Logs begin at Tue 2022-04-19 06:59:30 UTC, end at Tue 2022-04-19 08:19:00 UTC. --
 Apr 19 06:59:30 localhost systemd[1]: Starting Open-iSCSI...
 Apr 19 06:59:30 localhost systemd[1]: Started Open-iSCSI.

@@ -288,53 +288,6 @@ items:
     labels:
       kubernetes.io/hostname: r620-2
       ndm.harvesterhci.io/device-type: disk
-    managedFields:
-    - apiVersion: harvesterhci.io/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-block-device-handler"null: {}
-          f:labels:
-            .: {}
-            f:kubernetes.io/hostname: {}
-            f:ndm.harvesterhci.io/device-type: {}
-        f:spec:
-          .: {}
-          f:devPath: {}
-          f:fileSystem:
-            .: {}
-            f:mountPoint: {}
-          f:nodeName: {}
-        f:status:
-          .: {}
-          f:conditions: {}
-          f:deviceStatus:
-            .: {}
-            f:capacity:
-              .: {}
-              f:physicalBlockSizeBytes: {}
-              f:sizeBytes: {}
-            f:details:
-              .: {}
-              f:busPath: {}
-              f:deviceType: {}
-              f:driveType: {}
-              f:model: {}
-              f:ptUUID: {}
-              f:serialNumber: {}
-              f:storageController: {}
-              f:vendor: {}
-              f:wwn: {}
-            f:fileSystem:
-              .: {}
-              f:isReadOnly: {}
-              f:mountPoint: {}
-              f:type: {}
-            f:partitioned: {}
-          f:provisionPhase: {}
-          f:state: {}
       manager: node-disk-manager
       operation: Update
       time: "2022-01-11T08:56:07Z"
@@ -383,53 +336,6 @@ items:
     labels:
       kubernetes.io/hostname: r620-4
       ndm.harvesterhci.io/device-type: disk
-    managedFields:
-    - apiVersion: harvesterhci.io/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-block-device-handler"null: {}
-          f:labels:
-            .: {}
-            f:kubernetes.io/hostname: {}
-            f:ndm.harvesterhci.io/device-type: {}
-        f:spec:
-          .: {}
-          f:devPath: {}
-          f:fileSystem:
-            .: {}
-            f:mountPoint: {}
-          f:nodeName: {}
-        f:status:
-          .: {}
-          f:conditions: {}
-          f:deviceStatus:
-            .: {}
-            f:capacity:
-              .: {}
-              f:physicalBlockSizeBytes: {}
-              f:sizeBytes: {}
-            f:details:
-              .: {}
-              f:busPath: {}
-              f:deviceType: {}
-              f:driveType: {}
-              f:model: {}
-              f:ptUUID: {}
-              f:serialNumber: {}
-              f:storageController: {}
-              f:vendor: {}
-              f:wwn: {}
-            f:fileSystem:
-              .: {}
-              f:isReadOnly: {}
-              f:mountPoint: {}
-              f:type: {}
-            f:partitioned: {}
-          f:provisionPhase: {}
-          f:state: {}
       manager: node-disk-manager
       operation: Update
       time: "2022-01-17T22:52:56Z"
@@ -479,59 +385,6 @@ items:
       kubernetes.io/hostname: r620-2
       ndm.harvesterhci.io/device-type: part
       ndm.harvesterhci.io/parent-device: 0e47b784aca115df5d18cd1e12e953bc
-    managedFields:
-    - apiVersion: harvesterhci.io/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:spec:
-          f:fileSystem:
-            f:forceFormatted: {}
-            f:mountPoint: {}
-            f:provisioned: {}
-      manager: harvester
-      operation: Update
-      time: "2022-01-11T09:02:50Z"
-    - apiVersion: harvesterhci.io/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-block-device-handler"null: {}
-          f:labels:
-            .: {}
-            f:kubernetes.io/hostname: {}
-            f:ndm.harvesterhci.io/device-type: {}
-            f:ndm.harvesterhci.io/parent-device: {}
-        f:spec:
-          .: {}
-          f:devPath: {}
-          f:fileSystem: {}
-          f:nodeName: {}
-        f:status:
-          .: {}
-          f:conditions: {}
-          f:deviceStatus:
-            .: {}
-            f:capacity:
-              .: {}
-              f:physicalBlockSizeBytes: {}
-              f:sizeBytes: {}
-            f:details:
-              .: {}
-              f:deviceType: {}
-              f:driveType: {}
-              f:partUUID: {}
-              f:storageController: {}
-            f:fileSystem:
-              .: {}
-              f:LastFormattedAt: {}
-              f:mountPoint: {}
-              f:type: {}
-            f:parentDevice: {}
-            f:partitioned: {}
-          f:provisionPhase: {}
-          f:state: {}
       manager: node-disk-manager
       operation: Update
       time: "2022-03-31T14:59:47Z"
@@ -588,60 +441,6 @@ items:
       kubernetes.io/hostname: r620-6
       ndm.harvesterhci.io/device-type: part
       ndm.harvesterhci.io/parent-device: 0951d18c526fb066f5fdc0a682fab681
-    managedFields:
-    - apiVersion: harvesterhci.io/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:spec:
-          f:fileSystem:
-            f:forceFormatted: {}
-            f:provisioned: {}
-      manager: harvester
-      operation: Update
-      time: "2022-01-12T00:12:02Z"
-    - apiVersion: harvesterhci.io/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-block-device-handler"null: {}
-          f:labels:
-            .: {}
-            f:kubernetes.io/hostname: {}
-            f:ndm.harvesterhci.io/device-type: {}
-            f:ndm.harvesterhci.io/parent-device: {}
-        f:spec:
-          .: {}
-          f:devPath: {}
-          f:fileSystem:
-            .: {}
-            f:mountPoint: {}
-          f:nodeName: {}
-        f:status:
-          .: {}
-          f:conditions: {}
-          f:deviceStatus:
-            .: {}
-            f:capacity:
-              .: {}
-              f:physicalBlockSizeBytes: {}
-              f:sizeBytes: {}
-            f:details:
-              .: {}
-              f:deviceType: {}
-              f:driveType: {}
-              f:partUUID: {}
-              f:storageController: {}
-            f:fileSystem:
-              .: {}
-              f:LastFormattedAt: {}
-              f:mountPoint: {}
-              f:type: {}
-            f:parentDevice: {}
-            f:partitioned: {}
-          f:provisionPhase: {}
-          f:state: {}
       manager: node-disk-manager
       operation: Update
       time: "2022-03-31T15:01:57Z"
@@ -698,59 +497,6 @@ items:
       kubernetes.io/hostname: r620-4
       ndm.harvesterhci.io/device-type: part
       ndm.harvesterhci.io/parent-device: 1d527487729e5fac4d1370de26fc6b07
-    managedFields:
-    - apiVersion: harvesterhci.io/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:spec:
-          f:fileSystem:
-            f:forceFormatted: {}
-            f:mountPoint: {}
-            f:provisioned: {}
-      manager: harvester
-      operation: Update
-      time: "2022-01-17T22:53:17Z"
-    - apiVersion: harvesterhci.io/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-block-device-handler"null: {}
-          f:labels:
-            .: {}
-            f:kubernetes.io/hostname: {}
-            f:ndm.harvesterhci.io/device-type: {}
-            f:ndm.harvesterhci.io/parent-device: {}
-        f:spec:
-          .: {}
-          f:devPath: {}
-          f:fileSystem: {}
-          f:nodeName: {}
-        f:status:
-          .: {}
-          f:conditions: {}
-          f:deviceStatus:
-            .: {}
-            f:capacity:
-              .: {}
-              f:physicalBlockSizeBytes: {}
-              f:sizeBytes: {}
-            f:details:
-              .: {}
-              f:deviceType: {}
-              f:driveType: {}
-              f:partUUID: {}
-              f:storageController: {}
-            f:fileSystem:
-              .: {}
-              f:LastFormattedAt: {}
-              f:mountPoint: {}
-              f:type: {}
-            f:parentDevice: {}
-            f:partitioned: {}
-          f:provisionPhase: {}
-          f:state: {}
       manager: node-disk-manager
       operation: Update
       time: "2022-03-31T15:01:41Z"
@@ -806,53 +552,6 @@ items:
     labels:
       kubernetes.io/hostname: r620-3
       ndm.harvesterhci.io/device-type: disk
-    managedFields:
-    - apiVersion: harvesterhci.io/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-block-device-handler"null: {}
-          f:labels:
-            .: {}
-            f:kubernetes.io/hostname: {}
-            f:ndm.harvesterhci.io/device-type: {}
-        f:spec:
-          .: {}
-          f:devPath: {}
-          f:fileSystem:
-            .: {}
-            f:mountPoint: {}
-          f:nodeName: {}
-        f:status:
-          .: {}
-          f:conditions: {}
-          f:deviceStatus:
-            .: {}
-            f:capacity:
-              .: {}
-              f:physicalBlockSizeBytes: {}
-              f:sizeBytes: {}
-            f:details:
-              .: {}
-              f:busPath: {}
-              f:deviceType: {}
-              f:driveType: {}
-              f:model: {}
-              f:ptUUID: {}
-              f:serialNumber: {}
-              f:storageController: {}
-              f:vendor: {}
-              f:wwn: {}
-            f:fileSystem:
-              .: {}
-              f:isReadOnly: {}
-              f:mountPoint: {}
-              f:type: {}
-            f:partitioned: {}
-          f:provisionPhase: {}
-          f:state: {}
       manager: node-disk-manager
       operation: Update
       time: "2022-01-15T20:06:59Z"
@@ -901,53 +600,6 @@ items:
     labels:
       kubernetes.io/hostname: r620-1
       ndm.harvesterhci.io/device-type: disk
-    managedFields:
-    - apiVersion: harvesterhci.io/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-block-device-handler"null: {}
-          f:labels:
-            .: {}
-            f:kubernetes.io/hostname: {}
-            f:ndm.harvesterhci.io/device-type: {}
-        f:spec:
-          .: {}
-          f:devPath: {}
-          f:fileSystem:
-            .: {}
-            f:mountPoint: {}
-          f:nodeName: {}
-        f:status:
-          .: {}
-          f:conditions: {}
-          f:deviceStatus:
-            .: {}
-            f:capacity:
-              .: {}
-              f:physicalBlockSizeBytes: {}
-              f:sizeBytes: {}
-            f:details:
-              .: {}
-              f:busPath: {}
-              f:deviceType: {}
-              f:driveType: {}
-              f:model: {}
-              f:ptUUID: {}
-              f:serialNumber: {}
-              f:storageController: {}
-              f:vendor: {}
-              f:wwn: {}
-            f:fileSystem:
-              .: {}
-              f:isReadOnly: {}
-              f:mountPoint: {}
-              f:type: {}
-            f:partitioned: {}
-          f:provisionPhase: {}
-          f:state: {}
       manager: node-disk-manager
       operation: Update
       time: "2022-01-11T08:56:09Z"
@@ -997,59 +649,6 @@ items:
       kubernetes.io/hostname: r620-1
       ndm.harvesterhci.io/device-type: part
       ndm.harvesterhci.io/parent-device: be5d3d1a9d2193e156a64244ef194120
-    managedFields:
-    - apiVersion: harvesterhci.io/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:spec:
-          f:fileSystem:
-            f:forceFormatted: {}
-            f:mountPoint: {}
-            f:provisioned: {}
-      manager: harvester
-      operation: Update
-      time: "2022-01-11T08:57:12Z"
-    - apiVersion: harvesterhci.io/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-block-device-handler"null: {}
-          f:labels:
-            .: {}
-            f:kubernetes.io/hostname: {}
-            f:ndm.harvesterhci.io/device-type: {}
-            f:ndm.harvesterhci.io/parent-device: {}
-        f:spec:
-          .: {}
-          f:devPath: {}
-          f:fileSystem: {}
-          f:nodeName: {}
-        f:status:
-          .: {}
-          f:conditions: {}
-          f:deviceStatus:
-            .: {}
-            f:capacity:
-              .: {}
-              f:physicalBlockSizeBytes: {}
-              f:sizeBytes: {}
-            f:details:
-              .: {}
-              f:deviceType: {}
-              f:driveType: {}
-              f:partUUID: {}
-              f:storageController: {}
-            f:fileSystem:
-              .: {}
-              f:LastFormattedAt: {}
-              f:mountPoint: {}
-              f:type: {}
-            f:parentDevice: {}
-            f:partitioned: {}
-          f:provisionPhase: {}
-          f:state: {}
       manager: node-disk-manager
       operation: Update
       time: "2022-03-31T15:00:11Z"
@@ -1106,59 +705,6 @@ items:
       kubernetes.io/hostname: r620-5
       ndm.harvesterhci.io/device-type: part
       ndm.harvesterhci.io/parent-device: f751e3b167a83f7d624988a26c699457
-    managedFields:
-    - apiVersion: harvesterhci.io/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:spec:
-          f:fileSystem:
-            f:forceFormatted: {}
-            f:mountPoint: {}
-            f:provisioned: {}
-      manager: harvester
-      operation: Update
-      time: "2022-01-17T19:36:14Z"
-    - apiVersion: harvesterhci.io/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-block-device-handler"null: {}
-          f:labels:
-            .: {}
-            f:kubernetes.io/hostname: {}
-            f:ndm.harvesterhci.io/device-type: {}
-            f:ndm.harvesterhci.io/parent-device: {}
-        f:spec:
-          .: {}
-          f:devPath: {}
-          f:fileSystem: {}
-          f:nodeName: {}
-        f:status:
-          .: {}
-          f:conditions: {}
-          f:deviceStatus:
-            .: {}
-            f:capacity:
-              .: {}
-              f:physicalBlockSizeBytes: {}
-              f:sizeBytes: {}
-            f:details:
-              .: {}
-              f:deviceType: {}
-              f:driveType: {}
-              f:partUUID: {}
-              f:storageController: {}
-            f:fileSystem:
-              .: {}
-              f:LastFormattedAt: {}
-              f:mountPoint: {}
-              f:type: {}
-            f:parentDevice: {}
-            f:partitioned: {}
-          f:provisionPhase: {}
-          f:state: {}
       manager: node-disk-manager
       operation: Update
       time: "2022-03-31T15:02:54Z"
@@ -1214,53 +760,6 @@ items:
     labels:
       kubernetes.io/hostname: r620-5
       ndm.harvesterhci.io/device-type: disk
-    managedFields:
-    - apiVersion: harvesterhci.io/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-block-device-handler"null: {}
-          f:labels:
-            .: {}
-            f:kubernetes.io/hostname: {}
-            f:ndm.harvesterhci.io/device-type: {}
-        f:spec:
-          .: {}
-          f:devPath: {}
-          f:fileSystem:
-            .: {}
-            f:mountPoint: {}
-          f:nodeName: {}
-        f:status:
-          .: {}
-          f:conditions: {}
-          f:deviceStatus:
-            .: {}
-            f:capacity:
-              .: {}
-              f:physicalBlockSizeBytes: {}
-              f:sizeBytes: {}
-            f:details:
-              .: {}
-              f:busPath: {}
-              f:deviceType: {}
-              f:driveType: {}
-              f:model: {}
-              f:ptUUID: {}
-              f:serialNumber: {}
-              f:storageController: {}
-              f:vendor: {}
-              f:wwn: {}
-            f:fileSystem:
-              .: {}
-              f:isReadOnly: {}
-              f:mountPoint: {}
-              f:type: {}
-            f:partitioned: {}
-          f:provisionPhase: {}
-          f:state: {}
       manager: node-disk-manager
       operation: Update
       time: "2022-03-30T14:02:53Z"
