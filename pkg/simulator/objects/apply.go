@@ -12,6 +12,7 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/discovery"
 	"k8s.io/client-go/discovery/cached/memory"
 	"k8s.io/client-go/dynamic"
@@ -231,9 +232,6 @@ func objectHousekeeping(obj *unstructured.Unstructured) error {
 	}
 
 	switch obj.GetKind() {
-	//case "Ingress":
-	// Ingress specific housekeeping
-	//	err = ingressCleanup(obj)
 	case "Job", "Batch":
 		err = jobCleanup(obj)
 	case "APIService":
@@ -346,17 +344,19 @@ func (o *ObjectManager) FetchObject(obj runtime.Object) (*unstructured.Unstructu
 
 // WaitForNamespaces ensures apiserver is ready and namespaces can be listed before it times out
 func (o *ObjectManager) WaitForNamespaces(timeout time.Duration) error {
-	now := time.Now()
-	for currtime := now; currtime.Before(now.Add(timeout)); {
-		// ignore errors
+	err := wait.Poll(5*time.Second, timeout, func() (bool, error) {
 		ns, _ := o.kc.CoreV1().Namespaces().List(o.ctx, metav1.ListOptions{})
 		if ns != nil && len(ns.Items) != 0 {
-			return nil
+			return true, nil
 		}
-		time.Sleep(5 * time.Second)
+		return false, nil
+	})
+
+	if err != nil {
+		return fmt.Errorf("timed out waiting for apiserver to be ready: %v", err)
 	}
 
-	return fmt.Errorf("timed out waiting for apiserver to be ready")
+	return nil
 }
 
 func (o *ObjectManager) CreatedFailedObjectsList() error {
