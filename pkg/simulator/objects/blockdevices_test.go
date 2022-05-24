@@ -85,62 +85,6 @@ items:
       kubernetes.io/hostname: r620-3
       ndm.harvesterhci.io/device-type: part
       ndm.harvesterhci.io/parent-device: b2bf49dab59d30c911d1b51b6f464c18
-    managedFields:
-    - apiVersion: harvesterhci.io/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:spec:
-          f:fileSystem:
-            f:forceFormatted: {}
-            f:mountPoint: {}
-            f:provisioned: {}
-      manager: harvester
-      operation: Update
-      time: "2022-01-15T20:07:09Z"
-    - apiVersion: harvesterhci.io/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-block-device-handler"null: {}
-          f:labels:
-            .: {}
-            f:kubernetes.io/hostname: {}
-            f:ndm.harvesterhci.io/device-type: {}
-            f:ndm.harvesterhci.io/parent-device: {}
-        f:spec:
-          .: {}
-          f:devPath: {}
-          f:fileSystem: {}
-          f:nodeName: {}
-        f:status:
-          .: {}
-          f:conditions: {}
-          f:deviceStatus:
-            .: {}
-            f:capacity:
-              .: {}
-              f:physicalBlockSizeBytes: {}
-              f:sizeBytes: {}
-            f:details:
-              .: {}
-              f:deviceType: {}
-              f:driveType: {}
-              f:partUUID: {}
-              f:storageController: {}
-            f:fileSystem:
-              .: {}
-              f:LastFormattedAt: {}
-              f:mountPoint: {}
-              f:type: {}
-            f:parentDevice: {}
-            f:partitioned: {}
-          f:provisionPhase: {}
-          f:state: {}
-      manager: node-disk-manager
-      operation: Update
-      time: "2022-03-31T15:01:45Z"
     name: 002de72aa8fa90f69eb811a78ac07a5a
     namespace: longhorn-system
     resourceVersion: "15317509"
@@ -193,56 +137,6 @@ items:
     labels:
       kubernetes.io/hostname: r620-6
       ndm.harvesterhci.io/device-type: disk
-    managedFields:
-    - apiVersion: harvesterhci.io/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"wrangler.cattle.io/harvester-block-device-handler"null: {}
-          f:labels:
-            .: {}
-            f:kubernetes.io/hostname: {}
-            f:ndm.harvesterhci.io/device-type: {}
-        f:spec:
-          .: {}
-          f:devPath: {}
-          f:fileSystem:
-            .: {}
-            f:mountPoint: {}
-          f:nodeName: {}
-        f:status:
-          .: {}
-          f:conditions: {}
-          f:deviceStatus:
-            .: {}
-            f:capacity:
-              .: {}
-              f:physicalBlockSizeBytes: {}
-              f:sizeBytes: {}
-            f:details:
-              .: {}
-              f:busPath: {}
-              f:deviceType: {}
-              f:driveType: {}
-              f:model: {}
-              f:ptUUID: {}
-              f:serialNumber: {}
-              f:storageController: {}
-              f:vendor: {}
-              f:wwn: {}
-            f:fileSystem:
-              .: {}
-              f:isReadOnly: {}
-              f:mountPoint: {}
-              f:type: {}
-            f:partitioned: {}
-          f:provisionPhase: {}
-          f:state: {}
-      manager: node-disk-manager
-      operation: Update
-      time: "2022-01-12T00:08:43Z"
     name: 0951d18c526fb066f5fdc0a682fab681
     namespace: longhorn-system
     resourceVersion: "15317934"
