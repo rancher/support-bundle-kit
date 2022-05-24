@@ -1,49 +1,113 @@
 package objects
 
 import (
+	"github.com/rancher/support-bundle-kit/pkg/utils"
 	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
+	"io/ioutil"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"os"
+	"path/filepath"
 	"testing"
 )
 
 const (
-	testDSFilePath      = "../../../tests/integration/sampleSupportBundle/yamls/namespaced/cattle-monitoring-system/apps/v1/daemonsets.yaml"
-	testSTSFilePath     = "../../../tests/integration/sampleSupportBundle/yamls/namespaced/cattle-monitoring-system/apps/v1/statefulsets.yaml"
-	testDeployFilePath  = "../../../tests/integration/sampleSupportBundle/yamls/namespaced/cattle-monitoring-system/apps/v1/deployments.yaml"
-	testRSFilePath      = "../../../tests/integration/sampleSupportBundle/yamls/namespaced/cattle-monitoring-system/apps/v1/replicasets.yaml"
-	testIngressFilePath = "../../../tests/integration/sampleSupportBundle/yamls/namespaced/harvester-system/extensions/v1beta1/ingresses.yaml"
-	testSettingsPath    = "../../../tests/integration/sampleSupportBundle/yamls/cluster/management.cattle.io/v3/settings.yaml"
-	testJobPath         = "../../../tests/integration/sampleSupportBundle/yamls/namespaced/harvester-system/batch/v1/jobs.yaml"
-	nodePath            = "../../../tests/integration/sampleSupportBundle/yamls/cluster/v1/nodes.yaml"
+	testDSFilePath      = "yamls/namespaced/cattle-monitoring-system/apps/v1/daemonsets.yaml"
+	testSTSFilePath     = "yamls/namespaced/cattle-monitoring-system/apps/v1/statefulsets.yaml"
+	testDeployFilePath  = "yamls/namespaced/cattle-monitoring-system/apps/v1/deployments.yaml"
+	testRSFilePath      = "yamls/namespaced/cattle-monitoring-system/apps/v1/replicasets.yaml"
+	testIngressFilePath = "yamls/namespaced/harvester-system/extensions/v1beta1/ingresses.yaml"
+	testSettingsPath    = "yamls/cluster/management.cattle.io/v3/settings.yaml"
+	testJobPath         = "yamls/namespaced/harvester-system/batch/v1/jobs.yaml"
+	nodePath            = "yamls/cluster/v1/nodes.yaml"
 )
 
 // TestParseDaemonSet will verify a sample Daemonset
 func TestParseDaemonSetObject(t *testing.T) {
 	// read our sample node-exporter daemonset in the samples directory
-	verifyTestWorkloads(t, testDSFilePath)
+	tmpDir, err := ioutil.TempDir("/tmp", "workload-")
+	if err != nil {
+		t.Fatalf("Error creating tmp directory %v", err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
+	if err != nil {
+		t.Fatalf("Error during unzip operation %v", err)
+	}
+	verifyTestWorkloads(t, filepath.Join(tmpDir, supportBundleDir, testDSFilePath))
 }
 
 // TestParseReplicaSetObject will verify a sample Replicaset
 func TestParseReplicaSetObject(t *testing.T) {
-	verifyTestWorkloads(t, testRSFilePath)
+	tmpDir, err := ioutil.TempDir("/tmp", "workload-")
+	if err != nil {
+		t.Fatalf("Error creating tmp directory %v", err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
+	if err != nil {
+		t.Fatalf("Error during unzip operation %v", err)
+	}
+	verifyTestWorkloads(t, filepath.Join(tmpDir, supportBundleDir, testRSFilePath))
 }
 
 // TestParseStatefulSetObject will verify a sample StatefulSet
 func TestParseStatefulSetObject(t *testing.T) {
-	verifyTestWorkloads(t, testSTSFilePath)
+	tmpDir, err := ioutil.TempDir("/tmp", "workload-")
+	if err != nil {
+		t.Fatalf("Error creating tmp directory %v", err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
+	if err != nil {
+		t.Fatalf("Error during unzip operation %v", err)
+	}
+	verifyTestWorkloads(t, filepath.Join(tmpDir, supportBundleDir, testSTSFilePath))
 }
 
 // TestParseStatefulSetObject will verify a sample StatefulSet
 func TestParseDeploymentObject(t *testing.T) {
-	verifyTestWorkloads(t, testDeployFilePath)
+	tmpDir, err := ioutil.TempDir("/tmp", "workload-")
+	if err != nil {
+		t.Fatalf("Error creating tmp directory %v", err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
+	if err != nil {
+		t.Fatalf("Error during unzip operation %v", err)
+	}
+	verifyTestWorkloads(t, filepath.Join(tmpDir, supportBundleDir, testDeployFilePath))
 }
 
 func TestIngressObject(t *testing.T) {
-	verifyTestWorkloads(t, testIngressFilePath)
+	tmpDir, err := ioutil.TempDir("/tmp", "workload-")
+	if err != nil {
+		t.Fatalf("Error creating tmp directory %v", err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
+	if err != nil {
+		t.Fatalf("Error during unzip operation %v", err)
+	}
+	verifyTestWorkloads(t, filepath.Join(tmpDir, supportBundleDir, testIngressFilePath))
 }
 
 func TestSettings(t *testing.T) {
-	verifyTestWorkloads(t, testSettingsPath)
+	tmpDir, err := ioutil.TempDir("/tmp", "workload-")
+	if err != nil {
+		t.Fatalf("Error creating tmp directory %v", err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
+	if err != nil {
+		t.Fatalf("Error during unzip operation %v", err)
+	}
+	verifyTestWorkloads(t, filepath.Join(tmpDir, supportBundleDir, testSettingsPath))
 }
 
 func verifyTestWorkloads(t *testing.T, path string) {
@@ -109,7 +173,17 @@ func verifyTestWorkloads(t *testing.T, path string) {
 }
 
 func TestVerifyJob(t *testing.T) {
-	objs, err := GenerateObjects(testJobPath)
+	tmpDir, err := ioutil.TempDir("/tmp", "workload-")
+	if err != nil {
+		t.Fatalf("Error creating tmp directory %v", err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
+	if err != nil {
+		t.Fatalf("Error during unzip operation %v", err)
+	}
+	objs, err := GenerateObjects(filepath.Join(tmpDir, supportBundleDir, testJobPath))
 	if err != nil {
 		t.Fatalf("error reading sample daemonset file %s %v", testDSFilePath, err)
 	}
@@ -140,7 +214,18 @@ func TestVerifyJob(t *testing.T) {
 }
 
 func TestVerifyNode(t *testing.T) {
-	objs, err := GenerateObjects(nodePath)
+	tmpDir, err := ioutil.TempDir("/tmp", "workload-")
+	if err != nil {
+		t.Fatalf("Error creating tmp directory %v", err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
+	if err != nil {
+		t.Fatalf("Error during unzip operation %v", err)
+	}
+
+	objs, err := GenerateObjects(filepath.Join(tmpDir, supportBundleDir, nodePath))
 	if err != nil {
 		t.Fatalf("error reading sample daemonset file %s %v", testDSFilePath, err)
 	}
