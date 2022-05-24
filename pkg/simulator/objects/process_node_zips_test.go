@@ -1,12 +1,26 @@
 package objects
 
 import (
+	"github.com/rancher/support-bundle-kit/pkg/utils"
+	"io/ioutil"
+	"os"
 	"path/filepath"
 	"testing"
 )
 
 func TestGenerateNodeZipList(t *testing.T) {
-	list, err := generateNodeZipList("../../../tests/integration/sampleSupportBundle")
+	tmpDir, err := ioutil.TempDir("/tmp", "zipfiles-")
+	if err != nil {
+		t.Fatalf("Error creating tmp directory %v", err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
+	if err != nil {
+		t.Fatalf("Error during unzip operation %v", err)
+	}
+
+	list, err := generateNodeZipList(filepath.Join(tmpDir, supportBundleDir))
 	if err != nil {
 		t.Fatalf("error reading zip file")
 	}
@@ -21,7 +35,18 @@ func TestGenerateNodeZipList(t *testing.T) {
 }
 
 func TestGenerateNodeZipObjects(t *testing.T) {
-	list, err := generateNodeZipList("../../../tests/integration/sampleSupportBundle")
+	tmpDir, err := ioutil.TempDir("/tmp", "zipfiles-")
+	if err != nil {
+		t.Fatalf("Error creating tmp directory %v", err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
+	if err != nil {
+		t.Fatalf("Error during unzip operation %v", err)
+	}
+
+	list, err := generateNodeZipList(filepath.Join(tmpDir, supportBundleDir))
 	if err != nil {
 		t.Fatalf("error reading zip file")
 	}

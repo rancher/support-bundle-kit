@@ -1,16 +1,35 @@
 package objects
 
 import (
+	"github.com/rancher/support-bundle-kit/pkg/utils"
 	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 	"testing"
 )
 
 const (
-	testCoreEvents = "../../../tests/integration/sampleSupportBundle/yamls/namespaced/default/v1/events.yaml"
-	testEvents     = "../../../tests/integration/sampleSupportBundle/yamls/namespaced/default/events.k8s.io/v1/events.yaml"
+	testCoreEventsFile = "yamls/namespaced/default/v1/events.yaml"
+	testEventsFile     = "yamls/namespaced/default/events.k8s.io/v1/events.yaml"
+	bundleZipPath      = "../../../tests/integration/sampleSupportBundle.zip"
+	supportBundleDir   = "sampleSupportBundle"
 )
 
 func TestCoreEvents(t *testing.T) {
+	tmpDir, err := ioutil.TempDir("/tmp", "events-")
+	if err != nil {
+		t.Fatalf("Error creating tmp directory %v", err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
+	if err != nil {
+		t.Fatalf("Error during unzip operation %v", err)
+	}
+
+	testCoreEvents := filepath.Join(tmpDir, supportBundleDir, testCoreEventsFile)
+
 	objs, err := GenerateObjects(testCoreEvents)
 	if err != nil {
 		t.Fatalf("error parsing core events %v", err)
@@ -52,6 +71,19 @@ func TestCoreEvents(t *testing.T) {
 }
 
 func TestEvents(t *testing.T) {
+	tmpDir, err := ioutil.TempDir("/tmp", "events-")
+	if err != nil {
+		t.Fatalf("Error creating tmp directory %v", err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
+	if err != nil {
+		t.Fatalf("Error during unzip operation %v", err)
+	}
+
+	testEvents := filepath.Join(tmpDir, supportBundleDir, testEventsFile)
+
 	objs, err := GenerateObjects(testEvents)
 	if err != nil {
 		t.Fatalf("error parsing core events %v", err)

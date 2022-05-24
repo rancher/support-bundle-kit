@@ -1,21 +1,18 @@
 package integration
 
 import (
-	"archive/zip"
 	"context"
-	"fmt"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/apiserver"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/etcd"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/kubelet"
+	"github.com/rancher/support-bundle-kit/pkg/utils"
 	"golang.org/x/sync/errgroup"
-	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 )
 
@@ -25,7 +22,7 @@ const (
 	sampleBundleZip = "./sampleSupportBundle.zip"
 )
 
-var samplesRoot, samplesPath, samplePodSpec string
+var samplesPath, samplePodSpec string
 
 func TestSim(t *testing.T) {
 	defer GinkgoRecover()
@@ -46,19 +43,19 @@ var _ = BeforeSuite(func(done Done) {
 	defer close(done)
 	var err error
 
-	By("extracting support bundle to temp directory")
-	samplesRoot, err = unzipSupportBundle(sampleBundleZip)
-	Expect(err).ToNot(HaveOccurred())
-
-	samplesPath = filepath.Join(samplesRoot, "sampleSupportBundle")
-	samplePodSpec = filepath.Join(samplesPath, "/yamls/namespaced/harvester-system/v1/pods.yaml")
-
-	By("starting test cluster")
 	ctx, cancel = context.WithCancel(context.TODO())
 
 	dir, err = ioutil.TempDir("/tmp", "integration-")
 	Expect(err).ToNot(HaveOccurred())
 
+	// unzip support bundle contents
+	By("extracting support bundle to temp directory")
+	err = utils.UnzipSupportBundle(sampleBundleZip, dir)
+	Expect(err).ToNot(HaveOccurred())
+	samplesPath = filepath.Join(dir, "sampleSupportBundle")
+	samplePodSpec = filepath.Join(samplesPath, "/yamls/namespaced/harvester-system/v1/pods.yaml")
+
+	By("setting up test cluster")
 	certificates, err := certs.GenerateCerts([]string{"localhost", "127.0.0.1"},
 		dir)
 	Expect(err).ToNot(HaveOccurred())
@@ -90,54 +87,6 @@ var _ = BeforeSuite(func(done Done) {
 }, setupTimeout)
 
 var _ = AfterSuite(func(done Done) {
+	close(done)
 	os.RemoveAll(dir)
-	os.RemoveAll(samplesRoot)
-	cancel()
 }, setupTimeout)
-
-func unzipSupportBundle(bundleZipFile string) (dest string, err error) {
-	dest, err = ioutil.TempDir("/tmp", "support-bundle")
-	if err != nil {
-		return dest, err
-	}
-
-	r, err := zip.OpenReader(bundleZipFile)
-	if err != nil {
-		return dest, err
-	}
-
-	for _, f := range r.File {
-		destPath := filepath.Join(dest, f.Name)
-		if !strings.HasPrefix(destPath, filepath.Clean(dest)+string(os.PathSeparator)) {
-			return dest, fmt.Errorf("invalid dest path %s", destPath)
-		}
-
-		if f.FileInfo().IsDir() {
-			if err := os.MkdirAll(destPath, os.ModePerm); err != nil {
-				return dest, err
-			}
-		} else {
-			if err := os.MkdirAll(filepath.Dir(destPath), os.ModePerm); err != nil {
-				return dest, err
-			}
-
-			destFile, err := os.OpenFile(destPath, os.O_WRONLY|os.O_CREATE|os.O_CREATE, f.Mode())
-			if err != nil {
-				return dest, err
-			}
-
-			zFile, err := f.Open()
-			if err != nil {
-				return dest, err
-			}
-
-			if _, err = io.Copy(destFile, zFile); err != nil {
-				return dest, err
-			}
-			zFile.Close()
-			destFile.Close()
-		}
-
-	}
-	return dest, nil
-}

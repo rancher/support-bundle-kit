@@ -4,17 +4,21 @@ import (
 	"context"
 	"crypto/tls"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
+	"github.com/rancher/support-bundle-kit/pkg/utils"
 	"golang.org/x/sync/errgroup"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 )
 
 const (
-	bundlePath = "../../../tests/integration/sampleSupportBundle"
+	bundleZipPath = "../../../tests/integration/sampleSupportBundle.zip"
 )
+
+var bundlePath string
 
 func TestKubeletSimulator(t *testing.T) {
 	tmpDir, err := ioutil.TempDir("/tmp", "kubelet-")
@@ -23,6 +27,10 @@ func TestKubeletSimulator(t *testing.T) {
 	}
 	defer os.RemoveAll(tmpDir)
 
+	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
+	if err != nil {
+		t.Fatalf("Error during unzip operation %v", err)
+	}
 	certificates, err := certs.GenerateCerts([]string{"localhost", "127.0.0.1"},
 		tmpDir)
 
@@ -32,6 +40,7 @@ func TestKubeletSimulator(t *testing.T) {
 		t.Fatalf("error generating certificates: %v", err)
 	}
 
+	bundlePath = filepath.Join(tmpDir, "sampleSupportBundle")
 	k, err := NewKubeletSimulator(egctx, certificates, bundlePath)
 	if err != nil {
 		t.Fatalf("error creating new kubelet simulator")

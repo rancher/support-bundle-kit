@@ -32,7 +32,7 @@ func TestRunAPIServer(t *testing.T) {
 
 	etcdConfig, err := etcd.RunEmbeddedEtcd(context.TODO(), filepath.Join(dir), a.Certs)
 	if err != nil {
-		t.Fatalf("error setting up embedded etcdserver")
+		t.Fatalf("error setting up embedded etcdserver %v", err)
 	}
 	a.Etcd = etcdConfig
 

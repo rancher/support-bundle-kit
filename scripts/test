@@ -4,8 +4,10 @@ set -e
 
 cd $(dirname $0)/..
 
+# Disable parallel executions as a number of tests need to fire up api/etcd and parallel execution
+# makes these flaky
 echo "running unit tests"
-go test -v ./pkg/simulator/...
+go test -p 1 -v ./pkg/simulator/...
 
 echo "running integration tests"
 go test -v ./tests/integration
