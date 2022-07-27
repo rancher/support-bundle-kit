@@ -10,10 +10,9 @@ ENV TINI_URL_amd64=https://github.com/krallin/tini/releases/download/${TINI_VERS
     TINI_URL_arm64=https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-arm64 \
     TINI_URL_s390x=https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-s390x \
     TINI_URL=TINI_URL_${ARCH}
-ENV YQ_VERSION v4.19.1
 
 RUN curl -sLf ${!TINI_URL} > /usr/bin/tini && chmod +x /usr/bin/tini && \
-    curl -sfL https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_${ARCH} -o /usr/bin/yq && chmod +x /usr/bin/yq
+    curl -sfL https://github.com/mikefarah/yq/releases/latest/download/yq_linux_${ARCH} -o /usr/bin/yq && chmod +x /usr/bin/yq
 
 COPY package/entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
