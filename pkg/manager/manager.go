@@ -277,7 +277,10 @@ func (m *SupportBundleManager) collectNodeBundles() error {
 }
 
 func (m *SupportBundleManager) verifyNodeBundle(file string) error {
-	_, err := zip.OpenReader(file)
+	f, err := zip.OpenReader(file)
+	if err == nil {
+		_ = f.Close()
+	}
 	return err
 }
 
