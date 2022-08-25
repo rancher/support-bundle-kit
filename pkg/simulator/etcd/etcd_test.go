@@ -2,12 +2,13 @@ package etcd
 
 import (
 	"context"
-	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
-	"go.etcd.io/etcd/clientv3"
 	"io/ioutil"
 	"os"
 	"testing"
 	"time"
+
+	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
+	clientv3 "go.etcd.io/etcd/client/v3"
 )
 
 // TestRunEmbeddedEtcdWithoutCerts will run an embedded ETCD server without TLS and try to create and read a kv pair

@@ -4,14 +4,15 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
-	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
-	"github.com/sirupsen/logrus"
-	"go.etcd.io/etcd/embed"
 	"net/url"
 	"os"
 	"path/filepath"
 	"strconv"
 	"time"
+
+	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
+	"github.com/sirupsen/logrus"
+	"go.etcd.io/etcd/server/v3/embed"
 )
 
 type EtcdConfig struct {

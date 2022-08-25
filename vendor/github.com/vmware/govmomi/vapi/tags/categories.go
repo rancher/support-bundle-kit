@@ -87,7 +87,7 @@ func (c *Manager) CreateCategory(ctx context.Context, category *Category) (strin
 		// otherwise create fails with invalid_argument
 		spec.Category.AssociableTypes = []string{}
 	}
-	url := c.Resource(internal.CategoryPath)
+	url := internal.URL(c, internal.CategoryPath)
 	var res string
 	return res, c.Do(ctx, url.Request(http.MethodPost, spec), &res)
 }
@@ -104,13 +104,13 @@ func (c *Manager) UpdateCategory(ctx context.Context, category *Category) error 
 			Name:            category.Name,
 		},
 	}
-	url := c.Resource(internal.CategoryPath).WithID(category.ID)
+	url := internal.URL(c, internal.CategoryPath).WithID(category.ID)
 	return c.Do(ctx, url.Request(http.MethodPatch, spec), nil)
 }
 
 // DeleteCategory deletes an existing category.
 func (c *Manager) DeleteCategory(ctx context.Context, category *Category) error {
-	url := c.Resource(internal.CategoryPath).WithID(category.ID)
+	url := internal.URL(c, internal.CategoryPath).WithID(category.ID)
 	return c.Do(ctx, url.Request(http.MethodDelete), nil)
 }
 
@@ -129,14 +129,14 @@ func (c *Manager) GetCategory(ctx context.Context, id string) (*Category, error)
 			}
 		}
 	}
-	url := c.Resource(internal.CategoryPath).WithID(id)
+	url := internal.URL(c, internal.CategoryPath).WithID(id)
 	var res Category
 	return &res, c.Do(ctx, url.Request(http.MethodGet), &res)
 }
 
 // ListCategories returns all category IDs in the system.
 func (c *Manager) ListCategories(ctx context.Context) ([]string, error) {
-	url := c.Resource(internal.CategoryPath)
+	url := internal.URL(c, internal.CategoryPath)
 	var res []string
 	return res, c.Do(ctx, url.Request(http.MethodGet), &res)
 }

@@ -229,10 +229,8 @@ func (l VirtualDeviceList) FindSCSIController(name string) (*types.VirtualSCSICo
 func (l VirtualDeviceList) CreateSCSIController(name string) (types.BaseVirtualDevice, error) {
 	ctypes := SCSIControllerTypes()
 
-	if name == "" || name == "scsi" {
+	if name == "scsi" || name == "" {
 		name = ctypes.Type(ctypes[0])
-	} else if name == "virtualscsi" {
-		name = "pvscsi" // ovf VirtualSCSI mapping
 	}
 
 	found := ctypes.Select(func(device types.BaseVirtualDevice) bool {

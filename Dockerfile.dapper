@@ -1,4 +1,4 @@
-FROM golang:1.16.7-bullseye
+FROM golang:1.18
 
 ARG DAPPER_HOST_ARCH
 ENV ARCH $DAPPER_HOST_ARCH
@@ -29,7 +29,7 @@ RUN mkdir -p /go/src/github.com/kubernetes && \
     cd /go/src/github.com/kubernetes && \
     git clone https://github.com/kubernetes/kubernetes && \
     cd kubernetes && \
-    git checkout v1.21.7 && \
+    git checkout v1.23.7 && \
     make generated_files
 
 # -- for dapper

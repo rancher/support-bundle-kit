@@ -143,7 +143,7 @@ func (p *Collector) Retrieve(ctx context.Context, objs []types.ManagedObjectRefe
 			spec := types.PropertySpec{
 				Type: obj.Type,
 			}
-			if len(ps) == 0 {
+			if ps == nil {
 				spec.All = types.NewBool(true)
 			} else {
 				spec.PathSet = ps
@@ -179,7 +179,7 @@ func (p *Collector) Retrieve(ctx context.Context, objs []types.ManagedObjectRefe
 		return nil
 	}
 
-	return mo.LoadObjectContent(res.Returnval, dst)
+	return mo.LoadRetrievePropertiesResponse(res, dst)
 }
 
 // RetrieveWithFilter populates dst as Retrieve does, but only for entities matching the given filter.
