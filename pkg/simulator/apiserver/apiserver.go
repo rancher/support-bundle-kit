@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net"
+	"time"
 
 	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/etcd"
@@ -56,6 +57,7 @@ func (a *APIServerConfig) RunAPIServer(ctx context.Context, serviceClusterIP str
 	s.Authentication.ServiceAccounts.KeyFiles = []string{a.Certs.ServiceAccountCertKey}
 	s.Authentication.ServiceAccounts.Issuers = []string{"https://localhost:6443"}
 	s.Authentication.ClientCert.ClientCA = a.Certs.CACert
+	s.EventTTL = time.Duration(90 * 24 * time.Hour) // 90 days
 
 	completedOptions, err := app.Complete(s)
 	if err != nil {
