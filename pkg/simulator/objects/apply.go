@@ -3,6 +3,8 @@ package objects
 import (
 	"context"
 	"fmt"
+	"time"
+
 	supportbundlekit "github.com/rancher/support-bundle-kit/pkg/simulator/apis/supportbundlekit.io/v1"
 	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
 	"github.com/sirupsen/logrus"
@@ -19,7 +21,6 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/restmapper"
-	"time"
 )
 
 type ObjectManager struct {
@@ -244,6 +245,8 @@ func objectHousekeeping(obj *unstructured.Unstructured) error {
 		err = cleanupSecret(obj)
 	case "Event":
 		err = cleanupEvent(obj)
+	case "Ingress":
+		err = cleanupIngress(obj)
 	}
 	return err
 }

@@ -1,3 +1,4 @@
+//go:build !providerless
 // +build !providerless
 
 /*
@@ -134,7 +135,7 @@ func parseTags(tags string) map[string]*string {
 			klog.Warningf("parseTags: error when parsing key-value pair %s-%s, would ignore this one", k, v)
 			continue
 		}
-		formatted[k] = to.StringPtr(v)
+		formatted[strings.ToLower(k)] = to.StringPtr(v)
 	}
 	return formatted
 }

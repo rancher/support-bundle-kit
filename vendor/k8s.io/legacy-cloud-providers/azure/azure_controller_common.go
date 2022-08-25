@@ -1,3 +1,4 @@
+//go:build !providerless
 // +build !providerless
 
 /*
@@ -49,7 +50,6 @@ const (
 	diskCachingLimit = 4096 // GiB
 
 	maxLUN               = 64 // max number of LUNs per VM
-	errLeaseFailed       = "AcquireDiskLeaseFailed"
 	errLeaseIDMissing    = "LeaseIdMissing"
 	errContainerNotFound = "ContainerNotFound"
 	errStatusCode400     = "statuscode=400"

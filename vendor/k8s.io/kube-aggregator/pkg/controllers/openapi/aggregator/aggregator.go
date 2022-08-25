@@ -24,7 +24,6 @@ import (
 	"time"
 
 	restful "github.com/emicklei/go-restful"
-	"github.com/go-openapi/spec"
 
 	"k8s.io/klog/v2"
 
@@ -34,6 +33,7 @@ import (
 	"k8s.io/kube-openapi/pkg/builder"
 	"k8s.io/kube-openapi/pkg/common"
 	"k8s.io/kube-openapi/pkg/handler"
+	"k8s.io/kube-openapi/pkg/validation/spec"
 )
 
 // SpecAggregator calls out to http handlers of APIServices and merges specs. It keeps state of the last
@@ -61,11 +61,11 @@ func IsLocalAPIService(apiServiceName string) bool {
 	return strings.HasPrefix(apiServiceName, localDelegateChainNamePrefix)
 }
 
-// GetAPIServicesName returns the names of APIServices recorded in specAggregator.openAPISpecs.
+// GetAPIServiceNames returns the names of APIServices recorded in specAggregator.openAPISpecs.
 // We use this function to pass the names of local APIServices to the controller in this package,
 // so that the controller can periodically sync the OpenAPI spec from delegation API servers.
 func (s *specAggregator) GetAPIServiceNames() []string {
-	names := make([]string, len(s.openAPISpecs))
+	names := make([]string, 0, len(s.openAPISpecs))
 	for key := range s.openAPISpecs {
 		names = append(names, key)
 	}
@@ -96,6 +96,12 @@ func BuildAndRegisterAggregator(downloader *Downloader, delegationTarget server.
 		}
 		delegateSpec, etag, _, err := downloader.Download(handler, "")
 		if err != nil {
+			// ignore errors for the empty delegate we attach at the end the chain
+			// atm the empty delegate returns 503 when the server hasn't been fully initialized
+			// and the spec downloader only silences 404s
+			if len(delegate.ListedPaths()) == 0 && delegate.NextDelegate() == nil {
+				continue
+			}
 			return nil, err
 		}
 		if delegateSpec == nil {

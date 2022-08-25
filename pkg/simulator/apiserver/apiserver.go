@@ -3,9 +3,11 @@ package apiserver
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
+	"net"
+
 	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/etcd"
-	"io/ioutil"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	"k8s.io/client-go/rest"
@@ -13,7 +15,6 @@ import (
 	kubeconfig "k8s.io/client-go/tools/clientcmd/api"
 	"k8s.io/kubernetes/cmd/kube-apiserver/app"
 	"k8s.io/kubernetes/cmd/kube-apiserver/app/options"
-	"net"
 )
 
 type APIServerConfig struct {
@@ -49,7 +50,7 @@ func (a *APIServerConfig) RunAPIServer(ctx context.Context) error {
 	s.SecureServing.SecureServingOptions.BindAddress = net.ParseIP("127.0.0.1")
 	s.SecureServing.SecureServingOptions.BindPort = 6443
 	s.Authentication.ServiceAccounts.KeyFiles = []string{a.Certs.ServiceAccountCertKey}
-	s.Authentication.ServiceAccounts.Issuer = "https://localhost:6443"
+	s.Authentication.ServiceAccounts.Issuers = []string{"https://localhost:6443"}
 	s.Authentication.ClientCert.ClientCA = a.Certs.CACert
 
 	completedOptions, err := app.Complete(s)

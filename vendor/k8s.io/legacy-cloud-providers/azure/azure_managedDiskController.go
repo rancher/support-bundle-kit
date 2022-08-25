@@ -1,3 +1,4 @@
+//go:build !providerless
 // +build !providerless
 
 /*
@@ -228,6 +229,10 @@ func (c *ManagedDiskController) DeleteManagedDisk(diskURI string) error {
 
 	disk, rerr := c.common.cloud.DisksClient.Get(ctx, resourceGroup, diskName)
 	if rerr != nil {
+		if rerr.HTTPStatusCode == http.StatusNotFound {
+			klog.V(2).Infof("azureDisk - disk(%s) is already deleted", diskURI)
+			return nil
+		}
 		return rerr.Error()
 	}
 
@@ -360,7 +365,7 @@ func (c *Cloud) GetAzureDiskLabels(diskURI string) (map[string]string, error) {
 	}
 
 	labels := map[string]string{
-		LabelFailureDomainBetaRegion: c.Location,
+		v1.LabelTopologyRegion: c.Location,
 	}
 	// no azure credential is set, return nil
 	if c.DisksClient == nil {
@@ -389,6 +394,6 @@ func (c *Cloud) GetAzureDiskLabels(diskURI string) (map[string]string, error) {
 
 	zone := c.makeZone(c.Location, zoneID)
 	klog.V(4).Infof("Got zone %q for Azure disk %q", zone, diskName)
-	labels[LabelFailureDomainBetaZone] = zone
+	labels[v1.LabelTopologyZone] = zone
 	return labels, nil
 }

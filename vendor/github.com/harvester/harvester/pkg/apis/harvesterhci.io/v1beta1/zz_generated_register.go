@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Rancher Labs, Inc.
+Copyright 2022 Rancher Labs, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -33,9 +33,8 @@ var (
 	SettingResourceName                       = "settings"
 	SupportBundleResourceName                 = "supportbundles"
 	UpgradeResourceName                       = "upgrades"
-	UserResourceName                          = "users"
+	VersionResourceName                       = "versions"
 	VirtualMachineBackupResourceName          = "virtualmachinebackups"
-	VirtualMachineBackupContentResourceName   = "virtualmachinebackupcontents"
 	VirtualMachineImageResourceName           = "virtualmachineimages"
 	VirtualMachineRestoreResourceName         = "virtualmachinerestores"
 	VirtualMachineTemplateResourceName        = "virtualmachinetemplates"
@@ -73,12 +72,10 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 		&SupportBundleList{},
 		&Upgrade{},
 		&UpgradeList{},
-		&User{},
-		&UserList{},
+		&Version{},
+		&VersionList{},
 		&VirtualMachineBackup{},
 		&VirtualMachineBackupList{},
-		&VirtualMachineBackupContent{},
-		&VirtualMachineBackupContentList{},
 		&VirtualMachineImage{},
 		&VirtualMachineImageList{},
 		&VirtualMachineRestore{},

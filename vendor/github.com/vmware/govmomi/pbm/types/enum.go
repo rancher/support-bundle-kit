@@ -104,19 +104,6 @@ func init() {
 	types.Add("pbm:PbmComplianceStatus", reflect.TypeOf((*PbmComplianceStatus)(nil)).Elem())
 }
 
-type PbmHealthStatusForEntity string
-
-const (
-	PbmHealthStatusForEntityRed     = PbmHealthStatusForEntity("red")
-	PbmHealthStatusForEntityYellow  = PbmHealthStatusForEntity("yellow")
-	PbmHealthStatusForEntityGreen   = PbmHealthStatusForEntity("green")
-	PbmHealthStatusForEntityUnknown = PbmHealthStatusForEntity("unknown")
-)
-
-func init() {
-	types.Add("pbm:PbmHealthStatusForEntity", reflect.TypeOf((*PbmHealthStatusForEntity)(nil)).Elem())
-}
-
 type PbmIofilterInfoFilterType string
 
 const (
@@ -158,7 +145,6 @@ const (
 	PbmObjectTypeVirtualDiskId          = PbmObjectType("virtualDiskId")
 	PbmObjectTypeVirtualDiskUUID        = PbmObjectType("virtualDiskUUID")
 	PbmObjectTypeDatastore              = PbmObjectType("datastore")
-	PbmObjectTypeFileShareId            = PbmObjectType("fileShareId")
 	PbmObjectTypeUnknown                = PbmObjectType("unknown")
 )
 

@@ -21,6 +21,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httputil"
+	"strings"
 	"sync/atomic"
 	"time"
 
@@ -70,49 +71,49 @@ func (d *debugRoundTrip) newFile(suffix string) io.WriteCloser {
 }
 
 func (d *debugRoundTrip) ext(h http.Header) string {
-	const json = "application/json"
 	ext := "xml"
-	if h.Get("Accept") == json || h.Get("Content-Type") == json {
+	if strings.Contains(h.Get("Content-Type"), "/json") {
 		ext = "json"
 	}
 	return ext
 }
 
-func (d *debugRoundTrip) debugRequest(req *http.Request) string {
-	if d == nil {
-		return ""
-	}
-
-	// Capture headers
-	var wc io.WriteCloser = d.newFile("req.headers")
-	b, _ := httputil.DumpRequest(req, false)
-	wc.Write(b)
-	wc.Close()
-
-	ext := d.ext(req.Header)
-	// Capture body
-	wc = d.newFile("req." + ext)
-	req.Body = newTeeReader(req.Body, wc)
-
-	// Delay closing until marked done
-	d.cs = append(d.cs, wc)
-
-	return ext
-}
-
-func (d *debugRoundTrip) debugResponse(res *http.Response, ext string) {
+func (d *debugRoundTrip) debugRequest(req *http.Request) {
 	if d == nil {
 		return
 	}
 
+	var wc io.WriteCloser
+
 	// Capture headers
-	var wc io.WriteCloser = d.newFile("res.headers")
+	wc = d.newFile("req.headers")
+	b, _ := httputil.DumpRequest(req, false)
+	wc.Write(b)
+	wc.Close()
+
+	// Capture body
+	wc = d.newFile("req." + d.ext(req.Header))
+	req.Body = newTeeReader(req.Body, wc)
+
+	// Delay closing until marked done
+	d.cs = append(d.cs, wc)
+}
+
+func (d *debugRoundTrip) debugResponse(res *http.Response) {
+	if d == nil {
+		return
+	}
+
+	var wc io.WriteCloser
+
+	// Capture headers
+	wc = d.newFile("res.headers")
 	b, _ := httputil.DumpResponse(res, false)
 	wc.Write(b)
 	wc.Close()
 
 	// Capture body
-	wc = d.newFile("res." + ext)
+	wc = d.newFile("res." + d.ext(res.Header))
 	res.Body = newTeeReader(res.Body, wc)
 
 	// Delay closing until marked done

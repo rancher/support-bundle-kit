@@ -2,10 +2,11 @@ package objects
 
 import (
 	"fmt"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"strings"
 	"time"
+
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
 
 // jobCleanup performs job specific cleanup
@@ -183,6 +184,77 @@ func checkAndSetDefaultValue(obj *unstructured.Unstructured, field []string, def
 	if !ok || val == "" {
 		val = defaultVal
 		return unstructured.SetNestedField(obj.Object, val, field...)
+	}
+
+	return nil
+}
+
+// cleanupIngress will try and convert extensions/v1beta1 or networking.k8s.io/v1beta1 ingress objects into networking.k8s.io/v1
+// support-bundle-kit now runs k8s v1.23 wher the older ingress versions are deprecated
+// changes include:
+// spec.backend is renamed to spec.defaultBackend
+// The backend serviceName field is renamed to service.name
+// Numeric backend servicePort fields are renamed to service.port.number
+// String backend servicePort fields are renamed to service.port.name
+// pathType is now required for each specified path. Options are Prefix, Exact, and ImplementationSpecific. To match the undefined v1beta1 behavior, use ImplementationSpecific.
+
+func cleanupIngress(obj *unstructured.Unstructured) error {
+	if obj.GetAPIVersion() == "extensions/v1beta1" {
+		obj.SetAPIVersion("networking.k8s.io/v1")
+		o, ok, err := unstructured.NestedSlice(obj.Object, "spec", "rules")
+		if err != nil {
+			return err
+		}
+
+		if ok {
+			for vc, v := range o {
+				vMap, assertOK := v.(map[string]interface{})
+				if !assertOK {
+					return fmt.Errorf("unable to assert rules into a map")
+				}
+				paths, pok, err := unstructured.NestedSlice(vMap, "http", "paths")
+				if err != nil {
+					return err
+				}
+				if pok {
+					for i, p := range paths {
+						pMap, assertOK := p.(map[string]interface{})
+						if !assertOK {
+							return fmt.Errorf("unable to assert paths to map")
+						}
+						serviceName, _, err := unstructured.NestedString(pMap, "backend", "serviceName")
+						if err != nil {
+							return err
+						}
+						servicePort, _, err := unstructured.NestedInt64(pMap, "backend", "servicePort")
+						if err != nil {
+							return err
+						}
+						// delete and re-add backend info
+						newBackendMap := map[string]interface{}{
+							"service": map[string]interface{}{
+								"name": serviceName,
+								"port": map[string]interface{}{
+									"number": servicePort,
+								},
+							},
+						}
+						delete(pMap, "backend")
+						err = unstructured.SetNestedField(pMap, newBackendMap, "backend")
+						if err != nil {
+							return err
+						}
+						paths[i] = pMap
+					}
+				}
+				err = unstructured.SetNestedSlice(vMap, paths, "http", "paths")
+				if err != nil {
+					return err
+				}
+				o[vc] = vMap
+			}
+		}
+		return unstructured.SetNestedSlice(obj.Object, o, "spec", "rules")
 	}
 
 	return nil
