@@ -80,6 +80,12 @@ mkdir -p logs
 cd logs
 
 chroot $HOST_PATH /usr/bin/journalctl -k > kernel.log
+# also collect logs of previous two boots
+for ((i=1; i<=2; i++)); do
+  log_name="kernel.log.$i"
+  chroot $HOST_PATH /usr/bin/journalctl -k -b $((-i)) > $log_name
+  [ ! -s $log_name ] && rm -f $log_name
+done
 
 units=(rke2-server rke2-agent rancherd rancher-system-agent wicked iscsid)
 
