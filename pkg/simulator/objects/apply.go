@@ -247,6 +247,8 @@ func objectHousekeeping(obj *unstructured.Unstructured) error {
 		err = cleanupEvent(obj)
 	case "Ingress":
 		err = cleanupIngress(obj)
+	case "CustomResourceDefinition":
+		err = cleanupCRD(obj)
 	}
 	return err
 }
@@ -264,7 +266,7 @@ func findGVR(gvk schema.GroupVersionKind, cfg *rest.Config) (*meta.RESTMapping, 
 	return mapper.RESTMapping(gvk.GroupKind(), gvk.Version)
 }
 
-//verifyObj is a helper method used to verify objects to make it easier to test
+// verifyObj is a helper method used to verify objects to make it easier to test
 func verifyObject(obj *unstructured.Unstructured, fn func(interface{}) (bool, error), keys ...string) (ok bool, err error) {
 	tmpObj, ok, err := unstructured.NestedFieldCopy(obj.Object, keys...)
 	// if not found or no key present
