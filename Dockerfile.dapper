@@ -21,7 +21,7 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
 
 ## install golangci
 RUN if [ "${ARCH}" = "amd64" ]; then \
-        curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "$(go env GOPATH)/bin" v1.42.0; \
+        curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "$(go env GOPATH)/bin" v1.50.1; \
     fi
 
 ## install k8s.io and generate openapi spec
