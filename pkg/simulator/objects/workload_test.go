@@ -15,7 +15,7 @@ const (
 	testSTSFilePath     = "yamls/namespaced/cattle-monitoring-system/apps/v1/statefulsets.yaml"
 	testDeployFilePath  = "yamls/namespaced/cattle-monitoring-system/apps/v1/deployments.yaml"
 	testRSFilePath      = "yamls/namespaced/cattle-monitoring-system/apps/v1/replicasets.yaml"
-	testIngressFilePath = "yamls/namespaced/harvester-system/extensions/v1beta1/ingresses.yaml"
+	testIngressFilePath = "yamls/namespaced/cattle-system/networking.k8s.io/v1/ingresses.yaml"
 	testSettingsPath    = "yamls/cluster/management.cattle.io/v3/settings.yaml"
 	testJobPath         = "yamls/namespaced/harvester-system/batch/v1/jobs.yaml"
 	nodePath            = "yamls/cluster/v1/nodes.yaml"

@@ -63,7 +63,7 @@ func TestKubeletSimulator(t *testing.T) {
 	}
 
 	client := http.Client{Transport: tr, Timeout: 10 * time.Second}
-	resp, err := client.Get("https://localhost:10250/containerLogs/longhorn-system/backing-image-manager-c00e-a3c7/backing-image-manager")
+	resp, err := client.Get("https://localhost:10250/containerLogs/longhorn-system/backing-image-manager-d7ad-3cf5/backing-image-manager")
 	if err != nil {
 		t.Fatalf("error fetching logs from kubelet: %v", err)
 	}
@@ -73,7 +73,7 @@ func TestKubeletSimulator(t *testing.T) {
 	}
 
 	// read log from zip file as well
-	resp, err = client.Get("https://localhost:10250/containerLogs/support-bundle-node-info/node1/rke2-server")
+	resp, err = client.Get("https://localhost:10250/containerLogs/support-bundle-node-info/harvester-jb9lj/rke2-server")
 	if err != nil {
 		t.Fatalf("error fetching logs from kubelet: %v", err)
 	}

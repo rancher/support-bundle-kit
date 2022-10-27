@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"fmt"
+	"golang.org/x/text/language"
 	"io"
 	"regexp"
 	"strings"
@@ -10,6 +11,7 @@ import (
 	"github.com/Jeffail/gabs/v2"
 	"github.com/sirupsen/logrus"
 
+	"golang.org/x/text/cases"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/discovery"
@@ -75,7 +77,10 @@ func toObj(b []byte, groupVersion, kind string) (interface{}, error) {
 			return nil, err
 		}
 
-		if _, err = child.SetP(strings.Title(kind), "kind"); err != nil {
+		// strings.Title deprecated in go1.18
+		// switching over to golang.org/x/text/cases
+		c := cases.Title(language.English)
+		if _, err = child.SetP(c.String(kind), "kind"); err != nil {
 			logrus.Error("Unable to set kind field.")
 			return nil, err
 		}
