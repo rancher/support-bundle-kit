@@ -71,7 +71,7 @@ var _ = BeforeSuite(func(done Done) {
 	Expect(err).ToNot(HaveOccurred())
 
 	eg.Go(func() error {
-		return a.RunAPIServer(egctx)
+		return a.RunAPIServer(egctx, apiserver.DefaultServiceClusterIP)
 	})
 
 	// run fake kubelet
