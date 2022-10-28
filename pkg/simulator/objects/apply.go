@@ -161,7 +161,7 @@ func (o *ObjectManager) ApplyObjects(objs []runtime.Object, patchStatus bool, sk
 			if apierrors.IsNotFound(err) {
 				resp, err = dr.Create(o.ctx, unstructuredObj, metav1.CreateOptions{})
 				if err != nil {
-					logrus.Errorf("error during creation of resource %s with gvr %s", unstructuredObj.GetName(), restMapping.Resource.String())
+					logrus.WithError(err).Errorf("error during creation of resource %s with gvr %s", unstructuredObj.GetName(), restMapping.Resource.String())
 					logrus.Error(unstructuredObj.Object)
 					o.addToFailedObjects(unstructuredObj, err)
 					// no need to patch status when object errors out
