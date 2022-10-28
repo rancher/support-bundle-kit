@@ -57,7 +57,7 @@ func TestInstallCRD(t *testing.T) {
 
 	eg, egctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		return a.RunAPIServer(egctx)
+		return a.RunAPIServer(egctx, apiserver.DefaultServiceClusterIP)
 	})
 
 	eg.Go(func() error {

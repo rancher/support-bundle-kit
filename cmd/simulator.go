@@ -2,15 +2,18 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"github.com/mitchellh/go-homedir"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/apiserver"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/etcd"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/kubelet"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/objects"
+	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"golang.org/x/sync/errgroup"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"os"
 	"path/filepath"
 	"time"
@@ -69,8 +72,18 @@ support bundle contents using native k8s tooling like kubectl`,
 			logrus.Fatalf("error initialisting kubelet simulator: %v", err)
 		}
 
+		serviceClusterIP, err := GetServiceClusterIP(bundlePath)
+		if err != nil {
+			logrus.WithError(err).Warnf("Failed to get service cluster IP")
+		}
+
+		if serviceClusterIP == "" {
+			serviceClusterIP = apiserver.DefaultServiceClusterIP
+			logrus.Warnf("Cannot find service cluster IP, using default: %v", serviceClusterIP)
+		}
+
 		eg.Go(func() error {
-			return a.RunAPIServer(egctx)
+			return a.RunAPIServer(egctx, serviceClusterIP)
 		})
 
 		eg.Go(func() error {
@@ -128,4 +141,46 @@ func init() {
 	simulatorCmd.PersistentFlags().StringVar(&bundlePath, "bundle-path", ".", "location to support bundle. default is .")
 	simulatorCmd.PersistentFlags().BoolVar(&resetHome, "reset", false, "reset sim-home, will clear the contents and start a clean etcd + apiserver instance")
 	simulatorCmd.PersistentFlags().BoolVar(&skipLoad, "skip-load", false, "skip load / re-load of bundle. this will ensure current etcd contents are only accessible")
+}
+
+// GetServiceClusterIP will return the service cluster IP from the support bundle
+func GetServiceClusterIP(bundlePath string) (string, error) {
+	absPath, err := filepath.Abs(filepath.Join(bundlePath, "yamls/namespaced/default/v1/services.yaml"))
+	if err != nil {
+		return "", fmt.Errorf("failed to generate absolute path: %w", err)
+	}
+
+	objs, err := objects.GenerateObjects(absPath)
+	if err != nil {
+		return "", err
+	}
+
+	var kubeUnstructObj *unstructured.Unstructured
+	for _, obj := range objs {
+		unstructObj, err := wranglerunstructured.ToUnstructured(obj)
+		if err != nil {
+			return "", err
+		}
+
+		if unstructObj.GetName() == "kubernetes" {
+			kubeUnstructObj = unstructObj
+			break
+		}
+
+	}
+
+	if kubeUnstructObj == nil {
+		return "", fmt.Errorf("cannot find service kubernetes: %w", err)
+	}
+
+	clusterIP, ok, err := unstructured.NestedString(kubeUnstructObj.Object, "spec", "clusterIP")
+	if err != nil {
+		return "", fmt.Errorf("failed to fetch spec.clusterIP for service %v: %w", kubeUnstructObj.GetName(), err)
+	}
+
+	if !ok {
+		return "", fmt.Errorf("could not find spec.clusterIP for service %s\n%v", kubeUnstructObj.GetName(), kubeUnstructObj)
+	}
+
+	return clusterIP, nil
 }

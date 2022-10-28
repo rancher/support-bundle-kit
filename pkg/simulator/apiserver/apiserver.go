@@ -16,6 +16,10 @@ import (
 	"net"
 )
 
+const (
+	DefaultServiceClusterIP = "10.53.0.1"
+)
+
 type APIServerConfig struct {
 	Certs      *certs.CertInfo
 	Etcd       *etcd.EtcdConfig
@@ -29,7 +33,7 @@ const (
 
 // RunAPIServer will bootstrap an API server with only core resources enabled
 // No additional controllers will be scheduled
-func (a *APIServerConfig) RunAPIServer(ctx context.Context) error {
+func (a *APIServerConfig) RunAPIServer(ctx context.Context, serviceClusterIP string) error {
 	var err error
 	s := options.NewServerRunOptions()
 	s.Etcd.StorageConfig.Transport.ServerList = a.Etcd.Endpoints
@@ -41,9 +45,9 @@ func (a *APIServerConfig) RunAPIServer(ctx context.Context) error {
 		"v1":       "true",
 		"api/beta": "true",
 	}
-	s.ServiceClusterIPRanges = "10.53.0.1/16"
 	s.AllowPrivileged = true
 	s.ServiceAccountSigningKeyFile = a.Certs.ServiceAccountCertKey
+	s.ServiceClusterIPRanges = serviceClusterIP + "/16"
 	s.SecureServing.SecureServingOptions.ServerCert.CertKey.CertFile = a.Certs.APICert
 	s.SecureServing.SecureServingOptions.ServerCert.CertKey.KeyFile = a.Certs.APICertKey
 	s.SecureServing.SecureServingOptions.BindAddress = net.ParseIP("127.0.0.1")

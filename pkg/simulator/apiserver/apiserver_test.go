@@ -41,7 +41,7 @@ func TestRunAPIServer(t *testing.T) {
 		t.Fatalf("error generating kubeconfig %v", err)
 	}
 
-	err = a.RunAPIServer(ctx)
+	err = a.RunAPIServer(ctx, DefaultServiceClusterIP)
 	if err != nil {
 		t.Fatalf("error running API Server %v", err)
 	}
