@@ -3,10 +3,11 @@ package client
 import (
 	"context"
 	"fmt"
-	"golang.org/x/text/language"
 	"io"
 	"regexp"
 	"strings"
+
+	"golang.org/x/text/language"
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/sirupsen/logrus"

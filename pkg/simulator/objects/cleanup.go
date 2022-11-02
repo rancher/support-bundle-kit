@@ -260,10 +260,10 @@ func cleanupIngress(obj *unstructured.Unstructured) error {
 	return nil
 }
 
-// cleanupCRD will cleanup CRDs by removing .spec.conversion
+// cleanupCRDConversion will cleanup CRDs by removing .spec.conversion
 // this is not needed as the object conversion has already been performed in the
 // source cluster
-func cleanupCRD(obj *unstructured.Unstructured) error {
+func cleanupCRDConversion(obj *unstructured.Unstructured) error {
 	unstructured.RemoveNestedField(obj.Object, "spec", "conversion")
 	return nil
 }
