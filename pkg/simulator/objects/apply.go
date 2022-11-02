@@ -248,7 +248,7 @@ func objectHousekeeping(obj *unstructured.Unstructured) error {
 	case "Ingress":
 		err = cleanupIngress(obj)
 	case "CustomResourceDefinition":
-		err = cleanupCRD(obj)
+		err = cleanupCRDConversion(obj)
 	}
 	return err
 }
