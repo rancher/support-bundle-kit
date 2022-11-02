@@ -17,6 +17,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	k8sjson "k8s.io/apimachinery/pkg/runtime/serializer/json"
 
+	"github.com/rancher/support-bundle-kit/pkg/manager/collectors"
 	"github.com/rancher/support-bundle-kit/pkg/utils"
 )
 
@@ -71,64 +72,17 @@ func (c *Cluster) GenerateClusterBundle(bundleDir string) (string, error) {
 	encodeToYAMLFile(bundleMeta, metaFile, errLog)
 
 	yamlsDir := filepath.Join(bundleDir, "yamls")
-	c.generateSupportBundleYAMLs(yamlsDir, errLog)
+	var modules []interface{}
+	for _, moduleName := range c.sbm.BundleCollectors {
+		module := collectors.InitModuleCollector(moduleName, yamlsDir, c.sbm.Namespaces, c.sbm.discovery, c.matchesExcludeResources, encodeToYAMLFile, errLog)
+		modules = append(modules, module)
+	}
+	collectors.GetAllSupportBundleYAMLs(modules)
 
 	logsDir := filepath.Join(bundleDir, "logs")
 	c.generateSupportBundleLogs(logsDir, errLog)
 
 	return bundleName, nil
-}
-
-func (c *Cluster) generateSupportBundleYAMLs(yamlsDir string, errLog io.Writer) {
-	// Cluster scope
-	globalDir := filepath.Join(yamlsDir, "cluster")
-	c.generateDiscoveredClusterYAMLs(globalDir, errLog)
-
-	// Namespaced scope: all resources
-	namespaces := []string{"default", "kube-system", "cattle-system"}
-	namespaces = append(namespaces, c.sbm.Namespaces...)
-
-	done := make(map[string]struct{})
-	for _, namespace := range namespaces {
-		if _, ok := done[namespace]; ok {
-			continue
-		}
-
-		namespacedDir := filepath.Join(yamlsDir, "namespaced", namespace)
-		c.generateDiscoveredNamespacedYAMLs(namespace, namespacedDir, errLog)
-
-		done[namespace] = struct{}{}
-	}
-}
-
-type NamespacedGetter func(string) (runtime.Object, error)
-
-func (c *Cluster) generateDiscoveredNamespacedYAMLs(namespace string, dir string, errLog io.Writer) {
-	objs, err := c.sbm.discovery.ResourcesForNamespace(namespace, c.matchesExcludeResources, errLog)
-
-	if err != nil {
-		logrus.Error("Unable to fetch namespaced resources")
-		return
-	}
-
-	for name, obj := range objs {
-		file := filepath.Join(dir, name+".yaml")
-		encodeToYAMLFile(obj, file, errLog)
-	}
-}
-
-func (c *Cluster) generateDiscoveredClusterYAMLs(dir string, errLog io.Writer) {
-	objs, err := c.sbm.discovery.ResourcesForCluster(c.matchesExcludeResources, errLog)
-
-	if err != nil {
-		logrus.Error("Unable to fetch cluster resources")
-		return
-	}
-
-	for name, obj := range objs {
-		file := filepath.Join(dir, name+".yaml")
-		encodeToYAMLFile(obj, file, errLog)
-	}
 }
 
 // matchesExcludeResources returns true if given resource group version mathces our ExcludeResources list.

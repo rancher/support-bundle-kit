@@ -14,7 +14,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rancher/wrangler/pkg/signals"
 	"github.com/sirupsen/logrus"
-
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/rest"
@@ -40,6 +39,7 @@ type SupportBundleManager struct {
 
 	ExcludeResources    []schema.GroupResource
 	ExcludeResourceList []string
+	BundleCollectors    []string
 
 	context context.Context
 
@@ -144,6 +144,8 @@ func (m *SupportBundleManager) Run() error {
 }
 
 func (m *SupportBundleManager) phaseInit() error {
+	// Init default collector
+	m.BundleCollectors = append(m.BundleCollectors, "cluster", "default")
 	m.ExcludeResources = []schema.GroupResource{
 		// Default exclusion
 		{Group: v1.GroupName, Resource: "secrets"},
