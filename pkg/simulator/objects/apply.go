@@ -139,7 +139,7 @@ func (o *ObjectManager) ApplyObjects(objs []runtime.Object, patchStatus bool, sk
 		//GVK specific cleanup needed before objects can be created
 		err = objectHousekeeping(unstructuredObj)
 		if err != nil {
-			return fmt.Errorf("error during housekeeping on objects %v", err)
+			return fmt.Errorf("error during housekeeping on objects %v, error: %v", unstructuredObj, err)
 		}
 
 		restMapping, err := findGVR(v.GetObjectKind().GroupVersionKind(), o.config)
