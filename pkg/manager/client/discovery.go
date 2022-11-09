@@ -78,10 +78,7 @@ func toObj(b []byte, groupVersion, kind string) (interface{}, error) {
 			return nil, err
 		}
 
-		// strings.Title deprecated in go1.18
-		// switching over to golang.org/x/text/cases
-		c := cases.Title(language.English)
-		if _, err = child.SetP(c.String(kind), "kind"); err != nil {
+		if _, err = child.SetP(toTitle(kind), "kind"); err != nil {
 			logrus.Error("Unable to set kind field.")
 			return nil, err
 		}
@@ -219,4 +216,9 @@ func (dc *DiscoveryClient) ResourcesForCluster(exclude ExcludeFilter, errLog io.
 	}
 
 	return objs, nil
+}
+
+func toTitle(kind string) string {
+	c := cases.Title(language.English, cases.NoLower)
+	return c.String(kind)
 }
