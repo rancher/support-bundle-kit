@@ -1,28 +1,14 @@
-FROM golang:1.18
+FROM registry.suse.com/bci/golang:1.18
 
 ARG DAPPER_HOST_ARCH
 ENV ARCH $DAPPER_HOST_ARCH
 
 # -- for make rules
 ## install docker client
-RUN apt-get update -qq && apt-get install -y --no-install-recommends \
-        apt-transport-https \
-        ca-certificates \
-        curl \
-        gnupg \
-        lsb-release \
-        rsync \
-    && rm -rf /var/lib/apt/lists/* \
-    && curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
-    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
-    && apt-get update -qq && apt-get install -y --no-install-recommends \
-        docker-ce docker-ce-cli containerd.io \
-    && rm -rf /var/lib/apt/lists/*
+RUN zypper -n install ca-certificates awk lsb-release rsync docker containerd
 
 ## install golangci
-RUN if [ "${ARCH}" = "amd64" ]; then \
-        curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "$(go env GOPATH)/bin" v1.50.1; \
-    fi
+RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "$(go env GOPATH)/bin" v1.50.1;
 
 ## install k8s.io and generate openapi spec
 RUN mkdir -p /go/src/github.com/kubernetes && \
