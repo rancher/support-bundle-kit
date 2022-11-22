@@ -49,6 +49,8 @@ var (
 	skippedKinds = map[string]bool{
 		"ComponentStatus": true,
 	}
+
+	gvrLookup = make(map[schema.GroupVersionKind]*meta.RESTMapping)
 )
 
 // NewObjectManager is a wrapper around apply and support bundle path
@@ -256,6 +258,10 @@ func objectHousekeeping(obj *unstructured.Unstructured) error {
 // wrapper to lookup GVR for usage with dynamic client
 func findGVR(gvk schema.GroupVersionKind, cfg *rest.Config) (*meta.RESTMapping, error) {
 
+	existingMapping, ok := gvrLookup[gvk]
+	if ok {
+		return existingMapping, nil
+	}
 	// DiscoveryClient queries API server about the resources
 	dc, err := discovery.NewDiscoveryClientForConfig(cfg)
 	if err != nil {
@@ -263,7 +269,12 @@ func findGVR(gvk schema.GroupVersionKind, cfg *rest.Config) (*meta.RESTMapping, 
 	}
 	mapper := restmapper.NewDeferredDiscoveryRESTMapper(memory.NewMemCacheClient(dc))
 
-	return mapper.RESTMapping(gvk.GroupKind(), gvk.Version)
+	gvkMapping, err := mapper.RESTMapping(gvk.GroupKind(), gvk.Version)
+	if err != nil {
+		return nil, err
+	}
+	gvrLookup[gvk] = gvkMapping
+	return gvkMapping, nil
 }
 
 // verifyObj is a helper method used to verify objects to make it easier to test
