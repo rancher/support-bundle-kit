@@ -152,6 +152,9 @@ steps:
       tag: "${DRONE_BRANCH}-head-s390x"
       username:
         from_secret: docker_username
+    volumes:
+      - name: docker
+        path: /var/run/docker.sock
     when:
       ref:
         include:
@@ -170,6 +173,9 @@ steps:
       tag: "${DRONE_TAG}-s390x"
       username:
         from_secret: docker_username
+    volumes:
+      - name: docker
+        path: /var/run/docker.sock
     when:
       instance:
         - drone-publish.rancher.io
