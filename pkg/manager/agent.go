@@ -69,13 +69,7 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 					NodeSelector: a.sbm.getNodeSelector(),
 					Tolerations: []corev1.Toleration{
 						{
-							Key:      types.KubevirtDrainKey,
 							Operator: corev1.TolerationOpExists,
-						},
-						{
-							Key:      corev1.TaintNodeUnschedulable,
-							Operator: corev1.TolerationOpExists,
-							Effect:   corev1.TaintEffectNoSchedule,
 						},
 					},
 					Containers: []corev1.Container{
