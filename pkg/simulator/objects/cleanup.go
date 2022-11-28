@@ -122,12 +122,18 @@ func cleanupEvent(obj *unstructured.Unstructured) error {
 		unstructured.RemoveNestedField(obj.Object, "deprecatedCount")
 		unstructured.RemoveNestedField(obj.Object, "deprecatedSource")
 		unstructured.RemoveNestedField(obj.Object, "series")
+		if err := checkAndSetDefaultValue(obj, []string{"reportingController"}, "sim-generated"); err != nil {
+			return err
+		}
 	} else {
 		// cleanup corev1 Events
 		unstructured.RemoveNestedField(obj.Object, "firstTimestamp")
 		unstructured.RemoveNestedField(obj.Object, "lastTimestamp")
 		unstructured.RemoveNestedField(obj.Object, "count")
 		unstructured.RemoveNestedField(obj.Object, "source")
+		if err := checkAndSetDefaultValue(obj, []string{"reportingComponent"}, "sim-generated"); err != nil {
+			return err
+		}
 	}
 
 	unstructured.RemoveNestedField(obj.Object, "series")
@@ -161,10 +167,6 @@ func cleanupEvent(obj *unstructured.Unstructured) error {
 		}
 	}
 
-	if err := checkAndSetDefaultValue(obj, []string{"reportingController"}, "sim-generated"); err != nil {
-		return err
-	}
-
 	if err := checkAndSetDefaultValue(obj, []string{"reportingInstance"}, "sim-generated"); err != nil {
 		return err
 	}
@@ -172,7 +174,17 @@ func cleanupEvent(obj *unstructured.Unstructured) error {
 	if err := checkAndSetDefaultValue(obj, []string{"action"}, "sim-generated"); err != nil {
 		return err
 	}
-	return nil
+
+	noteVal, noteOK, err := unstructured.NestedString(obj.Object, "note")
+	if err != nil {
+		return err
+	}
+
+	if noteOK && len(noteVal) > 1024 {
+		newNoteVal := string([]byte(noteVal)[:1023])
+		err = unstructured.SetNestedField(obj.Object, newNoteVal, "note")
+	}
+	return err
 }
 
 func checkAndSetDefaultValue(obj *unstructured.Unstructured, field []string, defaultVal string) error {
@@ -265,5 +277,26 @@ func cleanupIngress(obj *unstructured.Unstructured) error {
 // source cluster
 func cleanupCRDConversion(obj *unstructured.Unstructured) error {
 	unstructured.RemoveNestedField(obj.Object, "spec", "conversion")
+	return nil
+}
+
+// cleanupLonghornSettings
+func cleanupLonghornSettings(obj *unstructured.Unstructured) error {
+	// need this check as we also have settings in Harvester
+	if obj.GroupVersionKind().GroupVersion().String() != "longhorn.io/v1beta2" {
+		return nil
+	}
+	val, valOK, err := unstructured.NestedString(obj.Object, "value")
+	if err != nil {
+		return err
+	}
+
+	if !valOK {
+		return unstructured.SetNestedField(obj.Object, "", "value")
+	}
+	if valOK && val == "null" {
+		return unstructured.SetNestedField(obj.Object, "", "value")
+	}
+
 	return nil
 }

@@ -156,3 +156,33 @@ func GenerateUnstructuredObjects(file string) (objs []*unstructured.Unstructured
 
 	return objs, err
 }
+
+// GenerateUnstructuredObjectsFromString is a helper used by tests to generated objects from embedded yamls available in variables
+func GenerateUnstructuredObjectsFromString(contents string) (obj []*unstructured.Unstructured, err error) {
+	tmpFile, err := ioutil.TempFile("/tmp", "obj_from_var")
+	if err != nil {
+		return nil, fmt.Errorf("error creating tmpfile: %v", err)
+	}
+	defer os.Remove(tmpFile.Name())
+	_, err = tmpFile.Write([]byte(contents))
+	if err != nil {
+		return nil, fmt.Errorf("error writing contents to tmpFile: %v", err)
+	}
+	err = tmpFile.Close()
+	if err != nil {
+		return nil, fmt.Errorf("error closing file: %v", err)
+	}
+	objs, err := GenerateObjects(tmpFile.Name())
+	if err != nil {
+		return nil, fmt.Errorf("error during object generation: %v", err)
+	}
+	for _, v := range objs {
+		unstructObj, err := wranglerunstructured.ToUnstructured(v)
+		if err != nil {
+			return nil, fmt.Errorf("error converting object to unstructured obj: %v", err)
+		}
+		obj = append(obj, unstructObj)
+	}
+
+	return obj, nil
+}
