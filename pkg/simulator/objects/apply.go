@@ -273,6 +273,8 @@ func objectHousekeeping(obj *unstructured.Unstructured) error {
 		err = cleanupCRDConversion(obj)
 	case "Setting":
 		err = cleanupLonghornSettings(obj)
+	case "NodeNetwork":
+		err = cleanupNodeNetwork(obj)
 	}
 	return err
 }

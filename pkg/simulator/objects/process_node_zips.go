@@ -218,9 +218,9 @@ func walkZipFiles(zipFile string) (*v1.Pod, *bundlekit.NodeConfig, error) {
 
 		// generate pod object, skip parent directory
 		if strings.Contains(f.Name, "logs") && !f.FileInfo().IsDir() {
-			containerName := strings.Split(f.Name, ".log")
+			containerName := strings.Replace(f.Name, ".", "-", -1)
 			c := v1.Container{
-				Name:  filepath.Base(containerName[0]),
+				Name:  filepath.Base(containerName),
 				Image: "noimage",
 			}
 			containers = append(containers, c)

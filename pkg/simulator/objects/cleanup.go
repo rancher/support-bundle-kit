@@ -300,3 +300,27 @@ func cleanupLonghornSettings(obj *unstructured.Unstructured) error {
 
 	return nil
 }
+
+func cleanupNodeNetwork(obj *unstructured.Unstructured) error {
+	status, statusOK, err := unstructured.NestedMap(obj.Object, "status", "networkLinkStatus")
+	if err != nil {
+		return err
+	}
+
+	if statusOK {
+		for i, v := range status {
+			vMap, ok := v.(map[string]interface{})
+			if !ok {
+				return fmt.Errorf("unable to assert network interface status into a map")
+			}
+			if _, nameFound := vMap["name"]; !nameFound {
+				vMap["name"] = "sim-generated"
+				status[i] = vMap
+			}
+		}
+
+		return unstructured.SetNestedMap(obj.Object, status, "status", "networkLinkStatus")
+	}
+
+	return nil
+}
