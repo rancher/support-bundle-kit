@@ -51,6 +51,29 @@ func (k *KubernetesClient) GetPodContainerLogRequest(namespace, podName, contain
 	})
 }
 
+func (k *KubernetesClient) GetPodContainerPreviousLogRequest(namespace, podName, containerName string) *rest.Request {
+	return k.clientSet.CoreV1().Pods(namespace).GetLogs(podName, &corev1.PodLogOptions{
+		Container:  containerName,
+		Timestamps: true,
+		Previous:   true,
+	})
+}
+
+func (k *KubernetesClient) GetPodRestartCount(namespace, podName, containerName string) (int32, error) {
+	pod, err := k.clientSet.CoreV1().Pods(namespace).Get(context.TODO(), podName, metav1.GetOptions{})
+	if err != nil {
+		return 0, err
+	}
+	for _, containerStatus := range pod.Status.ContainerStatuses {
+		if containerStatus.Name != containerName {
+			continue
+		}
+		return containerStatus.RestartCount, nil
+	}
+
+	return 0, nil
+}
+
 func (k *KubernetesClient) GetAllServicesList(namespace string) (runtime.Object, error) {
 	return k.clientSet.CoreV1().Services(namespace).List(k.Context, metav1.ListOptions{})
 }

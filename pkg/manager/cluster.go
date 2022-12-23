@@ -11,12 +11,12 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
-
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	k8sjson "k8s.io/apimachinery/pkg/runtime/serializer/json"
+	"k8s.io/client-go/rest"
 
 	"github.com/rancher/support-bundle-kit/pkg/manager/collectors"
 	"github.com/rancher/support-bundle-kit/pkg/utils"
@@ -158,18 +158,35 @@ func (c *Cluster) generateSupportBundleLogs(logsDir string, errLog io.Writer) {
 			podDir := filepath.Join(logsDir, ns, podName)
 			for _, container := range pod.Spec.Containers {
 				req := c.sbm.k8s.GetPodContainerLogRequest(ns, podName, container.Name)
-				logFileName := filepath.Join(podDir, container.Name+".log")
-				stream, err := req.Stream(c.sbm.context)
+				getLogToFile(podDir, podName, container.Name, req, c.sbm.context, errLog, false)
+				restartCount, err := c.sbm.k8s.GetPodRestartCount(ns, podName, container.Name)
 				if err != nil {
-					fmt.Fprintf(errLog, "BUG: Support bundle: cannot get log for pod %v container %v: %v\n",
-						podName, container.Name, err)
+					fmt.Fprintf(errLog, "Cannot get pod `%s` info (error: %v), just continue", podName, err)
 					continue
 				}
-				streamLogToFile(stream, logFileName, errLog)
-				stream.Close()
+				if restartCount > 0 {
+					req := c.sbm.k8s.GetPodContainerPreviousLogRequest(ns, podName, container.Name)
+					getLogToFile(podDir, podName, container.Name, req, c.sbm.context, errLog, true)
+				}
 			}
 		}
 	}
+}
+
+func getLogToFile(podDir, podName, containerName string, req *rest.Request, sbmContext context.Context, errLog io.Writer, previousLog bool) {
+	logFileName := filepath.Join(podDir, containerName+".log")
+	if previousLog {
+		logFileName = filepath.Join(podDir, containerName+".log.1")
+	}
+	stream, err := req.Stream(sbmContext)
+	if err != nil {
+		fmt.Fprintf(errLog, "BUG: Support bundle: cannot get log for pod %v container %v: %v\n",
+			podName, containerName, err)
+		return
+	}
+	logrus.Debugf("Prepare to log to file: %s", logFileName)
+	streamLogToFile(stream, logFileName, errLog)
+	stream.Close()
 }
 
 func streamLogToFile(logStream io.ReadCloser, path string, errLog io.Writer) {
