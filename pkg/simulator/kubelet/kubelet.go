@@ -7,18 +7,20 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
-	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
-	"github.com/rancher/support-bundle-kit/pkg/simulator/objects"
-	"github.com/virtual-kubelet/node-cli/opts"
-	"github.com/virtual-kubelet/virtual-kubelet/node/api"
 	"io"
 	"io/ioutil"
-	corev1 "k8s.io/api/core/v1"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/virtual-kubelet/node-cli/opts"
+	"github.com/virtual-kubelet/virtual-kubelet/node/api"
+	corev1 "k8s.io/api/core/v1"
+
+	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
+	"github.com/rancher/support-bundle-kit/pkg/simulator/objects"
 )
 
 const (
@@ -96,14 +98,15 @@ func (k *KubeletSimulator) getPods(ctx context.Context) ([]*corev1.Pod, error) {
 
 // getContainerLogs streams the logs from the bundle
 func (k *KubeletSimulator) getContainerLogs(ctx context.Context, namespace, podName, containerName string, opts api.ContainerLogOpts) (io.ReadCloser, error) {
-	contents, err := readLogFiles(k.bundlePath, namespace, podName, containerName)
+	log.Printf("Get logs for podName %s with opts %v\n", podName, opts)
+	contents, err := readLogFiles(k.bundlePath, namespace, podName, containerName, opts.Previous)
 	if err != nil {
 		return nil, err
 	}
 	return ioutil.NopCloser(contents), nil
 }
 
-func readLogFiles(path, namespace, name, container string) (io.Reader, error) {
+func readLogFiles(path, namespace, name, container string, loadPrevious bool) (io.Reader, error) {
 
 	// node.zip files need to be handled using the zip file reader
 	if namespace == objects.DefaultPodNamespace {
@@ -111,6 +114,9 @@ func readLogFiles(path, namespace, name, container string) (io.Reader, error) {
 	}
 
 	abs, err := filepath.Abs(filepath.Join(path, "logs", namespace, name, container+".log"))
+	if loadPrevious {
+		abs, err = filepath.Abs(filepath.Join(path, "logs", namespace, name, container+".log.1"))
+	}
 	if err != nil {
 		return nil, err
 	}
