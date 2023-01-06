@@ -26,8 +26,8 @@ if [ -x "$(which $OS_COLLECTOR)" ]; then
     $OS_COLLECTOR $HOST_PATH $BUNDLE_DIR
 else
     echo "No OS collector found"
+    collector-default $HOST_PATH $BUNDLE_DIR
 fi
-
 
 cd ${OUTPUT_DIR}
 zip -r node_bundle.zip $(basename ${BUNDLE_DIR})
