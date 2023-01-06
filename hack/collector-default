@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+HOST_PATH=$1
+BUNDLE_DIR=$2
+
+# RKE2: Logs for the kubelet are save in rke2 agent log folder
+RKE2_KUBELET_LOG_PATH=${HOST_PATH}/var/lib/rancher/rke2/agent/logs/kubelet.log
+
+function collect_sysinfo(){
+    cd ${BUNDLE_DIR}
+    mkdir -p hostinfos
+    cd hostinfos
+    
+    echo "hostname : " `cat ${HOST_PATH}/etc/hostname` > hostinfo
+    echo "os-release : " `cat ${HOST_PATH}/etc/os-release` >> hostinfo
+    echo "system-info : " `uname -a` >> hostinfo
+
+    # Boot Configuration
+    cat ${HOST_PATH}/boot/config-$(uname -r) > kernel_config
+}
+
+function collect_dmesg(){
+    dmesg -HTx &> dmesg.log
+}
+
+function collect_syslog(){
+    tail -c 10m ${HOST_PATH}/var/log/syslog > syslog.log
+}
+
+function collect_kubelet_log(){
+    # On Linux nodes that use systemd, the kubelet and container runtime write to journald by default. 
+    # ref. https://kubernetes.io/docs/concepts/cluster-administration/logging/#log-location-node
+    chroot ${HOST_PATH} /usr/bin/journalctl -r -u kubelet > kubelet.log
+    
+    if [ -f ${RKE2_KUBELET_LOG_PATH} ]; then
+        cp ${RKE2_KUBELET_LOG_PATH} .
+    fi
+}
+
+function collect_logs(){
+    cd ${BUNDLE_DIR}
+    mkdir -p logs
+    cd logs
+
+    collect_dmesg
+    collect_syslog
+    collect_kubelet_log
+}
+
+collect_sysinfo
+collect_logs
