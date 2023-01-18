@@ -1,7 +1,7 @@
 FROM registry.suse.com/bci/bci-base:15.4
 
 RUN zypper -n rm container-suseconnect && \
-    zypper -n install zip curl which && \
+    zypper -n install zip curl which tar && \
     zypper -n clean -a && rm -rf /tmp/* /var/tmp/* /usr/share/doc/packages/*
 
 ARG ARCH=amd64
