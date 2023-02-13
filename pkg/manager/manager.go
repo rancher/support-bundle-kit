@@ -41,6 +41,7 @@ type SupportBundleManager struct {
 	ExcludeResources    []schema.GroupResource
 	ExcludeResourceList []string
 	BundleCollectors    []string
+	SpecifyCollector    string
 
 	context context.Context
 

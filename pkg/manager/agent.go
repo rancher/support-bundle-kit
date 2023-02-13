@@ -4,12 +4,13 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	"github.com/rancher/support-bundle-kit/pkg/types"
 	"github.com/sirupsen/logrus"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/rancher/support-bundle-kit/pkg/types"
 )
 
 type AgentDaemonSet struct {
@@ -99,6 +100,10 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 								{
 									Name:  "SUPPORT_BUNDLE_MANAGER_URL",
 									Value: managerURL,
+								},
+								{
+									Name:  "SUPPORT_BUNDLE_COLLECTOR",
+									Value: a.sbm.SpecifyCollector,
 								},
 							},
 							VolumeMounts: []corev1.VolumeMount{
