@@ -21,12 +21,17 @@ if [ -z "$OS_ID" ]; then
     exit 1
 fi
 
-OS_COLLECTOR="collector-$OS_ID"
+if [ -n "$SUPPORT_BUNDLE_COLLECTOR" ]; then
+    OS_COLLECTOR="collector-$SUPPORT_BUNDLE_COLLECTOR"
+else
+    OS_COLLECTOR="collector-$OS_ID"
+fi
+echo "OS_COLLECTOR="${OS_COLLECTOR}
+
 if [ -x "$(which $OS_COLLECTOR)" ]; then
     $OS_COLLECTOR $HOST_PATH $BUNDLE_DIR
 else
     echo "No OS collector found"
-    collector-default $HOST_PATH $BUNDLE_DIR
 fi
 
 cd ${OUTPUT_DIR}
