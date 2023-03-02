@@ -51,6 +51,7 @@ func init() {
 	managerCmd.PersistentFlags().StringVar(&sbm.ImageName, "image-name", os.Getenv("SUPPORT_BUNDLE_IMAGE"), "The support bundle image")
 	managerCmd.PersistentFlags().StringVar(&sbm.ImagePullPolicy, "image-pull-policy", os.Getenv("SUPPORT_BUNDLE_IMAGE_PULL_POLICY"), "Pull policy of the support bundle image")
 	managerCmd.PersistentFlags().StringVar(&sbm.NodeSelector, "node-selector", os.Getenv("SUPPORT_BUNDLE_NODE_SELECTOR"), "NodeSelector of agent DaemonSet. e.g., key1=value1,key2=value2")
+	managerCmd.PersistentFlags().StringVar(&sbm.RegistrySecret, "registry-secret", os.Getenv("SUPPORT_BUNDLE_REGISTRY_SECRET"), "The registry secret for image pull")
 	managerCmd.PersistentFlags().StringSliceVar(&sbm.ExcludeResourceList, "exclude-resources", getEnvStringSlice("SUPPORT_BUNDLE_EXCLUDE_RESOURCES"), "List of resources to exclude. e.g., settings.harvesterhci.io,secrets")
 	managerCmd.PersistentFlags().StringSliceVar(&sbm.BundleCollectors, "extra-collectors", getEnvStringSlice("SUPPORT_BUNDLE_EXTRA_COLLECTORS"), "Get extra resource for the specific components e.g., harvester")
 }

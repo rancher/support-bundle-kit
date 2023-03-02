@@ -124,6 +124,14 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 		},
 	}
 
+	if a.sbm.RegistrySecret != "" {
+		daemonSet.Spec.Template.Spec.ImagePullSecrets = []corev1.LocalObjectReference{
+			{
+				Name: a.sbm.RegistrySecret,
+			},
+		}
+	}
+
 	_, err = a.sbm.k8s.CreateDaemonSets(a.sbm.PodNamespace, daemonSet)
 	return err
 }
