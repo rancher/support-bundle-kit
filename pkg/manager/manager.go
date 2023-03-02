@@ -36,6 +36,7 @@ type SupportBundleManager struct {
 	KubeConfig      string
 	PodNamespace    string
 	NodeSelector    string
+	RegistrySecret  string
 
 	ExcludeResources    []schema.GroupResource
 	ExcludeResourceList []string
