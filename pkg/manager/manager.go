@@ -36,6 +36,7 @@ type SupportBundleManager struct {
 	KubeConfig      string
 	PodNamespace    string
 	NodeSelector    string
+	TaintToleration string
 	RegistrySecret  string
 
 	ExcludeResources    []schema.GroupResource
@@ -377,4 +378,60 @@ func (m *SupportBundleManager) getNodeSelector() map[string]string {
 		}
 	}
 	return nodeSelector
+}
+
+func (m *SupportBundleManager) getTaintToleration() []v1.Toleration {
+	taintToleration := []v1.Toleration{}
+
+	m.TaintToleration = strings.ReplaceAll(m.TaintToleration, " ", "")
+	if m.TaintToleration == "" {
+		return taintToleration
+	}
+
+	tolerationList := strings.Split(m.TaintToleration, ",")
+	for _, toleration := range tolerationList {
+		toleration, err := parseToleration(toleration)
+		if err != nil {
+			logrus.WithError(err).Warnf("Invalid toleration: %s", toleration)
+			continue
+		}
+		taintToleration = append(taintToleration, *toleration)
+	}
+
+	if len(taintToleration) == 0 {
+		return []v1.Toleration{{Operator: v1.TolerationOpExists}}
+	}
+	return taintToleration
+}
+
+func parseToleration(taintToleration string) (*v1.Toleration, error) {
+	// The schema should be `key=value:effect` or `key:effect`
+	parts := strings.Split(taintToleration, ":")
+	if len(parts) != 2 {
+		return nil, fmt.Errorf("missing key/value and effect pair")
+	}
+
+	// parse `key=value` or `key`
+	key, value, operator := "", "", v1.TolerationOperator("")
+	pair := strings.Split(parts[0], "=")
+	switch len(pair) {
+	case 1:
+		key, value, operator = parts[0], "", v1.TolerationOpExists
+	case 2:
+		key, value, operator = pair[0], pair[1], v1.TolerationOpEqual
+	}
+
+	effect := v1.TaintEffect(parts[1])
+	switch effect {
+	case "", v1.TaintEffectNoExecute, v1.TaintEffectNoSchedule, v1.TaintEffectPreferNoSchedule:
+	default:
+		return nil, fmt.Errorf("invalid effect: %v", parts[1])
+	}
+
+	return &v1.Toleration{
+		Key:      key,
+		Value:    value,
+		Operator: operator,
+		Effect:   effect,
+	}, nil
 }
