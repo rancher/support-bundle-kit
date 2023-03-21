@@ -68,11 +68,7 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 				},
 				Spec: corev1.PodSpec{
 					NodeSelector: a.sbm.getNodeSelector(),
-					Tolerations: []corev1.Toleration{
-						{
-							Operator: corev1.TolerationOpExists,
-						},
-					},
+					Tolerations:  a.sbm.getTaintToleration(),
 					Containers: []corev1.Container{
 						{
 							Name:            "agent",
