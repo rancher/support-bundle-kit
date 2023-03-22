@@ -397,10 +397,6 @@ func (m *SupportBundleManager) getTaintToleration() []v1.Toleration {
 		}
 		taintToleration = append(taintToleration, *toleration)
 	}
-
-	if len(taintToleration) == 0 {
-		return []v1.Toleration{{Operator: v1.TolerationOpExists}}
-	}
 	return taintToleration
 }
 
