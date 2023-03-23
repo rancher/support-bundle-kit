@@ -8,6 +8,7 @@ cd $(dirname $0)/..
 # makes these flaky
 echo "running unit tests"
 go test -p 1 -v ./pkg/simulator/...
+go test -v -cover -coverprofile=cover.out ./pkg/manager/...
 
 echo "running integration tests"
 go test -v -timeout=20m ./tests/integration
