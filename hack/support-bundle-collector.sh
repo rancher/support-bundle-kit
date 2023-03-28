@@ -15,15 +15,15 @@ BUNDLE_DIR="${OUTPUT_DIR}/${NODE_NAME}"
 
 mkdir -p ${BUNDLE_DIR}
 
-OS_ID=$(bash -c "source $HOST_PATH/etc/os-release && echo \$ID")
-if [ -z "$OS_ID" ]; then
-    echo "Unable to determine OS ID"
-    exit 1
-fi
-
 if [ -n "$SUPPORT_BUNDLE_COLLECTOR" ]; then
     OS_COLLECTOR="collector-$SUPPORT_BUNDLE_COLLECTOR"
 else
+    OS_ID=$(bash -c "source ${HOST_PATH}/etc/os-release && echo \$ID")
+    if [ -z "$OS_ID" ]; then
+        echo "Unable to determine OS ID"
+        exit 1
+    fi
+    
     OS_COLLECTOR="collector-$OS_ID"
 fi
 echo "OS_COLLECTOR="${OS_COLLECTOR}
