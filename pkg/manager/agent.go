@@ -21,7 +21,7 @@ func (a *AgentDaemonSet) getDaemonSetName() string {
 	return fmt.Sprintf("supportbundle-agent-%s", a.sbm.BundleName)
 }
 
-func (a *AgentDaemonSet) Create(image string, managerURL string) error {
+func (a *AgentDaemonSet) Create(image string, managerURL string) (*appsv1.DaemonSet, error) {
 	dsName := a.getDaemonSetName()
 	logrus.Debugf("creating daemonset %s with image %s", dsName, image)
 
@@ -30,11 +30,11 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 
 	pods, err := a.sbm.k8s.GetPodsListByLabels(a.sbm.PodNamespace, labels)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(pods.Items) != 1 {
-		return errors.New("more than one support bundle manager pods are found")
+		return nil, errors.New("more than one support bundle manager pods are found")
 	}
 	managerPod := pods.Items[0]
 
@@ -133,8 +133,7 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) error {
 		}
 	}
 
-	_, err = a.sbm.k8s.CreateDaemonSets(a.sbm.PodNamespace, daemonSet)
-	return err
+	return a.sbm.k8s.CreateDaemonSets(a.sbm.PodNamespace, daemonSet)
 }
 
 func (a *AgentDaemonSet) Cleanup() error {

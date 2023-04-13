@@ -14,6 +14,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rancher/wrangler/pkg/signals"
 	"github.com/sirupsen/logrus"
+	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/rest"
@@ -256,15 +257,14 @@ func (m *SupportBundleManager) initStateStore() {
 func (m *SupportBundleManager) collectNodeBundles() error {
 	m.ch = make(chan struct{})
 
-	err := m.refreshNodes()
+	// create a daemonset to collect node bundles and push back
+	agents := &AgentDaemonSet{sbm: m}
+	agentDaemonSet, err := agents.Create(m.ImageName, fmt.Sprintf("http://%s:8080", m.ManagerPodIP))
 	if err != nil {
 		return err
 	}
-	logrus.Debugf("expected bundles from nodes: %+v", m.expectedNodes)
 
-	// create a daemonset to collect node bundles and push back
-	agents := &AgentDaemonSet{sbm: m}
-	err = agents.Create(m.ImageName, fmt.Sprintf("http://%s:8080", m.ManagerPodIP))
+	err = m.refreshNodes(agentDaemonSet)
 	if err != nil {
 		return err
 	}
@@ -332,20 +332,83 @@ func (m *SupportBundleManager) compressBundle() error {
 	return nil
 }
 
-func (m *SupportBundleManager) refreshNodes() error {
-	nodes, err := m.k8s.GetNodesListByLabels(m.NodeSelector)
+func (m *SupportBundleManager) getAgentPodsCreatedBy(daemonSet *appsv1.DaemonSet) (*v1.PodList, error) {
+	startTime := time.Now()
+	ticker := time.NewTicker(types.PodCreationWaitInterval)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		logrus.Debug("Waiting for the creation of agent DaemonSet Pods for scheduled node names collection")
+
+		pods, err := m.k8s.GetPodsListByLabels(m.PodNamespace, fmt.Sprintf("app=%s", types.SupportBundleAgent))
+		if err != nil {
+			return nil, err
+		}
+
+		// Filter out pods not created by the current agent DaemonSet or without assigned node names
+		filteredPods := make([]v1.Pod, 0, len(pods.Items))
+		for _, pod := range pods.Items {
+			if len(pod.OwnerReferences) != 1 {
+				return nil, fmt.Errorf("unexpected OwnerReferences in %v: %+v", pod.Name, pod.OwnerReferences)
+			}
+
+			if pod.OwnerReferences[0].Name == daemonSet.Name && pod.Spec.NodeName != "" {
+				filteredPods = append(filteredPods, pod)
+			}
+		}
+
+		// Get the latest agent DaemonSet status
+		daemonSet, err = m.k8s.GetDaemonSetBy(daemonSet.Namespace, daemonSet.Name)
+		if err != nil {
+			return nil, err
+		}
+
+		// Check if all desired Pods have been scheduled
+		if len(filteredPods) != 0 && len(pods.Items) == int(daemonSet.Status.DesiredNumberScheduled) {
+			return &v1.PodList{Items: filteredPods}, nil
+		}
+
+		if time.Since(startTime) > types.PodCreationTimeout {
+			return nil, fmt.Errorf("timed out (%d) waiting for the agent DaemonSet Pods to be scheduled", types.PodCreationTimeout)
+		}
+	}
+
+	return nil, fmt.Errorf("unexpected error: stopped waiting for creating DaemonSet Pod or timing out")
+}
+
+func (m *SupportBundleManager) getAgentNodesIn(podList *v1.PodList) ([]*v1.Node, error) {
+	var nodes []*v1.Node
+	for _, pod := range podList.Items {
+		node, err := m.k8s.GetNodeBy(pod.Spec.NodeName)
+		if err != nil {
+			return nil, err
+		}
+
+		nodes = append(nodes, node)
+	}
+	return nodes, nil
+}
+
+func (m *SupportBundleManager) refreshNodes(agentDaemonSet *appsv1.DaemonSet) error {
+	podList, err := m.getAgentPodsCreatedBy(agentDaemonSet)
 	if err != nil {
 		return err
 	}
 
-	if len(nodes.Items) == 0 {
+	nodes, err := m.getAgentNodesIn(podList)
+	if err != nil {
+		return err
+	}
+
+	if len(nodes) == 0 {
 		return errors.New("no nodes are found")
 	}
 
 	m.expectedNodes = make(map[string]string)
+	defer logrus.Debugf("Expecting bundles from nodes: %+v", m.expectedNodes)
 
 NODE_LOOP:
-	for _, node := range nodes.Items {
+	for _, node := range nodes {
 		for _, cond := range node.Status.Conditions {
 			switch cond.Type {
 			case v1.NodeReady:

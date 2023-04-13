@@ -2,6 +2,8 @@
 package types
 
 import (
+	"time"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -19,6 +21,9 @@ const (
 
 	SupportBundleManager = "support-bundle-manager"
 	SupportBundleAgent   = "support-bundle-agent"
+
+	PodCreationTimeout      = 5 * time.Minute
+	PodCreationWaitInterval = time.Second
 )
 
 type ManagerPhase string
