@@ -75,6 +75,10 @@ func (k *KubernetesClient) DeleteDaemonSets(namespace, name string) error {
 	return k.clientSet.AppsV1().DaemonSets(namespace).Delete(k.Context, name, metav1.DeleteOptions{})
 }
 
+func (k *KubernetesClient) GetDaemonSetBy(namespace, name string) (*appsv1.DaemonSet, error) {
+	return k.clientSet.AppsV1().DaemonSets(namespace).Get(k.Context, name, metav1.GetOptions{})
+}
+
 func (k *KubernetesClient) GetAllStatefulSetsList(namespace string) (runtime.Object, error) {
 	return k.clientSet.AppsV1().StatefulSets(namespace).List(k.Context, metav1.ListOptions{})
 }
@@ -85,6 +89,10 @@ func (k *KubernetesClient) GetAllJobsList(namespace string) (runtime.Object, err
 
 func (k *KubernetesClient) GetAllCronJobsList(namespace string) (runtime.Object, error) {
 	return k.clientSet.BatchV1beta1().CronJobs(namespace).List(k.Context, metav1.ListOptions{})
+}
+
+func (k *KubernetesClient) GetNodeBy(name string) (*corev1.Node, error) {
+	return k.clientSet.CoreV1().Nodes().Get(k.Context, name, metav1.GetOptions{})
 }
 
 func (k *KubernetesClient) GetAllNodesList() (runtime.Object, error) {
