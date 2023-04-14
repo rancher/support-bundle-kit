@@ -12,12 +12,14 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/rancher/wrangler/pkg/signals"
 	"github.com/sirupsen/logrus"
+
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/rest"
+
+	"github.com/rancher/wrangler/pkg/signals"
 
 	"github.com/rancher/support-bundle-kit/pkg/manager/client"
 	"github.com/rancher/support-bundle-kit/pkg/types"

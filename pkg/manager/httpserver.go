@@ -13,8 +13,9 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
-	"github.com/rancher/support-bundle-kit/pkg/utils"
 	"github.com/sirupsen/logrus"
+
+	"github.com/rancher/support-bundle-kit/pkg/utils"
 )
 
 type HttpServer struct {

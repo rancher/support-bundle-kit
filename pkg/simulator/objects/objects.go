@@ -3,14 +3,16 @@ package objects
 import (
 	"bytes"
 	"fmt"
-	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
-	"github.com/rancher/wrangler/pkg/yaml"
 	"io/ioutil"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"k8s.io/apimachinery/pkg/runtime"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/runtime"
+
+	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
+	"github.com/rancher/wrangler/pkg/yaml"
 )
 
 // GenerateClusterScopedRuntimeObjects will parse the yaml directory

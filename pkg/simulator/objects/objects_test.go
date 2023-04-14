@@ -1,11 +1,12 @@
 package objects
 
 import (
-	"github.com/rancher/support-bundle-kit/pkg/utils"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/rancher/support-bundle-kit/pkg/utils"
 )
 
 // TestGenerateClusterScopedRuntimeObjects will test cluster scoped object generation from a sample support bundle

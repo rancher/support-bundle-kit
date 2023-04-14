@@ -5,9 +5,11 @@ import (
 	"os"
 	"testing"
 
-	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
 	"github.com/stretchr/testify/require"
+
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+
+	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
 )
 
 const extensionsIngressSample = `

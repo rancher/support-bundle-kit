@@ -2,18 +2,21 @@ package integration
 
 import (
 	"context"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"testing"
+
+	"golang.org/x/sync/errgroup"
+
 	"github.com/rancher/support-bundle-kit/pkg/simulator/apiserver"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/etcd"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/kubelet"
 	"github.com/rancher/support-bundle-kit/pkg/utils"
-	"golang.org/x/sync/errgroup"
-	"io/ioutil"
-	"os"
-	"path/filepath"
-	"testing"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 const (
