@@ -43,7 +43,7 @@ support bundle contents using native k8s tooling like kubectl`,
 		if resetHome {
 			err = os.RemoveAll(simHome)
 			if err != nil {
-				logrus.Fatalf("error during reset of sim-home: %v", err)
+				logrus.Fatalf("Error during reset of sim-home: %v", err)
 			}
 		}
 
@@ -54,26 +54,26 @@ support bundle contents using native k8s tooling like kubectl`,
 
 		generatedCerts, err := certs.GenerateCerts([]string{"localhost"}, simHome)
 		if err != nil {
-			logrus.Fatalf("error generating certificates %v", err)
+			logrus.Fatalf("Error generating certificates %v", err)
 		}
 		a.Certs = generatedCerts
 
 		etcdConfig, err := etcd.RunEmbeddedEtcd(ctx, filepath.Join(simHome), generatedCerts)
 		if err != nil {
-			logrus.Fatalf("error setting up embedded etcdserver %v", err)
+			logrus.Fatalf("Error setting up embedded etcdserver %v", err)
 		}
 		a.Etcd = etcdConfig
 
 		err = a.GenerateKubeConfig(filepath.Join(simHome, "admin.kubeconfig"))
 		if err != nil {
-			logrus.Fatalf("error generating kubeconfig %v", err)
+			logrus.Fatalf("Error generating kubeconfig %v", err)
 		}
 
 		eg, egctx := errgroup.WithContext(ctx)
 
 		k, err := kubelet.NewKubeletSimulator(egctx, generatedCerts, bundlePath)
 		if err != nil {
-			logrus.Fatalf("error initialisting kubelet simulator: %v", err)
+			logrus.Fatalf("Error initialisting kubelet simulator: %v", err)
 		}
 
 		serviceClusterIP, err := GetServiceClusterIP(bundlePath)
@@ -96,7 +96,7 @@ support bundle contents using native k8s tooling like kubectl`,
 
 		o, err := objects.NewObjectManager(ctx, a.Config, bundlePath)
 		if err != nil {
-			logrus.Fatalf("error creating object manager %v", err)
+			logrus.Fatalf("Error creating object manager %v", err)
 		}
 
 		err = o.WaitForNamespaces(30 * time.Second)
@@ -108,27 +108,27 @@ support bundle contents using native k8s tooling like kubectl`,
 			err = o.CreateUnstructuredClusterObjects()
 
 			if err != nil {
-				logrus.Fatalf("error loading cluster scoped objects %v", err)
+				logrus.Fatalf("Error loading cluster scoped objects %v", err)
 			}
 
 			err = o.CreateUnstructuredObjects()
 			if err != nil {
-				logrus.Fatalf("error loading namespacedobjects %v", err)
+				logrus.Fatalf("Error loading namespacedobjects %v", err)
 			}
 
 			err = o.CreateNodeZipObjects()
 			if err != nil {
-				logrus.Fatalf("error loading node zip objects %v", err)
+				logrus.Fatalf("Error loading node zip objects %v", err)
 			}
 
 			// ignore the error creation
 			_ = o.CreatedFailedObjectsList()
-			logrus.Info("all resources loaded successfully")
+			logrus.Info("All resources loaded successfully")
 		}
 
 		err = eg.Wait()
 		if err != nil {
-			logrus.Fatalf("error from apiserver or kublet subroutine: %v", err)
+			logrus.Fatalf("Error from apiserver or kublet subroutine: %v", err)
 		}
 	},
 }
@@ -136,7 +136,7 @@ support bundle contents using native k8s tooling like kubectl`,
 func init() {
 	home, err := homedir.Dir()
 	if err != nil {
-		logrus.Fatalf("error querying home directory %v", err)
+		logrus.Fatalf("Error querying home directory %v", err)
 	}
 
 	dir := filepath.Join(home, ".sim")

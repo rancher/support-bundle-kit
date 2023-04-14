@@ -231,7 +231,7 @@ func walkZipFiles(zipFile string) (*v1.Pod, *bundlekit.NodeConfig, error) {
 	}
 	nConfig.Spec = nodeConfigSpec
 	if len(containers) == 0 {
-		logrus.Warnf("no pod being created for node %s as zip file has no log files associated with this node", filepath.Base(nodeName[0]))
+		logrus.Warnf("No pod being created for node %s as zip file has no log files associated with this node", filepath.Base(nodeName[0]))
 		return nil, nConfig, nil
 	}
 	pod.Spec.Containers = containers

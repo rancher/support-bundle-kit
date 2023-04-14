@@ -33,7 +33,7 @@ func NewCluster(ctx context.Context, sbm *SupportBundleManager) *Cluster {
 }
 
 func (c *Cluster) GenerateClusterBundle(bundleDir string) (string, error) {
-	logrus.Debug("generating cluster bundle...")
+	logrus.Debug("Generating cluster bundle...")
 	namespace, err := c.sbm.k8s.GetNamespace(c.sbm.PodNamespace)
 	if err != nil {
 		return "", errors.Wrap(err, "cannot get deployed namespace")

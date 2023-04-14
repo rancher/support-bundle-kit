@@ -65,7 +65,7 @@ func (s *HttpServer) createNodeBundle(w http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	logrus.Debugf("handle create node bundle for %s", node)
+	logrus.Debugf("Handle create node bundle for %s", node)
 	nodesDir := filepath.Join(s.manager.getWorkingDir(), "nodes")
 	err := os.MkdirAll(nodesDir, os.FileMode(0775))
 	if err != nil {

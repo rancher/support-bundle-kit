@@ -132,17 +132,17 @@ func (m *SupportBundleManager) Run() error {
 	}
 
 	for i, phase := range phases {
-		logrus.Infof("running phase %s", phase.Name)
+		logrus.Infof("Running phase %s", phase.Name)
 		m.status.SetPhase(phase.Name)
 		if err := phase.Run(); err != nil {
 			m.status.SetError(err.Error())
-			logrus.Errorf("failed to run phase %s: %s", phase.Name, err.Error())
+			logrus.Errorf("Failed to run phase %s: %s", phase.Name, err.Error())
 			break
 		}
 
 		progress := 100 * (i + 1) / len(phases)
 		m.status.SetProgress(progress)
-		logrus.Infof("succeed to run phase %s. Progress (%d).", phase.Name, progress)
+		logrus.Infof("Succeed to run phase %s. Progress (%d).", phase.Name, progress)
 	}
 
 	<-m.context.Done()
@@ -212,7 +212,7 @@ func (m *SupportBundleManager) phaseCollectNodeBundles() error {
 	if err != nil {
 		// Ignore error here, since in some failure cases we might not receive all node bundles.
 		// A support bundle with partital data is also useful.
-		logrus.Error(err)
+		logrus.WithError(err).Error("Failed to collect node bundles")
 	}
 	return nil
 }
@@ -222,7 +222,7 @@ func (m *SupportBundleManager) phasePackaging() error {
 }
 
 func (m *SupportBundleManager) phaseDone() error {
-	logrus.Infof("support bundle %s ready to download", m.getBundlefile())
+	logrus.Infof("Support bundle %s ready to download", m.getBundlefile())
 	return nil
 }
 
@@ -272,7 +272,7 @@ func (m *SupportBundleManager) collectNodeBundles() error {
 	}
 
 	<-m.ch
-	logrus.Info("all node bundles are received.")
+	logrus.Info("All node bundles are received.")
 
 	// Clean up when everything is fine. If something went wrong, keep ds for debugging.
 	// The ds will be garbage-collected when manager pod is gone.
@@ -297,15 +297,15 @@ func (m *SupportBundleManager) completeNode(node string) {
 
 	_, ok := m.expectedNodes[node]
 	if ok {
-		logrus.Debugf("complete node %s", node)
+		logrus.Debugf("Complete node %s", node)
 		delete(m.expectedNodes, node)
 	} else {
-		logrus.Warnf("complete an unknown node %s", node)
+		logrus.Warnf("Complete an unknown node %s", node)
 	}
 
 	if len(m.expectedNodes) == 0 {
 		if !m.done {
-			logrus.Debugf("all nodes are completed.")
+			logrus.Debugf("All nodes are completed")
 			m.ch <- struct{}{}
 			m.done = true
 		}
