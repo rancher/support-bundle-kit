@@ -52,12 +52,12 @@ func (module harvesterModule) toObj(b []byte, groupVersion, kind string, resourc
 		switch resource {
 		case "secrets":
 			currentItems, _ := jsonParsed.S("items").Data().([]interface{})
-			logrus.Debugf("whole items: %v", currentItems)
+			logrus.Debugf("Whole items: %v", currentItems)
 			var newItems []interface{}
 			for _, item := range currentItems {
 				gItem := gabs.Wrap(item)
 				if find := gItem.S("type").Data().(string) == "rke.cattle.io/machine-plan"; find {
-					logrus.Debugf("prepare to append item: %v", gItem.Data().(map[string]interface{}))
+					logrus.Debugf("Prepare to append item: %v", gItem.Data().(map[string]interface{}))
 					newItems = append(newItems, item)
 				}
 			}

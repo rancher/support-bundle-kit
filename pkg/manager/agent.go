@@ -24,7 +24,7 @@ func (a *AgentDaemonSet) getDaemonSetName() string {
 
 func (a *AgentDaemonSet) Create(image string, managerURL string) (*appsv1.DaemonSet, error) {
 	dsName := a.getDaemonSetName()
-	logrus.Debugf("creating daemonset %s with image %s", dsName, image)
+	logrus.Debugf("Creating daemonset %s with image %s", dsName, image)
 
 	// get manager pod for owner reference
 	labels := fmt.Sprintf("app=%s,%s=%s", types.SupportBundleManager, types.SupportBundleLabelKey, a.sbm.BundleName)
