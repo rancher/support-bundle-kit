@@ -3,6 +3,7 @@ package objects
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	supportbundlekit "github.com/rancher/support-bundle-kit/pkg/simulator/apis/supportbundlekit.io/v1"
@@ -44,10 +45,37 @@ var (
 		"admissionregistration.k8s.io": true,
 		"apiregistration.k8s.io":       true,
 		"metrics.k8s.io":               true,
+		"flowcontrol.apiserver.k8s.io": true,
 	}
 
 	skippedKinds = map[string]bool{
 		"ComponentStatus": true,
+	}
+
+	skippedResources = map[string]map[string]bool{
+		"namespace.v1": {
+			"kube-public":     true,
+			"kube-system":     true,
+			"kube-lease":      true,
+			"default":         true,
+			"kube-node-lease": true,
+		},
+		"priorityclass.scheduling.k8s.io.v1": {
+			"system-cluster-critical": true,
+			"system-node-critical":    true,
+		},
+		"endpointslice.discovery.k8s.io.v1.default": {
+			"kubernetes": true,
+		},
+		"endpoints.v1.default": {
+			"kubernetes": true,
+		},
+		"service.v1.default": {
+			"kubernetes": true,
+		},
+		"configmap.v1.kube-system": {
+			"extension-apiserver-authentication": true,
+		},
 	}
 )
 
@@ -127,7 +155,7 @@ func (o *ObjectManager) ApplyObjects(objs []runtime.Object, patchStatus bool, sk
 
 		// skip objects that dont need to be processed //
 
-		if skippedGroups[unstructuredObj.GroupVersionKind().Group] || skippedKinds[unstructuredObj.GetKind()] {
+		if skippedGroups[unstructuredObj.GroupVersionKind().Group] || skippedKinds[unstructuredObj.GetKind()] || skipResources(unstructuredObj) {
 			continue
 		}
 
@@ -156,21 +184,15 @@ func (o *ObjectManager) ApplyObjects(objs []runtime.Object, patchStatus bool, sk
 			dr = o.dc.Resource(restMapping.Resource)
 		}
 
-		resp, err = dr.Get(o.ctx, unstructuredObj.GetName(), metav1.GetOptions{})
+		resp, err = dr.Create(o.ctx, unstructuredObj, metav1.CreateOptions{})
 		var skipPatchStatus bool
+
 		if err != nil {
-			if apierrors.IsNotFound(err) {
-				resp, err = dr.Create(o.ctx, unstructuredObj, metav1.CreateOptions{})
-				if err != nil {
-					logrus.WithError(err).Errorf("error during creation of resource %s with gvr %s", unstructuredObj.GetName(), restMapping.Resource.String())
-					logrus.Error(unstructuredObj.Object)
-					o.addToFailedObjects(unstructuredObj, err)
-					// no need to patch status when object errors out
-					skipPatchStatus = true
-				}
-			} else {
-				return fmt.Errorf("error looking up object before creating the same %v", err)
-			}
+			logrus.WithError(err).Errorf("error during creation of resource %s with gvr %s", unstructuredObj.GetName(), restMapping.Resource.String())
+			logrus.Error(unstructuredObj.Object)
+			o.addToFailedObjects(unstructuredObj, err)
+			// no need to patch status when object errors out
+			skipPatchStatus = true
 		}
 
 		if patchStatus && !skipPatchStatus {
@@ -249,6 +271,10 @@ func objectHousekeeping(obj *unstructured.Unstructured) error {
 		err = cleanupIngress(obj)
 	case "CustomResourceDefinition":
 		err = cleanupCRDConversion(obj)
+	case "Setting":
+		err = cleanupLonghornSettings(obj)
+	case "NodeNetwork":
+		err = cleanupNodeNetwork(obj)
 	}
 	return err
 }
@@ -387,4 +413,15 @@ func (o *ObjectManager) addToFailedObjects(obj *unstructured.Unstructured, err e
 	}
 
 	o.failedObjs = append(o.failedObjs, fObj)
+}
+
+func skipResources(unstructuredObj *unstructured.Unstructured) bool {
+	objGVKNS := fmt.Sprintf("%s.%s.%s", strings.ToLower(unstructuredObj.GetKind()), strings.Replace(strings.ToLower(unstructuredObj.GroupVersionKind().GroupVersion().String()), "/", ".", -1), unstructuredObj.GetNamespace())
+	// for non namespaced resources there will be an empty . at the end which needs to be trimmed
+	resourceNames, ok := skippedResources[strings.TrimSuffix(objGVKNS, ".")]
+	if !ok {
+		return false
+	}
+	_, ok = resourceNames[unstructuredObj.GetName()]
+	return ok
 }

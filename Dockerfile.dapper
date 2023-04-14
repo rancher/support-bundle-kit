@@ -15,7 +15,7 @@ RUN mkdir -p /go/src/github.com/kubernetes && \
     cd /go/src/github.com/kubernetes && \
     git clone https://github.com/kubernetes/kubernetes && \
     cd kubernetes && \
-    git checkout v1.23.7 && \
+    git checkout v1.24.7 && \
     make generated_files
 
 # -- for dapper

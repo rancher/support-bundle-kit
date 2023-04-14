@@ -101,6 +101,7 @@ support bundle contents using native k8s tooling like kubectl`,
 		}
 
 		if !skipLoad {
+			start := time.Now()
 			err = o.CreateUnstructuredClusterObjects()
 
 			if err != nil {
@@ -119,7 +120,7 @@ support bundle contents using native k8s tooling like kubectl`,
 
 			// ignore the error creation
 			_ = o.CreatedFailedObjectsList()
-			logrus.Info("all resources loaded successfully")
+			logrus.Infof("all resources loaded successfully in %v seconds", time.Since(start).Seconds())
 		}
 
 		err = eg.Wait()
