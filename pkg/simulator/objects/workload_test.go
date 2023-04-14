@@ -1,13 +1,15 @@
 package objects
 
 import (
-	"github.com/rancher/support-bundle-kit/pkg/utils"
-	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
 	"io/ioutil"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+
+	"github.com/rancher/support-bundle-kit/pkg/utils"
+	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
 )
 
 const (

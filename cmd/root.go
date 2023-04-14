@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/rancher/support-bundle-kit/pkg/utils"
+	homedir "github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-
-	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
+
+	"github.com/rancher/support-bundle-kit/pkg/utils"
 )
 
 var (

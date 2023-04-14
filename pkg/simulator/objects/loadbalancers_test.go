@@ -1,11 +1,13 @@
 package objects
 
 import (
-	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
 	"io/ioutil"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"os"
 	"testing"
+
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+
+	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
 )
 
 func TestLoadBalancers(t *testing.T) {

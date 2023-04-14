@@ -3,20 +3,24 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"os"
+	"path/filepath"
+	"time"
+
 	"github.com/mitchellh/go-homedir"
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
+	"golang.org/x/sync/errgroup"
+
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+
+	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
+
 	"github.com/rancher/support-bundle-kit/pkg/simulator/apiserver"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/etcd"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/kubelet"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/objects"
-	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
-	"github.com/sirupsen/logrus"
-	"github.com/spf13/cobra"
-	"golang.org/x/sync/errgroup"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"os"
-	"path/filepath"
-	"time"
 )
 
 var (

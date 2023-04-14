@@ -2,12 +2,15 @@ package integration
 
 import (
 	"fmt"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
-	"github.com/rancher/support-bundle-kit/pkg/simulator/objects"
+	"time"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	"time"
+
+	"github.com/rancher/support-bundle-kit/pkg/simulator/objects"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("Process Support Bundle", func() {
