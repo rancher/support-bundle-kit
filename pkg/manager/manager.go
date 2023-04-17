@@ -392,6 +392,9 @@ func (m *SupportBundleManager) getAgentNodesIn(podList *v1.PodList) ([]*v1.Node,
 }
 
 func (m *SupportBundleManager) refreshNodes(agentDaemonSet *appsv1.DaemonSet) error {
+	m.nodesLock.Lock()
+	defer m.nodesLock.Unlock()
+
 	podList, err := m.getAgentPodsCreatedBy(agentDaemonSet)
 	if err != nil {
 		return err
