@@ -96,7 +96,7 @@ func (s *HttpServer) createNodeBundle(w http.ResponseWriter, req *http.Request) 
 }
 
 func (s *HttpServer) Run(m *SupportBundleManager) {
-	defaultTimeout := 30 * time.Second
+	defaultTimeout := 24 * time.Hour
 
 	r := mux.NewRouter()
 	r.UseEncodedPath()
