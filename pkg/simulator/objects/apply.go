@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
 	"github.com/sirupsen/logrus"
-
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -20,8 +20,6 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/restmapper"
-
-	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
 
 	supportbundlekit "github.com/rancher/support-bundle-kit/pkg/simulator/apis/supportbundlekit.io/v1"
 )
@@ -52,6 +50,8 @@ var (
 	skippedKinds = map[string]bool{
 		"ComponentStatus": true,
 	}
+
+	cacheMap = make(map[schema.GroupVersionKind]*meta.RESTMapping)
 )
 
 // NewObjectManager is a wrapper around apply and support bundle path
@@ -259,6 +259,10 @@ func objectHousekeeping(obj *unstructured.Unstructured) error {
 // wrapper to lookup GVR for usage with dynamic client
 func findGVR(gvk schema.GroupVersionKind, cfg *rest.Config) (*meta.RESTMapping, error) {
 
+	existingMapping, ok := cacheMap[gvk]
+	if ok {
+		return existingMapping, nil
+	}
 	// DiscoveryClient queries API server about the resources
 	dc, err := discovery.NewDiscoveryClientForConfig(cfg)
 	if err != nil {
@@ -266,7 +270,13 @@ func findGVR(gvk schema.GroupVersionKind, cfg *rest.Config) (*meta.RESTMapping, 
 	}
 	mapper := restmapper.NewDeferredDiscoveryRESTMapper(memory.NewMemCacheClient(dc))
 
-	return mapper.RESTMapping(gvk.GroupKind(), gvk.Version)
+	newMapping, err := mapper.RESTMapping(gvk.GroupKind(), gvk.Version)
+	if err != nil {
+		return nil, err
+	}
+
+	cacheMap[gvk] = newMapping
+	return newMapping, nil
 }
 
 // verifyObj is a helper method used to verify objects to make it easier to test
