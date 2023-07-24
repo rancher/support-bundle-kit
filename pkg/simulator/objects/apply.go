@@ -159,20 +159,19 @@ func (o *ObjectManager) ApplyObjects(objs []runtime.Object, patchStatus bool, sk
 			dr = o.dc.Resource(restMapping.Resource)
 		}
 
-		resp, err = dr.Get(o.ctx, unstructuredObj.GetName(), metav1.GetOptions{})
 		var skipPatchStatus bool
+		resp, err = dr.Create(o.ctx, unstructuredObj, metav1.CreateOptions{})
 		if err != nil {
-			if apierrors.IsNotFound(err) {
-				resp, err = dr.Create(o.ctx, unstructuredObj, metav1.CreateOptions{})
+			if apierrors.IsAlreadyExists(err) {
+				resp, err = dr.Get(o.ctx, unstructuredObj.GetName(), metav1.GetOptions{})
 				if err != nil {
-					logrus.WithError(err).Errorf("error during creation of resource %s with gvr %s", unstructuredObj.GetName(), restMapping.Resource.String())
-					logrus.Error(unstructuredObj.Object)
-					o.addToFailedObjects(unstructuredObj, err)
-					// no need to patch status when object errors out
-					skipPatchStatus = true
+					return fmt.Errorf("error looking up object %v", err)
 				}
 			} else {
-				return fmt.Errorf("error looking up object before creating the same %v", err)
+				logrus.WithError(err).Errorf("error during creation of resource %s with gvr %s", unstructuredObj.GetName(), restMapping.Resource.String())
+				o.addToFailedObjects(unstructuredObj, err)
+				// no need to patch status when object errors out
+				skipPatchStatus = true
 			}
 		}
 
