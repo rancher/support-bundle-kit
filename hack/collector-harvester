@@ -79,6 +79,10 @@ collect_etc ${BUNDLE_DIR}/configs/etc
 mkdir -p logs
 cd logs
 
+# Generate supportconfig from node
+chroot $HOST_PATH /sbin/supportconfig -c -Q -B supportconfig_$SUPPORT_BUNDLE_NODE_NAME
+mv $HOST_PATH/var/log/scc_supportconfig_$SUPPORT_BUNDLE_NODE_NAME.txz .
+
 chroot $HOST_PATH /usr/bin/journalctl -k > kernel.log
 # also collect logs of previous two boots
 for ((i=1; i<=2; i++)); do
