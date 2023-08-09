@@ -4,8 +4,13 @@ import (
 	"path/filepath"
 
 	"github.com/Jeffail/gabs/v2"
+	"github.com/rancher/wrangler/pkg/slice"
 	"github.com/sirupsen/logrus"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 )
+
+var ignoreHarvesterSettingsList = []string{"cluster-registration-url", "containerd-registry", "additional-ca", "ssl-certificates"}
 
 type harvesterModule struct {
 	c    *common
@@ -38,6 +43,21 @@ func (module harvesterModule) generateYAMLs() {
 			module.c.encodeFunc(obj, file, module.c.errorLog)
 		}
 	}
+
+	dir := filepath.Join(module.c.yamlsDir, "cluster")
+	objs, err := module.c.discovery.ResourcesForCluster(module.toObj, module.skipClusterObjects, module.c.errorLog)
+
+	if err != nil {
+		logrus.Error("Unable to fetch namespaced resources")
+		return
+	}
+
+	for name, obj := range objs {
+		file := filepath.Join(dir, name+".yaml")
+		logrus.Debugf("Prepare to encode to yaml file path: %s", file)
+		module.c.encodeFunc(obj, file, module.c.errorLog)
+	}
+
 }
 
 func (module harvesterModule) toObj(b []byte, groupVersion, kind string, resources ...string) (interface{}, error) {
@@ -64,6 +84,21 @@ func (module harvesterModule) toObj(b []byte, groupVersion, kind string, resourc
 			if _, err := jsonParsed.Set(newItems, "items"); err != nil {
 				return nil, err
 			}
+		case "settings":
+			currentItems, _ := jsonParsed.S("items").Data().([]interface{})
+			logrus.Debugf("Whole items: %v", currentItems)
+			var newItems []interface{}
+			for _, item := range currentItems {
+				gItem := gabs.Wrap(item)
+				logrus.Debugf("processing setting %v", gItem.S("metadata", "name").Data().(string))
+				if !slice.ContainsString(ignoreHarvesterSettingsList, gItem.S("metadata", "name").Data().(string)) {
+					logrus.Debugf("Prepare to append item: %v", gItem.Data().(map[string]interface{}))
+					newItems = append(newItems, item)
+				}
+			}
+			if _, err := jsonParsed.Set(newItems, "items"); err != nil {
+				return nil, err
+			}
 		default:
 			// undefined resource, just logged it.
 			logrus.Warnf("Could not handle unknown resource %s", resource)
@@ -78,4 +113,14 @@ func getHarvesterExtraResource() map[string][]string {
 
 	extraResources["fleet-local"] = []string{"secrets"}
 	return extraResources
+}
+
+// skipClusterObjects implements the ExcludeFilter and skips all cluster resources
+// other than settings.harvesterhci.io
+func (module harvesterModule) skipClusterObjects(gv schema.GroupVersion, resource v1.APIResource) bool {
+	if gv.Group == "harvesterhci.io" && gv.Version == "v1beta1" && resource.Name == "settings" {
+		return false
+	}
+	logrus.Debugf("skipping object %s with gv %s\n", resource.String(), gv.String())
+	return true
 }
