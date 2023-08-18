@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash -ux
 
 HOST_PATH=$1
 BUNDLE_DIR=$2
@@ -28,10 +28,10 @@ function collect_syslog(){
 }
 
 function collect_kubelet_log(){
-    # On Linux nodes that use systemd, the kubelet and container runtime write to journald by default. 
+    # On Linux nodes that use systemd, the kubelet and container runtime write to journald by default.
     # ref. https://kubernetes.io/docs/concepts/cluster-administration/logging/#log-location-node
     chroot ${HOST_PATH} /usr/bin/journalctl -r -u kubelet > kubelet.log
-    
+
     if [ -f ${RKE2_KUBELET_LOG_PATH} ]; then
         cp ${RKE2_KUBELET_LOG_PATH} .
     fi
