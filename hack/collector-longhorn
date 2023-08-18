@@ -24,7 +24,10 @@ function collect_dmesg(){
 }
 
 function collect_syslog(){
+    # Different Linux distributions use different syslog daemons, which store log messages in different locations.
+    # The common locations are /var/log/syslog and /var/log/messages.
     cp ${HOST_PATH}/var/log/syslog* .
+    cp ${HOST_PATH}/var/log/messages* .
 }
 
 function collect_kubelet_log(){
