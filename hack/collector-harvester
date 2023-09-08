@@ -98,4 +98,5 @@ for unit in ${units[@]}; do
 done
 
 cp ${HOST_PATH}/var/lib/rancher/rke2/agent/logs/kubelet.log .
+cp ${HOST_PATH}/var/lib/rancher/rke2/agent/containerd/containerd.log .
 cp ${HOST_PATH}/var/log/console.log .
