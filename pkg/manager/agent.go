@@ -34,6 +34,10 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) (*appsv1.Daemon
 		return nil, err
 	}
 
+	if len(pods.Items) == 0 {
+		return nil, errors.New("no support bundle manager pod found")
+	}
+
 	if len(pods.Items) != 1 {
 		return nil, errors.New("more than one support bundle manager pods are found")
 	}
