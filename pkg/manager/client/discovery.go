@@ -102,7 +102,12 @@ func (dc *DiscoveryClient) SpecificResourcesForNamespace(toObj ParseResult, modu
 				if err != nil {
 					return nil, err
 				}
-				objs[gv.String()+"/"+resource.Name] = obj
+				// skip empty object, which will cause useless zero item yaml file
+				if obj != nil {
+					objs[gv.String()+"/"+resource.Name] = obj
+				} else {
+					logrus.Debugf("No %s/%s resource %s in namespace %s, skip", gv.String(), resource.Kind, resource.Name, namespace)
+				}
 			}
 
 		}
@@ -164,13 +169,17 @@ func (dc *DiscoveryClient) ResourcesForNamespace(toObj ParseResult, namespace st
 				if err != nil {
 					return nil, err
 				}
-				objs[gv.String()+"/"+resource.Name] = obj
+				// skip empty object, which will cause useless zero item yaml file
+				if obj != nil {
+					objs[gv.String()+"/"+resource.Name] = obj
+				} else {
+					logrus.Debugf("No %s/%s resource %s in namespace %s, skip", gv.String(), resource.Kind, resource.Name, namespace)
+				}
 			}
 		}
 	}
 
 	return objs, nil
-
 }
 
 // Get the cluster level resources
@@ -222,7 +231,10 @@ func (dc *DiscoveryClient) ResourcesForCluster(toObj ParseResult, exclude Exclud
 				if err != nil {
 					return nil, err
 				}
-				objs[gv.String()+"/"+resource.Name] = obj
+				// skip empty object
+				if obj != nil {
+					objs[gv.String()+"/"+resource.Name] = obj
+				}
 			}
 		}
 	}

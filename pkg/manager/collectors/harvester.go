@@ -121,7 +121,7 @@ func (module harvesterModule) toClusterObj(b []byte, groupVersion, kind string, 
 	switch kind {
 	case "Setting":
 		currentItems, _ := jsonParsed.S("items").Data().([]interface{})
-		logrus.Debugf("Whole items: %v", currentItems)
+		logrus.Debugf("Whole items in cluster: %v", currentItems)
 		var newItems []interface{}
 		for _, item := range currentItems {
 			gItem := gabs.Wrap(item)
