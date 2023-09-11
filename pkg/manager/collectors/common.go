@@ -82,6 +82,11 @@ func (c common) toObjCommon(b []byte, groupVersion, kind string) (*gabs.Containe
 		return nil, err
 	}
 
+	// When there is no instance of the given GVK, return nil
+	if len(jsonParsed.S("items").Children()) == 0 {
+		return nil, nil
+	}
+
 	for _, child := range jsonParsed.S("items").Children() {
 		if _, err = child.SetP(groupVersion, "apiVersion"); err != nil {
 			logrus.Error("Unable to set apiVersion field.")
