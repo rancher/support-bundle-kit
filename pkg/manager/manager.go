@@ -41,6 +41,8 @@ type SupportBundleManager struct {
 	NodeSelector    string
 	TaintToleration string
 	RegistrySecret  string
+	IssueURL        string
+	Description     string
 
 	ExcludeResources    []schema.GroupResource
 	ExcludeResourceList []string
