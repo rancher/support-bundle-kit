@@ -56,4 +56,6 @@ func init() {
 	managerCmd.PersistentFlags().StringVar(&sbm.SpecifyCollector, "specify-collector", os.Getenv("SUPPORT_BUNDLE_COLLECTOR"), "Execute specify collector script. e.g., longhorn")
 	managerCmd.PersistentFlags().StringSliceVar(&sbm.ExcludeResourceList, "exclude-resources", getEnvStringSlice("SUPPORT_BUNDLE_EXCLUDE_RESOURCES"), "List of resources to exclude. e.g., settings.harvesterhci.io,secrets")
 	managerCmd.PersistentFlags().StringSliceVar(&sbm.BundleCollectors, "extra-collectors", getEnvStringSlice("SUPPORT_BUNDLE_EXTRA_COLLECTORS"), "Get extra resource for the specific components e.g., harvester")
+	managerCmd.PersistentFlags().StringVar(&sbm.Description, "description", os.Getenv("SUPPORT_BUNDLE_DESCRIPTION"), "The support bundle description")
+	managerCmd.PersistentFlags().StringVar(&sbm.IssueURL, "issue-url", os.Getenv("SUPPORT_BUNDLE_ISSUE_URL"), "The support bundle issue url")
 }

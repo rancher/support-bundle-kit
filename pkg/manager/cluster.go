@@ -43,19 +43,14 @@ func (c *Cluster) GenerateClusterBundle(bundleDir string) (string, error) {
 		return "", errors.Wrap(err, "cannot get kubernetes version")
 	}
 
-	sb, err := c.sbm.state.GetSupportBundle(c.sbm.PodNamespace, c.sbm.BundleName)
-	if err != nil {
-		return "", errors.Wrap(err, "cannot get support bundle")
-	}
-
 	bundleMeta := &BundleMeta{
-		BundleName:           sb.Name,
+		BundleName:           c.sbm.BundleName,
 		BundleVersion:        BundleVersion,
 		KubernetesVersion:    kubeVersion.GitVersion,
 		ProjectNamespaceUUID: string(namespace.UID),
 		BundleCreatedAt:      utils.Now(),
-		IssueURL:             sb.Spec.IssueURL,
-		IssueDescription:     sb.Spec.Description,
+		IssueURL:             c.sbm.IssueURL,
+		IssueDescription:     c.sbm.Description,
 	}
 
 	bundleName := fmt.Sprintf("supportbundle_%s_%s.zip",
