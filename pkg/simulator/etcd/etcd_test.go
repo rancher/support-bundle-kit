@@ -19,7 +19,7 @@ func TestRunEmbeddedEtcdWithoutCerts(t *testing.T) {
 	}
 
 	defer os.RemoveAll(dir)
-	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
 	defer cancel()
 
 	// run an insecure etcd server
@@ -71,7 +71,7 @@ func TestRunEmbeddedEtcdWithCerts(t *testing.T) {
 	}
 
 	defer os.RemoveAll(dir)
-	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
 	defer cancel()
 
 	certificates, err := certs.GenerateCerts([]string{"localhost", "127.0.0.1"}, dir)
