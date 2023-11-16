@@ -35,6 +35,10 @@ function collect_kubelet_log(){
     # ref. https://kubernetes.io/docs/concepts/cluster-administration/logging/#log-location-node
     chroot ${HOST_PATH} /usr/bin/journalctl -r -u kubelet > kubelet.log
 
+    # For K3s cluster
+    chroot ${HOST_PATH} /usr/bin/journalctl -r -u k3s.service > k3s-service.log
+    chroot ${HOST_PATH} /usr/bin/journalctl -r -u k3s-agent.service > k3s-agent-service.log
+
     if [ -f ${RKE2_KUBELET_LOG_PATH} ]; then
         cp ${RKE2_KUBELET_LOG_PATH} .
     fi
