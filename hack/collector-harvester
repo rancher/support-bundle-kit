@@ -43,6 +43,8 @@ collect_etc() {
 }
 
 collect_images_info() {
+    # In this case, we can't use /host/var/lib/rancher/rke2/bin directly because of host volume mount and symbolic link problem.
+    # So, we need to use real bin path to execute command with `readlink` command.
     local rke2_bin=$(readlink ${HOST_PATH}/var/lib/rancher/rke2/bin)
 
     ${HOST_PATH}${rke2_bin}/ctr \
