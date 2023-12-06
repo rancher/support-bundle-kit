@@ -124,78 +124,6 @@ volumes:
       path: /var/run/docker.sock
 ---
 kind: pipeline
-name: s390x
-
-platform:
-  os: linux
-  arch: amd64
-
-# Hack needed for s390x: https://gist.github.com/colstrom/c2f359f72658aaabb44150ac20b16d7c#gistcomment-3858388
-node:
-  arch: s390x
-
-steps:
-  - name: build
-    image: rancher/dapper:v0.5.8
-    commands:
-      - dapper ci
-    volumes:
-      - name: docker
-        path: /var/run/docker.sock
-
-  - name: docker-publish-master
-    image: rancher/drone-images:docker-s390x
-    settings:
-      build_args:
-        - ARCH=s390x
-        - VERSION=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:8}-head
-      dockerfile: package/Dockerfile
-      password:
-        from_secret: docker_password
-      repo: "rancher/support-bundle-kit"
-      tag: "${DRONE_BRANCH}-head-s390x"
-      username:
-        from_secret: docker_username
-    volumes:
-      - name: docker
-        path: /var/run/docker.sock
-    when:
-      ref:
-        include:
-          - "refs/heads/master"
-          - "refs/heads/release/v*"
-      event:
-        - push
-
-  - name: docker-publish
-    image: rancher/drone-images:docker-s390x
-    settings:
-      build_args:
-        - ARCH=s390x
-      dockerfile: package/Dockerfile
-      password:
-        from_secret: docker_password
-      repo: "rancher/support-bundle-kit"
-      tag: "${DRONE_TAG}-s390x"
-      username:
-        from_secret: docker_username
-    volumes:
-      - name: docker
-        path: /var/run/docker.sock
-    when:
-      instance:
-        - drone-publish.rancher.io
-      ref:
-        - refs/tags/*
-      event:
-        - tag
-
-volumes:
-  - name: docker
-    host:
-      path: /var/run/docker.sock
----
-kind: pipeline
 name: manifest
 
 platform:
@@ -213,7 +141,6 @@ steps:
     platforms:
       - linux/amd64
       - linux/arm64
-      - linux/s390x
     target: "rancher/support-bundle-kit:${DRONE_BRANCH}-head"
     template: "rancher/support-bundle-kit:${DRONE_BRANCH}-head-ARCH"
   when:
@@ -234,7 +161,6 @@ steps:
     platforms:
       - linux/amd64
       - linux/arm64
-      - linux/s390x
     target: "rancher/support-bundle-kit:${DRONE_TAG}"
     template: "rancher/support-bundle-kit:${DRONE_TAG}-ARCH"
   when:
@@ -248,4 +174,3 @@ steps:
 depends_on:
 - amd64
 - arm64
-- s390x
