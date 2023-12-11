@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   labels:
     app: support-bundle-manager
-    rancher.io/support-bundle: sample
+    rancher/supportbundle: sample
   name: supportbundle-manager-sample
   namespace: harvester-system
 spec:
@@ -16,7 +16,7 @@ spec:
     metadata:
       labels:
         app: support-bundle-manager
-        rancher.io/support-bundle: sample
+        rancher/supportbundle: sample
     spec:
       containers:
       - args:
