@@ -368,7 +368,7 @@ func (m *SupportBundleManager) getAgentPodsCreatedBy(daemonSet *appsv1.DaemonSet
 		}
 
 		// Check if all desired Pods have been scheduled
-		if len(filteredPods) != 0 && len(pods.Items) == int(daemonSet.Status.DesiredNumberScheduled) {
+		if len(filteredPods) != 0 && len(filteredPods) == int(daemonSet.Status.DesiredNumberScheduled) {
 			return &v1.PodList{Items: filteredPods}, nil
 		}
 
