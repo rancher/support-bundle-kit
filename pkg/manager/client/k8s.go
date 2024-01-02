@@ -28,6 +28,10 @@ func NewKubernetesClient(ctx context.Context, config *rest.Config) (*KubernetesC
 	}, nil
 }
 
+func (k *KubernetesClient) DeleteResourceByApiPath(apiPath string) ([]byte, error) {
+	return k.clientSet.RESTClient().Delete().AbsPath(apiPath).DoRaw(k.Context)
+}
+
 func (k *KubernetesClient) GetNamespace(namespace string) (*corev1.Namespace, error) {
 	return k.clientSet.CoreV1().Namespaces().Get(k.Context, namespace, metav1.GetOptions{})
 }
