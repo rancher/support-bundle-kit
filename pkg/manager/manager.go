@@ -154,6 +154,11 @@ func (m *SupportBundleManager) Run() error {
 }
 
 func (m *SupportBundleManager) wait() {
+	if m.OwnerResourceApiPath == "" {
+		<-m.context.Done()
+		return
+	}
+
 	select {
 	case <-m.context.Done():
 	case <-time.After(10 * time.Second):
