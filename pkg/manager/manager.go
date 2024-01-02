@@ -27,22 +27,23 @@ import (
 )
 
 type SupportBundleManager struct {
-	Namespaces      []string
-	BundleName      string
-	bundleFileName  string
-	OutputDir       string
-	WaitTimeout     time.Duration
-	ManagerPodIP    string
-	Standalone      bool
-	ImageName       string
-	ImagePullPolicy string
-	KubeConfig      string
-	PodNamespace    string
-	NodeSelector    string
-	TaintToleration string
-	RegistrySecret  string
-	IssueURL        string
-	Description     string
+	Namespaces           []string
+	BundleName           string
+	bundleFileName       string
+	OutputDir            string
+	WaitTimeout          time.Duration
+	ManagerPodIP         string
+	Standalone           bool
+	ImageName            string
+	ImagePullPolicy      string
+	KubeConfig           string
+	PodNamespace         string
+	NodeSelector         string
+	TaintToleration      string
+	RegistrySecret       string
+	IssueURL             string
+	Description          string
+	OwnerResourceApiPath string
 
 	ExcludeResources    []schema.GroupResource
 	ExcludeResourceList []string
@@ -147,8 +148,26 @@ func (m *SupportBundleManager) Run() error {
 		logrus.Infof("Succeed to run phase %s. Progress (%d).", phase.Name, progress)
 	}
 
-	<-m.context.Done()
+	m.wait()
+
 	return nil
+}
+
+func (m *SupportBundleManager) wait() {
+	if m.OwnerResourceApiPath == "" {
+		<-m.context.Done()
+		return
+	}
+
+	select {
+	case <-m.context.Done():
+	case <-time.After(10 * time.Second):
+		resp, err := m.k8s.DeleteResourceByApiPath(m.OwnerResourceApiPath)
+		if err != nil {
+			logrus.Errorf("Failed to delete resource %s: %s", m.OwnerResourceApiPath, err.Error())
+		}
+		fmt.Println(string(resp))
+	}
 }
 
 func (m *SupportBundleManager) phaseInit() error {
@@ -356,6 +375,7 @@ func (m *SupportBundleManager) getAgentPodsCreatedBy(daemonSet *appsv1.DaemonSet
 				return nil, fmt.Errorf("unexpected OwnerReferences in %v: %+v", pod.Name, pod.OwnerReferences)
 			}
 
+			logrus.Debugf("%s %s %s", pod.OwnerReferences[0].Name, daemonSet.Name, pod.Spec.NodeName)
 			if pod.OwnerReferences[0].Name == daemonSet.Name && pod.Spec.NodeName != "" {
 				filteredPods = append(filteredPods, pod)
 			}
