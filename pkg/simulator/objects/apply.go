@@ -24,6 +24,8 @@ import (
 	supportbundlekit "github.com/rancher/support-bundle-kit/pkg/simulator/apis/supportbundlekit.io/v1"
 )
 
+type ProgressHandler func(int, int)
+
 type ObjectManager struct {
 	ctx        context.Context
 	path       string
@@ -84,13 +86,16 @@ func (o *ObjectManager) CreateUnstructuredClusterObjects() error {
 		return err
 	}
 
+	progressMgr := NewProgressManager("Step 1/4: Cluster CRDs")
+
 	// apply CRDs first
-	err = o.ApplyObjects(crds, false, nil)
+	err = o.ApplyObjects(crds, false, nil, progressMgr.progress)
 	if err != nil {
 		return err
 	}
 
-	err = o.ApplyObjects(clusterObjs, true, nil)
+	progressMgr = NewProgressManager("Step 1/4: Cluster objects")
+	err = o.ApplyObjects(clusterObjs, true, nil, progressMgr.progress)
 
 	if err != nil {
 		return err
@@ -106,13 +111,15 @@ func (o *ObjectManager) CreateUnstructuredObjects() error {
 		return err
 	}
 
+	progressMgr := NewProgressManager("Step 2/4: Namespaced non-pods")
 	// apply non pods first
-	err = o.ApplyObjects(nonpods, true, nil)
+	err = o.ApplyObjects(nonpods, true, nil, progressMgr.progress)
 	if err != nil {
 		return err
 	}
 
-	err = o.ApplyObjects(pods, true, nil)
+	progressMgr = NewProgressManager("Step 2/4: Namespaced pods and events")
+	err = o.ApplyObjects(pods, true, nil, progressMgr.progress)
 	if err != nil {
 		return err
 	}
@@ -120,10 +127,15 @@ func (o *ObjectManager) CreateUnstructuredObjects() error {
 }
 
 // ApplyObjects is a wrapper to convert runtime.Objects to unstructured.Unstructured, perform some housekeeping before submitting the same to apiserver
-func (o *ObjectManager) ApplyObjects(objs []runtime.Object, patchStatus bool, skipGVR *schema.GroupVersionResource) error {
+func (o *ObjectManager) ApplyObjects(objs []runtime.Object, patchStatus bool, skipGVR *schema.GroupVersionResource, progressHandler ProgressHandler) error {
 	var dr dynamic.ResourceInterface
 	var resp *unstructured.Unstructured
-	for _, v := range objs {
+	total := len(objs)
+	for i, v := range objs {
+		if progressHandler != nil {
+			progressHandler(i+1, total)
+		}
+
 		unstructuredObj, err := wranglerunstructured.ToUnstructured(v)
 		if err != nil {
 			return fmt.Errorf("error converting obj to unstructured %v", err)
@@ -387,8 +399,9 @@ func (o *ObjectManager) CreatedFailedObjectsList() error {
 			APIVersion: "supportbundlekit.io/v1",
 		},
 	}
+	progressMgr := NewProgressManager("Step 4/4: CreatedFailedObjectsList")
 	failedObject.Spec = o.failedObjs
-	return o.ApplyObjects([]runtime.Object{&failedObject}, false, nil)
+	return o.ApplyObjects([]runtime.Object{&failedObject}, false, nil, progressMgr.progress)
 }
 
 func (o *ObjectManager) addToFailedObjects(obj *unstructured.Unstructured, err error) {
