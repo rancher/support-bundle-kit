@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
-
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -72,12 +71,14 @@ func (o *ObjectManager) CreateNodeZipObjects() error {
 		return err
 	}
 
-	err = o.ApplyObjects(noStatusObjs, false, nil)
+	progressMgr := NewProgressManager("Step 3/4: NodeZipObjects (no status)")
+	err = o.ApplyObjects(noStatusObjs, false, nil, progressMgr.progress)
 	if err != nil {
 		return err
 	}
 
-	return o.ApplyObjects(withStatusObjs, true, nil)
+	progressMgr = NewProgressManager("Step 3/4: NodeZipObjects (status)")
+	return o.ApplyObjects(withStatusObjs, true, nil, progressMgr.progress)
 }
 
 // ProcessNodeZipObjects will read the contents of the zip file and generate associated runtime.Objects
