@@ -29,11 +29,12 @@ const (
 type ManagerPhase string
 
 const (
-	ManagerPhaseInit          = ManagerPhase("init")
-	ManagerPhaseClusterBundle = ManagerPhase("cluster bundle")
-	ManagerPhaseNodeBundle    = ManagerPhase("node bundle")
-	ManagerPhasePackaging     = ManagerPhase("package")
-	ManagerPhaseDone          = ManagerPhase("done")
+	ManagerPhaseInit             = ManagerPhase("init")
+	ManagerPhaseClusterBundle    = ManagerPhase("cluster bundle")
+	ManagerPhasePrometheusBundle = ManagerPhase("prometheus bundle")
+	ManagerPhaseNodeBundle       = ManagerPhase("node bundle")
+	ManagerPhasePackaging        = ManagerPhase("package")
+	ManagerPhaseDone             = ManagerPhase("done")
 )
 
 type ManagerStatus struct {

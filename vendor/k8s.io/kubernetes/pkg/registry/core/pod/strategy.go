@@ -427,8 +427,6 @@ func LogLocation(
 	if err != nil {
 		return nil, nil, err
 	}
-	//patch to allow the node to point to localhost to ensure virtual kubelet can return logs
-	nodeInfo.Hostname = "localhost"
 	params := url.Values{}
 	if opts.Follow {
 		params.Add("follow", "true")
