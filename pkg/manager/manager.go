@@ -3,6 +3,7 @@ package manager
 import (
 	"archive/zip"
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
@@ -12,14 +13,13 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/rancher/wrangler/pkg/signals"
 	"github.com/sirupsen/logrus"
-
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/rest"
-
-	"github.com/rancher/wrangler/pkg/signals"
 
 	"github.com/rancher/support-bundle-kit/pkg/manager/client"
 	"github.com/rancher/support-bundle-kit/pkg/types"
@@ -121,6 +121,10 @@ func (m *SupportBundleManager) Run() error {
 			m.phaseCollectClusterBundle,
 		},
 		{
+			types.ManagerPhasePrometheusBundle,
+			m.phaseCollectPrometheusBundle,
+		},
+		{
 			types.ManagerPhaseNodeBundle,
 			m.phaseCollectNodeBundles,
 		},
@@ -207,6 +211,50 @@ func (m *SupportBundleManager) phaseCollectClusterBundle() error {
 		return errors.Wrap(err, "fail to generate cluster bundle")
 	}
 	m.bundleFileName = bundleName
+	return nil
+}
+
+func (m *SupportBundleManager) phaseCollectPrometheusBundle() error {
+	pods, err := m.k8s.GetPodsListByLabels("cattle-monitoring-system", "app.kubernetes.io/name=prometheus")
+	if err != nil {
+		if apierrors.IsNotFound(err) {
+			logrus.Info("prometheus pods not found")
+			return nil
+		}
+
+		return errors.Wrap(err, "failed to get prometheus pods")
+	}
+
+	if len(pods.Items) == 0 {
+		logrus.Info("prometheus pods not found")
+		return nil
+	}
+
+	if len(pods.Items) > 1 {
+		return fmt.Errorf("multiple %d prometheus pods found", len(pods.Items))
+	}
+
+	targetPod := pods.Items[0]
+	p, err := utils.NewPrometheus(targetPod.Status.PodIP)
+	if err != nil {
+		logrus.Debugf("host: %s, port: %d", targetPod.Status.PodIP, utils.PrometheusPort)
+		return errors.Wrap(err, "failed to new prometheus")
+	}
+
+	alerts, err := p.GetAlerts(m.context)
+	if err != nil {
+		return errors.Wrap(err, "failed to get prometheus alert")
+	}
+
+	b, err := json.MarshalIndent(alerts, "", "\t")
+	if err != nil {
+		return errors.Wrap(err, "failed to marshal prometheus alert")
+	}
+
+	if err := os.WriteFile(fmt.Sprintf("%s/prometheus-alerts.json", m.getWorkingDir()), b, 0644); err != nil {
+		return errors.Wrap(err, "failed to write prometheus alert")
+	}
+
 	return nil
 }
 
