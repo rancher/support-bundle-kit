@@ -35,15 +35,15 @@ import (
 // REST implements a RESTStorage for DaemonSets
 type REST struct {
 	*genericregistry.Store
-	categories []string
 }
 
 // NewREST returns a RESTStorage object that will work against DaemonSets.
 func NewREST(optsGetter generic.RESTOptionsGetter) (*REST, *StatusREST, error) {
 	store := &genericregistry.Store{
-		NewFunc:                  func() runtime.Object { return &apps.DaemonSet{} },
-		NewListFunc:              func() runtime.Object { return &apps.DaemonSetList{} },
-		DefaultQualifiedResource: apps.Resource("daemonsets"),
+		NewFunc:                   func() runtime.Object { return &apps.DaemonSet{} },
+		NewListFunc:               func() runtime.Object { return &apps.DaemonSetList{} },
+		DefaultQualifiedResource:  apps.Resource("daemonsets"),
+		SingularQualifiedResource: apps.Resource("daemonset"),
 
 		CreateStrategy:      daemonset.Strategy,
 		UpdateStrategy:      daemonset.Strategy,
@@ -61,7 +61,7 @@ func NewREST(optsGetter generic.RESTOptionsGetter) (*REST, *StatusREST, error) {
 	statusStore.UpdateStrategy = daemonset.StatusStrategy
 	statusStore.ResetFieldsStrategy = daemonset.StatusStrategy
 
-	return &REST{store, []string{"all"}}, &StatusREST{store: &statusStore}, nil
+	return &REST{store}, &StatusREST{store: &statusStore}, nil
 }
 
 // Implement ShortNamesProvider
@@ -76,13 +76,7 @@ var _ rest.CategoriesProvider = &REST{}
 
 // Categories implements the CategoriesProvider interface. Returns a list of categories a resource is part of.
 func (r *REST) Categories() []string {
-	return r.categories
-}
-
-// WithCategories sets categories for REST.
-func (r *REST) WithCategories(categories []string) *REST {
-	r.categories = categories
-	return r
+	return []string{"all"}
 }
 
 // StatusREST implements the REST endpoint for changing the status of a daemonset
@@ -93,6 +87,12 @@ type StatusREST struct {
 // New creates a new DaemonSet object.
 func (r *StatusREST) New() runtime.Object {
 	return &apps.DaemonSet{}
+}
+
+// Destroy cleans up resources on shutdown.
+func (r *StatusREST) Destroy() {
+	// Given that underlying store is shared with REST,
+	// we don't destroy it here explicitly.
 }
 
 // Get retrieves the object from the storage. It is required to support Patch.
@@ -110,4 +110,8 @@ func (r *StatusREST) Update(ctx context.Context, name string, objInfo rest.Updat
 // GetResetFields implements rest.ResetFieldsStrategy
 func (r *StatusREST) GetResetFields() map[fieldpath.APIVersion]*fieldpath.Set {
 	return r.store.GetResetFields()
+}
+
+func (r *StatusREST) ConvertToTable(ctx context.Context, object runtime.Object, tableOptions runtime.Object) (*metav1.Table, error) {
+	return r.store.ConvertToTable(ctx, object, tableOptions)
 }

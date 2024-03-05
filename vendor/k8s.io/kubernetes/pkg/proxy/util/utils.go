@@ -87,6 +87,15 @@ func IsZeroCIDR(cidr string) bool {
 	return false
 }
 
+// IsLoopBack checks if a given IP address is a loopback address.
+func IsLoopBack(ip string) bool {
+	netIP := netutils.ParseIPSloppy(ip)
+	if netIP != nil {
+		return netIP.IsLoopback()
+	}
+	return false
+}
+
 // IsProxyableIP checks if a given IP address is permitted to be proxied
 func IsProxyableIP(ip string) error {
 	netIP := netutils.ParseIPSloppy(ip)
@@ -97,7 +106,7 @@ func IsProxyableIP(ip string) error {
 }
 
 func isProxyableIP(ip net.IP) error {
-	if ip.IsLoopback() || ip.IsLinkLocalUnicast() || ip.IsLinkLocalMulticast() || ip.IsInterfaceLocalMulticast() {
+	if !ip.IsGlobalUnicast() {
 		return ErrAddressNotAllowed
 	}
 	return nil
@@ -188,74 +197,10 @@ func ShouldSkipService(service *v1.Service) bool {
 	return false
 }
 
-// GetNodeAddresses return all matched node IP addresses based on given cidr slice.
-// Some callers, e.g. IPVS proxier, need concrete IPs, not ranges, which is why this exists.
-// NetworkInterfacer is injected for test purpose.
-// We expect the cidrs passed in is already validated.
-// Given an empty input `[]`, it will return `0.0.0.0/0` and `::/0` directly.
-// If multiple cidrs is given, it will return the minimal IP sets, e.g. given input `[1.2.0.0/16, 0.0.0.0/0]`, it will
-// only return `0.0.0.0/0`.
-// NOTE: GetNodeAddresses only accepts CIDRs, if you want concrete IPs, e.g. 1.2.3.4, then the input should be 1.2.3.4/32.
-func GetNodeAddresses(cidrs []string, nw NetworkInterfacer) (sets.String, error) {
-	uniqueAddressList := sets.NewString()
-	if len(cidrs) == 0 {
-		uniqueAddressList.Insert(IPv4ZeroCIDR)
-		uniqueAddressList.Insert(IPv6ZeroCIDR)
-		return uniqueAddressList, nil
-	}
-	// First round of iteration to pick out `0.0.0.0/0` or `::/0` for the sake of excluding non-zero IPs.
-	for _, cidr := range cidrs {
-		if IsZeroCIDR(cidr) {
-			uniqueAddressList.Insert(cidr)
-		}
-	}
-
-	addrs, err := nw.InterfaceAddrs()
-	if err != nil {
-		return nil, fmt.Errorf("error listing all interfaceAddrs from host, error: %v", err)
-	}
-
-	// Second round of iteration to parse IPs based on cidr.
-	for _, cidr := range cidrs {
-		if IsZeroCIDR(cidr) {
-			continue
-		}
-
-		_, ipNet, _ := netutils.ParseCIDRSloppy(cidr)
-		for _, addr := range addrs {
-			var ip net.IP
-			// nw.InterfaceAddrs may return net.IPAddr or net.IPNet on windows, and it will return net.IPNet on linux.
-			switch v := addr.(type) {
-			case *net.IPAddr:
-				ip = v.IP
-			case *net.IPNet:
-				ip = v.IP
-			default:
-				continue
-			}
-
-			if ipNet.Contains(ip) {
-				if netutils.IsIPv6(ip) && !uniqueAddressList.Has(IPv6ZeroCIDR) {
-					uniqueAddressList.Insert(ip.String())
-				}
-				if !netutils.IsIPv6(ip) && !uniqueAddressList.Has(IPv4ZeroCIDR) {
-					uniqueAddressList.Insert(ip.String())
-				}
-			}
-		}
-	}
-
-	if uniqueAddressList.Len() == 0 {
-		return nil, fmt.Errorf("no addresses found for cidrs %v", cidrs)
-	}
-
-	return uniqueAddressList, nil
-}
-
 // AddressSet validates the addresses in the slice using the "isValid" function.
 // Addresses that pass the validation are returned as a string Set.
-func AddressSet(isValid func(ip net.IP) bool, addrs []net.Addr) sets.String {
-	ips := sets.NewString()
+func AddressSet(isValid func(ip net.IP) bool, addrs []net.Addr) sets.Set[string] {
+	ips := sets.New[string]()
 	for _, a := range addrs {
 		var ip net.IP
 		switch v := a.(type) {
@@ -490,7 +435,8 @@ func GetClusterIPByFamily(ipFamily v1.IPFamily, service *v1.Service) string {
 }
 
 type LineBuffer struct {
-	b bytes.Buffer
+	b     bytes.Buffer
+	lines int
 }
 
 // Write takes a list of arguments, each a string or []string, joins all the
@@ -516,20 +462,32 @@ func (buf *LineBuffer) Write(args ...interface{}) {
 		}
 	}
 	buf.b.WriteByte('\n')
+	buf.lines++
 }
 
 // WriteBytes writes bytes to buffer, and terminates with newline.
 func (buf *LineBuffer) WriteBytes(bytes []byte) {
 	buf.b.Write(bytes)
 	buf.b.WriteByte('\n')
+	buf.lines++
 }
 
+// Reset clears buf
 func (buf *LineBuffer) Reset() {
 	buf.b.Reset()
+	buf.lines = 0
 }
 
+// Bytes returns the contents of buf as a []byte
 func (buf *LineBuffer) Bytes() []byte {
 	return buf.b.Bytes()
+}
+
+// Lines returns the number of lines in buf. Note that more precisely, this returns the
+// number of times Write() or WriteBytes() was called; it assumes that you never wrote
+// any newlines to the buffer yourself.
+func (buf *LineBuffer) Lines() int {
+	return buf.lines
 }
 
 // RevertPorts is closing ports in replacementPortsMap but not in originalPortsMap. In other words, it only
@@ -542,9 +500,4 @@ func RevertPorts(replacementPortsMap, originalPortsMap map[netutils.LocalPort]ne
 			v.Close()
 		}
 	}
-}
-
-// CountBytesLines counts the number of lines in a bytes slice
-func CountBytesLines(b []byte) int {
-	return bytes.Count(b, []byte{'\n'})
 }

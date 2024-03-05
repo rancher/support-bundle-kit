@@ -51,6 +51,12 @@ func (r *LogREST) New() runtime.Object {
 	return &api.Pod{}
 }
 
+// Destroy cleans up resources on shutdown.
+func (r *LogREST) Destroy() {
+	// Given that underlying store is shared with REST,
+	// we don't destroy it here explicitly.
+}
+
 // ProducesMIMETypes returns a list of the MIME types the specified HTTP verb (GET, POST, DELETE,
 // PATCH) can respond with.
 func (r *LogREST) ProducesMIMETypes(verb string) []string {
@@ -88,13 +94,14 @@ func (r *LogREST) Get(ctx context.Context, name string, opts runtime.Object) (ru
 		return nil, err
 	}
 	return &genericrest.LocationStreamer{
-		Location:                    location,
-		Transport:                   transport,
-		ContentType:                 "text/plain",
-		Flush:                       logOpts.Follow,
-		ResponseChecker:             genericrest.NewGenericHttpResponseChecker(api.Resource("pods/log"), name),
-		RedirectChecker:             genericrest.PreventRedirects,
-		TLSVerificationErrorCounter: podLogsTLSFailure,
+		Location:                              location,
+		Transport:                             transport,
+		ContentType:                           "text/plain",
+		Flush:                                 logOpts.Follow,
+		ResponseChecker:                       genericrest.NewGenericHttpResponseChecker(api.Resource("pods/log"), name),
+		RedirectChecker:                       genericrest.PreventRedirects,
+		TLSVerificationErrorCounter:           podLogsTLSFailure,
+		DeprecatedTLSVerificationErrorCounter: deprecatedPodLogsTLSFailure,
 	}, nil
 }
 
@@ -110,6 +117,8 @@ func countSkipTLSMetric(insecureSkipTLSVerifyBackend bool) {
 		return
 	}
 	counter.Inc()
+
+	deprecatedPodLogsUsage.WithLabelValues(usageType).Inc()
 }
 
 // NewGetOptions creates a new options object

@@ -43,10 +43,11 @@ func NewREST(scheme *runtime.Scheme, optsGetter generic.RESTOptionsGetter) (*RES
 	strategy := NewStrategy(scheme)
 
 	store := &genericregistry.Store{
-		NewFunc:                  func() runtime.Object { return &apiextensions.CustomResourceDefinition{} },
-		NewListFunc:              func() runtime.Object { return &apiextensions.CustomResourceDefinitionList{} },
-		PredicateFunc:            MatchCustomResourceDefinition,
-		DefaultQualifiedResource: apiextensions.Resource("customresourcedefinitions"),
+		NewFunc:                   func() runtime.Object { return &apiextensions.CustomResourceDefinition{} },
+		NewListFunc:               func() runtime.Object { return &apiextensions.CustomResourceDefinitionList{} },
+		PredicateFunc:             MatchCustomResourceDefinition,
+		DefaultQualifiedResource:  apiextensions.Resource("customresourcedefinitions"),
+		SingularQualifiedResource: apiextensions.Resource("customresourcedefinition"),
 
 		CreateStrategy:      strategy,
 		UpdateStrategy:      strategy,
@@ -193,6 +194,12 @@ var _ = rest.Patcher(&StatusREST{})
 
 func (r *StatusREST) New() runtime.Object {
 	return &apiextensions.CustomResourceDefinition{}
+}
+
+// Destroy cleans up resources on shutdown.
+func (r *StatusREST) Destroy() {
+	// Given that underlying store is shared with REST,
+	// we don't destroy it here explicitly.
 }
 
 // Get retrieves the object from the storage. It is required to support Patch.

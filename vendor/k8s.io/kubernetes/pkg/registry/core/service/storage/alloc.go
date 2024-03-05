@@ -18,6 +18,7 @@ package storage
 
 import (
 	"fmt"
+	"net"
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
@@ -326,7 +327,7 @@ func (al *Allocators) txnAllocClusterIPs(service *api.Service, dryRun bool) (tra
 		commit: func() {
 			if !dryRun {
 				if len(allocated) > 0 {
-					klog.V(0).InfoS("allocated clusterIPs",
+					klog.InfoS("allocated clusterIPs",
 						"service", klog.KObj(service),
 						"clusterIPs", allocated)
 				}
@@ -401,7 +402,18 @@ func (al *Allocators) allocIPs(service *api.Service, toAlloc map[api.IPFamily]st
 			allocator = allocator.DryRun()
 		}
 		if ip == "" {
-			allocatedIP, err := allocator.AllocateNext()
+			var allocatedIP net.IP
+			var err error
+			if utilfeature.DefaultFeatureGate.Enabled(features.MultiCIDRServiceAllocator) {
+				svcAllocator, ok := allocator.(*ipallocator.Allocator)
+				if ok {
+					allocatedIP, err = svcAllocator.AllocateNextService(service)
+				} else {
+					allocatedIP, err = allocator.AllocateNext()
+				}
+			} else {
+				allocatedIP, err = allocator.AllocateNext()
+			}
 			if err != nil {
 				return allocated, errors.NewInternalError(fmt.Errorf("failed to allocate a serviceIP: %v", err))
 			}
@@ -411,7 +423,18 @@ func (al *Allocators) allocIPs(service *api.Service, toAlloc map[api.IPFamily]st
 			if parsedIP == nil {
 				return allocated, errors.NewInternalError(fmt.Errorf("failed to parse service IP %q", ip))
 			}
-			if err := allocator.Allocate(parsedIP); err != nil {
+			var err error
+			if utilfeature.DefaultFeatureGate.Enabled(features.MultiCIDRServiceAllocator) {
+				svcAllocator, ok := allocator.(*ipallocator.Allocator)
+				if ok {
+					err = svcAllocator.AllocateService(service, parsedIP)
+				} else {
+					err = allocator.Allocate(parsedIP)
+				}
+			} else {
+				err = allocator.Allocate(parsedIP)
+			}
+			if err != nil {
 				el := field.ErrorList{field.Invalid(field.NewPath("spec", "clusterIPs"), service.Spec.ClusterIPs, fmt.Sprintf("failed to allocate IP %v: %v", ip, err))}
 				return allocated, errors.NewInvalid(api.Kind("Service"), service.Name, el)
 			}
@@ -433,7 +456,7 @@ func (al *Allocators) releaseIPs(toRelease map[api.IPFamily]string) (map[api.IPF
 		if !ok {
 			// Maybe the cluster was previously configured for dual-stack,
 			// then switched to single-stack?
-			klog.V(0).Infof("not releasing ClusterIP %q because %s is not enabled", ip, family)
+			klog.InfoS("Not releasing ClusterIP because related family is not enabled", "clusterIP", ip, "family", family)
 			continue
 		}
 
@@ -616,7 +639,7 @@ func (al *Allocators) txnUpdateClusterIPs(after After, before Before, dryRun boo
 				return
 			}
 			if len(allocated) > 0 {
-				klog.V(0).InfoS("allocated clusterIPs",
+				klog.InfoS("allocated clusterIPs",
 					"service", klog.KObj(service),
 					"clusterIPs", allocated)
 			}
@@ -901,6 +924,13 @@ func (al *Allocators) releaseClusterIPs(service *api.Service) (released map[api.
 	return al.releaseIPs(toRelease)
 }
 
+func (al *Allocators) Destroy() {
+	al.serviceNodePorts.Destroy()
+	for _, a := range al.serviceIPAllocatorsByFamily {
+		a.Destroy()
+	}
+}
+
 // This is O(N), but we expect haystack to be small;
 // so small that we expect a linear search to be faster
 func containsNumber(haystack []int, needle int) bool {
@@ -940,10 +970,7 @@ func shouldAllocateNodePorts(service *api.Service) bool {
 		return true
 	}
 	if service.Spec.Type == api.ServiceTypeLoadBalancer {
-		if utilfeature.DefaultFeatureGate.Enabled(features.ServiceLBNodePortControl) {
-			return *service.Spec.AllocateLoadBalancerNodePorts
-		}
-		return true
+		return *service.Spec.AllocateLoadBalancerNodePorts
 	}
 	return false
 }
@@ -1010,7 +1037,7 @@ func isMatchingPreferDualStackClusterIPFields(after After, before Before) bool {
 
 // Helper to avoid nil-checks all over.  Callers of this need to be checking
 // for an exact value.
-func getIPFamilyPolicy(svc *api.Service) api.IPFamilyPolicyType {
+func getIPFamilyPolicy(svc *api.Service) api.IPFamilyPolicy {
 	if svc.Spec.IPFamilyPolicy == nil {
 		return "" // callers need to handle this
 	}

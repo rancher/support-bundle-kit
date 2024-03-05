@@ -41,10 +41,11 @@ type REST struct {
 func NewREST(scheme *runtime.Scheme, optsGetter generic.RESTOptionsGetter) *REST {
 	strategy := apiservice.NewStrategy(scheme)
 	store := &genericregistry.Store{
-		NewFunc:                  func() runtime.Object { return &apiregistration.APIService{} },
-		NewListFunc:              func() runtime.Object { return &apiregistration.APIServiceList{} },
-		PredicateFunc:            apiservice.MatchAPIService,
-		DefaultQualifiedResource: apiregistration.Resource("apiservices"),
+		NewFunc:                   func() runtime.Object { return &apiregistration.APIService{} },
+		NewListFunc:               func() runtime.Object { return &apiregistration.APIServiceList{} },
+		PredicateFunc:             apiservice.MatchAPIService,
+		DefaultQualifiedResource:  apiregistration.Resource("apiservices"),
+		SingularQualifiedResource: apiregistration.Resource("apiservice"),
 
 		CreateStrategy:      strategy,
 		UpdateStrategy:      strategy,
@@ -83,13 +84,11 @@ func (c *REST) ConvertToTable(ctx context.Context, obj runtime.Object, tableOpti
 	}
 	if m, err := meta.ListAccessor(obj); err == nil {
 		table.ResourceVersion = m.GetResourceVersion()
-		table.SelfLink = m.GetSelfLink()
 		table.Continue = m.GetContinue()
 		table.RemainingItemCount = m.GetRemainingItemCount()
 	} else {
 		if m, err := meta.CommonAccessor(obj); err == nil {
 			table.ResourceVersion = m.GetResourceVersion()
-			table.SelfLink = m.GetSelfLink()
 		}
 	}
 
@@ -147,6 +146,12 @@ var _ = rest.Patcher(&StatusREST{})
 // New creates a new APIService object.
 func (r *StatusREST) New() runtime.Object {
 	return &apiregistration.APIService{}
+}
+
+// Destroy cleans up resources on shutdown.
+func (r *StatusREST) Destroy() {
+	// Given that underlying store is shared with REST,
+	// we don't destroy it here explicitly.
 }
 
 // Get retrieves the object from the storage. It is required to support Patch.

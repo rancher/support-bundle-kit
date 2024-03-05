@@ -26,7 +26,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"k8s.io/apiserver/pkg/endpoints/handlers/fieldmanager"
+	"k8s.io/apimachinery/pkg/util/managedfields"
 	genericapirequest "k8s.io/apiserver/pkg/endpoints/request"
 	"k8s.io/apiserver/pkg/registry/generic"
 	genericregistry "k8s.io/apiserver/pkg/registry/generic/registry"
@@ -54,12 +54,12 @@ type ReplicaSetStorage struct {
 }
 
 // ReplicasPathMappings returns the mappings between each group version and a replicas path
-func ReplicasPathMappings() fieldmanager.ResourcePathMappings {
+func ReplicasPathMappings() managedfields.ResourcePathMappings {
 	return replicasPathInReplicaSet
 }
 
 // maps a group version to the replicas path in a replicaset object
-var replicasPathInReplicaSet = fieldmanager.ResourcePathMappings{
+var replicasPathInReplicaSet = managedfields.ResourcePathMappings{
 	schema.GroupVersion{Group: "apps", Version: "v1beta2"}.String(): fieldpath.MakePathOrDie("spec", "replicas"),
 	schema.GroupVersion{Group: "apps", Version: "v1"}.String():      fieldpath.MakePathOrDie("spec", "replicas"),
 }
@@ -81,16 +81,16 @@ func NewStorage(optsGetter generic.RESTOptionsGetter) (ReplicaSetStorage, error)
 // REST implements a RESTStorage for ReplicaSet.
 type REST struct {
 	*genericregistry.Store
-	categories []string
 }
 
 // NewREST returns a RESTStorage object that will work against ReplicaSet.
 func NewREST(optsGetter generic.RESTOptionsGetter) (*REST, *StatusREST, error) {
 	store := &genericregistry.Store{
-		NewFunc:                  func() runtime.Object { return &apps.ReplicaSet{} },
-		NewListFunc:              func() runtime.Object { return &apps.ReplicaSetList{} },
-		PredicateFunc:            replicaset.MatchReplicaSet,
-		DefaultQualifiedResource: apps.Resource("replicasets"),
+		NewFunc:                   func() runtime.Object { return &apps.ReplicaSet{} },
+		NewListFunc:               func() runtime.Object { return &apps.ReplicaSetList{} },
+		PredicateFunc:             replicaset.MatchReplicaSet,
+		DefaultQualifiedResource:  apps.Resource("replicasets"),
+		SingularQualifiedResource: apps.Resource("replicaset"),
 
 		CreateStrategy:      replicaset.Strategy,
 		UpdateStrategy:      replicaset.Strategy,
@@ -108,7 +108,7 @@ func NewREST(optsGetter generic.RESTOptionsGetter) (*REST, *StatusREST, error) {
 	statusStore.UpdateStrategy = replicaset.StatusStrategy
 	statusStore.ResetFieldsStrategy = replicaset.StatusStrategy
 
-	return &REST{store, []string{"all"}}, &StatusREST{store: &statusStore}, nil
+	return &REST{store}, &StatusREST{store: &statusStore}, nil
 }
 
 // Implement ShortNamesProvider
@@ -124,13 +124,7 @@ var _ rest.CategoriesProvider = &REST{}
 
 // Categories implements the CategoriesProvider interface. Returns a list of categories a resource is part of.
 func (r *REST) Categories() []string {
-	return r.categories
-}
-
-// WithCategories sets categories for REST.
-func (r *REST) WithCategories(categories []string) *REST {
-	r.categories = categories
-	return r
+	return []string{"all"}
 }
 
 // StatusREST implements the REST endpoint for changing the status of a ReplicaSet
@@ -141,6 +135,12 @@ type StatusREST struct {
 // New returns empty ReplicaSet object.
 func (r *StatusREST) New() runtime.Object {
 	return &apps.ReplicaSet{}
+}
+
+// Destroy cleans up resources on shutdown.
+func (r *StatusREST) Destroy() {
+	// Given that underlying store is shared with REST,
+	// we don't destroy it here explicitly.
 }
 
 // Get retrieves the object from the storage. It is required to support Patch.
@@ -158,6 +158,10 @@ func (r *StatusREST) Update(ctx context.Context, name string, objInfo rest.Updat
 // GetResetFields implements rest.ResetFieldsStrategy
 func (r *StatusREST) GetResetFields() map[fieldpath.APIVersion]*fieldpath.Set {
 	return r.store.GetResetFields()
+}
+
+func (r *StatusREST) ConvertToTable(ctx context.Context, object runtime.Object, tableOptions runtime.Object) (*metav1.Table, error) {
+	return r.store.ConvertToTable(ctx, object, tableOptions)
 }
 
 // ScaleREST implements a Scale for ReplicaSet.
@@ -186,6 +190,12 @@ func (r *ScaleREST) GroupVersionKind(containingGV schema.GroupVersion) schema.Gr
 // New creates a new Scale object
 func (r *ScaleREST) New() runtime.Object {
 	return &autoscaling.Scale{}
+}
+
+// Destroy cleans up resources on shutdown.
+func (r *ScaleREST) Destroy() {
+	// Given that underlying store is shared with REST,
+	// we don't destroy it here explicitly.
 }
 
 // Get retrieves object from Scale storage.
@@ -222,6 +232,10 @@ func (r *ScaleREST) Update(ctx context.Context, name string, objInfo rest.Update
 		return nil, false, errors.NewBadRequest(fmt.Sprintf("%v", err))
 	}
 	return newScale, false, err
+}
+
+func (r *ScaleREST) ConvertToTable(ctx context.Context, object runtime.Object, tableOptions runtime.Object) (*metav1.Table, error) {
+	return r.store.ConvertToTable(ctx, object, tableOptions)
 }
 
 func toScaleCreateValidation(f rest.ValidateObjectFunc) rest.ValidateObjectFunc {
@@ -299,11 +313,11 @@ func (i *scaleUpdatedObjectInfo) UpdatedObject(ctx context.Context, oldObj runti
 		if _, ok := replicasPathInReplicaSet[requestGroupVersion.String()]; ok {
 			groupVersion = requestGroupVersion
 		} else {
-			klog.Fatal("Unrecognized group/version in request info %q", requestGroupVersion.String())
+			klog.Fatalf("Unrecognized group/version in request info %q", requestGroupVersion.String())
 		}
 	}
 
-	managedFieldsHandler := fieldmanager.NewScaleHandler(
+	managedFieldsHandler := managedfields.NewScaleHandler(
 		replicaset.ManagedFields,
 		groupVersion,
 		replicasPathInReplicaSet,
