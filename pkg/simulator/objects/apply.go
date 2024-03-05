@@ -48,7 +48,8 @@ var (
 	}
 
 	skippedKinds = map[string]bool{
-		"ComponentStatus": true,
+		"ComponentStatus":   true,
+		"PodSecurityPolicy": true,
 	}
 
 	cacheMap = make(map[schema.GroupVersionKind]*meta.RESTMapping)
@@ -361,8 +362,8 @@ func (o *ObjectManager) FetchObject(obj runtime.Object) (*unstructured.Unstructu
 
 // WaitForNamespaces ensures apiserver is ready and namespaces can be listed before it times out
 func (o *ObjectManager) WaitForNamespaces(timeout time.Duration) error {
-	err := wait.Poll(5*time.Second, timeout, func() (bool, error) {
-		ns, _ := o.kc.CoreV1().Namespaces().List(o.ctx, metav1.ListOptions{})
+	err := wait.PollUntilContextTimeout(o.ctx, 5*time.Second, timeout, true, func(ctx context.Context) (bool, error) {
+		ns, _ := o.kc.CoreV1().Namespaces().List(ctx, metav1.ListOptions{})
 		if ns != nil && len(ns.Items) != 0 {
 			return true, nil
 		}

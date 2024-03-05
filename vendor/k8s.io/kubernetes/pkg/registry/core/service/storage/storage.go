@@ -41,7 +41,6 @@ import (
 	"k8s.io/kubernetes/pkg/printers"
 	printersinternal "k8s.io/kubernetes/pkg/printers/internalversion"
 	printerstorage "k8s.io/kubernetes/pkg/printers/storage"
-	"k8s.io/kubernetes/pkg/registry/core/service"
 	svcreg "k8s.io/kubernetes/pkg/registry/core/service"
 	"k8s.io/kubernetes/pkg/registry/core/service/ipallocator"
 	"k8s.io/kubernetes/pkg/registry/core/service/portallocator"
@@ -86,18 +85,17 @@ func NewREST(
 	pods PodStorage,
 	proxyTransport http.RoundTripper) (*REST, *StatusREST, *svcreg.ProxyREST, error) {
 
-	strategy, _ := svcreg.StrategyForServiceCIDRs(ipAllocs[serviceIPFamily].CIDR(), len(ipAllocs) > 1)
-
 	store := &genericregistry.Store{
-		NewFunc:                  func() runtime.Object { return &api.Service{} },
-		NewListFunc:              func() runtime.Object { return &api.ServiceList{} },
-		DefaultQualifiedResource: api.Resource("services"),
-		ReturnDeletedObject:      true,
+		NewFunc:                   func() runtime.Object { return &api.Service{} },
+		NewListFunc:               func() runtime.Object { return &api.ServiceList{} },
+		DefaultQualifiedResource:  api.Resource("services"),
+		SingularQualifiedResource: api.Resource("service"),
+		ReturnDeletedObject:       true,
 
-		CreateStrategy:      strategy,
-		UpdateStrategy:      strategy,
-		DeleteStrategy:      strategy,
-		ResetFieldsStrategy: strategy,
+		CreateStrategy:      svcreg.Strategy,
+		UpdateStrategy:      svcreg.Strategy,
+		DeleteStrategy:      svcreg.Strategy,
+		ResetFieldsStrategy: svcreg.Strategy,
 
 		TableConvertor: printerstorage.TableConvertor{TableGenerator: printers.NewTableGenerator().With(printersinternal.AddHandlers)},
 	}
@@ -107,9 +105,8 @@ func NewREST(
 	}
 
 	statusStore := *store
-	statusStrategy := service.NewServiceStatusStrategy(strategy)
-	statusStore.UpdateStrategy = statusStrategy
-	statusStore.ResetFieldsStrategy = statusStrategy
+	statusStore.UpdateStrategy = svcreg.StatusStrategy
+	statusStore.ResetFieldsStrategy = svcreg.StatusStrategy
 
 	var primaryIPFamily api.IPFamily = serviceIPFamily
 	var secondaryIPFamily api.IPFamily = "" // sentinel value
@@ -129,6 +126,11 @@ func NewREST(
 	store.AfterDelete = genericStore.afterDelete
 	store.BeginCreate = genericStore.beginCreate
 	store.BeginUpdate = genericStore.beginUpdate
+
+	// users can patch the status to remove the finalizer,
+	// hence statusStore must participate on the AfterDelete
+	// hook to release the allocated resources
+	statusStore.AfterDelete = genericStore.afterDelete
 
 	return genericStore, &StatusREST{store: &statusStore}, &svcreg.ProxyREST{Redirector: genericStore, ProxyTransport: proxyTransport}, nil
 }
@@ -157,6 +159,12 @@ func (r *REST) Categories() []string {
 	return []string{"all"}
 }
 
+// Destroy cleans up everything on shutdown.
+func (r *REST) Destroy() {
+	r.Store.Destroy()
+	r.alloc.Destroy()
+}
+
 // StatusREST implements the REST endpoint for changing the status of a service.
 type StatusREST struct {
 	store *genericregistry.Store
@@ -164,6 +172,12 @@ type StatusREST struct {
 
 func (r *StatusREST) New() runtime.Object {
 	return &api.Service{}
+}
+
+// Destroy cleans up resources on shutdown.
+func (r *StatusREST) Destroy() {
+	// Given that underlying store is shared with REST,
+	// we don't destroy it here explicitly.
 }
 
 // Get retrieves the object from the storage. It is required to support Patch.
@@ -176,6 +190,10 @@ func (r *StatusREST) Update(ctx context.Context, name string, objInfo rest.Updat
 	// We are explicitly setting forceAllowCreate to false in the call to the underlying storage because
 	// subresources should never allow create on update.
 	return r.store.Update(ctx, name, objInfo, createValidation, updateValidation, false, options)
+}
+
+func (r *StatusREST) ConvertToTable(ctx context.Context, object runtime.Object, tableOptions runtime.Object) (*metav1.Table, error) {
+	return r.store.ConvertToTable(ctx, object, tableOptions)
 }
 
 // GetResetFields implements rest.ResetFieldsStrategy
@@ -242,6 +260,17 @@ func (r *REST) defaultOnReadService(service *api.Service) {
 
 	// Set ipFamilies and ipFamilyPolicy if needed.
 	r.defaultOnReadIPFamilies(service)
+
+	// We unintentionally defaulted internalTrafficPolicy when it's not needed
+	// for the ExternalName type. It's too late to change the field in storage,
+	// but we can drop the field when read.
+	defaultOnReadInternalTrafficPolicy(service)
+}
+
+func defaultOnReadInternalTrafficPolicy(service *api.Service) {
+	if service.Spec.Type == api.ServiceTypeExternalName {
+		service.Spec.InternalTrafficPolicy = nil
+	}
 }
 
 func (r *REST) defaultOnReadIPFamilies(service *api.Service) {
@@ -441,7 +470,7 @@ func (r *REST) ResourceLocation(ctx context.Context, id string) (*url.URL, http.
 				// but in the expected case we'll only make one.
 				for try := 0; try < len(ss.Addresses); try++ {
 					addr := ss.Addresses[(addrSeed+try)%len(ss.Addresses)]
-					// TODO(thockin): do we really need this check?
+					// We only proxy to addresses that are actually pods.
 					if err := isValidAddress(ctx, &addr, r.pods); err != nil {
 						utilruntime.HandleError(fmt.Errorf("Address %v isn't valid (%v)", addr, err))
 						continue
@@ -629,7 +658,7 @@ func needsHCNodePort(svc *api.Service) bool {
 	if svc.Spec.Type != api.ServiceTypeLoadBalancer {
 		return false
 	}
-	if svc.Spec.ExternalTrafficPolicy != api.ServiceExternalTrafficPolicyTypeLocal {
+	if svc.Spec.ExternalTrafficPolicy != api.ServiceExternalTrafficPolicyLocal {
 		return false
 	}
 	return true

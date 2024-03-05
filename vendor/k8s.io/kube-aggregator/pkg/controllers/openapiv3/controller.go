@@ -43,10 +43,9 @@ const (
 	syncNothing
 )
 
-// AggregationController periodically check for changes in OpenAPI specs of APIServices and update/remove
-// them if necessary.
+// AggregationController periodically checks the list of group-versions handled by each APIService and updates the discovery page periodically
 type AggregationController struct {
-	openAPIAggregationManager aggregator.SpecAggregator
+	openAPIAggregationManager aggregator.SpecProxier
 	queue                     workqueue.RateLimitingInterface
 
 	// To allow injection for testing.
@@ -54,7 +53,7 @@ type AggregationController struct {
 }
 
 // NewAggregationController creates new OpenAPI aggregation controller.
-func NewAggregationController(openAPIAggregationManager aggregator.SpecAggregator) *AggregationController {
+func NewAggregationController(openAPIAggregationManager aggregator.SpecProxier) *AggregationController {
 	c := &AggregationController{
 		openAPIAggregationManager: openAPIAggregationManager,
 		queue: workqueue.NewNamedRateLimitingQueue(
@@ -134,9 +133,10 @@ func (c *AggregationController) processNextWorkItem() bool {
 }
 
 func (c *AggregationController) sync(key string) (syncAction, error) {
-	err := c.openAPIAggregationManager.UpdateAPIServiceSpec(key)
-	switch {
-	case err != nil:
+	if err := c.openAPIAggregationManager.UpdateAPIServiceSpec(key); err != nil {
+		if err == aggregator.ErrAPIServiceNotFound {
+			return syncNothing, nil
+		}
 		return syncRequeueRateLimited, err
 	}
 	return syncRequeue, nil

@@ -40,10 +40,11 @@ type REST struct {
 // NewREST returns a RESTStorage object that will work against persistent volumes.
 func NewREST(optsGetter generic.RESTOptionsGetter) (*REST, *StatusREST, error) {
 	store := &genericregistry.Store{
-		NewFunc:                  func() runtime.Object { return &api.PersistentVolume{} },
-		NewListFunc:              func() runtime.Object { return &api.PersistentVolumeList{} },
-		PredicateFunc:            persistentvolume.MatchPersistentVolumes,
-		DefaultQualifiedResource: api.Resource("persistentvolumes"),
+		NewFunc:                   func() runtime.Object { return &api.PersistentVolume{} },
+		NewListFunc:               func() runtime.Object { return &api.PersistentVolumeList{} },
+		PredicateFunc:             persistentvolume.MatchPersistentVolumes,
+		DefaultQualifiedResource:  api.Resource("persistentvolumes"),
+		SingularQualifiedResource: api.Resource("persistentvolume"),
 
 		CreateStrategy:      persistentvolume.Strategy,
 		UpdateStrategy:      persistentvolume.Strategy,
@@ -83,6 +84,12 @@ func (r *StatusREST) New() runtime.Object {
 	return &api.PersistentVolume{}
 }
 
+// Destroy cleans up resources on shutdown.
+func (r *StatusREST) Destroy() {
+	// Given that underlying store is shared with REST,
+	// we don't destroy it here explicitly.
+}
+
 // Get retrieves the object from the storage. It is required to support Patch.
 func (r *StatusREST) Get(ctx context.Context, name string, options *metav1.GetOptions) (runtime.Object, error) {
 	return r.store.Get(ctx, name, options)
@@ -98,4 +105,8 @@ func (r *StatusREST) Update(ctx context.Context, name string, objInfo rest.Updat
 // GetResetFields implements rest.ResetFieldsStrategy
 func (r *StatusREST) GetResetFields() map[fieldpath.APIVersion]*fieldpath.Set {
 	return r.store.GetResetFields()
+}
+
+func (r *StatusREST) ConvertToTable(ctx context.Context, object runtime.Object, tableOptions runtime.Object) (*metav1.Table, error) {
+	return r.store.ConvertToTable(ctx, object, tableOptions)
 }

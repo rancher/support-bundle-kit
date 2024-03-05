@@ -46,9 +46,10 @@ type REST struct {
 // NewStorage returns a RESTStorage object that will work against VolumeAttachments
 func NewStorage(optsGetter generic.RESTOptionsGetter) (*VolumeAttachmentStorage, error) {
 	store := &genericregistry.Store{
-		NewFunc:                  func() runtime.Object { return &storageapi.VolumeAttachment{} },
-		NewListFunc:              func() runtime.Object { return &storageapi.VolumeAttachmentList{} },
-		DefaultQualifiedResource: storageapi.Resource("volumeattachments"),
+		NewFunc:                   func() runtime.Object { return &storageapi.VolumeAttachment{} },
+		NewListFunc:               func() runtime.Object { return &storageapi.VolumeAttachmentList{} },
+		DefaultQualifiedResource:  storageapi.Resource("volumeattachments"),
+		SingularQualifiedResource: storageapi.Resource("volumeattachment"),
 
 		CreateStrategy:      volumeattachment.Strategy,
 		UpdateStrategy:      volumeattachment.Strategy,
@@ -85,6 +86,12 @@ func (r *StatusREST) New() runtime.Object {
 	return &storageapi.VolumeAttachment{}
 }
 
+// Destroy cleans up resources on shutdown.
+func (r *StatusREST) Destroy() {
+	// Given that underlying store is shared with REST,
+	// we don't destroy it here explicitly.
+}
+
 // Get retrieves the object from the storage. It is required to support Patch.
 func (r *StatusREST) Get(ctx context.Context, name string, options *metav1.GetOptions) (runtime.Object, error) {
 	return r.store.Get(ctx, name, options)
@@ -100,4 +107,8 @@ func (r *StatusREST) Update(ctx context.Context, name string, objInfo rest.Updat
 // GetResetFields implements rest.ResetFieldsStrategy
 func (r *StatusREST) GetResetFields() map[fieldpath.APIVersion]*fieldpath.Set {
 	return r.store.GetResetFields()
+}
+
+func (r *StatusREST) ConvertToTable(ctx context.Context, object runtime.Object, tableOptions runtime.Object) (*metav1.Table, error) {
+	return r.store.ConvertToTable(ctx, object, tableOptions)
 }

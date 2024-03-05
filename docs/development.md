@@ -29,6 +29,8 @@ To ensure that the `creationTimestamp` is honored from the exported objects we h
 * `k8s.io/apiserver/pkg/registry/rest/meta.go`
 ```go
 // FillObjectMetaSystemFields populates fields that are managed by the system on ObjectMeta.
+// we need to honor the creation timestamp in the bundle so we need to ensure
+// the creation timestamp is only set if it is not already present on the object
 func FillObjectMetaSystemFields(meta metav1.Object) {
 	if meta.GetCreationTimestamp().String() == "" {
 		meta.SetCreationTimestamp(metav1.Now())
@@ -42,6 +44,7 @@ func FillObjectMetaSystemFields(meta metav1.Object) {
 The `support-bundle-kit simulator` runs a minimal virtual-kubelet to support log streaming from the support bundle.
 The simulator listens on localhost, to ensure kubectl and other cli tooling works natively, 
 the routes in the apiserver have been patched to update NodeAddress to localhost.
+The change needs to be performed in method `func LogLocation`
 
 * `k8s.io/kubernetes/pkg/registry/core/pod/strategy.go`
 
