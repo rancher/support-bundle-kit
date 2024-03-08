@@ -90,7 +90,8 @@ mkdir -p logs
 cd logs
 
 # Generate supportconfig from node
-chroot $HOST_PATH /sbin/supportconfig -c -Q -B supportconfig_$SUPPORT_BUNDLE_NODE_NAME
+chroot $HOST_PATH /sbin/supportconfig -c -m -B supportconfig_$SUPPORT_BUNDLE_NODE_NAME \
+    -i BOOT,DAEMONS,ETC,ISCSI,MEM,MOD,NTP,SMART,DISK,pharvester_plugin_rke2,pharvester_plugin_console
 mv $HOST_PATH/var/log/scc_supportconfig_$SUPPORT_BUNDLE_NODE_NAME.txz .
 
 chroot $HOST_PATH /usr/bin/journalctl -k > kernel.log
