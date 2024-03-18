@@ -40,6 +40,17 @@ func FillObjectMetaSystemFields(meta metav1.Object) {
 }
 ```
 
+* k8s.io/apiserver/pkg/registry/rest/meta.go
+```go
+// WipeObjectMetaSystemFields erases fields that are managed by the system on ObjectMeta.
+func WipeObjectMetaSystemFields(meta metav1.Object) {
+	//meta.SetCreationTimestamp(metav1.Time{})
+	meta.SetUID("")
+	meta.SetDeletionTimestamp(nil)
+	meta.SetDeletionGracePeriodSeconds(nil)
+	meta.SetSelfLink("")
+}
+```
 ## virtual kubelet log support
 The `support-bundle-kit simulator` runs a minimal virtual-kubelet to support log streaming from the support bundle.
 The simulator listens on localhost, to ensure kubectl and other cli tooling works natively, 
