@@ -1,6 +1,7 @@
 package collectors
 
 import (
+	"fmt"
 	"path/filepath"
 
 	"github.com/sirupsen/logrus"
@@ -26,7 +27,8 @@ func (module clusterModule) generateYAMLs() {
 	objs, err := module.c.discovery.ResourcesForCluster(module.toObj, module.c.exclude, module.c.errorLog)
 
 	if err != nil {
-		logrus.Errorf("Unable to fetch cluster resources: %v", err)
+		logrus.WithError(err).Error("Unable to fetch cluster resources")
+		fmt.Fprintf(module.c.errorLog, "Unable to fetch cluster resources: %v\n", err)
 		return
 	}
 
