@@ -1,6 +1,7 @@
 package collectors
 
 import (
+	"fmt"
 	"io"
 	"path/filepath"
 
@@ -56,7 +57,8 @@ func (module defaultModule) generateDiscoveredNamespacedYAMLs(namespace string, 
 	objs, err := module.c.discovery.ResourcesForNamespace(module.toObj, namespace, module.c.exclude, errLog)
 
 	if err != nil {
-		logrus.Errorf("Unable to fetch namespaced resources: %v", err)
+		logrus.WithError(err).Error("Unable to fetch namespaced resources")
+		fmt.Fprintf(module.c.errorLog, "Unable to fetch namespaced resources: %v\n", err)
 		return
 	}
 

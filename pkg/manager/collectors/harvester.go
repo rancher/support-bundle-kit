@@ -1,6 +1,7 @@
 package collectors
 
 import (
+	"fmt"
 	"path/filepath"
 
 	"github.com/Jeffail/gabs/v2"
@@ -33,7 +34,8 @@ func (module harvesterModule) generateYAMLs() {
 		objs, err := module.c.discovery.SpecificResourcesForNamespace(module.toObj, module.name, namespace, resourceLists, module.c.errorLog)
 
 		if err != nil {
-			logrus.Errorf("Unable to fetch namespaced resources: %v", err)
+			logrus.WithError(err).Error("Unable to fetch namespaced resources")
+			fmt.Fprintf(module.c.errorLog, "Unable to fetch namespaced resources: %v\n", err)
 			return
 		}
 
@@ -48,7 +50,8 @@ func (module harvesterModule) generateYAMLs() {
 	objs, err := module.c.discovery.ResourcesForCluster(module.toClusterObj, module.skipClusterObjects, module.c.errorLog)
 
 	if err != nil {
-		logrus.Errorf("Unable to fetch cluster scoped resources: %v", err)
+		logrus.WithError(err).Error("Unable to fetch cluster resources")
+		fmt.Fprintf(module.c.errorLog, "Unable to fetch cluster resources: %v\n", err)
 		return
 	}
 
