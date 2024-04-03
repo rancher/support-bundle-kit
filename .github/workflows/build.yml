@@ -1,0 +1,88 @@
+name: Build and Publish
+
+on:
+  push:
+    branches:
+      - master
+      - release/v*
+    tags:
+      - '*'
+  pull_request:
+
+jobs:
+  amd64:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build amd64
+        run: docker run --rm -v /var/run/docker.sock:/var/run/docker.sock rancher/dapper:v0.5.8 dapper ci
+
+      - name: Docker Publish Master amd64
+        uses: docker/build-push-action@v2
+        with:
+          context: package
+          dockerfile: package/Dockerfile
+          build-args: |
+            ARCH=amd64
+            VERSION=${{ github.ref }}-${{ github.sha:0:8 }}-head
+          push: true
+          tags: jk82421/support-bundle-kit:${{ github.ref }}-head-amd64
+
+  arm64:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build arm64
+        run: docker run --rm -v /var/run/docker.sock:/var/run/docker.sock rancher/dapper:v0.5.8 dapper ci
+
+      - name: Docker Publish Master arm64
+        uses: docker/build-push-action@v2
+        with:
+          context: package
+          dockerfile: package/Dockerfile
+          build-args: |
+            ARCH=arm64
+            VERSION=${{ github.ref }}-${{ github.sha:0:8 }}-head
+          push: true
+          tags: jk82421/support-bundle-kit:${{ github.ref }}-head-arm64
+
+  manifest:
+    runs-on: ubuntu-latest
+    needs:
+      - amd64
+      - arm64
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Manifest Master
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.docker_username }}
+          password: ${{ secrets.docker_password }}
+
+      - name: Create Manifest amd64
+        run: docker manifest create jk82421/support-bundle-kit:${{ github.ref_name }}-head --amend rancher/support-bundle-kit:${{ github.ref }}-head-amd64
+        working-directory: package
+
+      - name: Push Manifest amd64
+        run: docker manifest push jk82421/support-bundle-kit:${{ github.ref_name }}-head
