@@ -1,0 +1,87 @@
+on:
+  workflow_call:
+    inputs:
+      release-tag-name:
+        required: true
+        type: string
+      push:
+        required: true
+        type: boolean
+
+jobs:
+  dapper-build:
+    runs-on: ubuntu-latest
+    container:
+      image: rancher/dapper:v0.5.8
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm64
+    steps:
+      # Git is not in Dapper container image. Add it manually for dirty check.
+      - name: Add Git
+        run: apk add -U git
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get Arch
+        id: get-arch
+        run: |
+          arch=$(echo ${{ matrix.platform }} | cut -c 7-)
+          echo "ARCH=$arch" >> "$GITHUB_OUTPUT"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Run dapper
+        run: dapper ci
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        if: ${{ inputs.push == true }}
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Docker Publish Master
+        uses: docker/build-push-action@v5
+        if: ${{ inputs.push == true }}
+        with:
+          provenance: false
+          context: .
+          platforms: ${{ matrix.platform }}
+          file: package/Dockerfile
+          push: true
+          tags: rancher/support-bundle-kit:${{ inputs.release-tag-name }}-${{ steps.get-arch.outputs.ARCH }}
+        env:
+          ARCH: ${{ steps.get-arch.outputs.ARCH }}
+          VERSION: ${{ github.ref_name }}-${{ github.sha }}-head
+
+  manifest:
+    if: ${{ inputs.push == true }}
+    runs-on: ubuntu-latest
+    needs:
+      - dapper-build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Manifest Master
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.docker_username }}
+          password: ${{ secrets.docker_password }}
+
+      - name: Create Manifest arm64 and amd64
+        run: >
+          docker manifest create rancher/support-bundle-kit:${{ inputs.release-tag-name }} rancher/support-bundle-kit:${{ inputs.release-tag-name }}-amd64 rancher/support-bundle-kit:${{ inputs.release-tag-name }}-arm64
+        working-directory: package
+
+      - name: Push Manifest
+        run: docker manifest push rancher/support-bundle-kit:${{ inputs.release-tag-name }}
