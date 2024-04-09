@@ -59,9 +59,9 @@ jobs:
           file: package/Dockerfile
           push: true
           tags: rancher/support-bundle-kit:${{ inputs.release-tag-name }}-${{ steps.get-arch.outputs.ARCH }}
-        env:
-          ARCH: ${{ steps.get-arch.outputs.ARCH }}
-          VERSION: ${{ github.ref_name }}-${{ github.sha }}-head
+          build-args: |
+            ARCH=${{ steps.get-arch.outputs.ARCH }}
+            VERSION=${{ github.ref_name }}-${{ github.sha }}-head
 
   manifest:
     if: ${{ inputs.push == true }}
