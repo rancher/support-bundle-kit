@@ -2,7 +2,7 @@
 
 **working in progress**
 
-This project contains support bundle scripts and utilities for applications running on top of Kubernetes
+This project contains support bundle scripts and utilities for applications running on top of Kubernetes t
 
 - `harvester-sb-collector.sh`: The script is used to collect k3os node logs. It can be run in a container with the host log folder mapped or be run on the host directly.
 - `support-bundle-utils`: This application contains several commands:
