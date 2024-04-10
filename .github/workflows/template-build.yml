@@ -49,15 +49,14 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Docker Publish
+      - name: Docker Build
         uses: docker/build-push-action@v5
-        if: ${{ inputs.push == true }}
         with:
           provenance: false
           context: .
           platforms: ${{ matrix.platform }}
           file: package/Dockerfile
-          push: true
+          push: ${{ inputs.push }}
           tags: rancher/support-bundle-kit:${{ inputs.release-tag-name }}-${{ steps.get-arch.outputs.ARCH }}
           build-args: |
             ARCH=${{ steps.get-arch.outputs.ARCH }}
