@@ -10,11 +10,9 @@ fi
 
 LINKFLAGS="-X github.com/rancher/support-bundle-kit/cmd.AppVersion=$VERSION
            -X github.com/rancher/support-bundle-kit/cmd.GitCommit=$COMMIT"
-CGO_ENABLED=0 go build -ldflags "$LINKFLAGS $OTHER_LINKFLAGS" -o bin/support-bundle-kit
-if [ "$CROSS" = "true" ] && [ "$ARCH" = "amd64" ]; then
-    GOOS=darwin go build -ldflags "$LINKFLAGS" -o bin/support-bundle-kit-darwin
-    GOOS=windows go build -ldflags "$LINKFLAGS" -o bin/support-bundle-kit-windows
-fi
+
+CGO_ENABLED=0 GOARCH=amd64 go build -ldflags "$LINKFLAGS $OTHER_LINKFLAGS" -o bin/support-bundle-kit-amd64
+CGO_ENABLED=0 GOARCH=arm64 go build -ldflags "$LINKFLAGS $OTHER_LINKFLAGS" -o bin/support-bundle-kit-arm64
 
 # non-go scripts
 cp hack/* bin

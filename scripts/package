@@ -7,24 +7,24 @@ cd $(dirname $0)/..
 
 mkdir -p dist/artifacts
 cp bin/* dist/artifacts
-mv dist/artifacts/support-bundle-kit dist/artifacts/support-bundle-kit${SUFFIX}
-
-case $(uname -m) in
-  aarch64 | arm64)
-    ARCH=arm64
-    ;;
-  x86_64)
-    ARCH=amd64
-    ;;
-  s390x)
-    ARCH=s390x
-    ;;
-  *)
-    echo "$(uname -a): unsupported architecture"
-    exit 1
-esac
 
 IMAGE=${REPO}/support-bundle-kit:${TAG}
+DOCKERFILE=package/Dockerfile
 
-docker build --build-arg ARCH=${ARCH} --no-cache -f package/Dockerfile -t ${IMAGE} .
+docker run --privileged --rm tonistiigi/binfmt --install all
+buildx create --platform linux/amd64,linux/arm64 --use
+buildx ls
+
+# In old docker version, it doesn't support multiple values in --platform with --load.
+# So we only load image with current platform.
+# Ref: https://github.com/docker/buildx/issues/59#issuecomment-616050491
+
+# build
+buildx build --platform linux/amd64,linux/arm64 \
+  -f ${DOCKERFILE} -t ${IMAGE} .
+
+# test
+buildx build --load \
+  -f ${DOCKERFILE} -t ${IMAGE} .
+
 echo Built ${IMAGE}
