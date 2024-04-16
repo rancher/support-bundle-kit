@@ -10,10 +10,15 @@ RUN zypper -n install ca-certificates awk lsb-release rsync docker containerd
 ## install golangci
 RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "$(go env GOPATH)/bin" v1.55.2;
 
+# The docker version in dapper is too old to have buildx. Install it manually.
+RUN curl -sSfL https://github.com/docker/buildx/releases/download/v0.13.1/buildx-v0.13.1.linux-${ARCH} -o buildx-v0.13.1.linux-${ARCH} && \
+    chmod +x buildx-v0.13.1.linux-${ARCH} && \
+    mv buildx-v0.13.1.linux-${ARCH} /usr/local/bin/buildx
+
 # -- for dapper
 ENV DAPPER_RUN_ARGS --privileged --network host -v /run/containerd/containerd.sock:/run/containerd/containerd.sock
 ENV GO111MODULE off
-ENV DAPPER_ENV REPO TAG DRONE_TAG CROSS GOPROXY
+ENV DAPPER_ENV REPO TAG DRONE_TAG
 ENV DAPPER_DOCKER_SOCKET true
 ENV DAPPER_SOURCE /go/src/github.com/rancher/support-bundle-kit/
 ENV DAPPER_OUTPUT ./bin ./dist

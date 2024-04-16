@@ -13,13 +13,8 @@ else
     VERSION="${COMMIT}${DIRTY}"
 fi
 
-if [ -z "$ARCH" ]; then
-    ARCH=$(go env GOHOSTARCH)
-fi
 
-SUFFIX="-${ARCH}"
-
-TAG=${TAG:-${VERSION}${SUFFIX}}
+TAG=${TAG:-${VERSION}}
 REPO=${REPO:-rancher}
 
 if echo $TAG | grep -q dirty; then
