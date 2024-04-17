@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 
@@ -58,4 +59,18 @@ func init() {
 	managerCmd.PersistentFlags().StringSliceVar(&sbm.BundleCollectors, "extra-collectors", getEnvStringSlice("SUPPORT_BUNDLE_EXTRA_COLLECTORS"), "Get extra resource for the specific components e.g., harvester")
 	managerCmd.PersistentFlags().StringVar(&sbm.Description, "description", os.Getenv("SUPPORT_BUNDLE_DESCRIPTION"), "The support bundle description")
 	managerCmd.PersistentFlags().StringVar(&sbm.IssueURL, "issue-url", os.Getenv("SUPPORT_BUNDLE_ISSUE_URL"), "The support bundle issue url")
+	managerCmd.PersistentFlags().DurationVar(&sbm.NodeTimeout, "node-timeout", parseNodeTimeout(os.Getenv("SUPPORT_BUNDLE_NODE_TIMEOUT")), "The support bundle node collection time out")
+}
+
+func parseNodeTimeout(value string) time.Duration {
+	if value == "" {
+		return 0
+	}
+
+	d, err := time.ParseDuration(value)
+	if err != nil {
+		return 0
+	}
+
+	return d
 }

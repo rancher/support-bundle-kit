@@ -43,6 +43,7 @@ type SupportBundleManager struct {
 	RegistrySecret  string
 	IssueURL        string
 	Description     string
+	NodeTimeout     time.Duration
 
 	ExcludeResources    []schema.GroupResource
 	ExcludeResourceList []string
@@ -273,8 +274,7 @@ func (m *SupportBundleManager) collectNodeBundles() error {
 		return err
 	}
 
-	<-m.ch
-	logrus.Info("All node bundles are received.")
+	m.waitNodesCompleted()
 
 	// Clean up when everything is fine. If something went wrong, keep ds for debugging.
 	// The ds will be garbage-collected when manager pod is gone.
@@ -293,6 +293,30 @@ func (m *SupportBundleManager) verifyNodeBundle(file string) error {
 	return err
 }
 
+func (m *SupportBundleManager) printTimeoutNodes() {
+	for node := range m.expectedNodes {
+		logrus.Warnf("Collection timed out for node: %s", node)
+	}
+}
+
+func (m *SupportBundleManager) waitNodesCompleted() {
+	select {
+	case <-m.ch:
+		logrus.Info("All node bundles are received.")
+	case <-m.timeout():
+		logrus.Info("Some node bundles are received.")
+		m.printTimeoutNodes()
+	}
+}
+
+func (m *SupportBundleManager) timeout() <-chan time.Time {
+	if m.NodeTimeout == 0 {
+		return time.After(30 * time.Minute) // default time out
+	}
+
+	return time.After(m.NodeTimeout)
+}
+
 func (m *SupportBundleManager) completeNode(node string) {
 	m.nodesLock.Lock()
 	defer m.nodesLock.Unlock()
@@ -308,7 +332,7 @@ func (m *SupportBundleManager) completeNode(node string) {
 	if len(m.expectedNodes) == 0 {
 		if !m.done {
 			logrus.Debugf("All nodes are completed")
-			m.ch <- struct{}{}
+			close(m.ch)
 			m.done = true
 		}
 	}
