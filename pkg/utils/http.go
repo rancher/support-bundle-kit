@@ -6,9 +6,13 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/harvester/harvester/pkg/apis/harvesterhci.io/v1beta1"
 	"github.com/sirupsen/logrus"
 )
+
+type ErrorResponse struct {
+	// Errors happened during request.
+	Errors []string `json:"errors,omitempty"`
+}
 
 func httpResponseBody(obj interface{}) []byte {
 	respBody, err := json.Marshal(obj)
@@ -34,7 +38,7 @@ func HttpResponseError(rw http.ResponseWriter, statusCode int, err error) {
 
 func HttpResponseErrorMsg(rw http.ResponseWriter, statusCode int, errMsg string) {
 	rw.WriteHeader(statusCode)
-	_, _ = rw.Write(httpResponseBody(v1beta1.ErrorResponse{Errors: []string{errMsg}}))
+	_, _ = rw.Write(httpResponseBody(ErrorResponse{Errors: []string{errMsg}}))
 }
 
 // HttpGetDispositionFilename parses value of "Content-Disposition" header
