@@ -230,10 +230,6 @@ github.com/grpc-ecosystem/grpc-gateway/utilities
 github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule
 github.com/grpc-ecosystem/grpc-gateway/v2/runtime
 github.com/grpc-ecosystem/grpc-gateway/v2/utilities
-# github.com/harvester/harvester v1.2.1 => github.com/harvester/harvester v0.0.2-0.20220823063817-dc6a30894d63
-## explicit; go 1.18
-github.com/harvester/harvester/pkg/apis/harvesterhci.io
-github.com/harvester/harvester/pkg/apis/harvesterhci.io/v1beta1
 # github.com/hashicorp/hcl v1.0.0
 ## explicit
 github.com/hashicorp/hcl
@@ -351,12 +347,6 @@ github.com/opencontainers/selinux/go-selinux
 github.com/opencontainers/selinux/go-selinux/label
 github.com/opencontainers/selinux/pkg/pwalk
 github.com/opencontainers/selinux/pkg/pwalkdir
-# github.com/openshift/custom-resource-status v1.1.2
-## explicit; go 1.12
-github.com/openshift/custom-resource-status/conditions/v1
-# github.com/pborman/uuid v1.2.0
-## explicit
-github.com/pborman/uuid
 # github.com/pelletier/go-toml v1.9.4
 ## explicit; go 1.12
 github.com/pelletier/go-toml
@@ -2289,17 +2279,6 @@ k8s.io/utils/pointer
 k8s.io/utils/strings
 k8s.io/utils/strings/slices
 k8s.io/utils/trace
-# kubevirt.io/api v0.0.0-20220430221853-33880526e414 => kubevirt.io/api v0.53.1
-## explicit; go 1.17
-kubevirt.io/api/core
-kubevirt.io/api/core/v1
-# kubevirt.io/containerized-data-importer-api v1.47.0 => kubevirt.io/containerized-data-importer-api v1.47.0
-## explicit; go 1.17
-kubevirt.io/containerized-data-importer-api/pkg/apis/core
-kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1
-# kubevirt.io/controller-lifecycle-operator-sdk/api v0.0.0-20220329064328-f3cc58c6ed90
-## explicit; go 1.17
-kubevirt.io/controller-lifecycle-operator-sdk/api
 # sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.1.2
 ## explicit; go 1.17
 sigs.k8s.io/apiserver-network-proxy/konnectivity-client/pkg/client
@@ -2323,7 +2302,6 @@ sigs.k8s.io/yaml
 # github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go v3.2.1-0.20200107013213-dc14462fd587+incompatible
 # github.com/docker/distribution => github.com/docker/distribution v0.0.0-20191216044856-a8371794149d
 # github.com/docker/docker => github.com/docker/docker v1.4.2-0.20200203170920-46ec8731fbce
-# github.com/harvester/harvester => github.com/harvester/harvester v0.0.2-0.20220823063817-dc6a30894d63
 # github.com/knative/pkg => github.com/rancher/pkg v0.0.0-20190514055449-b30ab9de040e
 # github.com/openshift/api => github.com/openshift/api v0.0.0-20191219222812-2987a591a72c
 # github.com/openshift/client-go => github.com/openshift/client-go v0.0.0-20191125132246-f6563a70e19a
@@ -2360,6 +2338,7 @@ sigs.k8s.io/yaml
 # k8s.io/controller-manager => k8s.io/controller-manager v0.27.11
 # k8s.io/cri-api => k8s.io/cri-api v0.27.11
 # k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.27.11
+# k8s.io/dynamic-resource-allocation => k8s.io/dynamic-resource-allocation v0.27.11
 # k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.27.11
 # k8s.io/kube-controller-manager => k8s.io/kube-controller-manager v0.27.11
 # k8s.io/kube-openapi => k8s.io/kube-openapi v0.0.0-20230501164219-8b0f38b5fd1f

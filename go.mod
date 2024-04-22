@@ -1,12 +1,11 @@
 module github.com/rancher/support-bundle-kit
 
-go 1.20
+go 1.21
 
 replace (
 	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go v3.2.1-0.20200107013213-dc14462fd587+incompatible
 	github.com/docker/distribution => github.com/docker/distribution v0.0.0-20191216044856-a8371794149d
 	github.com/docker/docker => github.com/docker/docker v1.4.2-0.20200203170920-46ec8731fbce
-	github.com/harvester/harvester => github.com/harvester/harvester v0.0.2-0.20220823063817-dc6a30894d63
 	github.com/knative/pkg => github.com/rancher/pkg v0.0.0-20190514055449-b30ab9de040e
 	github.com/openshift/api => github.com/openshift/api v0.0.0-20191219222812-2987a591a72c
 	github.com/openshift/client-go => github.com/openshift/client-go v0.0.0-20191125132246-f6563a70e19a
@@ -43,6 +42,7 @@ replace (
 	k8s.io/controller-manager => k8s.io/controller-manager v0.27.11
 	k8s.io/cri-api => k8s.io/cri-api v0.27.11
 	k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.27.11
+	k8s.io/dynamic-resource-allocation => k8s.io/dynamic-resource-allocation v0.27.11
 	k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.27.11
 	k8s.io/kube-controller-manager => k8s.io/kube-controller-manager v0.27.11
 	k8s.io/kube-openapi => k8s.io/kube-openapi v0.0.0-20230501164219-8b0f38b5fd1f
@@ -66,7 +66,6 @@ replace (
 require (
 	github.com/Jeffail/gabs/v2 v2.6.1
 	github.com/gorilla/mux v1.8.0
-	github.com/harvester/harvester v1.2.1
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/onsi/ginkgo v1.16.4
 	github.com/onsi/gomega v1.27.4
@@ -165,7 +164,6 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
-	//github.com/harvester/harvester v0.0.2-0.20210528023109-d95127388f17
 	github.com/jonboulle/clockwork v0.2.2 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -182,8 +180,6 @@ require (
 	github.com/nxadm/tail v1.4.8 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/selinux v1.10.0 // indirect
-	github.com/openshift/custom-resource-status v1.1.2 // indirect
-	github.com/pborman/uuid v1.2.0 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/pquerna/cachecontrol v0.1.0 // indirect
 	github.com/prometheus/client_golang v1.14.0 // indirect
@@ -252,9 +248,6 @@ require (
 	k8s.io/legacy-cloud-providers v0.0.0 // indirect
 	k8s.io/mount-utils v0.23.7 // indirect
 	k8s.io/utils v0.0.0-20230209194617-a36077c30491 // indirect
-	kubevirt.io/api v0.0.0-20220430221853-33880526e414 // indirect
-	kubevirt.io/containerized-data-importer-api v1.47.0 // indirect
-	kubevirt.io/controller-lifecycle-operator-sdk/api v0.0.0-20220329064328-f3cc58c6ed90 // indirect
 	sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.1.2 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
