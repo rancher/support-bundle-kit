@@ -11,19 +11,6 @@ cp bin/* dist/artifacts
 IMAGE=${REPO}/support-bundle-kit:${TAG}
 DOCKERFILE=package/Dockerfile
 
-docker run --privileged --rm tonistiigi/binfmt --install all
-buildx create --platform linux/amd64,linux/arm64 --use
-buildx ls
-
-# In old docker version, it doesn't support multiple values in --platform with --load.
-# So we only load image with current platform.
-# Ref: https://github.com/docker/buildx/issues/59#issuecomment-616050491
-
-# build
-buildx build --platform linux/amd64,linux/arm64 \
-  -f ${DOCKERFILE} -t ${IMAGE} .
-
-# test
 buildx build --load \
   -f ${DOCKERFILE} -t ${IMAGE} .
 
