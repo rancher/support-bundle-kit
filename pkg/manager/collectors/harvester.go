@@ -33,7 +33,7 @@ func (module harvesterModule) generateYAMLs() {
 		objs, err := module.c.discovery.SpecificResourcesForNamespace(module.toObj, module.name, namespace, resourceLists, module.c.errorLog)
 
 		if err != nil {
-			logrus.Error("Unable to fetch namespaced resources")
+			logrus.Errorf("Unable to fetch namespaced resources: %v", err)
 			return
 		}
 
@@ -48,7 +48,7 @@ func (module harvesterModule) generateYAMLs() {
 	objs, err := module.c.discovery.ResourcesForCluster(module.toClusterObj, module.skipClusterObjects, module.c.errorLog)
 
 	if err != nil {
-		logrus.Error("Unable to fetch cluster scoped resources")
+		logrus.Errorf("Unable to fetch cluster scoped resources: %v", err)
 		return
 	}
 

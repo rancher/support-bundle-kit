@@ -59,7 +59,7 @@ func (c *Cluster) GenerateClusterBundle(bundleDir string) (string, error) {
 
 	errLog, err := os.Create(filepath.Join(bundleDir, "bundleGenerationError.log"))
 	if err != nil {
-		logrus.Errorf("Failed to create bundle generation log")
+		logrus.Errorf("Failed to create bundle generation log: %v", err)
 		return "", err
 	}
 	defer errLog.Close()
