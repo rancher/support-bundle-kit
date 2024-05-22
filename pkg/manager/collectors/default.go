@@ -56,7 +56,7 @@ func (module defaultModule) generateDiscoveredNamespacedYAMLs(namespace string, 
 	objs, err := module.c.discovery.ResourcesForNamespace(module.toObj, namespace, module.c.exclude, errLog)
 
 	if err != nil {
-		logrus.Error("Unable to fetch namespaced resources")
+		logrus.Errorf("Unable to fetch namespaced resources: %v", err)
 		return
 	}
 
