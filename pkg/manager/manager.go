@@ -304,7 +304,7 @@ func (m *SupportBundleManager) waitNodesCompleted() {
 	case <-m.ch:
 		logrus.Info("All node bundles are received.")
 	case <-m.timeout():
-		logrus.Info("Some node bundles are received.")
+		logrus.Info("Some nodes are timeout, not all node bundles are received.")
 		m.printTimeoutNodes()
 	}
 }
