@@ -86,13 +86,18 @@ collect_etc ${BUNDLE_DIR}/configs/etc
 ###############################################################################
 # collect logs
 ###############################################################################
-mkdir -p logs
-cd logs
+mkdir -p scc
 
 # Generate supportconfig from node
 chroot $HOST_PATH /sbin/supportconfig -c -m -B supportconfig_$SUPPORT_BUNDLE_NODE_NAME \
     -i BOOT,DAEMONS,ETC,ISCSI,MEM,MOD,NTP,SMART,DISK,pharvester_plugin_rke2,pharvester_plugin_console
-mv $HOST_PATH/var/log/scc_supportconfig_$SUPPORT_BUNDLE_NODE_NAME.txz .
+mv $HOST_PATH/var/log/scc_supportconfig_$SUPPORT_BUNDLE_NODE_NAME.txz ./scc
+
+###############################################################################
+# collect logs
+###############################################################################
+mkdir -p logs
+cd logs
 
 chroot $HOST_PATH /usr/bin/journalctl -k > kernel.log
 # also collect logs of previous two boots
