@@ -1,5 +1,6 @@
 #!/bin/bash -ux
 
+source /tmp/common
 HOST_PATH=$1
 BUNDLE_DIR=$2
 
@@ -99,18 +100,18 @@ mv $HOST_PATH/var/log/scc_supportconfig_$SUPPORT_BUNDLE_NODE_NAME.txz ./scc
 mkdir -p logs
 cd logs
 
-chroot $HOST_PATH /usr/bin/journalctl -k > kernel.log
+chroot $HOST_PATH $JOURNALCTL -k > kernel.log
 # also collect logs of previous two boots
 for ((i=1; i<=2; i++)); do
   log_name="kernel.log.$i"
-  chroot $HOST_PATH /usr/bin/journalctl -k -b $((-i)) > $log_name
+  chroot $HOST_PATH $JOURNALCTL -k -b $((-i)) > $log_name
   [ ! -s $log_name ] && rm -f $log_name
 done
 
 units=(rke2-server rke2-agent rancherd rancher-system-agent wicked iscsid)
 
 for unit in ${units[@]}; do
-    chroot $HOST_PATH /usr/bin/journalctl -b all -u $unit | tail -c 10m > $unit.log
+    chroot $HOST_PATH $JOURNALCTL -b all -u $unit | tail -c 10m > $unit.log
 done
 
 cp ${HOST_PATH}/var/lib/rancher/rke2/agent/logs/kubelet.log .
