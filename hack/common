@@ -1,0 +1,2 @@
+
+JOURNALCTL="/usr/bin/journalctl -o short-precise"

@@ -35,4 +35,6 @@ RUN chmod +x /usr/bin/support-bundle-kit
 ADD hack/collector-* /usr/bin/
 RUN chmod +x /usr/bin/collector-*
 
+ADD hack/common /tmp/
+
 ENTRYPOINT ["entrypoint.sh"]
