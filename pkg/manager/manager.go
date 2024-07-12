@@ -66,6 +66,11 @@ type SupportBundleManager struct {
 	expectedNodes map[string]string
 }
 
+type RunPhase struct {
+	Name types.ManagerPhase
+	Run  func() error
+}
+
 func (m *SupportBundleManager) check() error {
 	if len(m.Namespaces) == 0 || len(m.Namespaces[0]) == 0 {
 		return errors.New("namespace is not specified")
@@ -108,10 +113,7 @@ func (m *SupportBundleManager) getBundlefilesize() (int64, error) {
 }
 
 func (m *SupportBundleManager) Run() error {
-	phases := []struct {
-		Name types.ManagerPhase
-		Run  func() error
-	}{
+	requiredPhases := []RunPhase{
 		{
 			types.ManagerPhaseInit,
 			m.phaseInit,
@@ -120,14 +122,23 @@ func (m *SupportBundleManager) Run() error {
 			types.ManagerPhaseClusterBundle,
 			m.phaseCollectClusterBundle,
 		},
-		{
-			types.ManagerPhasePrometheusBundle,
-			m.phaseCollectPrometheusBundle,
-		},
+
 		{
 			types.ManagerPhaseNodeBundle,
 			m.phaseCollectNodeBundles,
 		},
+	}
+
+	// optionalPhases should have independent phases
+	// if logic is dependent, put it into one function
+	optionalPhases := []RunPhase{
+		{
+			types.ManagerPhasePrometheusBundle,
+			m.phaseCollectPrometheusBundle,
+		},
+	}
+
+	postPhases := []RunPhase{
 		{
 			types.ManagerPhasePackaging,
 			m.phasePackaging,
@@ -138,21 +149,51 @@ func (m *SupportBundleManager) Run() error {
 		},
 	}
 
-	for i, phase := range phases {
-		logrus.Infof("Running phase %s", phase.Name)
-		m.status.SetPhase(phase.Name)
-		if err := phase.Run(); err != nil {
-			m.status.SetError(err.Error())
-			logrus.Errorf("Failed to run phase %s: %s", phase.Name, err.Error())
-			break
-		}
-
-		progress := 100 * (i + 1) / len(phases)
-		m.status.SetProgress(progress)
-		logrus.Infof("Succeed to run phase %s. Progress (%d).", phase.Name, progress)
-	}
+	m.runAllPhases(requiredPhases, optionalPhases, postPhases)
 
 	<-m.context.Done()
+	return nil
+}
+
+func (m *SupportBundleManager) runAllPhases(requiredPhases []RunPhase, optionalPhases []RunPhase, postPhases []RunPhase) {
+	progressCount := 0
+	maxProgressCount := len(requiredPhases) + len(optionalPhases) + len(postPhases)
+
+	for _, phase := range requiredPhases {
+		if err := m.runPhase(phase, &progressCount, maxProgressCount); err != nil {
+			logrus.Errorf("Failed to run requiredPhases %s: %s", phase.Name, err.Error())
+			return
+		}
+	}
+
+	for _, phase := range optionalPhases {
+		if err := m.runPhase(phase, &progressCount, maxProgressCount); err != nil {
+			logrus.Errorf("Failed to run optionalPhases %s: %s", phase.Name, err.Error())
+			// Since it's optional, don't return error.
+			continue
+		}
+	}
+
+	for _, phase := range postPhases {
+		if err := m.runPhase(phase, &progressCount, maxProgressCount); err != nil {
+			logrus.Errorf("Failed to run postPhases %s: %s", phase.Name, err.Error())
+			return
+		}
+	}
+}
+
+func (m *SupportBundleManager) runPhase(phase RunPhase, progressCount *int, maxProgressCount int) error {
+	logrus.Infof("Running phase %s", phase.Name)
+	m.status.SetPhase(phase.Name)
+	if err := phase.Run(); err != nil {
+		m.status.SetError(err.Error())
+		logrus.Errorf("Failed to run phase %s: %s", phase.Name, err.Error())
+		return err
+	}
+	*progressCount++
+	progress := 100 * (*progressCount) / maxProgressCount
+	m.status.SetProgress(progress)
+	logrus.Infof("Succeed to run phase %s. Progress (%d).", phase.Name, progress)
 	return nil
 }
 
