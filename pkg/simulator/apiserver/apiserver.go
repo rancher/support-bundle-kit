@@ -59,7 +59,7 @@ func (a *APIServerConfig) RunAPIServer(ctx context.Context, serviceClusterIP str
 	s.Authentication.ClientCert.ClientCA = a.Certs.CACert
 	s.EventTTL = time.Duration(90 * 24 * time.Hour) // 90 days
 
-	completedOptions, err := app.Complete(s)
+	completedOptions, err := s.Complete()
 	if err != nil {
 		return err
 	}
