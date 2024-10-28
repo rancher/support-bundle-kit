@@ -160,41 +160,49 @@ func (m *SupportBundleManager) runAllPhases(requiredPhases []RunPhase, optionalP
 	maxProgressCount := len(requiredPhases) + len(optionalPhases) + len(postPhases)
 
 	for _, phase := range requiredPhases {
-		if err := m.runPhase(phase, &progressCount, maxProgressCount); err != nil {
+		if err := m.runPhase(phase, &progressCount, maxProgressCount, true); err != nil {
 			logrus.Errorf("Failed to run requiredPhases %s: %s", phase.Name, err.Error())
 			return
 		}
 	}
 
 	for _, phase := range optionalPhases {
-		if err := m.runPhase(phase, &progressCount, maxProgressCount); err != nil {
-			logrus.Errorf("Failed to run optionalPhases %s: %s", phase.Name, err.Error())
+		if err := m.runPhase(phase, &progressCount, maxProgressCount, false); err != nil {
+			logrus.Errorf("Failed to run optionalPhases %s: %s, but error is skiped", phase.Name, err.Error())
 			// Since it's optional, don't return error.
 			continue
 		}
 	}
 
 	for _, phase := range postPhases {
-		if err := m.runPhase(phase, &progressCount, maxProgressCount); err != nil {
+		if err := m.runPhase(phase, &progressCount, maxProgressCount, true); err != nil {
 			logrus.Errorf("Failed to run postPhases %s: %s", phase.Name, err.Error())
 			return
 		}
 	}
 }
 
-func (m *SupportBundleManager) runPhase(phase RunPhase, progressCount *int, maxProgressCount int) error {
+func (m *SupportBundleManager) runPhase(phase RunPhase, progressCount *int, maxProgressCount int, setError bool) error {
 	logrus.Infof("Running phase %s", phase.Name)
 	m.status.SetPhase(phase.Name)
-	if err := phase.Run(); err != nil {
-		m.status.SetError(err.Error())
-		logrus.Errorf("Failed to run phase %s: %s", phase.Name, err.Error())
-		return err
+
+	err := phase.Run()
+	if err != nil {
+		if setError {
+			m.status.SetError(err.Error())
+			logrus.Errorf("Failed to run phase %s: %s", phase.Name, err.Error())
+			return err
+		}
 	}
+
 	*progressCount++
 	progress := 100 * (*progressCount) / maxProgressCount
 	m.status.SetProgress(progress)
-	logrus.Infof("Succeed to run phase %s. Progress (%d).", phase.Name, progress)
-	return nil
+
+	if err == nil {
+		logrus.Infof("Succeed to run phase %s. Progress (%d).", phase.Name, progress)
+	}
+	return err
 }
 
 func (m *SupportBundleManager) phaseInit() error {
