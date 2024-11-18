@@ -2,15 +2,17 @@ package crd
 
 import (
 	"context"
-	"github.com/rancher/support-bundle-kit/pkg/simulator/apiserver"
-	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
-	"github.com/rancher/support-bundle-kit/pkg/simulator/etcd"
-	"golang.org/x/sync/errgroup"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
 	"time"
+
+	"golang.org/x/sync/errgroup"
+
+	"github.com/rancher/support-bundle-kit/pkg/simulator/apiserver"
+	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
+	"github.com/rancher/support-bundle-kit/pkg/simulator/etcd"
 )
 
 func TestWriteFiles(t *testing.T) {
@@ -36,7 +38,7 @@ func TestInstallCRD(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
-	a := apiserver.APIServerConfig{}
+	a := apiserver.NewAPIServerConfig(apiserver.DefaultClientQPS, apiserver.DefaultClientBurst)
 
 	generatedCerts, err := certs.GenerateCerts([]string{"localhost", "127.0.0.1"}, dir)
 	if err != nil {
