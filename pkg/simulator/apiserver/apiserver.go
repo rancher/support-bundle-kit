@@ -7,8 +7,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
-	"github.com/rancher/support-bundle-kit/pkg/simulator/etcd"
+	"github.com/sirupsen/logrus"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	"k8s.io/client-go/rest"
@@ -16,10 +15,15 @@ import (
 	kubeconfig "k8s.io/client-go/tools/clientcmd/api"
 	"k8s.io/kubernetes/cmd/kube-apiserver/app"
 	"k8s.io/kubernetes/cmd/kube-apiserver/app/options"
+
+	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
+	"github.com/rancher/support-bundle-kit/pkg/simulator/etcd"
 )
 
 const (
 	DefaultServiceClusterIP = "10.53.0.1"
+	DefaultClientQPS        = 100
+	DefaultClientBurst      = 100
 )
 
 type APIServerConfig struct {
@@ -27,11 +31,20 @@ type APIServerConfig struct {
 	Etcd       *etcd.EtcdConfig
 	KubeConfig string
 	Config     *rest.Config
+	QPS        float32
+	Burst      int
 }
 
 const (
 	APIVersionsSupported = "v1=true,api/beta=true,api/alpha=false"
 )
+
+func NewAPIServerConfig(qps float32, burst int) APIServerConfig {
+	return APIServerConfig{
+		QPS:   qps,
+		Burst: burst,
+	}
+}
 
 // RunAPIServer will bootstrap an API server with only core resources enabled
 // No additional controllers will be scheduled
@@ -124,6 +137,10 @@ func (a *APIServerConfig) GenerateKubeConfig(path string) error {
 	if err != nil {
 		return err
 	}
+
+	config.QPS = a.QPS
+	config.Burst = a.Burst
+	logrus.Infof("Client will be configured with QPS: %f, Burst: %d", config.QPS, config.Burst)
 
 	a.Config = config
 

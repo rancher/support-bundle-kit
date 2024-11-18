@@ -2,13 +2,14 @@ package apiserver
 
 import (
 	"context"
-	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
-	"github.com/rancher/support-bundle-kit/pkg/simulator/etcd"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
 	"time"
+
+	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
+	"github.com/rancher/support-bundle-kit/pkg/simulator/etcd"
 )
 
 func TestRunAPIServer(t *testing.T) {
@@ -22,7 +23,7 @@ func TestRunAPIServer(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
-	a := APIServerConfig{}
+	a := NewAPIServerConfig(DefaultClientQPS, DefaultClientBurst)
 
 	generatedCerts, err := certs.GenerateCerts([]string{"localhost", "127.0.0.1"}, dir)
 	if err != nil {

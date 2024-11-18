@@ -25,6 +25,13 @@ func (p *ProgressManager) progress(current, total int) {
 
 	if current == total {
 		fmt.Printf("\n")
-		fmt.Printf("Time to load all objects: %s seconds\n\n", time.Since(p.start))
+		elapsed := time.Since(p.start)
+		elapsedInSecond := int(elapsed.Seconds())
+
+		objsPerSecond := total
+		if elapsedInSecond != 0 {
+			objsPerSecond = total / elapsedInSecond
+		}
+		fmt.Printf("Time to load all objects: %s seconds. (%d objects/s)\n\n", elapsed, objsPerSecond)
 	}
 }

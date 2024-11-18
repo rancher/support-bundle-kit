@@ -8,13 +8,11 @@ import (
 	"time"
 
 	"github.com/mitchellh/go-homedir"
+	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"golang.org/x/sync/errgroup"
-
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-
-	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
 
 	"github.com/rancher/support-bundle-kit/pkg/simulator/apiserver"
 	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
@@ -24,10 +22,12 @@ import (
 )
 
 var (
-	simHome    string
-	bundlePath string
-	resetHome  bool
-	skipLoad   bool
+	simHome     string
+	bundlePath  string
+	resetHome   bool
+	skipLoad    bool
+	clientQPS   float32
+	clientBurst int
 )
 
 var simulatorCmd = &cobra.Command{
@@ -50,7 +50,7 @@ support bundle contents using native k8s tooling like kubectl`,
 		ctx, cancel := context.WithCancel(context.TODO())
 		defer cancel()
 
-		a := apiserver.APIServerConfig{}
+		a := apiserver.NewAPIServerConfig(clientQPS, clientBurst)
 
 		generatedCerts, err := certs.GenerateCerts([]string{"localhost"}, simHome)
 		if err != nil {
@@ -105,6 +105,7 @@ support bundle contents using native k8s tooling like kubectl`,
 		}
 
 		if !skipLoad {
+			start := time.Now()
 			err = o.CreateUnstructuredClusterObjects()
 
 			if err != nil {
@@ -124,6 +125,8 @@ support bundle contents using native k8s tooling like kubectl`,
 			// ignore the error creation
 			_ = o.CreatedFailedObjectsList()
 			logrus.Info("All resources loaded successfully")
+
+			logrus.Infof("Time to load all objects: %s seconds", time.Since(start))
 		}
 
 		err = eg.Wait()
@@ -145,6 +148,8 @@ func init() {
 	simulatorCmd.PersistentFlags().StringVar(&bundlePath, "bundle-path", ".", "location to support bundle. default is .")
 	simulatorCmd.PersistentFlags().BoolVar(&resetHome, "reset", false, "reset sim-home, will clear the contents and start a clean etcd + apiserver instance")
 	simulatorCmd.PersistentFlags().BoolVar(&skipLoad, "skip-load", false, "skip load / re-load of bundle. this will ensure current etcd contents are only accessible")
+	simulatorCmd.PersistentFlags().Float32Var(&clientQPS, "client-qps", apiserver.DefaultClientQPS, "QPS for the kubernete client to push objects to the api server")
+	simulatorCmd.PersistentFlags().IntVar(&clientBurst, "client-burst", apiserver.DefaultClientBurst, "Burst for the kubernete client to push objects to the api server")
 }
 
 // GetServiceClusterIP will return the service cluster IP from the support bundle
