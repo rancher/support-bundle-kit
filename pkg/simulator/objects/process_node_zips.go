@@ -15,7 +15,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 
 	bundlekit "github.com/rancher/support-bundle-kit/pkg/simulator/apis/supportbundlekit.io/v1"
-	"github.com/rancher/support-bundle-kit/pkg/simulator/crd"
 )
 
 const (
@@ -94,11 +93,6 @@ func (o *ObjectManager) ProcessNodeZipObjects() (noStatusObjs []runtime.Object, 
 		return noStatusObjs, withStatusObjs, fmt.Errorf("error evaulating absolute path to node dirs: %v", err)
 	}
 
-	crdObjects, err := crd.Objects(false)
-	if err != nil {
-		return noStatusObjs, withStatusObjs, fmt.Errorf("error generating CRD objects: %v", err)
-	}
-
 	nodeZipList, err := generateNodeZipList(bundleAbsPath)
 
 	if err != nil {
@@ -113,8 +107,6 @@ func (o *ObjectManager) ProcessNodeZipObjects() (noStatusObjs []runtime.Object, 
 	noStatusObjs = []runtime.Object{
 		&NodeInfoNS, &NodeInfoSASecret, &NodeInfoSA,
 	}
-
-	noStatusObjs = append(noStatusObjs, crdObjects...)
 
 	for _, v := range podList {
 		withStatusObjs = append(withStatusObjs, v)
