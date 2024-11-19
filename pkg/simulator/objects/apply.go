@@ -23,6 +23,7 @@ import (
 	"k8s.io/client-go/restmapper"
 
 	supportbundlekit "github.com/rancher/support-bundle-kit/pkg/simulator/apis/supportbundlekit.io/v1"
+	"github.com/rancher/support-bundle-kit/pkg/simulator/crd"
 )
 
 type ProgressHandler func(int, int)
@@ -89,6 +90,13 @@ func (o *ObjectManager) CreateUnstructuredClusterObjects() error {
 	}
 
 	progressMgr := NewProgressManager("Step 1/4: Cluster CRDs")
+
+	// add simulator CRDs
+	simCRDs, err := crd.Objects(false)
+	if err != nil {
+		return fmt.Errorf("error generating Simulator CRD objects: %v", err)
+	}
+	crds = append(crds, simCRDs...)
 
 	// apply CRDs first
 	err = o.ApplyObjects(crds, false, nil, progressMgr.progress)
