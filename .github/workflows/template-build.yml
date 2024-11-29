@@ -7,12 +7,16 @@ on:
       push:
         required: true
         type: boolean
+      release:
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   dapper-build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
     steps:
       - name: Checkout code
@@ -51,3 +55,25 @@ jobs:
           file: package/Dockerfile
           push: ${{ inputs.push }}
           tags: rancher/support-bundle-kit:${{ inputs.release-tag-name }}
+
+      - name: Prepare artifacts for the release
+        if: ${{ startsWith(github.ref, 'refs/tags/') && fromJSON(inputs.release) }}
+        run: |
+          cd dist/artifacts
+          for arch in amd64 arm64; do
+            rm -f sha256sum-$arch.txt && touch sha256sum-$arch.txt
+            if [ -e support-bundle-kit-$arch ]; then
+              tar zcf support-bundle-kit-$arch.tar.gz support-bundle-kit-$arch
+              sha256sum support-bundle-kit-$arch.tar.gz > sha256sum-$arch.txt
+            fi
+          done
+
+      - name: Publish artifacts to the release
+        uses: softprops/action-gh-release@v2
+        if: ${{ startsWith(github.ref, 'refs/tags/') && fromJSON(inputs.release) }}
+        with:
+          files: |
+            dist/artifacts/support-bundle-kit-amd64.tar.gz
+            dist/artifacts/support-bundle-kit-arm64.tar.gz
+            dist/artifacts/sha256sum-amd64.txt
+            dist/artifacts/sha256sum-arm64.txt

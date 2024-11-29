@@ -11,4 +11,5 @@ jobs:
     with:
       release-tag-name: ${{ github.ref_name }}
       push: true
+      release: true
     secrets: inherit
