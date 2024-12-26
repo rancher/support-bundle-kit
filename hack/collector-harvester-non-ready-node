@@ -1,0 +1,125 @@
+#!/bin/bash -ux
+
+JOURNALCTL="/usr/bin/journalctl -o short-precise"
+SUPPORT_BUNDLE_NODE_NAME=$(hostname)
+
+HOST_PATH=$1
+BUNDLE_DIR=$2
+
+mkdir -p $BUNDLE_DIR
+
+log_warn() {
+    echo "[WARNING] $1"
+}
+
+remove_yaml_secret() {
+    local yaml_file=$1
+    export CONFIG_HEADER_COMMENT="Note: this file is re-formatted by support-bundle-kit collector."
+
+    yq e '. headComment=strenv(CONFIG_HEADER_COMMENT)' $yaml_file -i
+    yq e '(.. | select(has("passwd")) | .passwd) = "***" ' $yaml_file -i
+    yq e '(.. | select(has("password")) | .password) = "***" ' $yaml_file -i
+    yq e '(.. | select(has("secret")) | .secret) = "***" ' $yaml_file -i
+    yq e '(.. | select(has("token")) | .token) = "***" ' $yaml_file -i
+    yq e '(.. | select(has("agent-token")) | .agent-token) = "***" ' $yaml_file -i
+
+    unset CONFIG_HEADER_COMMENT
+}
+
+collect_etc() {
+    local to_dir=$1
+    local config
+
+    cp ${HOST_PATH}/etc/hostname $to_dir
+    cp ${HOST_PATH}/etc/os-release $to_dir
+    cp ${HOST_PATH}/etc/harvester-release.yaml $to_dir
+
+    mkdir -p $to_dir/rancher
+    cp -r ${HOST_PATH}/etc/rancher/agent $to_dir/rancher/
+    cp -r ${HOST_PATH}/etc/rancher/installer $to_dir/rancher/
+    cp -r ${HOST_PATH}/etc/rancher/rancherd $to_dir/rancher/ && chmod -R 744 $to_dir/rancher/rancherd
+    cp -r ${HOST_PATH}/etc/rancher/rke2 $to_dir/rancher/ && chmod -R 744 $to_dir/rancher/rke2/config.yaml.d
+
+    for config in $(find $to_dir/rancher -type f -regex ".*\.\(yaml\|yml\)"); do
+        remove_yaml_secret $config
+    done
+
+    rm -f $to_dir/rancher/rke2/rke2.yaml
+}
+
+collect_images_info() {
+    # In this case, we can't use /host/var/lib/rancher/rke2/bin directly because of host volume mount and symbolic link problem.
+    # So, we need to use real bin path to execute command with `readlink` command.
+    local rke2_bin=$(readlink ${HOST_PATH}/var/lib/rancher/rke2/bin)
+
+    ${HOST_PATH}${rke2_bin}/ctr \
+      --address ${HOST_PATH}/run/k3s/containerd/containerd.sock \
+      -n k8s.io images ls > containerd-images.log
+}
+
+remove_oem_secrets() {
+    local oem_dir=$1
+    local header=""
+    local config
+
+
+    if [ ! -d $oem_dir ]; then
+        log_warn "OEM folder $oem_dir doesn't exist."
+        return
+    fi
+
+    for config in $(find $oem_dir -type f -regex ".*\.\(yaml\|yml\|config\)"); do
+        remove_yaml_secret $config
+    done
+
+    # remove token in file contents
+    sed -i 's/token:.*/token: '\''***'\''/' $oem_dir/99_custom.yaml
+}
+
+cd ${BUNDLE_DIR}
+
+
+###############################################################################
+# collect configs
+###############################################################################
+mkdir -p ${BUNDLE_DIR}/configs
+cp -r $HOST_PATH/oem ${BUNDLE_DIR}/configs
+remove_oem_secrets ${BUNDLE_DIR}/configs/oem
+mkdir -p ${BUNDLE_DIR}/configs/etc
+collect_etc ${BUNDLE_DIR}/configs/etc
+
+###############################################################################
+# collect logs
+###############################################################################
+mkdir -p scc
+
+# Generate supportconfig from node
+chroot $HOST_PATH /sbin/supportconfig -c -m -B supportconfig_$SUPPORT_BUNDLE_NODE_NAME \
+    -i BOOT,DAEMONS,ETC,ISCSI,MEM,MOD,NTP,SMART,DISK,pharvester_plugin_rke2,pharvester_plugin_console
+mv $HOST_PATH/var/log/scc_supportconfig_$SUPPORT_BUNDLE_NODE_NAME.txz ./scc
+
+###############################################################################
+# collect logs
+###############################################################################
+mkdir -p logs
+cd logs
+
+chroot $HOST_PATH $JOURNALCTL -k > kernel.log
+# also collect logs of previous two boots
+for ((i=1; i<=2; i++)); do
+  log_name="kernel.log.$i"
+  chroot $HOST_PATH $JOURNALCTL -k -b $((-i)) > $log_name
+  [ ! -s $log_name ] && rm -f $log_name
+done
+
+units=(rke2-server rke2-agent rancherd rancher-system-agent wicked iscsid)
+
+for unit in ${units[@]}; do
+    chroot $HOST_PATH $JOURNALCTL -b all -u $unit | tail -c 10m > $unit.log
+done
+
+cp ${HOST_PATH}/var/lib/rancher/rke2/agent/logs/kubelet.log .
+cp ${HOST_PATH}/var/lib/rancher/rke2/agent/containerd/containerd.log .
+cp ${HOST_PATH}/var/log/console.log .
+
+collect_images_info
