@@ -2,7 +2,6 @@ package crd
 
 import (
 	"context"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -16,7 +15,7 @@ import (
 )
 
 func TestWriteFiles(t *testing.T) {
-	tmpFile, err := ioutil.TempFile("/tmp", "crd-")
+	tmpFile, err := os.CreateTemp("/tmp", "crd-")
 	defer os.Remove(tmpFile.Name())
 	if err != nil {
 		t.Fatalf("error creating tmp file for crds: %v", err)
@@ -29,7 +28,7 @@ func TestWriteFiles(t *testing.T) {
 }
 
 func TestInstallCRD(t *testing.T) {
-	dir, err := ioutil.TempDir("/tmp", "apiserver-")
+	dir, err := os.MkdirTemp("/tmp", "apiserver-")
 	defer os.RemoveAll(dir)
 	if err != nil {
 		t.Fatalf("error setting up temp directory for apiserver %v", err)

@@ -3,15 +3,16 @@ package kubelet
 import (
 	"context"
 	"crypto/tls"
-	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
-	"github.com/rancher/support-bundle-kit/pkg/utils"
-	"golang.org/x/sync/errgroup"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
 	"testing"
 	"time"
+
+	"golang.org/x/sync/errgroup"
+
+	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
+	"github.com/rancher/support-bundle-kit/pkg/utils"
 )
 
 const (
@@ -21,7 +22,7 @@ const (
 var bundlePath string
 
 func TestKubeletSimulator(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("/tmp", "kubelet-")
+	tmpDir, err := os.MkdirTemp("/tmp", "kubelet-")
 	if err != nil {
 		t.Fatalf("error creating a temp directory for kubelet: %v", err)
 	}

@@ -3,8 +3,8 @@ package apiserver
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"net"
+	"os"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -92,17 +92,17 @@ func (a *APIServerConfig) RunAPIServer(ctx context.Context, serviceClusterIP str
 // GenerateKubeConfig will generate KubeConfig to allow access to cluster
 func (a *APIServerConfig) GenerateKubeConfig(path string) error {
 
-	caCertByte, err := ioutil.ReadFile(a.Certs.CACert)
+	caCertByte, err := os.ReadFile(a.Certs.CACert)
 	if err != nil {
 		return fmt.Errorf("error read ca cert %v", err)
 	}
 
-	adminCertByte, err := ioutil.ReadFile(a.Certs.AdminCert)
+	adminCertByte, err := os.ReadFile(a.Certs.AdminCert)
 	if err != nil {
 		return fmt.Errorf("error read admin cert %v", err)
 	}
 
-	adminCertKeyByte, err := ioutil.ReadFile(a.Certs.AdminCertKey)
+	adminCertKeyByte, err := os.ReadFile(a.Certs.AdminCertKey)
 	if err != nil {
 		return fmt.Errorf("error read admin cert key %v", err)
 	}

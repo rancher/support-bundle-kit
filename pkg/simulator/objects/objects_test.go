@@ -1,7 +1,6 @@
 package objects
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -11,7 +10,7 @@ import (
 
 // TestGenerateClusterScopedRuntimeObjects will test cluster scoped object generation from a sample support bundle
 func TestGenerateClusterScopedRuntimeObjects(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("/tmp", "objects-")
+	tmpDir, err := os.MkdirTemp("/tmp", "objects-")
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
@@ -33,7 +32,7 @@ func TestGenerateClusterScopedRuntimeObjects(t *testing.T) {
 
 // TestGenerateNamepsacedRuntimeObjects will test namespaced cluster objects.
 func TestGenerateNamespacedRuntimeObjects(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("/tmp", "objects-")
+	tmpDir, err := os.MkdirTemp("/tmp", "objects-")
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}

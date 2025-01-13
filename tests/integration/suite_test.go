@@ -2,7 +2,6 @@ package integration
 
 import (
 	"context"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -48,7 +47,7 @@ var _ = BeforeSuite(func(done Done) {
 
 	ctx, cancel = context.WithCancel(context.TODO())
 
-	dir, err = ioutil.TempDir("/tmp", "integration-")
+	dir, err = os.MkdirTemp("/tmp", "integration-")
 	Expect(err).ToNot(HaveOccurred())
 
 	// unzip support bundle contents

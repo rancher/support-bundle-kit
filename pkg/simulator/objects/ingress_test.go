@@ -1,7 +1,6 @@
 package objects
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -74,7 +73,7 @@ metadata:
 func Test_cleanupIngress(t *testing.T) {
 	assert := require.New(t)
 
-	tmpFile, err := ioutil.TempFile("/tmp", "ingress")
+	tmpFile, err := os.CreateTemp("/tmp", "ingress")
 	assert.NoError(err, "expected no error during creation of tmp ingress file")
 	defer os.Remove(tmpFile.Name())
 	_, err = tmpFile.Write([]byte(extensionsIngressSample))

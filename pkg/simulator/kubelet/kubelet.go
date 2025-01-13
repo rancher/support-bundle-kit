@@ -8,7 +8,6 @@ import (
 	"crypto/x509"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -103,7 +102,7 @@ func (k *KubeletSimulator) getContainerLogs(ctx context.Context, namespace, podN
 	if err != nil {
 		return nil, err
 	}
-	return ioutil.NopCloser(contents), nil
+	return io.NopCloser(contents), nil
 }
 
 func readLogFiles(path, namespace, name, container string, loadPrevious bool) (io.Reader, error) {
@@ -121,7 +120,7 @@ func readLogFiles(path, namespace, name, container string, loadPrevious bool) (i
 		return nil, err
 	}
 
-	content, err := ioutil.ReadFile(abs)
+	content, err := os.ReadFile(abs)
 	if err != nil {
 		return nil, err
 	}
@@ -197,7 +196,7 @@ func loadTLSConfig(ctx context.Context, certPath, keyPath, caPath string, allowU
 
 	if caPath != "" {
 		caPool = x509.NewCertPool()
-		pem, err := ioutil.ReadFile(caPath)
+		pem, err := os.ReadFile(caPath)
 		if err != nil {
 			return nil, err
 		}

@@ -1,7 +1,6 @@
 package objects
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -10,7 +9,7 @@ import (
 )
 
 func TestGenerateNodeZipList(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("/tmp", "zipfiles-")
+	tmpDir, err := os.MkdirTemp("/tmp", "zipfiles-")
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
@@ -36,7 +35,7 @@ func TestGenerateNodeZipList(t *testing.T) {
 }
 
 func TestGenerateNodeZipObjects(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("/tmp", "zipfiles-")
+	tmpDir, err := os.MkdirTemp("/tmp", "zipfiles-")
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}

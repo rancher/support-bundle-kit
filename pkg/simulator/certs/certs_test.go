@@ -2,13 +2,12 @@ package certs
 
 import (
 	"crypto/tls"
-	"io/ioutil"
 	"os"
 	"testing"
 )
 
 func TestGenerateCerts(t *testing.T) {
-	dir, err := ioutil.TempDir("/tmp", "cert-unit-test")
+	dir, err := os.MkdirTemp("/tmp", "cert-unit-test")
 	defer os.RemoveAll(dir)
 	if err != nil {
 		t.Fatal("error creating certificate in /tmp")

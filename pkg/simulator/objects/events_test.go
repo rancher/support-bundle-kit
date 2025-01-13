@@ -1,7 +1,6 @@
 package objects
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -19,7 +18,7 @@ const (
 )
 
 func TestCoreEvents(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("/tmp", "events-")
+	tmpDir, err := os.MkdirTemp("/tmp", "events-")
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
@@ -73,7 +72,7 @@ func TestCoreEvents(t *testing.T) {
 }
 
 func TestEvents(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("/tmp", "events-")
+	tmpDir, err := os.MkdirTemp("/tmp", "events-")
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
