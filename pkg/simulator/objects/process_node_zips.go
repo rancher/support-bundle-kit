@@ -3,7 +3,7 @@ package objects
 import (
 	"archive/zip"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -239,7 +239,7 @@ func ReadContent(f *zip.File) ([]byte, error) {
 		return nil, fmt.Errorf("error reading file %s: %v", f.Name, err)
 	}
 	defer zipReader.Close()
-	contentBytes, err := ioutil.ReadAll(zipReader)
+	contentBytes, err := io.ReadAll(zipReader)
 	return contentBytes, err
 }
 

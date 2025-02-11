@@ -1,6 +1,6 @@
 module github.com/rancher/support-bundle-kit
 
-go 1.22
+go 1.23
 
 replace (
 	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go v3.2.1-0.20200107013213-dc14462fd587+incompatible

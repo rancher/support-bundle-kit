@@ -2,7 +2,6 @@ package apiserver
 
 import (
 	"context"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -14,7 +13,7 @@ import (
 
 func TestRunAPIServer(t *testing.T) {
 
-	dir, err := ioutil.TempDir("/tmp", "apiserver-")
+	dir, err := os.MkdirTemp("/tmp", "apiserver-")
 	defer os.RemoveAll(dir)
 	if err != nil {
 		t.Fatalf("error setting up temp directory for apiserver %v", err)

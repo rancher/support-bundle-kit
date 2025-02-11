@@ -1,15 +1,15 @@
 package objects
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 
-	"github.com/rancher/support-bundle-kit/pkg/utils"
 	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
+
+	"github.com/rancher/support-bundle-kit/pkg/utils"
 )
 
 const (
@@ -26,7 +26,7 @@ const (
 // TestParseDaemonSet will verify a sample Daemonset
 func TestParseDaemonSetObject(t *testing.T) {
 	// read our sample node-exporter daemonset in the samples directory
-	tmpDir, err := ioutil.TempDir("/tmp", "workload-")
+	tmpDir, err := os.MkdirTemp("/tmp", "workload-")
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
@@ -41,7 +41,7 @@ func TestParseDaemonSetObject(t *testing.T) {
 
 // TestParseReplicaSetObject will verify a sample Replicaset
 func TestParseReplicaSetObject(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("/tmp", "workload-")
+	tmpDir, err := os.MkdirTemp("/tmp", "workload-")
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
@@ -56,7 +56,7 @@ func TestParseReplicaSetObject(t *testing.T) {
 
 // TestParseStatefulSetObject will verify a sample StatefulSet
 func TestParseStatefulSetObject(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("/tmp", "workload-")
+	tmpDir, err := os.MkdirTemp("/tmp", "workload-")
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
@@ -71,7 +71,7 @@ func TestParseStatefulSetObject(t *testing.T) {
 
 // TestParseStatefulSetObject will verify a sample StatefulSet
 func TestParseDeploymentObject(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("/tmp", "workload-")
+	tmpDir, err := os.MkdirTemp("/tmp", "workload-")
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
@@ -85,7 +85,7 @@ func TestParseDeploymentObject(t *testing.T) {
 }
 
 func TestIngressObject(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("/tmp", "workload-")
+	tmpDir, err := os.MkdirTemp("/tmp", "workload-")
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
@@ -99,7 +99,7 @@ func TestIngressObject(t *testing.T) {
 }
 
 func TestSettings(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("/tmp", "workload-")
+	tmpDir, err := os.MkdirTemp("/tmp", "workload-")
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
@@ -175,7 +175,7 @@ func verifyTestWorkloads(t *testing.T, path string) {
 }
 
 func TestVerifyJob(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("/tmp", "workload-")
+	tmpDir, err := os.MkdirTemp("/tmp", "workload-")
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
@@ -216,7 +216,7 @@ func TestVerifyJob(t *testing.T) {
 }
 
 func TestVerifyNode(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("/tmp", "workload-")
+	tmpDir, err := os.MkdirTemp("/tmp", "workload-")
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}

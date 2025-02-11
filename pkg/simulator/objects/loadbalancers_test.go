@@ -1,7 +1,6 @@
 package objects
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -11,7 +10,7 @@ import (
 )
 
 func TestLoadBalancers(t *testing.T) {
-	tmpLoadBalancers, err := ioutil.TempFile("/tmp", "loadbalancers")
+	tmpLoadBalancers, err := os.CreateTemp("/tmp", "loadbalancers")
 	if err != nil {
 		t.Fatalf("error generate temp file for block devices yaml: %v", err)
 	}

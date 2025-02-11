@@ -1,7 +1,6 @@
 package objects
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -11,7 +10,7 @@ import (
 )
 
 func TestBlockDevices(t *testing.T) {
-	tmpBlockDevices, err := ioutil.TempFile("/tmp", "block-devices")
+	tmpBlockDevices, err := os.CreateTemp("/tmp", "block-devices")
 	if err != nil {
 		t.Fatalf("error generate temp file for block devices yaml: %v", err)
 	}

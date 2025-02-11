@@ -1,4 +1,4 @@
-FROM registry.suse.com/bci/golang:1.22
+FROM registry.suse.com/bci/golang:1.23
 
 ARG DAPPER_HOST_ARCH
 ENV ARCH $DAPPER_HOST_ARCH
@@ -8,7 +8,7 @@ ENV ARCH $DAPPER_HOST_ARCH
 RUN zypper -n install ca-certificates awk lsb-release rsync docker containerd
 
 ## install golangci
-RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "$(go env GOPATH)/bin" v1.55.2;
+RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "$(go env GOPATH)/bin" v1.63.4;
 
 # The docker version in dapper is too old to have buildx. Install it manually.
 RUN curl -sSfL https://github.com/docker/buildx/releases/download/v0.14.1/buildx-v0.14.1.linux-${ARCH} -o buildx-v0.14.1.linux-${ARCH} && \

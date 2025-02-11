@@ -2,18 +2,18 @@ package etcd
 
 import (
 	"context"
-	"io/ioutil"
 	"os"
 	"testing"
 	"time"
 
-	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
 	clientv3 "go.etcd.io/etcd/client/v3"
+
+	"github.com/rancher/support-bundle-kit/pkg/simulator/certs"
 )
 
 // TestRunEmbeddedEtcdWithoutCerts will run an embedded ETCD server without TLS and try to create and read a kv pair
 func TestRunEmbeddedEtcdWithoutCerts(t *testing.T) {
-	dir, err := ioutil.TempDir("/tmp", "etcd-")
+	dir, err := os.MkdirTemp("/tmp", "etcd-")
 	if err != nil {
 		t.Fatalf("error creating etcd temp directory %v", err)
 	}
@@ -65,7 +65,7 @@ func TestRunEmbeddedEtcdWithoutCerts(t *testing.T) {
 
 // TestRunEmbeddedEtcdWithoutCerts will run an embedded ETCD server with TLS and try to create and read a kv pair
 func TestRunEmbeddedEtcdWithCerts(t *testing.T) {
-	dir, err := ioutil.TempDir("/tmp", "etcd-")
+	dir, err := os.MkdirTemp("/tmp", "etcd-")
 	if err != nil {
 		t.Fatalf("error creating etcd temp directory %v", err)
 	}

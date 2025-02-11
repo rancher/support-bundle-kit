@@ -3,7 +3,6 @@ package objects
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -133,7 +132,7 @@ func GenerateNamespacedRuntimeObjects(path string) (nonpods []runtime.Object, po
 }
 
 func GenerateObjects(file string) (obj []runtime.Object, err error) {
-	content, err := ioutil.ReadFile(file)
+	content, err := os.ReadFile(file)
 	if err != nil {
 		return obj, err
 	}
