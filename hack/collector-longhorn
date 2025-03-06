@@ -11,6 +11,12 @@ function collect_proc_mounts(){
     cp ${HOST_PATH}/proc/mounts ./proc_mounts
 }
 
+function collect_multipath_config(){
+    if [ -f ${HOST_PATH}/etc/multipath.conf ]; then
+        cp ${HOST_PATH}/etc/multipath.conf .
+    fi
+}
+
 function collect_sysinfo(){
     cd ${BUNDLE_DIR}
     mkdir -p hostinfos
@@ -24,6 +30,7 @@ function collect_sysinfo(){
     cat ${HOST_PATH}/boot/config-$(uname -r) > kernel_config
 
     collect_proc_mounts
+    collect_multipath_config
 }
 
 function collect_dmesg(){
