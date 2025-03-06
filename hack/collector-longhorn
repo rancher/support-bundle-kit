@@ -7,6 +7,10 @@ BUNDLE_DIR=$2
 # RKE2: Logs for the kubelet are save in rke2 agent log folder
 RKE2_KUBELET_LOG_PATH=${HOST_PATH}/var/lib/rancher/rke2/agent/logs/kubelet.log
 
+function collect_proc_mounts(){
+    cp ${HOST_PATH}/proc/mounts ./proc_mounts
+}
+
 function collect_sysinfo(){
     cd ${BUNDLE_DIR}
     mkdir -p hostinfos
@@ -18,6 +22,8 @@ function collect_sysinfo(){
 
     # Boot Configuration
     cat ${HOST_PATH}/boot/config-$(uname -r) > kernel_config
+
+    collect_proc_mounts
 }
 
 function collect_dmesg(){
