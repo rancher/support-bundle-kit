@@ -11,8 +11,8 @@ fi
 LINKFLAGS="-X github.com/rancher/support-bundle-kit/cmd.AppVersion=$VERSION
            -X github.com/rancher/support-bundle-kit/cmd.GitCommit=$COMMIT"
 
-CGO_ENABLED=0 GOARCH=amd64 go build -ldflags "$LINKFLAGS $OTHER_LINKFLAGS" -o bin/support-bundle-kit-amd64
-CGO_ENABLED=0 GOARCH=arm64 go build -ldflags "$LINKFLAGS $OTHER_LINKFLAGS" -o bin/support-bundle-kit-arm64
+CGO_ENABLED=0 GOARCH=amd64 GO111MODULE=on go build -ldflags "$LINKFLAGS $OTHER_LINKFLAGS" -mod=vendor -o bin/support-bundle-kit-amd64
+CGO_ENABLED=0 GOARCH=arm64 GO111MODULE=on go build -ldflags "$LINKFLAGS $OTHER_LINKFLAGS" -mod=vendor -o bin/support-bundle-kit-arm64
 
 # non-go scripts
 cp hack/* bin
