@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"time"
 
+	humanize "github.com/dustin/go-humanize"
 	"go.etcd.io/etcd/server/v3/mvcc/buckets"
 	"go.uber.org/zap"
 )
@@ -40,6 +41,7 @@ func (s *store) scheduleCompaction(compactMainRev, prevCompactRev int64) (KeyVal
 	batchNum := s.cfg.CompactionBatchLimit
 	h := newKVHasher(prevCompactRev, compactMainRev, keep)
 	last := make([]byte, 8+1+8)
+
 	for {
 		var rev revision
 
@@ -57,17 +59,24 @@ func (s *store) scheduleCompaction(compactMainRev, prevCompactRev int64) (KeyVal
 			h.WriteKeyValue(keys[i], values[i])
 		}
 
-		if len(keys) < s.cfg.CompactionBatchLimit {
+		if len(keys) < batchNum {
+			// gofail: var compactBeforeSetFinishedCompact struct{}
 			rbytes := make([]byte, 8+1+8)
 			revToBytes(revision{main: compactMainRev}, rbytes)
 			tx.UnsafePut(buckets.Meta, finishedCompactKeyName, rbytes)
 			tx.Unlock()
+			// gofail: var compactAfterSetFinishedCompact struct{}
 			hash := h.Hash()
+			size, sizeInUse := s.b.Size(), s.b.SizeInUse()
 			s.lg.Info(
 				"finished scheduled compaction",
 				zap.Int64("compact-revision", compactMainRev),
 				zap.Duration("took", time.Since(totalStart)),
 				zap.Uint32("hash", hash.Hash),
+				zap.Int64("current-db-size-bytes", size),
+				zap.String("current-db-size", humanize.Bytes(uint64(size))),
+				zap.Int64("current-db-size-in-use-bytes", sizeInUse),
+				zap.String("current-db-size-in-use", humanize.Bytes(uint64(sizeInUse))),
 			)
 			return hash, nil
 		}
@@ -76,11 +85,13 @@ func (s *store) scheduleCompaction(compactMainRev, prevCompactRev int64) (KeyVal
 		revToBytes(revision{main: rev.main, sub: rev.sub + 1}, last)
 		tx.Unlock()
 		// Immediately commit the compaction deletes instead of letting them accumulate in the write buffer
+		// gofail: var compactBeforeCommitBatch struct{}
 		s.b.ForceCommit()
+		// gofail: var compactAfterCommitBatch struct{}
 		dbCompactionPauseMs.Observe(float64(time.Since(start) / time.Millisecond))
 
 		select {
-		case <-time.After(10 * time.Millisecond):
+		case <-time.After(s.cfg.CompactionSleepInterval):
 		case <-s.stopc:
 			return KeyValueHash{}, fmt.Errorf("interrupted due to stop signal")
 		}
