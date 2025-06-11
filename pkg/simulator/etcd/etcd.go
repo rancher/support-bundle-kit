@@ -39,10 +39,10 @@ func RunEmbeddedEtcd(ctx context.Context, path string, certs *certs.CertInfo) (*
 	if certs != nil {
 		scheme = "https"
 	}
-	cfg.LPUrls = []url.URL{{Scheme: scheme, Host: "localhost:" + PeerPort}}
-	cfg.APUrls = []url.URL{{Scheme: scheme, Host: "localhost:" + PeerPort}}
-	cfg.LCUrls = []url.URL{{Scheme: scheme, Host: "localhost:" + ClientPort}}
-	cfg.ACUrls = []url.URL{{Scheme: scheme, Host: "localhost:" + ClientPort}}
+	cfg.ListenPeerUrls = []url.URL{{Scheme: scheme, Host: "localhost:" + PeerPort}}
+	cfg.AdvertisePeerUrls = []url.URL{{Scheme: scheme, Host: "localhost:" + PeerPort}}
+	cfg.ListenClientUrls = []url.URL{{Scheme: scheme, Host: "localhost:" + ClientPort}}
+	cfg.AdvertiseClientUrls = []url.URL{{Scheme: scheme, Host: "localhost:" + ClientPort}}
 
 	cfg.InitialCluster = cfg.InitialClusterFromName(cfg.Name)
 
@@ -87,7 +87,7 @@ func RunEmbeddedEtcd(ctx context.Context, path string, certs *certs.CertInfo) (*
 	select {
 	case <-e.Server.ReadyNotify():
 		return &EtcdConfig{
-			Endpoints: []string{cfg.ACUrls[0].String()},
+			Endpoints: []string{cfg.AdvertiseClientUrls[0].String()},
 			TLS:       clientConfig,
 		}, nil
 	case <-time.After(60 * time.Second):
