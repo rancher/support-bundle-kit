@@ -35,7 +35,9 @@ import (
 	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/apiserver/pkg/authentication/request/headerrequest"
+	"k8s.io/apiserver/pkg/features"
 	"k8s.io/apiserver/pkg/server/dynamiccertificates"
+	utilfeature "k8s.io/apiserver/pkg/util/feature"
 	corev1informers "k8s.io/client-go/informers/core/v1"
 	"k8s.io/client-go/kubernetes"
 	corev1client "k8s.io/client-go/kubernetes/typed/core/v1"
@@ -61,7 +63,7 @@ type Controller struct {
 
 	// queue is where incoming work is placed to de-dup and to allow "easy" rate limited requeues on errors.
 	// we only ever place one entry in here, but it is keyed as usual: namespace/name
-	queue workqueue.RateLimitingInterface
+	queue workqueue.TypedRateLimitingInterface[string]
 
 	// kubeSystemConfigMapInformer is tracked so that we can start these on Run
 	kubeSystemConfigMapInformer cache.SharedIndexInformer
@@ -77,6 +79,8 @@ type ClusterAuthenticationInfo struct {
 
 	// RequestHeaderUsernameHeaders are the headers used by this kube-apiserver to determine username
 	RequestHeaderUsernameHeaders headerrequest.StringSliceProvider
+	// RequestHeaderUIDHeaders are the headers used by this kube-apiserver to determine UID
+	RequestHeaderUIDHeaders headerrequest.StringSliceProvider
 	// RequestHeaderGroupHeaders are the headers used by this kube-apiserver to determine groups
 	RequestHeaderGroupHeaders headerrequest.StringSliceProvider
 	// RequestHeaderExtraHeaderPrefixes are the headers used by this kube-apiserver to determine user.extra
@@ -94,11 +98,14 @@ func NewClusterAuthenticationTrustController(requiredAuthenticationData ClusterA
 	kubeSystemConfigMapInformer := corev1informers.NewConfigMapInformer(kubeClient, configMapNamespace, 12*time.Hour, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc})
 
 	c := &Controller{
-		requiredAuthenticationData:  requiredAuthenticationData,
-		configMapLister:             corev1listers.NewConfigMapLister(kubeSystemConfigMapInformer.GetIndexer()),
-		configMapClient:             kubeClient.CoreV1(),
-		namespaceClient:             kubeClient.CoreV1(),
-		queue:                       workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "cluster_authentication_trust_controller"),
+		requiredAuthenticationData: requiredAuthenticationData,
+		configMapLister:            corev1listers.NewConfigMapLister(kubeSystemConfigMapInformer.GetIndexer()),
+		configMapClient:            kubeClient.CoreV1(),
+		namespaceClient:            kubeClient.CoreV1(),
+		queue: workqueue.NewTypedRateLimitingQueueWithConfig(
+			workqueue.DefaultTypedControllerRateLimiter[string](),
+			workqueue.TypedRateLimitingQueueConfig[string]{Name: "cluster_authentication_trust_controller"},
+		),
 		preRunCaches:                []cache.InformerSynced{kubeSystemConfigMapInformer.HasSynced},
 		kubeSystemConfigMapInformer: kubeSystemConfigMapInformer,
 	}
@@ -119,9 +126,6 @@ func NewClusterAuthenticationTrustController(requiredAuthenticationData ClusterA
 			// we have a filter, so any time we're called, we may as well queue. We only ever check one configmap
 			// so we don't have to be choosy about our key.
 			AddFunc: func(obj interface{}) {
-				c.queue.Add(keyFn())
-			},
-			UpdateFunc: func(oldObj, newObj interface{}) {
 				c.queue.Add(keyFn())
 			},
 			DeleteFunc: func(obj interface{}) {
@@ -221,6 +225,7 @@ func combinedClusterAuthenticationInfo(lhs, rhs ClusterAuthenticationInfo) (Clus
 		RequestHeaderExtraHeaderPrefixes: combineUniqueStringSlices(lhs.RequestHeaderExtraHeaderPrefixes, rhs.RequestHeaderExtraHeaderPrefixes),
 		RequestHeaderGroupHeaders:        combineUniqueStringSlices(lhs.RequestHeaderGroupHeaders, rhs.RequestHeaderGroupHeaders),
 		RequestHeaderUsernameHeaders:     combineUniqueStringSlices(lhs.RequestHeaderUsernameHeaders, rhs.RequestHeaderUsernameHeaders),
+		RequestHeaderUIDHeaders:          combineUniqueStringSlices(lhs.RequestHeaderUIDHeaders, rhs.RequestHeaderUIDHeaders),
 	}
 
 	var err error
@@ -256,6 +261,13 @@ func getConfigMapDataFor(authenticationInfo ClusterAuthenticationInfo) (map[stri
 		if err != nil {
 			return nil, err
 		}
+		if utilfeature.DefaultFeatureGate.Enabled(features.RemoteRequestHeaderUID) && len(authenticationInfo.RequestHeaderUIDHeaders.Value()) > 0 {
+			data["requestheader-uid-headers"], err = jsonSerializeStringSlice(authenticationInfo.RequestHeaderUIDHeaders.Value())
+			if err != nil {
+				return nil, err
+			}
+		}
+
 		data["requestheader-group-headers"], err = jsonSerializeStringSlice(authenticationInfo.RequestHeaderGroupHeaders.Value())
 		if err != nil {
 			return nil, err
@@ -294,6 +306,13 @@ func getClusterAuthenticationInfoFor(data map[string]string) (ClusterAuthenticat
 	ret.RequestHeaderUsernameHeaders, err = jsonDeserializeStringSlice(data["requestheader-username-headers"])
 	if err != nil {
 		return ClusterAuthenticationInfo{}, err
+	}
+
+	if utilfeature.DefaultFeatureGate.Enabled(features.RemoteRequestHeaderUID) {
+		ret.RequestHeaderUIDHeaders, err = jsonDeserializeStringSlice(data["requestheader-uid-headers"])
+		if err != nil {
+			return ClusterAuthenticationInfo{}, err
+		}
 	}
 
 	if caBundle := data["requestheader-client-ca-file"]; len(caBundle) > 0 {

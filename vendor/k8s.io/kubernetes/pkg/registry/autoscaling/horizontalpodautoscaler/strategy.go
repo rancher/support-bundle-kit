@@ -73,15 +73,14 @@ func (autoscalerStrategy) PrepareForCreate(ctx context.Context, obj runtime.Obje
 	// create cannot set status
 	newHPA.Status = autoscaling.HorizontalPodAutoscalerStatus{}
 
-	if !utilfeature.DefaultFeatureGate.Enabled(features.HPAContainerMetrics) {
-		dropContainerMetricSources(newHPA.Spec.Metrics)
-	}
+	dropDisabledFields(newHPA, nil)
 }
 
 // Validate validates a new autoscaler.
 func (autoscalerStrategy) Validate(ctx context.Context, obj runtime.Object) field.ErrorList {
 	autoscaler := obj.(*autoscaling.HorizontalPodAutoscaler)
-	return validation.ValidateHorizontalPodAutoscaler(autoscaler)
+	opts := validationOptionsForHorizontalPodAutoscaler(autoscaler, nil)
+	return validation.ValidateHorizontalPodAutoscaler(autoscaler, opts)
 }
 
 // WarningsOnCreate returns warnings for the creation of the given object.
@@ -102,33 +101,18 @@ func (autoscalerStrategy) AllowCreateOnUpdate() bool {
 func (autoscalerStrategy) PrepareForUpdate(ctx context.Context, obj, old runtime.Object) {
 	newHPA := obj.(*autoscaling.HorizontalPodAutoscaler)
 	oldHPA := old.(*autoscaling.HorizontalPodAutoscaler)
-	if !utilfeature.DefaultFeatureGate.Enabled(features.HPAContainerMetrics) && !hasContainerMetricSources(oldHPA) {
-		dropContainerMetricSources(newHPA.Spec.Metrics)
-	}
 	// Update is not allowed to set status
 	newHPA.Status = oldHPA.Status
-}
 
-// dropContainerMetricSources ensures all container resource metric sources are nil
-func dropContainerMetricSources(metrics []autoscaling.MetricSpec) {
-	for i := range metrics {
-		metrics[i].ContainerResource = nil
-	}
-}
-
-// hasContainerMetricSources returns true if the hpa has any container resource metric sources
-func hasContainerMetricSources(hpa *autoscaling.HorizontalPodAutoscaler) bool {
-	for i := range hpa.Spec.Metrics {
-		if hpa.Spec.Metrics[i].ContainerResource != nil {
-			return true
-		}
-	}
-	return false
+	dropDisabledFields(newHPA, oldHPA)
 }
 
 // ValidateUpdate is the default update validation for an end user.
 func (autoscalerStrategy) ValidateUpdate(ctx context.Context, obj, old runtime.Object) field.ErrorList {
-	return validation.ValidateHorizontalPodAutoscalerUpdate(obj.(*autoscaling.HorizontalPodAutoscaler), old.(*autoscaling.HorizontalPodAutoscaler))
+	newHPA := obj.(*autoscaling.HorizontalPodAutoscaler)
+	oldHPA := old.(*autoscaling.HorizontalPodAutoscaler)
+	opts := validationOptionsForHorizontalPodAutoscaler(newHPA, oldHPA)
+	return validation.ValidateHorizontalPodAutoscalerUpdate(newHPA, oldHPA, opts)
 }
 
 // WarningsOnUpdate returns warnings for the given update.
@@ -182,4 +166,49 @@ func (autoscalerStatusStrategy) ValidateUpdate(ctx context.Context, obj, old run
 // WarningsOnUpdate returns warnings for the given update.
 func (autoscalerStatusStrategy) WarningsOnUpdate(ctx context.Context, obj, old runtime.Object) []string {
 	return nil
+}
+
+func validationOptionsForHorizontalPodAutoscaler(newHPA, oldHPA *autoscaling.HorizontalPodAutoscaler) validation.HorizontalPodAutoscalerSpecValidationOptions {
+	opts := validation.HorizontalPodAutoscalerSpecValidationOptions{
+		MinReplicasLowerBound: 1,
+	}
+
+	oldHasZeroMinReplicas := oldHPA != nil && (oldHPA.Spec.MinReplicas != nil && *oldHPA.Spec.MinReplicas == 0)
+	if utilfeature.DefaultFeatureGate.Enabled(features.HPAScaleToZero) || oldHasZeroMinReplicas {
+		opts.MinReplicasLowerBound = 0
+	}
+	return opts
+}
+
+// dropDisabledFields will drop any disabled fields that have not previously been
+// set on the old HPA. oldHPA is ignored if nil.
+func dropDisabledFields(newHPA, oldHPA *autoscaling.HorizontalPodAutoscaler) {
+	if utilfeature.DefaultFeatureGate.Enabled(features.HPAConfigurableTolerance) {
+		return
+	}
+	if toleranceInUse(oldHPA) {
+		return
+	}
+	newBehavior := newHPA.Spec.Behavior
+	if newBehavior == nil {
+		return
+	}
+
+	for _, sr := range []*autoscaling.HPAScalingRules{newBehavior.ScaleDown, newBehavior.ScaleUp} {
+		if sr != nil {
+			sr.Tolerance = nil
+		}
+	}
+}
+
+func toleranceInUse(hpa *autoscaling.HorizontalPodAutoscaler) bool {
+	if hpa == nil || hpa.Spec.Behavior == nil {
+		return false
+	}
+	for _, sr := range []*autoscaling.HPAScalingRules{hpa.Spec.Behavior.ScaleDown, hpa.Spec.Behavior.ScaleUp} {
+		if sr != nil && sr.Tolerance != nil {
+			return true
+		}
+	}
+	return false
 }

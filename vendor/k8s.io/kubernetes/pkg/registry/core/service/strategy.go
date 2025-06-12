@@ -18,11 +18,17 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"reflect"
 
+	"k8s.io/apimachinery/pkg/fields"
+	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/sets"
+	utilvalidation "k8s.io/apimachinery/pkg/util/validation"
 	"k8s.io/apimachinery/pkg/util/validation/field"
+	"k8s.io/apiserver/pkg/registry/generic"
+	pkgstorage "k8s.io/apiserver/pkg/storage"
 	"k8s.io/apiserver/pkg/storage/names"
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
@@ -120,7 +126,11 @@ func (svcStrategy) AllowUnconditionalUpdate() bool {
 //	    newSvc.Spec.MyFeature = nil
 //	}
 func dropServiceDisabledFields(newSvc *api.Service, oldSvc *api.Service) {
-
+	// Drop condition for TrafficDistribution field.
+	isTrafficDistributionInUse := (oldSvc != nil && oldSvc.Spec.TrafficDistribution != nil)
+	if !utilfeature.DefaultFeatureGate.Enabled(features.ServiceTrafficDistribution) && !isTrafficDistributionInUse {
+		newSvc.Spec.TrafficDistribution = nil
+	}
 }
 
 type serviceStatusStrategy struct {
@@ -159,7 +169,47 @@ func (serviceStatusStrategy) ValidateUpdate(ctx context.Context, obj, old runtim
 
 // WarningsOnUpdate returns warnings for the given update.
 func (serviceStatusStrategy) WarningsOnUpdate(ctx context.Context, obj, old runtime.Object) []string {
-	return nil
+	svc := obj.(*api.Service)
+	var warnings []string
+
+	if len(svc.Status.LoadBalancer.Ingress) > 0 {
+		fieldPath := field.NewPath("status", "loadBalancer", "ingress")
+		for i, ingress := range svc.Status.LoadBalancer.Ingress {
+			if len(ingress.IP) > 0 {
+				warnings = append(warnings, utilvalidation.GetWarningsForIP(fieldPath.Index(i), ingress.IP)...)
+			}
+		}
+	}
+
+	return warnings
+}
+
+// GetAttrs returns labels and fields of a given object for filtering purposes.
+func GetAttrs(obj runtime.Object) (labels.Set, fields.Set, error) {
+	service, ok := obj.(*api.Service)
+	if !ok {
+		return nil, nil, fmt.Errorf("not a service")
+	}
+	return service.Labels, SelectableFields(service), nil
+}
+
+// Matcher returns a selection predicate for a given label and field selector.
+func Matcher(label labels.Selector, field fields.Selector) pkgstorage.SelectionPredicate {
+	return pkgstorage.SelectionPredicate{
+		Label:    label,
+		Field:    field,
+		GetAttrs: GetAttrs,
+	}
+}
+
+// SelectableFields returns a field set that can be used for filter selection
+func SelectableFields(service *api.Service) fields.Set {
+	objectMetaFieldsSet := generic.ObjectMetaFieldsSet(&service.ObjectMeta, true)
+	serviceSpecificFieldsSet := fields.Set{
+		"spec.clusterIP": service.Spec.ClusterIP,
+		"spec.type":      string(service.Spec.Type),
+	}
+	return generic.MergeFieldsSets(objectMetaFieldsSet, serviceSpecificFieldsSet)
 }
 
 // dropServiceStatusDisabledFields drops fields that are not used if their associated feature gates

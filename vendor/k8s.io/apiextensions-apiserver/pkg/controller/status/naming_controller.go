@@ -58,10 +58,11 @@ type NamingConditionController struct {
 	// To allow injection for testing.
 	syncFn func(key string) error
 
-	queue workqueue.RateLimitingInterface
+	queue workqueue.TypedRateLimitingInterface[string]
 }
 
 func NewNamingConditionController(
+	logger klog.Logger,
 	crdInformer informers.CustomResourceDefinitionInformer,
 	crdClient client.CustomResourceDefinitionsGetter,
 ) *NamingConditionController {
@@ -69,17 +70,24 @@ func NewNamingConditionController(
 		crdClient: crdClient,
 		crdLister: crdInformer.Lister(),
 		crdSynced: crdInformer.Informer().HasSynced,
-		queue:     workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "crd_naming_condition_controller"),
+		queue: workqueue.NewTypedRateLimitingQueueWithConfig(
+			workqueue.DefaultTypedControllerRateLimiter[string](),
+			workqueue.TypedRateLimitingQueueConfig[string]{Name: "crd_naming_condition_controller"},
+		),
 	}
 
 	informerIndexer := crdInformer.Informer().GetIndexer()
-	c.crdMutationCache = cache.NewIntegerResourceVersionMutationCache(informerIndexer, informerIndexer, 60*time.Second, false)
+	c.crdMutationCache = cache.NewIntegerResourceVersionMutationCache(logger, informerIndexer, informerIndexer, 60*time.Second, false)
 
-	crdInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+	crdInformer.Informer().AddEventHandlerWithOptions(cache.ResourceEventHandlerFuncs{
 		AddFunc:    c.addCustomResourceDefinition,
 		UpdateFunc: c.updateCustomResourceDefinition,
 		DeleteFunc: c.deleteCustomResourceDefinition,
-	})
+	},
+		cache.HandlerOptions{
+			Logger: &logger,
+		},
+	)
 
 	c.syncFn = c.sync
 
@@ -314,7 +322,7 @@ func (c *NamingConditionController) processNextWorkItem() bool {
 	}
 	defer c.queue.Done(key)
 
-	err := c.syncFn(key.(string))
+	err := c.syncFn(key)
 	if err == nil {
 		c.queue.Forget(key)
 		return true

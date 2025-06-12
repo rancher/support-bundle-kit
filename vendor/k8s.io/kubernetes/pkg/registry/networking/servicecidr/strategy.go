@@ -19,6 +19,7 @@ package servicecidr
 import (
 	"context"
 
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 	"k8s.io/apiserver/pkg/registry/rest"
@@ -53,6 +54,12 @@ func (serviceCIDRStrategy) NamespaceScoped() bool {
 // and should not be modified by the user.
 func (serviceCIDRStrategy) GetResetFields() map[fieldpath.APIVersion]*fieldpath.Set {
 	fields := map[fieldpath.APIVersion]*fieldpath.Set{
+		"networking/v1": fieldpath.NewSet(
+			fieldpath.MakePathOrDie("status"),
+		),
+		"networking/v1beta1": fieldpath.NewSet(
+			fieldpath.MakePathOrDie("status"),
+		),
 		"networking/v1alpha1": fieldpath.NewSet(
 			fieldpath.MakePathOrDie("status"),
 		),
@@ -99,8 +106,7 @@ func (serviceCIDRStrategy) WarningsOnCreate(ctx context.Context, obj runtime.Obj
 func (serviceCIDRStrategy) ValidateUpdate(ctx context.Context, new, old runtime.Object) field.ErrorList {
 	newServiceCIDR := new.(*networking.ServiceCIDR)
 	oldServiceCIDR := old.(*networking.ServiceCIDR)
-	errList := validation.ValidateServiceCIDR(newServiceCIDR)
-	errList = append(errList, validation.ValidateServiceCIDRUpdate(newServiceCIDR, oldServiceCIDR)...)
+	errList := validation.ValidateServiceCIDRUpdate(newServiceCIDR, oldServiceCIDR)
 	return errList
 }
 
@@ -125,6 +131,12 @@ var StatusStrategy = serviceCIDRStatusStrategy{Strategy}
 // and should not be modified by the user.
 func (serviceCIDRStatusStrategy) GetResetFields() map[fieldpath.APIVersion]*fieldpath.Set {
 	fields := map[fieldpath.APIVersion]*fieldpath.Set{
+		"networking/v1": fieldpath.NewSet(
+			fieldpath.MakePathOrDie("spec"),
+		),
+		"networking/v1beta1": fieldpath.NewSet(
+			fieldpath.MakePathOrDie("spec"),
+		),
 		"networking/v1alpha1": fieldpath.NewSet(
 			fieldpath.MakePathOrDie("spec"),
 		),
@@ -138,6 +150,7 @@ func (serviceCIDRStatusStrategy) PrepareForUpdate(ctx context.Context, obj, old 
 	oldServiceCIDR := old.(*networking.ServiceCIDR)
 	// status changes are not allowed to update spec
 	newServiceCIDR.Spec = oldServiceCIDR.Spec
+	metav1.ResetObjectMetaForStatus(&newServiceCIDR.ObjectMeta, &oldServiceCIDR.ObjectMeta)
 }
 
 // ValidateUpdate is the default update validation for an end user updating status

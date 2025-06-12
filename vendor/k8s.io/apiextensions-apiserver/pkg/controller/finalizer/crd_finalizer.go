@@ -66,7 +66,7 @@ type CRDFinalizer struct {
 	// To allow injection for testing.
 	syncFn func(key string) error
 
-	queue workqueue.RateLimitingInterface
+	queue workqueue.TypedRateLimitingInterface[string]
 }
 
 // ListerCollectionDeleter combines rest.Lister and rest.CollectionDeleter.
@@ -93,7 +93,10 @@ func NewCRDFinalizer(
 		crdLister:      crdInformer.Lister(),
 		crdSynced:      crdInformer.Informer().HasSynced,
 		crClientGetter: crClientGetter,
-		queue:          workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "crd_finalizer"),
+		queue: workqueue.NewTypedRateLimitingQueueWithConfig(
+			workqueue.DefaultTypedControllerRateLimiter[string](),
+			workqueue.TypedRateLimitingQueueConfig[string]{Name: "crd_finalizer"},
+		),
 	}
 
 	crdInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
@@ -232,7 +235,7 @@ func (c *CRDFinalizer) deleteInstances(crd *apiextensionsv1.CustomResourceDefini
 	// now we need to wait until all the resources are deleted.  Start with a simple poll before we do anything fancy.
 	// TODO not all servers are synchronized on caches.  It is possible for a stale one to still be creating things.
 	// Once we have a mechanism for servers to indicate their states, we should check that for concurrence.
-	err = wait.PollImmediate(5*time.Second, 1*time.Minute, func() (bool, error) {
+	err = wait.PollUntilContextTimeout(ctx, 5*time.Second, 1*time.Minute, true, func(ctx context.Context) (bool, error) {
 		listObj, err := crClient.List(ctx, nil)
 		if err != nil {
 			return false, err
@@ -290,7 +293,7 @@ func (c *CRDFinalizer) processNextWorkItem() bool {
 	}
 	defer c.queue.Done(key)
 
-	err := c.syncFn(key.(string))
+	err := c.syncFn(key)
 	if err == nil {
 		c.queue.Forget(key)
 		return true

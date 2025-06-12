@@ -22,6 +22,7 @@ import (
 	"strings"
 	"time"
 
+	v1 "k8s.io/api/core/v1"
 	utilnet "k8s.io/apimachinery/pkg/util/net"
 	cliflag "k8s.io/component-base/cli/flag"
 
@@ -37,7 +38,6 @@ import (
 // ServerRunOptions runs a kubernetes api server.
 type ServerRunOptions struct {
 	*controlplaneapiserver.Options // embedded to avoid noise in existing consumers
-	CloudProvider                  *kubeoptions.CloudProviderOptions
 
 	Extra
 }
@@ -62,11 +62,10 @@ type Extra struct {
 	MasterCount int
 }
 
-// NewServerRunOptions creates a new ServerRunOptions object with default parameters
+// NewServerRunOptions creates and returns ServerRunOptions according to the given featureGate and effectiveVersion of the server binary to run.
 func NewServerRunOptions() *ServerRunOptions {
 	s := ServerRunOptions{
-		Options:       controlplaneapiserver.NewOptions(),
-		CloudProvider: kubeoptions.NewCloudProviderOptions(),
+		Options: controlplaneapiserver.NewOptions(),
 
 		Extra: Extra{
 			EndpointReconcilerType: string(reconcilers.LeaseEndpointReconcilerType),
@@ -92,13 +91,14 @@ func NewServerRunOptions() *ServerRunOptions {
 		},
 	}
 
+	s.Options.SystemNamespaces = append(s.Options.SystemNamespaces, v1.NamespaceNodeLease)
+
 	return &s
 }
 
 // Flags returns flags for a specific APIServer by section name
 func (s *ServerRunOptions) Flags() (fss cliflag.NamedFlagSets) {
 	s.Options.AddFlags(&fss)
-	s.CloudProvider.AddFlags(fss.FlagSet("cloud provider"))
 
 	// Note: the weird ""+ in below lines seems to be the only way to get gofmt to
 	// arrange these text blocks sensibly. Grrr.

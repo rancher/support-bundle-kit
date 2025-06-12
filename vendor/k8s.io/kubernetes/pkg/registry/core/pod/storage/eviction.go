@@ -30,17 +30,18 @@ import (
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/apimachinery/pkg/util/validation/field"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/apiserver/pkg/registry/rest"
 	"k8s.io/apiserver/pkg/util/dryrun"
-	"k8s.io/apiserver/pkg/util/feature"
 	policyclient "k8s.io/client-go/kubernetes/typed/policy/v1"
 	"k8s.io/client-go/util/retry"
 	pdbhelper "k8s.io/component-helpers/apps/poddisruptionbudget"
 	podutil "k8s.io/kubernetes/pkg/api/pod"
 	api "k8s.io/kubernetes/pkg/apis/core"
 	"k8s.io/kubernetes/pkg/apis/policy"
-	"k8s.io/kubernetes/pkg/features"
+
+	"k8s.io/utils/ptr"
 )
 
 const (
@@ -133,6 +134,13 @@ func (r *EvictionREST) Create(ctx context.Context, name string, obj runtime.Obje
 
 	if name != eviction.Name {
 		return nil, errors.NewBadRequest("name in URL does not match name in Eviction object")
+	}
+
+	if eviction.DeleteOptions != nil && ptr.Deref(eviction.DeleteOptions.IgnoreStoreReadErrorWithClusterBreakingPotential, false) {
+		errs := field.ErrorList{
+			field.Invalid(field.NewPath("deleteOptions").Child("ignoreStoreReadErrorWithClusterBreakingPotential"), true, "can not be set for pod eviction, try after removing the option"),
+		}
+		return nil, errors.NewInvalid(v1Eviction.GroupKind(), name, errs)
 	}
 
 	originalDeleteOptions, err := propagateDryRun(eviction, options)
@@ -230,12 +238,10 @@ func (r *EvictionREST) Create(ctx context.Context, name string, obj runtime.Obje
 		// IsPodReady is the current implementation of IsHealthy
 		// If the pod is healthy, it should be guarded by the PDB.
 		if !podutil.IsPodReady(pod) {
-			if feature.DefaultFeatureGate.Enabled(features.PDBUnhealthyPodEvictionPolicy) {
-				if pdb.Spec.UnhealthyPodEvictionPolicy != nil && *pdb.Spec.UnhealthyPodEvictionPolicy == policyv1.AlwaysAllow {
-					// Delete the unhealthy pod, it doesn't count towards currentHealthy and desiredHealthy and we should not decrement disruptionsAllowed.
-					updateDeletionOptions = true
-					return nil
-				}
+			if pdb.Spec.UnhealthyPodEvictionPolicy != nil && *pdb.Spec.UnhealthyPodEvictionPolicy == policyv1.AlwaysAllow {
+				// Delete the unhealthy pod, it doesn't count towards currentHealthy and desiredHealthy and we should not decrement disruptionsAllowed.
+				updateDeletionOptions = true
+				return nil
 			}
 			// default nil and IfHealthyBudget policy
 			if pdb.Status.CurrentHealthy >= pdb.Status.DesiredHealthy && pdb.Status.DesiredHealthy > 0 {
@@ -309,7 +315,7 @@ func (r *EvictionREST) Create(ctx context.Context, name string, obj runtime.Obje
 }
 
 func addConditionAndDeletePod(r *EvictionREST, ctx context.Context, name string, validation rest.ValidateObjectFunc, options *metav1.DeleteOptions) error {
-	if !dryrun.IsDryRun(options.DryRun) && feature.DefaultFeatureGate.Enabled(features.PodDisruptionConditions) {
+	if !dryrun.IsDryRun(options.DryRun) {
 		getLatestPod := func(_ context.Context, _, oldObj runtime.Object) (runtime.Object, error) {
 			// Throwaway the newObj. We care only about the latest pod obtained from etcd (oldObj).
 			// So we can add DisruptionTarget condition in conditionAppender without conflicts.

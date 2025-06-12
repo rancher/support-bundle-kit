@@ -22,7 +22,7 @@ import (
 	"encoding/pem"
 	"fmt"
 
-	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp" //nolint:depguard
 	v1 "k8s.io/api/core/v1"
 	apiequality "k8s.io/apimachinery/pkg/api/equality"
 	"k8s.io/apimachinery/pkg/util/sets"
@@ -509,7 +509,7 @@ func validateTrustBundle(path *field.Path, in string) field.ErrorList {
 	var allErrors field.ErrorList
 
 	if len(in) > certificates.MaxTrustBundleSize {
-		allErrors = append(allErrors, field.TooLong(path, fmt.Sprintf("<value omitted, len %d>", len(in)), certificates.MaxTrustBundleSize))
+		allErrors = append(allErrors, field.TooLong(path, "" /*unused*/, certificates.MaxTrustBundleSize))
 		return allErrors
 	}
 
