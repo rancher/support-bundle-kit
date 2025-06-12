@@ -17,13 +17,15 @@ limitations under the License.
 package apiserver
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"sort"
 	"time"
 
 	"k8s.io/klog/v2"
 
-	apidiscoveryv2beta1 "k8s.io/api/apidiscovery/v2beta1"
+	apidiscoveryv2 "k8s.io/api/apidiscovery/v2"
 	autoscaling "k8s.io/api/autoscaling/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
@@ -53,7 +55,7 @@ type DiscoveryController struct {
 	// To allow injection for testing.
 	syncFn func(version schema.GroupVersion) error
 
-	queue workqueue.RateLimitingInterface
+	queue workqueue.TypedRateLimitingInterface[schema.GroupVersion]
 }
 
 func NewDiscoveryController(
@@ -69,7 +71,10 @@ func NewDiscoveryController(
 		crdLister:       crdInformer.Lister(),
 		crdsSynced:      crdInformer.Informer().HasSynced,
 
-		queue: workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "DiscoveryController"),
+		queue: workqueue.NewTypedRateLimitingQueueWithConfig(
+			workqueue.DefaultTypedControllerRateLimiter[schema.GroupVersion](),
+			workqueue.TypedRateLimitingQueueConfig[schema.GroupVersion]{Name: "DiscoveryController"},
+		),
 	}
 
 	crdInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
@@ -87,7 +92,7 @@ func (c *DiscoveryController) sync(version schema.GroupVersion) error {
 
 	apiVersionsForDiscovery := []metav1.GroupVersionForDiscovery{}
 	apiResourcesForDiscovery := []metav1.APIResource{}
-	aggregatedApiResourcesForDiscovery := []apidiscoveryv2beta1.APIResourceDiscovery{}
+	aggregatedAPIResourcesForDiscovery := []apidiscoveryv2.APIResourceDiscovery{}
 	versionsForDiscoveryMap := map[metav1.GroupVersion]bool{}
 
 	crds, err := c.crdLister.List(labels.Everything())
@@ -158,13 +163,13 @@ func (c *DiscoveryController) sync(version schema.GroupVersion) error {
 		}
 
 		if c.resourceManager != nil {
-			var scope apidiscoveryv2beta1.ResourceScope
+			var scope apidiscoveryv2.ResourceScope
 			if crd.Spec.Scope == apiextensionsv1.NamespaceScoped {
-				scope = apidiscoveryv2beta1.ScopeNamespace
+				scope = apidiscoveryv2.ScopeNamespace
 			} else {
-				scope = apidiscoveryv2beta1.ScopeCluster
+				scope = apidiscoveryv2.ScopeCluster
 			}
-			apiResourceDiscovery := apidiscoveryv2beta1.APIResourceDiscovery{
+			apiResourceDiscovery := apidiscoveryv2.APIResourceDiscovery{
 				Resource:         crd.Status.AcceptedNames.Plural,
 				SingularResource: crd.Status.AcceptedNames.Singular,
 				Scope:            scope,
@@ -178,7 +183,7 @@ func (c *DiscoveryController) sync(version schema.GroupVersion) error {
 				Categories: crd.Status.AcceptedNames.Categories,
 			}
 			if subresources != nil && subresources.Status != nil {
-				apiResourceDiscovery.Subresources = append(apiResourceDiscovery.Subresources, apidiscoveryv2beta1.APISubresourceDiscovery{
+				apiResourceDiscovery.Subresources = append(apiResourceDiscovery.Subresources, apidiscoveryv2.APISubresourceDiscovery{
 					Subresource: "status",
 					ResponseKind: &metav1.GroupVersionKind{
 						Group:   version.Group,
@@ -189,7 +194,7 @@ func (c *DiscoveryController) sync(version schema.GroupVersion) error {
 				})
 			}
 			if subresources != nil && subresources.Scale != nil {
-				apiResourceDiscovery.Subresources = append(apiResourceDiscovery.Subresources, apidiscoveryv2beta1.APISubresourceDiscovery{
+				apiResourceDiscovery.Subresources = append(apiResourceDiscovery.Subresources, apidiscoveryv2.APISubresourceDiscovery{
 					Subresource: "scale",
 					ResponseKind: &metav1.GroupVersionKind{
 						Group:   autoscaling.GroupName,
@@ -200,7 +205,7 @@ func (c *DiscoveryController) sync(version schema.GroupVersion) error {
 				})
 
 			}
-			aggregatedApiResourcesForDiscovery = append(aggregatedApiResourcesForDiscovery, apiResourceDiscovery)
+			aggregatedAPIResourcesForDiscovery = append(aggregatedAPIResourcesForDiscovery, apiResourceDiscovery)
 		}
 
 		if subresources != nil && subresources.Status != nil {
@@ -260,14 +265,14 @@ func (c *DiscoveryController) sync(version schema.GroupVersion) error {
 		return apiResourcesForDiscovery
 	})))
 
-	sort.Slice(aggregatedApiResourcesForDiscovery[:], func(i, j int) bool {
-		return aggregatedApiResourcesForDiscovery[i].Resource < aggregatedApiResourcesForDiscovery[j].Resource
+	sort.Slice(aggregatedAPIResourcesForDiscovery, func(i, j int) bool {
+		return aggregatedAPIResourcesForDiscovery[i].Resource < aggregatedAPIResourcesForDiscovery[j].Resource
 	})
 	if c.resourceManager != nil {
-		c.resourceManager.AddGroupVersion(version.Group, apidiscoveryv2beta1.APIVersionDiscovery{
-			Freshness: apidiscoveryv2beta1.DiscoveryFreshnessCurrent,
+		c.resourceManager.AddGroupVersion(version.Group, apidiscoveryv2.APIVersionDiscovery{
+			Freshness: apidiscoveryv2.DiscoveryFreshnessCurrent,
 			Version:   version.Version,
-			Resources: aggregatedApiResourcesForDiscovery,
+			Resources: aggregatedAPIResourcesForDiscovery,
 		})
 		// Default priority for CRDs
 		c.resourceManager.SetGroupVersionPriority(metav1.GroupVersion(version), 1000, 100)
@@ -294,7 +299,7 @@ func (c *DiscoveryController) Run(stopCh <-chan struct{}, synchedCh chan<- struc
 	}
 
 	// initially sync all group versions to make sure we serve complete discovery
-	if err := wait.PollImmediateUntil(time.Second, func() (bool, error) {
+	if err := wait.PollUntilContextCancel(context.Background(), time.Second, true, func(ctx context.Context) (bool, error) {
 		crds, err := c.crdLister.List(labels.Everything())
 		if err != nil {
 			utilruntime.HandleError(fmt.Errorf("failed to initially list CRDs: %v", err))
@@ -310,11 +315,13 @@ func (c *DiscoveryController) Run(stopCh <-chan struct{}, synchedCh chan<- struc
 			}
 		}
 		return true, nil
-	}, stopCh); err == wait.ErrWaitTimeout {
-		utilruntime.HandleError(fmt.Errorf("timed out waiting for discovery endpoint to initialize"))
+	}); err != nil {
+		if errors.Is(err, context.DeadlineExceeded) {
+			utilruntime.HandleError(fmt.Errorf("timed out waiting for initial discovery sync"))
+			return
+		}
+		utilruntime.HandleError(fmt.Errorf("unexpected error: %w", err))
 		return
-	} else if err != nil {
-		panic(fmt.Errorf("unexpected error: %v", err))
 	}
 	close(synchedCh)
 
@@ -337,7 +344,7 @@ func (c *DiscoveryController) processNextWorkItem() bool {
 	}
 	defer c.queue.Done(key)
 
-	err := c.syncFn(key.(schema.GroupVersion))
+	err := c.syncFn(key)
 	if err == nil {
 		c.queue.Forget(key)
 		return true

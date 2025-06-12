@@ -18,6 +18,7 @@ package validation
 
 import (
 	"fmt"
+	"math"
 	"reflect"
 	"strings"
 	"time"
@@ -26,6 +27,7 @@ import (
 	apimachineryvalidation "k8s.io/apimachinery/pkg/api/validation"
 	metav1validation "k8s.io/apimachinery/pkg/apis/meta/v1/validation"
 	"k8s.io/apimachinery/pkg/util/sets"
+	"k8s.io/apimachinery/pkg/util/validation"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
 	api "k8s.io/kubernetes/pkg/apis/core"
@@ -100,7 +102,7 @@ func validateParameters(params map[string]string, allowEmpty bool, fldPath *fiel
 	allErrs := field.ErrorList{}
 
 	if len(params) > maxProvisionerParameterLen {
-		allErrs = append(allErrs, field.TooLong(fldPath, "Provisioner Parameters exceeded max allowed", maxProvisionerParameterLen))
+		allErrs = append(allErrs, field.TooLong(fldPath, "" /*unused*/, maxProvisionerParameterLen))
 		return allErrs
 	}
 
@@ -112,7 +114,7 @@ func validateParameters(params map[string]string, allowEmpty bool, fldPath *fiel
 	}
 
 	if totalSize > maxProvisionerParameterSize {
-		allErrs = append(allErrs, field.TooLong(fldPath, "", maxProvisionerParameterSize))
+		allErrs = append(allErrs, field.TooLong(fldPath, "" /*unused*/, maxProvisionerParameterSize))
 	}
 
 	if !allowEmpty && len(params) == 0 {
@@ -223,7 +225,7 @@ func validateAttachmentMetadata(metadata map[string]string, fldPath *field.Path)
 		size += (int64)(len(k)) + (int64)(len(v))
 	}
 	if size > maxAttachedVolumeMetadataSize {
-		allErrs = append(allErrs, field.TooLong(fldPath, metadata, maxAttachedVolumeMetadataSize))
+		allErrs = append(allErrs, field.TooLong(fldPath, "" /*unused*/, maxAttachedVolumeMetadataSize))
 	}
 	return allErrs
 }
@@ -235,7 +237,14 @@ func validateVolumeError(e *storage.VolumeError, fldPath *field.Path) field.Erro
 		return allErrs
 	}
 	if len(e.Message) > maxVolumeErrorMessageSize {
-		allErrs = append(allErrs, field.TooLong(fldPath.Child("message"), e.Message, maxAttachedVolumeMetadataSize))
+		allErrs = append(allErrs, field.TooLong(fldPath.Child("message"), "" /*unused*/, maxAttachedVolumeMetadataSize))
+	}
+
+	if e.ErrorCode != nil {
+		value := *e.ErrorCode
+		if value < 0 {
+			allErrs = append(allErrs, field.Invalid(fldPath.Child("errorCode"), value, validation.InclusiveRangeError(0, math.MaxInt32)))
+		}
 	}
 	return allErrs
 }
@@ -304,17 +313,28 @@ func ValidateCSINode(csiNode *storage.CSINode, validationOpts CSINodeValidationO
 func ValidateCSINodeUpdate(new, old *storage.CSINode, validationOpts CSINodeValidationOptions) field.ErrorList {
 	allErrs := ValidateCSINode(new, validationOpts)
 
-	// Validate modifying fields inside an existing CSINodeDriver entry is not allowed
+	// Validate modifying fields inside an existing CSINodeDriver entry
 	for _, oldDriver := range old.Spec.Drivers {
 		for _, newDriver := range new.Spec.Drivers {
 			if oldDriver.Name == newDriver.Name {
-				if !apiequality.Semantic.DeepEqual(oldDriver, newDriver) {
-					allErrs = append(allErrs, field.Invalid(field.NewPath("CSINodeDriver"), newDriver, "field is immutable"))
+				// If MutableCSINodeAllocatableCount feature gate is enabled, compare drivers without the Allocatable field
+				if utilfeature.DefaultFeatureGate.Enabled(features.MutableCSINodeAllocatableCount) {
+					oldDriverCopy := oldDriver.DeepCopy()
+					newDriverCopy := newDriver.DeepCopy()
+					oldDriverCopy.Allocatable = nil // +k8s:verify-mutation:reason=clone
+					newDriverCopy.Allocatable = nil // +k8s:verify-mutation:reason=clone
+
+					allErrs = append(allErrs,
+						apivalidation.ValidateImmutableField(newDriverCopy, oldDriverCopy, field.NewPath("spec").Child("drivers"))...,
+					)
+				} else {
+					allErrs = append(allErrs,
+						apivalidation.ValidateImmutableField(newDriver, oldDriver, field.NewPath("spec").Child("drivers"))...,
+					)
 				}
 			}
 		}
 	}
-
 	return allErrs
 }
 
@@ -418,11 +438,8 @@ func ValidateCSIDriverUpdate(new, old *storage.CSIDriver) field.ErrorList {
 
 	// immutable fields should not be mutated.
 	allErrs = append(allErrs, apimachineryvalidation.ValidateImmutableField(new.Spec.AttachRequired, old.Spec.AttachRequired, field.NewPath("spec", "attachedRequired"))...)
-	allErrs = append(allErrs, apimachineryvalidation.ValidateImmutableField(new.Spec.FSGroupPolicy, old.Spec.FSGroupPolicy, field.NewPath("spec", "fsGroupPolicy"))...)
-	allErrs = append(allErrs, apimachineryvalidation.ValidateImmutableField(new.Spec.PodInfoOnMount, old.Spec.PodInfoOnMount, field.NewPath("spec", "podInfoOnMount"))...)
 	allErrs = append(allErrs, apimachineryvalidation.ValidateImmutableField(new.Spec.VolumeLifecycleModes, old.Spec.VolumeLifecycleModes, field.NewPath("spec", "volumeLifecycleModes"))...)
 
-	allErrs = append(allErrs, validateTokenRequests(new.Spec.TokenRequests, field.NewPath("spec", "tokenRequests"))...)
 	return allErrs
 }
 
@@ -438,6 +455,16 @@ func validateCSIDriverSpec(
 	allErrs = append(allErrs, validateTokenRequests(spec.TokenRequests, fldPath.Child("tokenRequests"))...)
 	allErrs = append(allErrs, validateVolumeLifecycleModes(spec.VolumeLifecycleModes, fldPath.Child("volumeLifecycleModes"))...)
 	allErrs = append(allErrs, validateSELinuxMount(spec.SELinuxMount, fldPath.Child("seLinuxMount"))...)
+	allErrs = append(allErrs, validateNodeAllocatableUpdatePeriodSeconds(spec.NodeAllocatableUpdatePeriodSeconds, fldPath.Child("nodeAllocatableUpdatePeriodSeconds"))...)
+	return allErrs
+}
+
+// validateNodeAllocatableUpdatePeriodSeconds tests if NodeAllocatableUpdatePeriodSeconds is valid for CSIDriver.
+func validateNodeAllocatableUpdatePeriodSeconds(period *int64, fldPath *field.Path) field.ErrorList {
+	allErrs := field.ErrorList{}
+	if period != nil && *period < 10 {
+		allErrs = append(allErrs, field.Invalid(fldPath, *period, "must be greater than or equal to 10 seconds"))
+	}
 	return allErrs
 }
 
@@ -600,5 +627,6 @@ func ValidateVolumeAttributesClassUpdate(volumeAttributesClass, oldVolumeAttribu
 	if !reflect.DeepEqual(oldVolumeAttributesClass.Parameters, volumeAttributesClass.Parameters) {
 		allErrs = append(allErrs, field.Forbidden(field.NewPath("parameters"), "updates to parameters are forbidden."))
 	}
+	allErrs = append(allErrs, ValidateVolumeAttributesClass(volumeAttributesClass)...)
 	return allErrs
 }

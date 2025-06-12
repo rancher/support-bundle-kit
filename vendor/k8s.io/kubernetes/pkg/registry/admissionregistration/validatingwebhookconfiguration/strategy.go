@@ -46,8 +46,6 @@ func (validatingWebhookConfigurationStrategy) NamespaceScoped() bool {
 func (validatingWebhookConfigurationStrategy) PrepareForCreate(ctx context.Context, obj runtime.Object) {
 	ic := obj.(*admissionregistration.ValidatingWebhookConfiguration)
 	ic.Generation = 1
-
-	admissionregistration.DropDisabledValidatingWebhookConfigurationFields(ic, nil)
 }
 
 // PrepareForUpdate clears fields that are not allowed to be set by end users on update.
@@ -55,7 +53,6 @@ func (validatingWebhookConfigurationStrategy) PrepareForUpdate(ctx context.Conte
 	newIC := obj.(*admissionregistration.ValidatingWebhookConfiguration)
 	oldIC := old.(*admissionregistration.ValidatingWebhookConfiguration)
 
-	admissionregistration.DropDisabledValidatingWebhookConfigurationFields(newIC, oldIC)
 	// Any changes to the spec increment the generation number, any changes to the
 	// status should reflect the generation number of the corresponding object.
 	// See metav1.ObjectMeta description for more information on Generation.
@@ -78,7 +75,7 @@ func (validatingWebhookConfigurationStrategy) WarningsOnCreate(ctx context.Conte
 func (validatingWebhookConfigurationStrategy) Canonicalize(obj runtime.Object) {
 }
 
-// AllowCreateOnUpdate is true for validatingWebhookConfiguration; this means you may create one with a PUT request.
+// AllowCreateOnUpdate is false for validatingWebhookConfiguration; this means you may not create one with a PUT request.
 func (validatingWebhookConfigurationStrategy) AllowCreateOnUpdate() bool {
 	return false
 }

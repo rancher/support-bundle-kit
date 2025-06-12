@@ -50,6 +50,9 @@ func (csiDriverStrategy) PrepareForCreate(ctx context.Context, obj runtime.Objec
 	if !utilfeature.DefaultFeatureGate.Enabled(features.SELinuxMountReadWriteOncePod) {
 		csiDriver.Spec.SELinuxMount = nil
 	}
+	if !utilfeature.DefaultFeatureGate.Enabled(features.MutableCSINodeAllocatableCount) {
+		csiDriver.Spec.NodeAllocatableUpdatePeriodSeconds = nil
+	}
 }
 
 func (csiDriverStrategy) Validate(ctx context.Context, obj runtime.Object) field.ErrorList {
@@ -83,10 +86,13 @@ func (csiDriverStrategy) PrepareForUpdate(ctx context.Context, obj, old runtime.
 		newCSIDriver.Spec.SELinuxMount = nil
 	}
 
-	// Any changes to the mutable fields increment the generation number.
-	if !apiequality.Semantic.DeepEqual(oldCSIDriver.Spec.TokenRequests, newCSIDriver.Spec.TokenRequests) ||
-		!apiequality.Semantic.DeepEqual(oldCSIDriver.Spec.RequiresRepublish, newCSIDriver.Spec.RequiresRepublish) ||
-		!apiequality.Semantic.DeepEqual(oldCSIDriver.Spec.SELinuxMount, newCSIDriver.Spec.SELinuxMount) {
+	if oldCSIDriver.Spec.NodeAllocatableUpdatePeriodSeconds == nil &&
+		!utilfeature.DefaultFeatureGate.Enabled(features.MutableCSINodeAllocatableCount) {
+		newCSIDriver.Spec.NodeAllocatableUpdatePeriodSeconds = nil
+	}
+
+	// Any changes to the spec increment the generation number.
+	if !apiequality.Semantic.DeepEqual(oldCSIDriver.Spec, newCSIDriver.Spec) {
 		newCSIDriver.Generation = oldCSIDriver.Generation + 1
 	}
 }

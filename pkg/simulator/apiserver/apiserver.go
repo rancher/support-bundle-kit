@@ -72,7 +72,7 @@ func (a *APIServerConfig) RunAPIServer(ctx context.Context, serviceClusterIP str
 	s.Authentication.ClientCert.ClientCA = a.Certs.CACert
 	s.EventTTL = time.Duration(90 * 24 * time.Hour) // 90 days
 
-	completedOptions, err := s.Complete()
+	completedOptions, err := s.Complete(ctx)
 	if err != nil {
 		return err
 	}
@@ -86,7 +86,7 @@ func (a *APIServerConfig) RunAPIServer(ctx context.Context, serviceClusterIP str
 		genericapiserver.RequestShutdown()
 	}()
 
-	return app.Run(completedOptions, genericapiserver.SetupSignalHandler())
+	return app.Run(ctx, completedOptions)
 }
 
 // GenerateKubeConfig will generate KubeConfig to allow access to cluster

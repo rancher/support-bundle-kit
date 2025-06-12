@@ -46,8 +46,6 @@ func (mutatingWebhookConfigurationStrategy) NamespaceScoped() bool {
 func (mutatingWebhookConfigurationStrategy) PrepareForCreate(ctx context.Context, obj runtime.Object) {
 	ic := obj.(*admissionregistration.MutatingWebhookConfiguration)
 	ic.Generation = 1
-
-	admissionregistration.DropDisabledMutatingWebhookConfigurationFields(ic, nil)
 }
 
 // WarningsOnCreate returns warnings for the creation of the given object.
@@ -60,7 +58,6 @@ func (mutatingWebhookConfigurationStrategy) PrepareForUpdate(ctx context.Context
 	newIC := obj.(*admissionregistration.MutatingWebhookConfiguration)
 	oldIC := old.(*admissionregistration.MutatingWebhookConfiguration)
 
-	admissionregistration.DropDisabledMutatingWebhookConfigurationFields(newIC, oldIC)
 	// Any changes to the spec increment the generation number, any changes to the
 	// status should reflect the generation number of the corresponding object.
 	// See metav1.ObjectMeta description for more information on Generation.
@@ -79,7 +76,7 @@ func (mutatingWebhookConfigurationStrategy) Validate(ctx context.Context, obj ru
 func (mutatingWebhookConfigurationStrategy) Canonicalize(obj runtime.Object) {
 }
 
-// AllowCreateOnUpdate is true for mutatingWebhookConfiguration; this means you may create one with a PUT request.
+// AllowCreateOnUpdate is false for mutatingWebhookConfiguration; this means you may not create one with a PUT request.
 func (mutatingWebhookConfigurationStrategy) AllowCreateOnUpdate() bool {
 	return false
 }

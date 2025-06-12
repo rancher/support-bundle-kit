@@ -20,12 +20,15 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
+	"time"
 
 	"github.com/mxk/go-flowrate/flowrate"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/httpstream/spdy"
 	constants "k8s.io/apimachinery/pkg/util/remotecommand"
+	"k8s.io/apiserver/pkg/util/proxy/metrics"
 	"k8s.io/client-go/tools/remotecommand"
 	"k8s.io/client-go/util/exec"
 )
@@ -61,19 +64,23 @@ func (h *StreamTranslatorHandler) ServeHTTP(w http.ResponseWriter, req *http.Req
 	// to the client.
 	websocketStreams, err := webSocketServerStreams(req, w, h.Options)
 	if err != nil {
+		// Client error increments bad request status code.
+		metrics.IncStreamTranslatorRequest(req.Context(), strconv.Itoa(http.StatusBadRequest))
 		return
 	}
 	defer websocketStreams.conn.Close()
 
 	// Creating SPDY executor, ensuring redirects are not followed.
-	spdyRoundTripper, err := spdy.NewRoundTripperWithConfig(spdy.RoundTripperConfig{UpgradeTransport: h.Transport})
+	spdyRoundTripper, err := spdy.NewRoundTripperWithConfig(spdy.RoundTripperConfig{UpgradeTransport: h.Transport, PingPeriod: 5 * time.Second})
 	if err != nil {
 		websocketStreams.writeStatus(apierrors.NewInternalError(err)) //nolint:errcheck
+		metrics.IncStreamTranslatorRequest(req.Context(), strconv.Itoa(http.StatusInternalServerError))
 		return
 	}
 	spdyExecutor, err := remotecommand.NewSPDYExecutorRejectRedirects(spdyRoundTripper, spdyRoundTripper, "POST", h.Location)
 	if err != nil {
 		websocketStreams.writeStatus(apierrors.NewInternalError(err)) //nolint:errcheck
+		metrics.IncStreamTranslatorRequest(req.Context(), strconv.Itoa(http.StatusInternalServerError))
 		return
 	}
 
@@ -115,10 +122,16 @@ func (h *StreamTranslatorHandler) ServeHTTP(w http.ResponseWriter, req *http.Req
 		//nolint:errcheck   // Ignore writeStatus returned error
 		if statusErr, ok := err.(*apierrors.StatusError); ok {
 			websocketStreams.writeStatus(statusErr)
+			// Increment status code returned within status error.
+			metrics.IncStreamTranslatorRequest(req.Context(), strconv.Itoa(int(statusErr.Status().Code)))
 		} else if exitErr, ok := err.(exec.CodeExitError); ok && exitErr.Exited() {
 			websocketStreams.writeStatus(codeExitToStatusError(exitErr))
+			// Returned an exit code from the container, so not an error in
+			// stream translator--add StatusOK to metrics.
+			metrics.IncStreamTranslatorRequest(req.Context(), strconv.Itoa(http.StatusOK))
 		} else {
 			websocketStreams.writeStatus(apierrors.NewInternalError(err))
+			metrics.IncStreamTranslatorRequest(req.Context(), strconv.Itoa(http.StatusInternalServerError))
 		}
 		return
 	}
@@ -128,6 +141,7 @@ func (h *StreamTranslatorHandler) ServeHTTP(w http.ResponseWriter, req *http.Req
 	websocketStreams.writeStatus(&apierrors.StatusError{ErrStatus: metav1.Status{
 		Status: metav1.StatusSuccess,
 	}})
+	metrics.IncStreamTranslatorRequest(req.Context(), strconv.Itoa(http.StatusOK))
 }
 
 // translatorSizeQueue feeds the size events from the WebSocket

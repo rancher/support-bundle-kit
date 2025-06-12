@@ -100,7 +100,7 @@ func (v *validatingAdmissionPolicyStrategy) WarningsOnCreate(ctx context.Context
 func (v *validatingAdmissionPolicyStrategy) Canonicalize(obj runtime.Object) {
 }
 
-// AllowCreateOnUpdate is true for validatingAdmissionPolicy; this means you may create one with a PUT request.
+// AllowCreateOnUpdate is false for validatingAdmissionPolicy; this means you may not create one with a PUT request.
 func (v *validatingAdmissionPolicyStrategy) AllowCreateOnUpdate() bool {
 	return false
 }
@@ -136,6 +136,9 @@ func (v *validatingAdmissionPolicyStrategy) GetResetFields() map[fieldpath.APIVe
 			fieldpath.MakePathOrDie("status"),
 		),
 		"admissionregistration.k8s.io/v1beta1": fieldpath.NewSet(
+			fieldpath.MakePathOrDie("status"),
+		),
+		"admissionregistration.k8s.io/v1": fieldpath.NewSet(
 			fieldpath.MakePathOrDie("status"),
 		),
 	}
@@ -174,6 +177,10 @@ func (s *validatingAdmissionPolicyStatusStrategy) GetResetFields() map[fieldpath
 			fieldpath.MakePathOrDie("metadata"),
 		),
 		"admissionregistration.k8s.io/v1beta1": fieldpath.NewSet(
+			fieldpath.MakePathOrDie("spec"),
+			fieldpath.MakePathOrDie("metadata"),
+		),
+		"admissionregistration.k8s.io/v1": fieldpath.NewSet(
 			fieldpath.MakePathOrDie("spec"),
 			fieldpath.MakePathOrDie("metadata"),
 		),
