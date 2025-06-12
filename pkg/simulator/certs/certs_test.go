@@ -8,7 +8,9 @@ import (
 
 func TestGenerateCerts(t *testing.T) {
 	dir, err := os.MkdirTemp("/tmp", "cert-unit-test")
-	defer os.RemoveAll(dir)
+	defer func() {
+		_ = os.RemoveAll(dir)
+	}()
 	if err != nil {
 		t.Fatal("error creating certificate in /tmp")
 	}

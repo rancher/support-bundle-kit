@@ -18,7 +18,10 @@ func TestRunEmbeddedEtcdWithoutCerts(t *testing.T) {
 		t.Fatalf("error creating etcd temp directory %v", err)
 	}
 
-	defer os.RemoveAll(dir)
+	defer func() {
+		_ = os.RemoveAll(dir)
+	}()
+
 	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
 	defer cancel()
 
@@ -35,7 +38,9 @@ func TestRunEmbeddedEtcdWithoutCerts(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error creating etcd client %v", err)
 	}
-	defer etcdClient.Close()
+	defer func() {
+		_ = etcdClient.Close()
+	}()
 
 	// put a value
 	_, err = etcdClient.Put(ctx, "test", "true")
@@ -70,7 +75,9 @@ func TestRunEmbeddedEtcdWithCerts(t *testing.T) {
 		t.Fatalf("error creating etcd temp directory %v", err)
 	}
 
-	defer os.RemoveAll(dir)
+	defer func() {
+		_ = os.RemoveAll(dir)
+	}()
 	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
 	defer cancel()
 
@@ -93,7 +100,9 @@ func TestRunEmbeddedEtcdWithCerts(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error creating etcd client %v", err)
 	}
-	defer etcdClient.Close()
+	defer func() {
+		_ = etcdClient.Close()
+	}()
 
 	// put a value
 	_, err = etcdClient.Put(ctx, "test", "true")

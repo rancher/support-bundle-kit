@@ -75,7 +75,9 @@ func Test_cleanupIngress(t *testing.T) {
 
 	tmpFile, err := os.CreateTemp("/tmp", "ingress")
 	assert.NoError(err, "expected no error during creation of tmp ingress file")
-	defer os.Remove(tmpFile.Name())
+	defer func() {
+		_ = os.Remove(tmpFile.Name())
+	}()
 	_, err = tmpFile.Write([]byte(extensionsIngressSample))
 	assert.NoError(err, "expected no error during writing to tmp ingress file")
 	assert.NoError(tmpFile.Close(), "expect no error during file close")

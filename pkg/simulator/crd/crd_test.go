@@ -16,7 +16,9 @@ import (
 
 func TestWriteFiles(t *testing.T) {
 	tmpFile, err := os.CreateTemp("/tmp", "crd-")
-	defer os.Remove(tmpFile.Name())
+	defer func() {
+		_ = os.Remove(tmpFile.Name())
+	}()
 	if err != nil {
 		t.Fatalf("error creating tmp file for crds: %v", err)
 	}
@@ -29,7 +31,9 @@ func TestWriteFiles(t *testing.T) {
 
 func TestInstallCRD(t *testing.T) {
 	dir, err := os.MkdirTemp("/tmp", "apiserver-")
-	defer os.RemoveAll(dir)
+	defer func() {
+		_ = os.RemoveAll(dir)
+	}()
 	if err != nil {
 		t.Fatalf("error setting up temp directory for apiserver %v", err)
 	}

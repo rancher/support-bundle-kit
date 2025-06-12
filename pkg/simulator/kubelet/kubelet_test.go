@@ -26,7 +26,9 @@ func TestKubeletSimulator(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error creating a temp directory for kubelet: %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() {
+		_ = os.RemoveAll(tmpDir)
+	}()
 
 	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
 	if err != nil {

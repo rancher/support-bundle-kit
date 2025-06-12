@@ -15,7 +15,10 @@ func TestBlockDevices(t *testing.T) {
 		t.Fatalf("error generate temp file for block devices yaml: %v", err)
 	}
 
-	defer os.Remove(tmpBlockDevices.Name())
+	defer func() {
+		_ = os.Remove(tmpBlockDevices.Name())
+	}()
+
 	_, err = tmpBlockDevices.Write([]byte(sampleBlockDevices))
 	if err != nil {
 		t.Fatalf("error writing to temp file %s: %v", tmpBlockDevices.Name(), err)
