@@ -58,7 +58,7 @@ func (module defaultModule) generateDiscoveredNamespacedYAMLs(namespace string, 
 
 	if err != nil {
 		logrus.WithError(err).Error("Unable to fetch namespaced resources")
-		fmt.Fprintf(module.c.errorLog, "Unable to fetch namespaced resources: %v\n", err)
+		_, _ = fmt.Fprintf(module.c.errorLog, "Unable to fetch namespaced resources: %v\n", err)
 		return
 	}
 

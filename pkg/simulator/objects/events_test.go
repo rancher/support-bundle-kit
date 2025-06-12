@@ -22,7 +22,9 @@ func TestCoreEvents(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() {
+		_ = os.RemoveAll(tmpDir)
+	}()
 
 	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
 	if err != nil {
@@ -76,7 +78,9 @@ func TestEvents(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() {
+		_ = os.RemoveAll(tmpDir)
+	}()
 
 	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
 	if err != nil {

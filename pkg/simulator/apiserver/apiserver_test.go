@@ -14,7 +14,9 @@ import (
 func TestRunAPIServer(t *testing.T) {
 
 	dir, err := os.MkdirTemp("/tmp", "apiserver-")
-	defer os.RemoveAll(dir)
+	defer func() {
+		_ = os.RemoveAll(dir)
+	}()
 	if err != nil {
 		t.Fatalf("error setting up temp directory for apiserver %v", err)
 	}

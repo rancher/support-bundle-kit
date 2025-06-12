@@ -90,7 +90,7 @@ func (dc *DiscoveryClient) SpecificResourcesForNamespace(toObj ParseResult, modu
 			// It is likely that errors can occur.
 			if result.Error() != nil {
 				logrus.Tracef("Failed to get %s: %v", url, result.Error())
-				fmt.Fprintf(errLog, "Failed to get %s: %v\n", url, result.Error())
+				_, _ = fmt.Fprintf(errLog, "Failed to get %s: %v\n", url, result.Error())
 				continue
 			}
 
@@ -102,7 +102,7 @@ func (dc *DiscoveryClient) SpecificResourcesForNamespace(toObj ParseResult, modu
 				if err != nil {
 					// This is unexpected. Log, but continue to try other resources.
 					logrus.Errorf("Failed to parse objects received from %s: %v", url, result.Error())
-					fmt.Fprintf(errLog, "Failed to parse objects received from %s: %v\n", url, result.Error())
+					_, _ = fmt.Fprintf(errLog, "Failed to parse objects received from %s: %v\n", url, result.Error())
 					continue
 				}
 				// skip empty object, which will cause useless zero item yaml file
@@ -160,7 +160,7 @@ func (dc *DiscoveryClient) ResourcesForNamespace(toObj ParseResult, namespace st
 			// It is likely that errors can occur.
 			if result.Error() != nil {
 				logrus.Tracef("Failed to get %s: %v", url, result.Error())
-				fmt.Fprintf(errLog, "Failed to get %s: %v\n", url, result.Error())
+				_, _ = fmt.Fprintf(errLog, "Failed to get %s: %v\n", url, result.Error())
 				continue
 			}
 
@@ -172,7 +172,7 @@ func (dc *DiscoveryClient) ResourcesForNamespace(toObj ParseResult, namespace st
 				if err != nil {
 					// This is unexpected. Log, but continue to try other resources.
 					logrus.Errorf("Failed to parse objects received from %s: %v", url, result.Error())
-					fmt.Fprintf(errLog, "Failed to parse objects received from %s: %v\n", url, result.Error())
+					_, _ = fmt.Fprintf(errLog, "Failed to parse objects received from %s: %v\n", url, result.Error())
 					continue
 				}
 				// skip empty object, which will cause useless zero item yaml file
@@ -226,7 +226,7 @@ func (dc *DiscoveryClient) ResourcesForCluster(toObj ParseResult, exclude Exclud
 			// It is likely that errors can occur.
 			if result.Error() != nil {
 				logrus.Tracef("Failed to get %s: %v", url, result.Error())
-				fmt.Fprintf(errLog, "Failed to get %s: %v\n", url, result.Error())
+				_, _ = fmt.Fprintf(errLog, "Failed to get %s: %v\n", url, result.Error())
 				continue
 			}
 
@@ -237,7 +237,7 @@ func (dc *DiscoveryClient) ResourcesForCluster(toObj ParseResult, exclude Exclud
 				if err != nil {
 					// This is unexpected. Log, but continue to try other resources.
 					logrus.Errorf("Failed to parse objects received from %s: %v", url, result.Error())
-					fmt.Fprintf(errLog, "Failed to parse objects received from %s: %v\n", url, result.Error())
+					_, _ = fmt.Fprintf(errLog, "Failed to parse objects received from %s: %v\n", url, result.Error())
 					continue
 				}
 				// skip empty object

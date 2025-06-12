@@ -90,5 +90,5 @@ var _ = BeforeSuite(func(done Done) {
 
 var _ = AfterSuite(func(done Done) {
 	close(done)
-	os.RemoveAll(dir)
+	_ = os.RemoveAll(dir)
 }, setupTimeout)

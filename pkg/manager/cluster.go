@@ -55,14 +55,16 @@ func (c *Cluster) GenerateClusterBundle(bundleDir string) (string, error) {
 
 	bundleName := fmt.Sprintf("supportbundle_%s_%s.zip",
 		bundleMeta.ProjectNamespaceUUID,
-		strings.Replace(bundleMeta.BundleCreatedAt, ":", "-", -1))
+		strings.ReplaceAll(bundleMeta.BundleCreatedAt, ":", "-"))
 
 	errLog, err := os.Create(filepath.Join(bundleDir, "bundleGenerationError.log"))
 	if err != nil {
 		logrus.Errorf("Failed to create bundle generation log: %v", err)
 		return "", err
 	}
-	defer errLog.Close()
+	defer func() {
+		_ = errLog.Close()
+	}()
 
 	metaFile := filepath.Join(bundleDir, "metadata.yaml")
 	encodeToYAMLFile(bundleMeta, metaFile, errLog)
@@ -95,7 +97,7 @@ func encodeToYAMLFile(obj interface{}, path string, errLog io.Writer) {
 	var err error
 	defer func() {
 		if err != nil {
-			fmt.Fprintf(errLog, "Support Bundle: failed to generate %v: %v\n", path, err)
+			_, _ = fmt.Fprintf(errLog, "Support Bundle: failed to generate %v: %v\n", path, err)
 		}
 	}()
 	err = os.MkdirAll(filepath.Dir(path), os.FileMode(0755))
@@ -106,7 +108,9 @@ func encodeToYAMLFile(obj interface{}, path string, errLog io.Writer) {
 	if err != nil {
 		return
 	}
-	defer f.Close()
+	defer func() {
+		_ = f.Close()
+	}()
 
 	switch v := obj.(type) {
 	case runtime.Object:
@@ -140,12 +144,12 @@ func (c *Cluster) generateSupportBundleLogs(logsDir string, errLog io.Writer) {
 	for _, ns := range namespaces {
 		list, err := c.sbm.k8s.GetAllPodsList(ns)
 		if err != nil {
-			fmt.Fprintf(errLog, "Support bundle: cannot get pod list: %v\n", err)
+			_, _ = fmt.Fprintf(errLog, "Support bundle: cannot get pod list: %v\n", err)
 			return
 		}
 		podList, ok := list.(*corev1.PodList)
 		if !ok {
-			fmt.Fprintf(errLog, "BUG: Support bundle: didn't get pod list\n")
+			_, _ = fmt.Fprintf(errLog, "BUG: Support bundle: didn't get pod list\n")
 			return
 		}
 		for _, pod := range podList.Items {
@@ -156,7 +160,7 @@ func (c *Cluster) generateSupportBundleLogs(logsDir string, errLog io.Writer) {
 				getLogToFile(podDir, podName, container.Name, req, c.sbm.context, errLog, false)
 				restartCount, err := c.sbm.k8s.GetPodRestartCount(ns, podName, container.Name)
 				if err != nil {
-					fmt.Fprintf(errLog, "Cannot get pod `%s` info (error: %v), just continue", podName, err)
+					_, _ = fmt.Fprintf(errLog, "Cannot get pod `%s` info (error: %v), just continue", podName, err)
 					continue
 				}
 				if restartCount > 0 {
@@ -175,20 +179,20 @@ func getLogToFile(podDir, podName, containerName string, req *rest.Request, sbmC
 	}
 	stream, err := req.Stream(sbmContext)
 	if err != nil {
-		fmt.Fprintf(errLog, "BUG: Support bundle: cannot get log for pod %v container %v: %v\n",
+		_, _ = fmt.Fprintf(errLog, "BUG: Support bundle: cannot get log for pod %v container %v: %v\n",
 			podName, containerName, err)
 		return
 	}
 	logrus.Debugf("Prepare to log to file: %s", logFileName)
 	streamLogToFile(stream, logFileName, errLog)
-	stream.Close()
+	_ = stream.Close()
 }
 
 func streamLogToFile(logStream io.ReadCloser, path string, errLog io.Writer) {
 	var err error
 	defer func() {
 		if err != nil {
-			fmt.Fprintf(errLog, "Support Bundle: failed to generate %v: %v\n", path, err)
+			_, _ = fmt.Fprintf(errLog, "Support Bundle: failed to generate %v: %v\n", path, err)
 		}
 	}()
 	err = os.MkdirAll(filepath.Dir(path), os.FileMode(0755))
@@ -199,7 +203,9 @@ func streamLogToFile(logStream io.ReadCloser, path string, errLog io.Writer) {
 	if err != nil {
 		return
 	}
-	defer f.Close()
+	defer func() {
+		_ = f.Close()
+	}()
 	_, err = io.Copy(f, logStream)
 	if err != nil {
 		return

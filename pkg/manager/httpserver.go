@@ -41,7 +41,9 @@ func (s *HttpServer) getBundle(w http.ResponseWriter, req *http.Request) {
 		utils.HttpResponseError(w, http.StatusNotFound, fmt.Errorf("fail to open bundle file: %v", err))
 		return
 	}
-	defer f.Close()
+	defer func() {
+		_ = f.Close()
+	}()
 
 	fstat, err := f.Stat()
 	if err != nil {
@@ -79,7 +81,9 @@ func (s *HttpServer) createNodeBundle(w http.ResponseWriter, req *http.Request) 
 		utils.HttpResponseError(w, http.StatusInternalServerError, fmt.Errorf("fail to create file %s: %s", nodeBundle, err))
 		return
 	}
-	defer f.Close()
+	defer func() {
+		_ = f.Close()
+	}()
 	_, err = io.Copy(f, req.Body)
 	if err != nil {
 		utils.HttpResponseError(w, http.StatusInternalServerError, err)

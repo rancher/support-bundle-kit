@@ -30,7 +30,9 @@ func TestParseDaemonSetObject(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() {
+		_ = os.RemoveAll(tmpDir)
+	}()
 
 	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
 	if err != nil {
@@ -45,7 +47,9 @@ func TestParseReplicaSetObject(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() {
+		_ = os.RemoveAll(tmpDir)
+	}()
 
 	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
 	if err != nil {
@@ -60,7 +64,9 @@ func TestParseStatefulSetObject(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() {
+		_ = os.RemoveAll(tmpDir)
+	}()
 
 	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
 	if err != nil {
@@ -75,7 +81,9 @@ func TestParseDeploymentObject(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() {
+		_ = os.RemoveAll(tmpDir)
+	}()
 
 	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
 	if err != nil {
@@ -89,7 +97,9 @@ func TestIngressObject(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() {
+		_ = os.RemoveAll(tmpDir)
+	}()
 
 	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
 	if err != nil {
@@ -103,7 +113,9 @@ func TestSettings(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() {
+		_ = os.RemoveAll(tmpDir)
+	}()
 
 	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
 	if err != nil {
@@ -179,7 +191,9 @@ func TestVerifyJob(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() {
+		_ = os.RemoveAll(tmpDir)
+	}()
 
 	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
 	if err != nil {
@@ -220,7 +234,9 @@ func TestVerifyNode(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error creating tmp directory %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() {
+		_ = os.RemoveAll(tmpDir)
+	}()
 
 	err = utils.UnzipSupportBundle(bundleZipPath, tmpDir)
 	if err != nil {

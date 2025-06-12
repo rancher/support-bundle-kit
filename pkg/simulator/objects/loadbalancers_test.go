@@ -15,7 +15,10 @@ func TestLoadBalancers(t *testing.T) {
 		t.Fatalf("error generate temp file for block devices yaml: %v", err)
 	}
 
-	defer os.Remove(tmpLoadBalancers.Name())
+	defer func() {
+		_ = os.Remove(tmpLoadBalancers.Name())
+	}()
+
 	_, err = tmpLoadBalancers.Write([]byte(sampleLoadBalancers))
 	if err != nil {
 		t.Fatalf("error writing to temp file %s: %v", tmpLoadBalancers.Name(), err)

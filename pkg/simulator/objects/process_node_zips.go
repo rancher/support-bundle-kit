@@ -190,9 +190,11 @@ func walkZipFiles(zipFile string) (*v1.Pod, *bundlekit.NodeConfig, error) {
 
 	r, err := zip.OpenReader(zipFile)
 	if err != nil {
-		return pod, nConfig, fmt.Errorf("error opening zip file %v:", err)
+		return pod, nConfig, fmt.Errorf("error opening zip file %v", err)
 	}
-	defer r.Close()
+	defer func() {
+		_ = r.Close()
+	}()
 
 	var nodeConfigSpec []bundlekit.NodeConfigSpec
 	var containers []v1.Container
@@ -238,7 +240,9 @@ func ReadContent(f *zip.File) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error reading file %s: %v", f.Name, err)
 	}
-	defer zipReader.Close()
+	defer func() {
+		_ = zipReader.Close()
+	}()
 	contentBytes, err := io.ReadAll(zipReader)
 	return contentBytes, err
 }

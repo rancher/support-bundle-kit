@@ -22,7 +22,9 @@ func WriteFile(filename string) error {
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	defer func() {
+		_ = f.Close()
+	}()
 
 	return Print(f)
 }

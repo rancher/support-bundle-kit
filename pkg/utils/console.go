@@ -8,6 +8,6 @@ import (
 
 func WriteStdout(msg string) {
 	stdout := bufio.NewWriter(os.Stdout)
-	fmt.Fprint(stdout, msg)
-	stdout.Flush()
+	_, _ = fmt.Fprint(stdout, msg)
+	_ = stdout.Flush()
 }

@@ -45,8 +45,8 @@ func UnzipSupportBundle(bundleZipFile, destination string) (err error) {
 			if _, err = io.Copy(destFile, zFile); err != nil {
 				return err
 			}
-			zFile.Close()
-			destFile.Close()
+			_ = zFile.Close()
+			_ = destFile.Close()
 		}
 
 	}
