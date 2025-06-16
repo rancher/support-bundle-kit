@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -361,7 +362,7 @@ func (m *SupportBundleManager) collectNodeBundles() error {
 
 	// create a daemonset to collect node bundles and push back
 	agents := &AgentDaemonSet{sbm: m}
-	agentDaemonSet, err := agents.Create(m.ImageName, fmt.Sprintf("http://%s:8080", m.ManagerPodIP))
+	agentDaemonSet, err := agents.Create(m.ImageName, fmt.Sprintf("http://%s", net.JoinHostPort(m.ManagerPodIP, "8080")))
 	if err != nil {
 		return err
 	}
