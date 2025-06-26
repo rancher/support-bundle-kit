@@ -110,7 +110,7 @@ func (s *HttpServer) Run(m *SupportBundleManager) {
 	r.Path("/nodes/{nodeName}").Methods("POST").HandlerFunc(s.createNodeBundle)
 
 	server := &http.Server{
-		Addr:           ":8080",
+		Addr:           ":" + ManagerPort,
 		Handler:        r,
 		ReadTimeout:    defaultTimeout,
 		WriteTimeout:   defaultTimeout,
