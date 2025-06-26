@@ -362,7 +362,7 @@ func (m *SupportBundleManager) collectNodeBundles() error {
 
 	// create a daemonset to collect node bundles and push back
 	agents := &AgentDaemonSet{sbm: m}
-	agentDaemonSet, err := agents.Create(m.ImageName, fmt.Sprintf("http://%s", net.JoinHostPort(m.ManagerPodIP, "8080")))
+	agentDaemonSet, err := agents.Create(m.ImageName, fmt.Sprintf("http://%s", net.JoinHostPort(m.ManagerPodIP, ManagerPort)))
 	if err != nil {
 		return err
 	}

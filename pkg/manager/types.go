@@ -10,6 +10,8 @@ const (
 	PhaseDone          = "done"
 
 	BundleVersion = "0.1.0"
+
+	ManagerPort = "8080"
 )
 
 type BundleMeta struct {
