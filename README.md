@@ -99,5 +99,6 @@ The following are known issues with the simulator at the moment:
 * creationTimepstamps of objects are reset, however the original creationTimestamp is copied into the object annoations.
 * to enable log parsing the node addresses are updated to localhost, to point them to the in process kubelet. The original addresses are again copied into annotations for future reference.
 * APIServices are skipped during the load processes as api aggregation cannot be replicated at the moment.
+* When we load the bundle, the node shows `Taints: node.kubernetes.io/not-ready:NoSchedule`, even if it doesn't have the taint. You can confirm this by checking the `yamls/cluster/v1/nodes.yaml`.
 
 Additional information can be found in the [QuickStart Guide](./docs/quickstart.md)
