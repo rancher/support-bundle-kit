@@ -4,6 +4,10 @@ source /tmp/common
 HOST_PATH=$1
 BUNDLE_DIR=$2
 
+# Generate 6-character random string (alphanumeric)
+RANDOM_STRING=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 6 | head -n 1)
+SUPPORT_BUNDLE_NODE_NAME="${SUPPORT_BUNDLE_NODE_NAME}-${RANDOM_STRING}"
+
 log_warn() {
     echo "[WARNING] $1"
 }
@@ -93,6 +97,7 @@ mkdir -p scc
 chroot $HOST_PATH /sbin/supportconfig -c -m -B supportconfig_$SUPPORT_BUNDLE_NODE_NAME \
     -i BOOT,DAEMONS,ETC,ISCSI,MEM,MOD,NTP,SMART,DISK,pharvester_plugin_rke2,pharvester_plugin_console
 mv $HOST_PATH/var/log/scc_supportconfig_$SUPPORT_BUNDLE_NODE_NAME.txz ./scc
+rm -f $HOST_PATH/var/log/scc_supportconfig_$SUPPORT_BUNDLE_NODE_NAME.txz.md5
 
 ###############################################################################
 # collect logs
