@@ -30,7 +30,7 @@ func GenerateClusterScopedRuntimeObjects(path string) (crd []runtime.Object, clu
 			return err
 		}
 
-		if !info.IsDir() {
+		if !info.IsDir() && strings.HasSuffix(path, ".yaml") {
 			absPath, err := filepath.Abs(path)
 			if err != nil {
 				return err
@@ -86,7 +86,7 @@ func GenerateNamespacedRuntimeObjects(path string) (nonpods []runtime.Object, po
 			return err
 		}
 
-		if !info.IsDir() {
+		if !info.IsDir() && strings.HasSuffix(path, ".yaml") {
 			absPath, err := filepath.Abs(path)
 			if err != nil {
 				return err
@@ -134,11 +134,14 @@ func GenerateNamespacedRuntimeObjects(path string) (nonpods []runtime.Object, po
 func GenerateObjects(file string) (obj []runtime.Object, err error) {
 	content, err := os.ReadFile(file)
 	if err != nil {
-		return obj, err
+		return obj, fmt.Errorf("error reading file %s: %v", file, err)
 	}
 
 	obj, err = yaml.ToObjects(bytes.NewReader(content))
-	return obj, err
+	if err != nil {
+		return obj, fmt.Errorf("error generating objects from file %s: %v", file, err)
+	}
+	return obj, nil
 }
 
 func GenerateUnstructuredObjects(file string) (objs []*unstructured.Unstructured, err error) {
