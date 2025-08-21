@@ -2,6 +2,7 @@ package manager
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -138,7 +139,19 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) (*appsv1.Daemon
 		}
 	}
 
+	switch a.sbm.SpecifyCollector {
+	case "longhorn":
+		a.prepareDaemonSetForLonghorn(daemonSet)
+	}
+
 	return a.sbm.k8s.CreateDaemonSets(a.sbm.PodNamespace, daemonSet)
+}
+
+func (a *AgentDaemonSet) prepareDaemonSetForLonghorn(daemonset *appsv1.DaemonSet) {
+	daemonset.Spec.Template.Spec.Containers[0].Env = append(daemonset.Spec.Template.Spec.Containers[0].Env, corev1.EnvVar{
+		Name:  "LONGHORN_LOG_PATH",
+		Value: os.Getenv("LONGHORN_LOG_PATH"),
+	})
 }
 
 func (a *AgentDaemonSet) Cleanup() error {

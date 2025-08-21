@@ -58,6 +58,24 @@ function collect_kubelet_log(){
     fi
 }
 
+collect_longhorn_logs() {
+    local src_dir
+    src_dir=$(join_paths "$HOST_PATH" "$LONGHORN_LOG_PATH")
+
+    if [ -d "$src_dir" ]; then
+        cp -r "$src_dir"/* .
+    else
+        echo "Longhorn log directory not found: $src_dir" >&2
+    fi
+}
+
+join_paths() {
+    local base="$1"
+    local sub="$2"
+    # Remove trailing slash from base and leading slash from sub
+    printf "%s/%s\n" "${base%/}" "${sub#/}"
+}
+
 function collect_logs(){
     cd ${BUNDLE_DIR}
     mkdir -p logs
@@ -66,6 +84,7 @@ function collect_logs(){
     collect_dmesg
     collect_syslog
     collect_kubelet_log
+    collect_longhorn_logs
 }
 
 collect_sysinfo
