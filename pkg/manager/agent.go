@@ -148,6 +148,7 @@ func (a *AgentDaemonSet) Create(image string, managerURL string) (*appsv1.Daemon
 }
 
 func (a *AgentDaemonSet) prepareDaemonSetForLonghorn(daemonset *appsv1.DaemonSet) {
+	daemonset.Spec.Template.Spec.HostPID = true
 	daemonset.Spec.Template.Spec.Containers[0].Env = append(daemonset.Spec.Template.Spec.Containers[0].Env, corev1.EnvVar{
 		Name:  "LONGHORN_LOG_PATH",
 		Value: os.Getenv("LONGHORN_LOG_PATH"),
