@@ -17,6 +17,10 @@ function collect_multipath_config(){
     fi
 }
 
+function collect_processes_info(){
+    ps auxw > ./processes_info
+}
+
 function collect_sysinfo(){
     cd ${BUNDLE_DIR}
     mkdir -p hostinfos
@@ -31,6 +35,7 @@ function collect_sysinfo(){
 
     collect_proc_mounts
     collect_multipath_config
+    collect_processes_info
 }
 
 function collect_dmesg(){
