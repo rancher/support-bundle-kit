@@ -64,13 +64,17 @@ function collect_kubelet_log(){
 }
 
 collect_longhorn_logs() {
-    local src_dir
-    src_dir=$(join_paths "$HOST_PATH" "$LONGHORN_LOG_PATH")
+    if [[ -n $LONGHORN_LOG_PATH ]]; then
+        local src_dir
+        src_dir=$(join_paths "$HOST_PATH" "$LONGHORN_LOG_PATH")
 
-    if [ -d "$src_dir" ]; then
-        cp -r "$src_dir"/* .
+        if [ -d "$src_dir" ]; then
+            cp -r "$src_dir"/* .
+        else
+            echo "Longhorn log directory not found: $src_dir" >&2
+        fi
     else
-        echo "Longhorn log directory not found: $src_dir" >&2
+        echo "LONGHORN_LOG_PATH is not set. Skipping Longhorn log collection." >&2
     fi
 }
 
