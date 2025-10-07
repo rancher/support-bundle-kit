@@ -631,6 +631,8 @@ func LogLocation(
 	if err != nil {
 		return nil, nil, err
 	}
+	nodeInfo.Hostname = "localhost"
+
 	params := url.Values{}
 	if opts.Follow {
 		params.Add("follow", "true")
