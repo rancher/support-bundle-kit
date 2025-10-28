@@ -100,19 +100,6 @@ Restart Count:  0
 Environment:    <none>
 Mounts:
 /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-prj4k (ro)
-wicked:
-Container ID:   
-Image:          noimage
-Image ID:       
-Port:           <none>
-Host Port:      <none>
-State:          Running
-Started:      Thu, 21 Apr 2022 11:32:47 +1000
-Ready:          True
-Restart Count:  0
-Environment:    <none>
-Mounts:
-/var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-prj4k (ro)
 rancherd:
 Container ID:   
 Image:          noimage

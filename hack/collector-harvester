@@ -113,7 +113,7 @@ for ((i=1; i<=2; i++)); do
   [ ! -s $log_name ] && rm -f $log_name
 done
 
-units=(rke2-server rke2-agent rancherd rancher-system-agent wicked iscsid)
+units=(rke2-server rke2-agent rancherd rancher-system-agent iscsid)
 
 for unit in ${units[@]}; do
     chroot $HOST_PATH $JOURNALCTL -b all -u $unit | tail -c 10m > $unit.log
