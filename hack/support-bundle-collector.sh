@@ -24,7 +24,18 @@ else
         exit 1
     fi
     
-    OS_COLLECTOR="collector-$OS_ID"
+    # Default collector based on OS ID
+    OS_COLLECTOR="collector-$OS_ID" 
+    # Array of OS IDs that should use collector-sl-micro
+    SL_MICRO_IDS=("sle-micro-rancher" "sl-micro")
+    
+    # Check if OS_ID matches any ID in the array
+    for id in "${SL_MICRO_IDS[@]}"; do
+        if [ "$OS_ID" = "$id" ]; then
+            OS_COLLECTOR="collector-sle-micro-rancher"
+            break
+        fi
+    done
 fi
 echo "OS_COLLECTOR="${OS_COLLECTOR}
 
