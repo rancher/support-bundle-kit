@@ -26,7 +26,7 @@ func TestRunAPIServer(t *testing.T) {
 
 	a := NewAPIServerConfig(DefaultClientQPS, DefaultClientBurst)
 
-	generatedCerts, err := certs.GenerateCerts([]string{"localhost", "127.0.0.1"}, dir)
+	generatedCerts, err := certs.GenerateCerts([]string{"localhost", "0.0.0.0"}, dir)
 	if err != nil {
 		t.Fatalf("error generating certificates for sim %v", err)
 	}

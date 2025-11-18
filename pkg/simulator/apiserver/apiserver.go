@@ -65,7 +65,7 @@ func (a *APIServerConfig) RunAPIServer(ctx context.Context, serviceClusterIP str
 	s.ServiceClusterIPRanges = serviceClusterIP + "/16"
 	s.SecureServing.ServerCert.CertKey.CertFile = a.Certs.APICert
 	s.SecureServing.ServerCert.CertKey.KeyFile = a.Certs.APICertKey
-	s.SecureServing.BindAddress = net.ParseIP("127.0.0.1")
+	s.SecureServing.BindAddress = net.ParseIP("0.0.0.0")
 	s.SecureServing.BindPort = 6443
 	s.Authentication.ServiceAccounts.KeyFiles = []string{a.Certs.ServiceAccountCertKey}
 	s.Authentication.ServiceAccounts.Issuers = []string{"https://localhost:6443"}
