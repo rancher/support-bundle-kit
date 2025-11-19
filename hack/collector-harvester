@@ -95,7 +95,7 @@ mkdir -p scc
 
 # Generate supportconfig from node
 chroot $HOST_PATH /sbin/supportconfig -c -m -B supportconfig_$SUPPORT_BUNDLE_NODE_NAME \
-    -i BOOT,DAEMONS,ETC,ISCSI,MEM,MOD,NTP,SMART,DISK,pharvester_plugin_rke2,pharvester_plugin_console
+    -i BOOT,DAEMONS,ETC,ISCSI,MEM,MOD,NET,NTP,SMART,DISK,pharvester_plugin_rke2,pharvester_plugin_console
 mv $HOST_PATH/var/log/scc_supportconfig_$SUPPORT_BUNDLE_NODE_NAME.txz ./scc
 rm -f $HOST_PATH/var/log/scc_supportconfig_$SUPPORT_BUNDLE_NODE_NAME.txz.md5
 
