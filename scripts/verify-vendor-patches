@@ -1,0 +1,244 @@
+#!/bin/bash
+set -e
+
+# Script to verify and apply vendor patches
+# This ensures critical patches to vendor files are maintained after running go mod vendor
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+PATCH_DIR="${SCRIPT_DIR}/vendor-patches"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Function to print colored messages
+print_error() {
+    echo -e "${RED}ERROR: $1${NC}" >&2
+}
+
+print_success() {
+    echo -e "${GREEN}SUCCESS: $1${NC}"
+}
+
+print_warning() {
+    echo -e "${YELLOW}WARNING: $1${NC}"
+}
+
+print_info() {
+    echo "INFO: $1"
+}
+
+# Function to check if a patch is applied
+check_patch() {
+    local patch_file="$1"
+    local patch_name="$(basename "$patch_file" .patch)"
+    
+    print_info "Checking patch: ${patch_name}"
+    
+    cd "${PROJECT_ROOT}"
+    
+    # Try to apply the patch in reverse (dry-run) to check if it's already applied
+    if git apply --reverse --check "${patch_file}" > /dev/null 2>&1; then
+        print_success "Patch ${patch_name} is already applied"
+        return 0
+    fi
+    
+    # Check if the patch can be applied
+    if git apply --check "${patch_file}" > /dev/null 2>&1; then
+        print_warning "Patch ${patch_name} is NOT applied but can be applied"
+        return 1
+    else
+        print_error "Patch ${patch_name} cannot be applied (conflicts or already partially applied)"
+        return 2
+    fi
+}
+
+# Function to apply a patch
+apply_patch() {
+    local patch_file="$1"
+    local patch_name="$(basename "$patch_file" .patch)"
+    
+    print_info "Applying patch: ${patch_name}"
+    
+    cd "${PROJECT_ROOT}"
+    
+    if git apply "${patch_file}"; then
+        print_success "Successfully applied patch: ${patch_name}"
+        return 0
+    else
+        print_error "Failed to apply patch: ${patch_name}"
+        return 1
+    fi
+}
+
+# Function to verify specific file changes
+verify_file_content() {
+    local file="$1"
+    local expected_pattern="$2"
+    local description="$3"
+    
+    if grep -q "${expected_pattern}" "${PROJECT_ROOT}/${file}"; then
+        print_success "✓ ${description}"
+        return 0
+    else
+        print_error "✗ ${description}"
+        return 1
+    fi
+}
+
+# Main verification function
+verify_patches() {
+    print_info "=========================================="
+    print_info "Verifying vendor patches..."
+    print_info "=========================================="
+    echo ""
+    
+    local all_good=true
+    local needs_apply=false
+    
+    # Check all patch files
+    if [ ! -d "${PATCH_DIR}" ]; then
+        print_error "Patch directory not found: ${PATCH_DIR}"
+        exit 1
+    fi
+    
+    for patch_file in "${PATCH_DIR}"/*.patch; do
+        if [ ! -f "${patch_file}" ]; then
+            print_warning "No patch files found in ${PATCH_DIR}"
+            continue
+        fi
+        
+        check_patch "${patch_file}"
+        status=$?
+        
+        if [ $status -eq 1 ]; then
+            needs_apply=true
+            all_good=false
+        elif [ $status -eq 2 ]; then
+            all_good=false
+        fi
+        
+        echo ""
+    done
+    
+    # Detailed verification for k8s-timestamp-preservation patch
+    print_info "Performing detailed content verification..."
+    echo ""
+    
+    verify_file_content \
+        "vendor/k8s.io/apimachinery/pkg/api/validation/objectmeta.go" \
+        "//allErrs = append(allErrs, ValidateImmutableField(newMeta.GetCreationTimestamp()" \
+        "CreationTimestamp validation is commented out"
+    
+    verify_file_content \
+        "vendor/k8s.io/apiserver/pkg/registry/rest/meta.go" \
+        "//meta.SetCreationTimestamp(metav1.Time{})" \
+        "CreationTimestamp wiping is commented out"
+    
+    verify_file_content \
+        "vendor/k8s.io/apiserver/pkg/registry/rest/meta.go" \
+        'if meta.GetCreationTimestamp().String() == ""' \
+        "CreationTimestamp conditional check exists"
+    
+    verify_file_content \
+        "vendor/k8s.io/kubernetes/pkg/registry/core/pod/strategy.go" \
+        'nodeInfo.Hostname = "localhost"' \
+        "NodeInfo hostname override exists"
+    
+    echo ""
+    print_info "=========================================="
+    
+    if [ "$all_good" = true ]; then
+        print_success "All vendor patches are correctly applied!"
+        return 0
+    elif [ "$needs_apply" = true ]; then
+        print_warning "Some patches need to be applied"
+        return 1
+    else
+        print_error "Some patches have conflicts or issues"
+        return 2
+    fi
+}
+
+# Function to apply all patches
+apply_all_patches() {
+    print_info "=========================================="
+    print_info "Applying all vendor patches..."
+    print_info "=========================================="
+    echo ""
+    
+    local applied_count=0
+    local skipped_count=0
+    local failed_count=0
+    
+    for patch_file in "${PATCH_DIR}"/*.patch; do
+        if [ ! -f "${patch_file}" ]; then
+            print_warning "No patch files found in ${PATCH_DIR}"
+            continue
+        fi
+        
+        local patch_name="$(basename "$patch_file")"
+        
+        # Check if already applied
+        cd "${PROJECT_ROOT}"
+        if git apply --reverse --check "${patch_file}" > /dev/null 2>&1; then
+            print_info "✓ Patch ${patch_name} is already applied, skipping..."
+            ((skipped_count++))
+        else
+            # Try to apply the patch
+            if git apply "${patch_file}" 2>/dev/null; then
+                print_success "✓ Successfully applied patch: ${patch_name}"
+                ((applied_count++))
+            else
+                print_warning "⚠ Could not apply patch: ${patch_name} (may be partially applied or have conflicts)"
+                ((failed_count++))
+            fi
+        fi
+        
+        echo ""
+    done
+    
+    print_info "=========================================="
+    print_info "Summary:"
+    print_info "  Applied: ${applied_count}"
+    print_info "  Already applied: ${skipped_count}"
+    print_info "  Failed/Partial: ${failed_count}"
+    print_info "=========================================="
+    
+    if [ $failed_count -gt 0 ]; then
+        print_warning "Some patches could not be applied. Running detailed verification..."
+        return 1
+    else
+        print_success "All patches processed successfully!"
+        return 0
+    fi
+}
+
+# Main script logic
+main() {
+    local command="${1:-verify}"
+    
+    case "$command" in
+        verify)
+            verify_patches
+            exit $?
+            ;;
+        apply)
+            apply_all_patches
+            exit $?
+            ;;
+        *)
+            echo "Usage: $0 {verify|apply}"
+            echo ""
+            echo "Commands:"
+            echo "  verify          - Check if patches are applied (default)"
+            echo "  apply           - Apply all patches"
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"

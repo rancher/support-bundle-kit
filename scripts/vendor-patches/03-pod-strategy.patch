@@ -1,0 +1,13 @@
+diff --git a/vendor/k8s.io/kubernetes/pkg/registry/core/pod/strategy.go b/vendor/k8s.io/kubernetes/pkg/registry/core/pod/strategy.go
+index 71b89e2f..1a706b07 100644
+--- a/vendor/k8s.io/kubernetes/pkg/registry/core/pod/strategy.go
++++ b/vendor/k8s.io/kubernetes/pkg/registry/core/pod/strategy.go
+@@ -618,6 +618,8 @@ func LogLocation(
+ 	if err != nil {
+ 		return nil, nil, err
+ 	}
++	nodeInfo.Hostname = "localhost"
++
+ 	params := url.Values{}
+ 	if opts.Follow {
+ 		params.Add("follow", "true")
