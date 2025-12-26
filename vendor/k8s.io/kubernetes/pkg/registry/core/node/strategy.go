@@ -41,7 +41,7 @@ import (
 	"k8s.io/kubernetes/pkg/apis/core/validation"
 	"k8s.io/kubernetes/pkg/features"
 	"k8s.io/kubernetes/pkg/kubelet/client"
-	"sigs.k8s.io/structured-merge-diff/v4/fieldpath"
+	"sigs.k8s.io/structured-merge-diff/v6/fieldpath"
 )
 
 // nodeStrategy implements behavior for nodes
@@ -110,6 +110,10 @@ func dropDisabledFields(node *api.Node, oldNode *api.Node) {
 
 	if !utilfeature.DefaultFeatureGate.Enabled(features.SupplementalGroupsPolicy) && !supplementalGroupsPolicyInUse(oldNode) {
 		node.Status.Features = nil
+	}
+
+	if !utilfeature.DefaultFeatureGate.Enabled(features.NodeDeclaredFeatures) && !nodeDeclaredFeaturesInUse(oldNode) {
+		node.Status.DeclaredFeatures = nil
 	}
 }
 
@@ -315,4 +319,9 @@ func supplementalGroupsPolicyInUse(node *api.Node) bool {
 		return false
 	}
 	return node.Status.Features != nil
+}
+
+// nodeDeclaredFeaturesInUse returns true if the node.status has DeclaredFeatures
+func nodeDeclaredFeaturesInUse(node *api.Node) bool {
+	return node != nil && node.Status.DeclaredFeatures != nil
 }
