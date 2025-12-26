@@ -30,7 +30,7 @@ import (
 	"strings"
 
 	v1 "k8s.io/api/core/v1"
-	resourceapi "k8s.io/api/resource/v1beta1"
+	resourceapi "k8s.io/api/resource/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -114,6 +114,19 @@ func CanBeReserved(claim *resourceapi.ResourceClaim) bool {
 func BaseRequestRef(requestRef string) string {
 	segments := strings.Split(requestRef, "/")
 	return segments[0]
+}
+
+// CreateSubRequestRef combines the names from a request and a subrequest into
+// a reference to the subrequest.
+func CreateSubRequestRef(requestName, subRequestName string) string {
+	return fmt.Sprintf("%s/%s", requestName, subRequestName)
+}
+
+// IsSubRequestRef checks if the provided reference is to a subrequest and returns
+// true if it is. Otherwise it returns false.
+func IsSubRequestRef(requestRef string) bool {
+	segments := strings.Split(requestRef, "/")
+	return len(segments) == 2
 }
 
 // ConfigForResult returns the configs that are applicable to device

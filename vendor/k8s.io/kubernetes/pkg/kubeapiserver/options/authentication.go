@@ -18,6 +18,7 @@ package options
 
 import (
 	"context"
+	"crypto/x509"
 	"errors"
 	"fmt"
 	"net/url"
@@ -50,6 +51,7 @@ import (
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
 	v1listers "k8s.io/client-go/listers/core/v1"
+	certutil "k8s.io/client-go/util/cert"
 	"k8s.io/client-go/util/keyutil"
 	cliflag "k8s.io/component-base/cli/flag"
 	"k8s.io/klog/v2"
@@ -61,7 +63,7 @@ import (
 	"k8s.io/kubernetes/pkg/serviceaccount"
 	"k8s.io/kubernetes/pkg/util/filesystem"
 	"k8s.io/kubernetes/plugin/pkg/auth/authenticator/token/bootstrap"
-	"k8s.io/utils/pointer"
+	"k8s.io/utils/ptr"
 )
 
 const (
@@ -293,11 +295,6 @@ func (o *BuiltInAuthenticationOptions) Validate() []error {
 		}
 	}
 
-	// verify that if ServiceAccountTokenNodeBinding is enabled, ServiceAccountTokenNodeBindingValidation is also enabled.
-	if utilfeature.DefaultFeatureGate.Enabled(features.ServiceAccountTokenNodeBinding) && !utilfeature.DefaultFeatureGate.Enabled(features.ServiceAccountTokenNodeBindingValidation) {
-		allErrors = append(allErrors, fmt.Errorf("the %q feature gate can only be enabled if the %q feature gate is also enabled", features.ServiceAccountTokenNodeBinding, features.ServiceAccountTokenNodeBindingValidation))
-	}
-
 	if o.WebHook != nil {
 		retryBackoff := o.WebHook.RetryBackoff
 		if retryBackoff != nil && retryBackoff.Steps <= 0 {
@@ -307,9 +304,37 @@ func (o *BuiltInAuthenticationOptions) Validate() []error {
 
 	if o.RequestHeader != nil {
 		allErrors = append(allErrors, o.RequestHeader.Validate()...)
+
+		if o.ClientCert != nil &&
+			len(o.ClientCert.ClientCA) > 0 &&
+			len(o.RequestHeader.ClientCAFile) > 0 &&
+			len(o.RequestHeader.AllowedNames) == 0 {
+			clientCACerts, err1 := certutil.CertsFromFile(o.ClientCert.ClientCA)
+			requestHeaderCACerts, err2 := certutil.CertsFromFile(o.RequestHeader.ClientCAFile)
+			if err1 == nil && err2 == nil {
+				if certificatesOverlap(clientCACerts, requestHeaderCACerts) {
+					allErrors = append(allErrors,
+						fmt.Errorf("--requestheader-client-ca-file and --client-ca-file contain overlapping certificates; --requestheader-allowed-names must be specified to ensure regular client certificates cannot set authenticating proxy headers for arbitrary users"))
+				}
+			}
+		}
+
 	}
 
 	return allErrors
+}
+
+// certificatesOverlap returns true when there's at least one identical
+// certificate in the two certificate bundles
+func certificatesOverlap(a, b []*x509.Certificate) bool {
+	for _, ca := range a {
+		for _, cb := range b {
+			if ca.Equal(cb) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 // AddFlags returns flags of authentication for a API Server
@@ -321,7 +346,6 @@ func (o *BuiltInAuthenticationOptions) AddFlags(fs *pflag.FlagSet) {
 	fs.StringVar(&o.AuthenticationConfigFile, "authentication-config", o.AuthenticationConfigFile, ""+
 		"File with Authentication Configuration to configure the JWT Token authenticator or the anonymous authenticator. "+
 		"Requires the StructuredAuthenticationConfiguration feature gate. "+
-		"Also requires the feature gate AnonymousAuthConfigurableEndpoints to configure the anonymous authenticator in the config file. "+
 		"This flag is mutually exclusive with the --oidc-* flags if the file configures the JWT Token authenticator. "+
 		"This flag is mutually exclusive with --anonymous-auth if the file configures the Anonymous authenticator.")
 
@@ -429,9 +453,9 @@ func (o *BuiltInAuthenticationOptions) AddFlags(fs *pflag.FlagSet) {
 
 		fs.StringVar(&o.ServiceAccounts.JWKSURI, "service-account-jwks-uri", o.ServiceAccounts.JWKSURI, ""+
 			"Overrides the URI for the JSON Web Key Set in the discovery doc served at "+
-			"/.well-known/openid-configuration. This flag is useful if the discovery doc"+
+			"/.well-known/openid-configuration. This flag is useful if the discovery doc "+
 			"and key set are served to relying parties from a URL other than the "+
-			"API server's external (as auto-detected or overridden with external-hostname). ")
+			"API server's external (as auto-detected or overridden with external-hostname).")
 
 		fs.DurationVar(&o.ServiceAccounts.MaxExpiration, "service-account-max-token-expiration", o.ServiceAccounts.MaxExpiration, ""+
 			"The maximum validity duration of a token created by the service account token issuer. If an otherwise valid "+
@@ -492,7 +516,7 @@ func (o *BuiltInAuthenticationOptions) ToAuthenticationConfig() (kubeauthenticat
 	if len(o.AuthenticationConfigFile) > 0 {
 		var err error
 		if ret.AuthenticationConfig, ret.AuthenticationConfigData, err = loadAuthenticationConfig(o.AuthenticationConfigFile); err != nil {
-			return kubeauthenticator.Config{}, err
+			return kubeauthenticator.Config{}, fmt.Errorf("failed to load authentication configuration from file %q: %w", o.AuthenticationConfigFile, err)
 		}
 	} else {
 		ret.AuthenticationConfig = &apiserver.AuthenticationConfiguration{}
@@ -525,7 +549,7 @@ func (o *BuiltInAuthenticationOptions) ToAuthenticationConfig() (kubeauthenticat
 			},
 			ClaimMappings: apiserver.ClaimMappings{
 				Username: apiserver.PrefixedClaimOrExpression{
-					Prefix: pointer.String(usernamePrefix),
+					Prefix: ptr.To(usernamePrefix),
 					Claim:  o.OIDC.UsernameClaim,
 				},
 			},
@@ -533,7 +557,7 @@ func (o *BuiltInAuthenticationOptions) ToAuthenticationConfig() (kubeauthenticat
 
 		if len(o.OIDC.GroupsClaim) > 0 {
 			jwtAuthenticator.ClaimMappings.Groups = apiserver.PrefixedClaimOrExpression{
-				Prefix: pointer.String(o.OIDC.GroupsPrefix),
+				Prefix: ptr.To(o.OIDC.GroupsPrefix),
 				Claim:  o.OIDC.GroupsClaim,
 			}
 		}
@@ -567,7 +591,7 @@ func (o *BuiltInAuthenticationOptions) ToAuthenticationConfig() (kubeauthenticat
 		switch {
 		case ret.AuthenticationConfig.Anonymous != nil && o.Anonymous.FlagsSet:
 			// Flags and config file are mutually exclusive
-			return kubeauthenticator.Config{}, field.Forbidden(field.NewPath("anonymous"), "--anonynous-auth flag cannot be set when anonymous field is configured in authentication configuration file")
+			return kubeauthenticator.Config{}, field.Forbidden(field.NewPath("anonymous"), "--anonymous-auth flag cannot be set when anonymous field is configured in authentication configuration file")
 		case ret.AuthenticationConfig.Anonymous != nil:
 			// Use the config-file-specified values
 			ret.Anonymous = *ret.AuthenticationConfig.Anonymous
@@ -578,7 +602,7 @@ func (o *BuiltInAuthenticationOptions) ToAuthenticationConfig() (kubeauthenticat
 	}
 
 	if err := apiservervalidation.ValidateAuthenticationConfiguration(authenticationcel.NewDefaultCompiler(), ret.AuthenticationConfig, ret.ServiceAccountIssuers).ToAggregate(); err != nil {
-		return kubeauthenticator.Config{}, err
+		return kubeauthenticator.Config{}, fmt.Errorf("invalid authentication configuration: %w", err)
 	}
 
 	if o.RequestHeader != nil {
@@ -716,8 +740,10 @@ func (o *BuiltInAuthenticationOptions) ApplyTo(
 			return err
 		}
 		authenticatorConfig.CustomDial = egressDialer
+		authenticatorConfig.EgressLookup = egressSelector.Lookup
 	}
 
+	authenticatorConfig.APIServerID = apiServerID
 	// var openAPIV3SecuritySchemes spec3.SecuritySchemes
 	authenticator, updateAuthenticationConfig, openAPIV2SecurityDefinitions, openAPIV3SecuritySchemes, err := authenticatorConfig.New(ctx)
 	if err != nil {
@@ -727,6 +753,7 @@ func (o *BuiltInAuthenticationOptions) ApplyTo(
 
 	if len(o.AuthenticationConfigFile) > 0 {
 		authenticationconfigmetrics.RegisterMetrics()
+		authenticationconfigmetrics.RecordAuthenticationConfigLastConfigInfo(apiServerID, authenticatorConfig.AuthenticationConfigData)
 		trackedAuthenticationConfigData := authenticatorConfig.AuthenticationConfigData
 		var mu sync.Mutex
 
@@ -789,7 +816,7 @@ func (o *BuiltInAuthenticationOptions) ApplyTo(
 
 				trackedAuthenticationConfigData = authConfigData
 				klog.InfoS("reloaded authentication config")
-				authenticationconfigmetrics.RecordAuthenticationConfigAutomaticReloadSuccess(apiServerID)
+				authenticationconfigmetrics.RecordAuthenticationConfigAutomaticReloadSuccess(apiServerID, authConfigData)
 			},
 			func(err error) { klog.ErrorS(err, "watching authentication config file") },
 		)
