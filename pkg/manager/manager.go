@@ -28,23 +28,24 @@ import (
 )
 
 type SupportBundleManager struct {
-	Namespaces      []string
-	BundleName      string
-	bundleFileName  string
-	OutputDir       string
-	WaitTimeout     time.Duration
-	ManagerPodIP    string
-	Standalone      bool
-	ImageName       string
-	ImagePullPolicy string
-	KubeConfig      string
-	PodNamespace    string
-	NodeSelector    string
-	TaintToleration string
-	RegistrySecret  string
-	IssueURL        string
-	Description     string
-	NodeTimeout     time.Duration
+	Namespaces           []string
+	BundleName           string
+	bundleFileName       string
+	CustomBundleFileName string
+	OutputDir            string
+	WaitTimeout          time.Duration
+	ManagerPodIP         string
+	Standalone           bool
+	ImageName            string
+	ImagePullPolicy      string
+	KubeConfig           string
+	PodNamespace         string
+	NodeSelector         string
+	TaintToleration      string
+	RegistrySecret       string
+	IssueURL             string
+	Description          string
+	NodeTimeout          time.Duration
 
 	ExcludeResources    []schema.GroupResource
 	ExcludeResourceList []string

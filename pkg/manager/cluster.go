@@ -53,8 +53,14 @@ func (c *Cluster) GenerateClusterBundle(bundleDir string) (string, error) {
 		IssueDescription:     c.sbm.Description,
 	}
 
+	// Use custom bundle file name from environment variable if set, otherwise use UUID
+	bundleIdentifier := bundleMeta.ProjectNamespaceUUID
+	if c.sbm.CustomBundleFileName != "" {
+		bundleIdentifier = c.sbm.CustomBundleFileName
+	}
+
 	bundleName := fmt.Sprintf("supportbundle_%s_%s.zip",
-		bundleMeta.ProjectNamespaceUUID,
+		bundleIdentifier,
 		strings.ReplaceAll(bundleMeta.BundleCreatedAt, ":", "-"))
 
 	errLog, err := os.Create(filepath.Join(bundleDir, "bundleGenerationError.log"))
