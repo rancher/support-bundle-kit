@@ -47,6 +47,7 @@ func init() {
 	rootCmd.AddCommand(managerCmd)
 	managerCmd.PersistentFlags().StringSliceVar(&sbm.Namespaces, "namespaces", getEnvStringSlice("SUPPORT_BUNDLE_TARGET_NAMESPACES"), "List of namespaces delimited by ,")
 	managerCmd.PersistentFlags().StringVar(&sbm.BundleName, "bundlename", os.Getenv("SUPPORT_BUNDLE_NAME"), "The support bundle name")
+	managerCmd.PersistentFlags().StringVar(&sbm.CustomBundleFileName, "bundle-file-name", os.Getenv("SUPPORT_BUNDLE_FILE_NAME"), "The custom support bundle file name")
 	managerCmd.PersistentFlags().StringVar(&sbm.OutputDir, "outdir", os.Getenv("SUPPORT_BUNDLE_OUTPUT_DIR"), "The directory to store the bundle")
 	managerCmd.PersistentFlags().StringVar(&sbm.ManagerPodIP, "manager-pod-ip", os.Getenv("SUPPORT_BUNDLE_MANAGER_POD_IP"), "The support bundle manager's IP (pod runs this app)")
 	managerCmd.PersistentFlags().StringVar(&sbm.ImageName, "image-name", os.Getenv("SUPPORT_BUNDLE_IMAGE"), "The support bundle image")
