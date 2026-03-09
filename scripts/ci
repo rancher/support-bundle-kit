@@ -3,6 +3,7 @@ set -e
 
 cd $(dirname $0)
 
+./verify-vendor-patches apply
 ./build
 ./validate
 ./test
