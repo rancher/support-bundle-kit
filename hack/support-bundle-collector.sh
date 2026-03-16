@@ -27,7 +27,7 @@ else
     # Default collector based on OS ID
     OS_COLLECTOR="collector-$OS_ID" 
     # Array of OS IDs that should use collector-sl-micro
-    SL_MICRO_IDS=("sle-micro-rancher" "sl-micro")
+    SL_MICRO_IDS=("sle-micro-rancher" "sl-micro" "sles")
     
     # Check if OS_ID matches any ID in the array
     for id in "${SL_MICRO_IDS[@]}"; do
