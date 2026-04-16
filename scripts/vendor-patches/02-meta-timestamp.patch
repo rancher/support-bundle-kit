@@ -1,0 +1,24 @@
+diff --git a/vendor/k8s.io/apiserver/pkg/registry/rest/meta.go b/vendor/k8s.io/apiserver/pkg/registry/rest/meta.go
+index fc4fc81e..1bdea92c 100644
+--- a/vendor/k8s.io/apiserver/pkg/registry/rest/meta.go
++++ b/vendor/k8s.io/apiserver/pkg/registry/rest/meta.go
+@@ -28,7 +28,7 @@ var metav1Now = func() metav1.Time { return metav1.Now() }
+ 
+ // WipeObjectMetaSystemFields erases fields that are managed by the system on ObjectMeta.
+ func WipeObjectMetaSystemFields(meta metav1.Object) {
+-	meta.SetCreationTimestamp(metav1.Time{})
++	//meta.SetCreationTimestamp(metav1.Time{})
+ 	meta.SetUID("")
+ 	meta.SetDeletionTimestamp(nil)
+ 	meta.SetDeletionGracePeriodSeconds(nil)
+@@ -37,7 +37,9 @@ func WipeObjectMetaSystemFields(meta metav1.Object) {
+ 
+ // FillObjectMetaSystemFields populates fields that are managed by the system on ObjectMeta.
+ func FillObjectMetaSystemFields(meta metav1.Object) {
+-	meta.SetCreationTimestamp(metav1Now())
++	if meta.GetCreationTimestamp().String() == "" {
++		meta.SetCreationTimestamp(metav1.Now())
++	}
+ 	meta.SetUID(uuid.NewUUID())
+ }
+ 
