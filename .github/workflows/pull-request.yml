@@ -3,6 +3,9 @@ name: Pull Request Build
 on:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   call-dapper-build:
     uses: ./.github/workflows/template-build.yml
