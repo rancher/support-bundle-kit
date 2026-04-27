@@ -5,6 +5,8 @@ on:
     tags:
       - v*
 
+permissions: {}
+
 jobs:
   call-dapper-build:
     uses: ./.github/workflows/template-build.yml

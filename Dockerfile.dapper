@@ -1,4 +1,4 @@
-FROM registry.suse.com/bci/golang:1.25.8
+FROM registry.suse.com/bci/golang:1.25.8@sha256:c1a6327cfa677209e87db4737d350a441786e0afe4e78fcf9c2bdc7c1fc67e16
 
 ARG DAPPER_HOST_ARCH
 ENV ARCH $DAPPER_HOST_ARCH
@@ -8,12 +8,28 @@ ENV ARCH $DAPPER_HOST_ARCH
 RUN zypper -n install ca-certificates awk lsb-release rsync docker containerd
 
 # Install golangci-lint
-RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "$(go env GOPATH)/bin" latest
+# renovate: datasource=github-releases depName=golangci/golangci-lint
+ENV GOLANGCI_LINT_VERSION=v2.11.4
+ENV GOLANGCI_LINT_SUM_amd64=200c5b7503f67b59a6743ccf32133026c174e272b930ee79aa2aa6f37aca7ef1
+ENV GOLANGCI_LINT_SUM_arm64=3bcfa2e6f3d32b2bf5cd75eaa876447507025e0303698633f722a05331988db4
+RUN curl -sSfL "https://github.com/golangci/golangci-lint/releases/download/${GOLANGCI_LINT_VERSION}/golangci-lint-${GOLANGCI_LINT_VERSION#v}-linux-${ARCH}.tar.gz" \
+        -o /tmp/golangci-lint.tar.gz && \
+    eval "EXPECTED=\${GOLANGCI_LINT_SUM_${ARCH}}" && \
+    echo "${EXPECTED}  /tmp/golangci-lint.tar.gz" | sha256sum -c - && \
+    tar -xzf /tmp/golangci-lint.tar.gz -C "$(go env GOPATH)/bin" \
+        --strip-components=1 "golangci-lint-${GOLANGCI_LINT_VERSION#v}-linux-${ARCH}/golangci-lint" && \
+    rm /tmp/golangci-lint.tar.gz
 
 # The docker version in dapper is too old to have buildx. Install it manually.
-RUN curl -sSfL https://github.com/docker/buildx/releases/download/v0.14.1/buildx-v0.14.1.linux-${ARCH} -o buildx-v0.14.1.linux-${ARCH} && \
-    chmod +x buildx-v0.14.1.linux-${ARCH} && \
-    mv buildx-v0.14.1.linux-${ARCH} /usr/local/bin/buildx
+# renovate: datasource=github-releases depName=docker/buildx
+ENV BUILDX_VERSION=v0.14.1
+ENV BUILDX_SUM_amd64=68e4f8895331ade982de8085a8c137b8af65f3ef95040b6c6113552243638508
+ENV BUILDX_SUM_arm64=82e776e50a84293c160e8c89c125b7a86295c7aa7f30751d6a7c051c171762c1
+RUN eval "EXPECTED=\${BUILDX_SUM_${ARCH}}" && \
+    curl -sSfL "https://github.com/docker/buildx/releases/download/${BUILDX_VERSION}/buildx-${BUILDX_VERSION}.linux-${ARCH}" \
+        -o /tmp/buildx && \
+    echo "${EXPECTED}  /tmp/buildx" | sha256sum -c - && \
+    chmod +x /tmp/buildx && mv /tmp/buildx /usr/local/bin/buildx
 
 # -- for dapper
 ENV DAPPER_RUN_ARGS --privileged --network host -v /run/containerd/containerd.sock:/run/containerd/containerd.sock

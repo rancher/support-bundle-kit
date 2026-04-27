@@ -6,6 +6,8 @@ on:
       - master
       - release/v*
 
+permissions: {}
+
 jobs:
   call-dapper-build:
     uses: ./.github/workflows/template-build.yml
