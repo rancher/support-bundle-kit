@@ -23,7 +23,11 @@ This will trigger the bootstrap of the simulator components and load the content
 
 For `kubectl logs` to work, the `--bundle-path` should point to the correct bundle path, the default is `.`
 
-The state of the simulator is stored in `$HOME/.sim`, where the users can find an `admin.kubeconfig`
+The state of the simulator is stored in `$HOME/.sim`, where the users can find an `admin.kubeconfig`. Run the following command to set the `KUBECONFIG` environment variable.
+
+```bash
+export KUBECONFIG=$HOME/.sim/admin.kubeconfig
+```
 
 This can now be used to interact with the cluster.
 
