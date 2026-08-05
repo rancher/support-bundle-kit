@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -61,6 +62,9 @@ func init() {
 	managerCmd.PersistentFlags().StringVar(&sbm.Description, "description", os.Getenv("SUPPORT_BUNDLE_DESCRIPTION"), "The support bundle description")
 	managerCmd.PersistentFlags().StringVar(&sbm.IssueURL, "issue-url", os.Getenv("SUPPORT_BUNDLE_ISSUE_URL"), "The support bundle issue url")
 	managerCmd.PersistentFlags().DurationVar(&sbm.NodeTimeout, "node-timeout", parseDurationString(os.Getenv("SUPPORT_BUNDLE_NODE_TIMEOUT")), "The support bundle node collection time out")
+
+	managerCmd.PersistentFlags().Int64Var(&sbm.LogSinceSeconds, "log-since-seconds", parseInt64Env("SUPPORT_BUNDLE_LOG_SINCE_SECONDS"), "Fetch logs since this many seconds before now")
+	managerCmd.PersistentFlags().StringVar(&sbm.LogSinceTime, "log-since-time", os.Getenv("SUPPORT_BUNDLE_LOG_SINCE_TIME"), "Fetch logs since this RFC3339 time")
 }
 
 // parseDurationString could parse `1s` and `10m` duration string.
@@ -75,4 +79,14 @@ func parseDurationString(value string) time.Duration {
 	}
 
 	return d
+}
+
+func parseInt64Env(key string) int64 {
+	if value, ok := os.LookupEnv(key); ok {
+		i, err := strconv.ParseInt(value, 10, 64)
+		if err == nil {
+			return i
+		}
+	}
+	return 0
 }
