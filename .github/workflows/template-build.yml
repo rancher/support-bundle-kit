@@ -60,7 +60,7 @@ jobs:
         if: ${{ startsWith(github.ref, 'refs/tags/') && fromJSON(inputs.release) }}
         run: |
           cd dist/artifacts
-          for arch in amd64 arm64; do
+          for arch in amd64 arm64 darwin-arm64; do
             rm -f sha256sum-$arch.txt && touch sha256sum-$arch.txt
             if [ -e support-bundle-kit-$arch ]; then
               tar zcf support-bundle-kit-$arch.tar.gz support-bundle-kit-$arch
@@ -81,5 +81,7 @@ jobs:
           fi
           gh release upload ${{ github.ref_name }} dist/artifacts/support-bundle-kit-amd64.tar.gz
           gh release upload ${{ github.ref_name }} dist/artifacts/support-bundle-kit-arm64.tar.gz
+          gh release upload ${{ github.ref_name }} dist/artifacts/support-bundle-kit-darwin-arm64.tar.gz
           gh release upload ${{ github.ref_name }} dist/artifacts/sha256sum-amd64.txt
           gh release upload ${{ github.ref_name }} dist/artifacts/sha256sum-arm64.txt
+          gh release upload ${{ github.ref_name }} dist/artifacts/sha256sum-darwin-arm64.txt
