@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	corev1 "k8s.io/api/core/v1"
@@ -177,4 +178,31 @@ func TestRunAllPhases(t *testing.T) {
 			assert.Equal(t, tt.expectedProgress, m.status.Progress, "expected progress %v, got %v")
 		})
 	}
+}
+
+func TestGetPodLogOptions(t *testing.T) {
+	m := &SupportBundleManager{
+		LogSinceSeconds: 3600,
+	}
+
+	opts, err := m.getPodLogOptions(false)
+	assert.NoError(t, err)
+	assert.NotNil(t, opts.SinceSeconds)
+	assert.Equal(t, int64(3600), *opts.SinceSeconds)
+	assert.Nil(t, opts.SinceTime)
+
+	m = &SupportBundleManager{
+		LogSinceTime: "2026-08-05T12:00:00Z",
+	}
+	opts, err = m.getPodLogOptions(false)
+	assert.NoError(t, err)
+	assert.NotNil(t, opts.SinceTime)
+	assert.Equal(t, "2026-08-05T12:00:00Z", opts.SinceTime.UTC().Format(time.RFC3339))
+
+	m = &SupportBundleManager{
+		LogSinceSeconds: 10,
+		LogSinceTime:    "2026-08-05T12:00:00Z",
+	}
+	_, err = m.getPodLogOptions(false)
+	assert.Error(t, err)
 }

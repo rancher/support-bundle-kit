@@ -44,19 +44,13 @@ func (k *KubernetesClient) GetPodsListByLabels(namespace string, labels string) 
 	return k.clientSet.CoreV1().Pods(namespace).List(k.Context, metav1.ListOptions{LabelSelector: labels})
 }
 
-func (k *KubernetesClient) GetPodContainerLogRequest(namespace, podName, containerName string) *rest.Request {
-	return k.clientSet.CoreV1().Pods(namespace).GetLogs(podName, &corev1.PodLogOptions{
-		Container:  containerName,
-		Timestamps: true,
-	})
+func (k *KubernetesClient) GetPodContainerLogRequest(namespace, podName, containerName string, opts *corev1.PodLogOptions) *rest.Request {
+	return k.clientSet.CoreV1().Pods(namespace).GetLogs(podName, opts)
+
 }
 
-func (k *KubernetesClient) GetPodContainerPreviousLogRequest(namespace, podName, containerName string) *rest.Request {
-	return k.clientSet.CoreV1().Pods(namespace).GetLogs(podName, &corev1.PodLogOptions{
-		Container:  containerName,
-		Timestamps: true,
-		Previous:   true,
-	})
+func (k *KubernetesClient) GetPodContainerPreviousLogRequest(namespace, podName, containerName string, opts *corev1.PodLogOptions) *rest.Request {
+	return k.clientSet.CoreV1().Pods(namespace).GetLogs(podName, opts)
 }
 
 func (k *KubernetesClient) GetPodRestartCount(namespace, podName, containerName string) (int32, error) {
