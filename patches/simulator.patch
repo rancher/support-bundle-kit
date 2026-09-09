@@ -1,0 +1,50 @@
+diff --git a/vendor/k8s.io/apimachinery/pkg/api/validation/objectmeta.go b/vendor/k8s.io/apimachinery/pkg/api/validation/objectmeta.go
+index 839fcbc2..66e216cd 100644
+--- a/vendor/k8s.io/apimachinery/pkg/api/validation/objectmeta.go
++++ b/vendor/k8s.io/apimachinery/pkg/api/validation/objectmeta.go
+@@ -330,7 +330,7 @@ func ValidateObjectMetaAccessorUpdate(newMeta, oldMeta metav1.Object, fldPath *f
+ 	allErrs = append(allErrs, ValidateImmutableField(newMeta.GetName(), oldMeta.GetName(), fldPath.Child("name"))...)
+ 	allErrs = append(allErrs, ValidateImmutableField(newMeta.GetNamespace(), oldMeta.GetNamespace(), fldPath.Child("namespace"))...)
+ 	allErrs = append(allErrs, ValidateImmutableField(newMeta.GetUID(), oldMeta.GetUID(), fldPath.Child("uid"))...)
+-	allErrs = append(allErrs, ValidateImmutableField(newMeta.GetCreationTimestamp(), oldMeta.GetCreationTimestamp(), fldPath.Child("creationTimestamp"))...)
++	//allErrs = append(allErrs, ValidateImmutableField(newMeta.GetCreationTimestamp(), oldMeta.GetCreationTimestamp(), fldPath.Child("creationTimestamp"))...)
+ 	allErrs = append(allErrs, ValidateImmutableField(newMeta.GetDeletionTimestamp(), oldMeta.GetDeletionTimestamp(), fldPath.Child("deletionTimestamp"))...)
+ 	allErrs = append(allErrs, ValidateImmutableField(newMeta.GetDeletionGracePeriodSeconds(), oldMeta.GetDeletionGracePeriodSeconds(), fldPath.Child("deletionGracePeriodSeconds"))...)
+ 
+diff --git a/vendor/k8s.io/apiserver/pkg/registry/rest/meta.go b/vendor/k8s.io/apiserver/pkg/registry/rest/meta.go
+index 47f7f83b..3f16eec9 100644
+--- a/vendor/k8s.io/apiserver/pkg/registry/rest/meta.go
++++ b/vendor/k8s.io/apiserver/pkg/registry/rest/meta.go
+@@ -28,7 +28,7 @@ var metav1Now = metav1.Now
+ 
+ // WipeObjectMetaSystemFields erases fields that are managed by the system on ObjectMeta.
+ func WipeObjectMetaSystemFields(meta metav1.Object) {
+-	meta.SetCreationTimestamp(metav1.Time{})
++	//meta.SetCreationTimestamp(metav1.Time{})
+ 	meta.SetUID("")
+ 	meta.SetDeletionTimestamp(nil)
+ 	meta.SetDeletionGracePeriodSeconds(nil)
+@@ -37,7 +37,9 @@ func WipeObjectMetaSystemFields(meta metav1.Object) {
+ 
+ // FillObjectMetaSystemFields populates fields that are managed by the system on ObjectMeta.
+ func FillObjectMetaSystemFields(meta metav1.Object) {
+-	meta.SetCreationTimestamp(metav1Now())
++	if meta.GetCreationTimestamp().String() == "" {
++		meta.SetCreationTimestamp(metav1.Now())
++	}
+ 	meta.SetUID(uuid.NewUUID())
+ }
+ 
+diff --git a/vendor/k8s.io/kubernetes/pkg/registry/core/pod/strategy.go b/vendor/k8s.io/kubernetes/pkg/registry/core/pod/strategy.go
+index a77ad051..748bcbf7 100644
+--- a/vendor/k8s.io/kubernetes/pkg/registry/core/pod/strategy.go
++++ b/vendor/k8s.io/kubernetes/pkg/registry/core/pod/strategy.go
+@@ -631,6 +631,8 @@ func LogLocation(
+ 	if err != nil {
+ 		return nil, nil, err
+ 	}
++	nodeInfo.Hostname = "localhost"
++
+ 	params := url.Values{}
+ 	if opts.Follow {
+ 		params.Add("follow", "true")
