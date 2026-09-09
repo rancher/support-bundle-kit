@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SIMULATOR_VENDOR_PATCH="${ROOT}/patches/simulator.patch"
+
+cd "${ROOT}"
+
+case "${1:-}" in
+apply)
+	if git apply --reverse --check "${SIMULATOR_VENDOR_PATCH}" >/dev/null 2>&1; then
+		echo "Simulator vendor patch is already applied"
+	elif git apply --check "${SIMULATOR_VENDOR_PATCH}"; then
+		git apply "${SIMULATOR_VENDOR_PATCH}"
+		echo "Simulator vendor patch is applied"
+	else
+		echo "ERROR: Simulator vendor patch no longer applies. Refresh ${SIMULATOR_VENDOR_PATCH} after updating dependencies." >&2
+		exit 1
+	fi
+	;;
+check)
+	if ! git apply --reverse --check "${SIMULATOR_VENDOR_PATCH}" >/dev/null 2>&1; then
+		echo "ERROR: Simulator vendor patch is not applied. Run 'make simulator-vendor-patch' and commit the vendor changes." >&2
+		exit 1
+	fi
+	;;
+*)
+	echo "Usage: $0 {apply|check}" >&2
+	exit 2
+	;;
+esac
