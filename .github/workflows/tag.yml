@@ -1,15 +1,14 @@
 name: Tag Build and Publish
 
 on:
-  push:
-    tags:
-      - v*
+  release:
+    types: [published]
 
 jobs:
   call-dapper-build:
     uses: ./.github/workflows/template-build.yml
     with:
-      release-tag-name: ${{ github.ref_name }}
+      release-tag-name: ${{ github.event.release.tag_name }}
       push: true
       release: true
     secrets: inherit
