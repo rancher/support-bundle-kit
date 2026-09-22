@@ -65,11 +65,11 @@ jobs:
 
       - name: Login to Staging Registry
         id: login-staging
-        if: ${{ inputs.push == true && inputs.release == false }}
+        if: ${{ false }}
         uses: harvester/harvester-actions/actions/login-staging-registry@f5246cd8d423922ea55141991155f4b05f665bd5 # main
 
       - name: Publish staging ${{ env.imageName }} image
-        if: ${{ inputs.push == true && inputs.release == false }}
+        if: ${{ false }}
         uses: harvester/harvester-actions/actions/publish-prime-image@f5246cd8d423922ea55141991155f4b05f665bd5 # main
         with:
           context: .
