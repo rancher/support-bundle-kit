@@ -14,6 +14,7 @@ RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/i
 
 # ---- base ----
 FROM builder AS base
+ENV HOME=/go/src/github.com/rancher/support-bundle-kit
 WORKDIR /go/src/github.com/rancher/support-bundle-kit
 
 # to exclude some files, add them in .dockerignore
