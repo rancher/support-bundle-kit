@@ -49,11 +49,11 @@ jobs:
       - name: Login to Docker Hub
         id: login-docker
         if: ${{ inputs.push == true }}
-        uses: harvester/harvester-actions/actions/login-docker-hub@f5246cd8d423922ea55141991155f4b05f665bd5 # main
+        uses: harvester/harvester-actions/actions/login-docker-hub@f9d3081c0b7241e65cc2ffe8701a5e7ffd4c5ee2 # main
 
       - name: Publish public ${{ env.imageName }} image
         if: ${{ inputs.push == true }}
-        uses: harvester/harvester-actions/actions/publish-public-image@f5246cd8d423922ea55141991155f4b05f665bd5 # main
+        uses: harvester/harvester-actions/actions/publish-public-image@f9d3081c0b7241e65cc2ffe8701a5e7ffd4c5ee2 # main
         with:
           context: .
           dockerfile: package/Dockerfile
@@ -66,11 +66,11 @@ jobs:
       - name: Login to Staging Registry
         id: login-staging
         if: ${{ inputs.push == true && inputs.release == false }}
-        uses: harvester/harvester-actions/actions/login-staging-registry@f5246cd8d423922ea55141991155f4b05f665bd5 # main
+        uses: harvester/harvester-actions/actions/login-staging-registry@f9d3081c0b7241e65cc2ffe8701a5e7ffd4c5ee2 # main
 
       - name: Publish staging ${{ env.imageName }} image
         if: ${{ inputs.push == true && inputs.release == false }}
-        uses: harvester/harvester-actions/actions/publish-prime-image@f5246cd8d423922ea55141991155f4b05f665bd5 # main
+        uses: harvester/harvester-actions/actions/publish-prime-image@f9d3081c0b7241e65cc2ffe8701a5e7ffd4c5ee2 # main
         with:
           context: .
           dockerfile: package/Dockerfile
@@ -83,11 +83,11 @@ jobs:
       - name: Login to Prime Registry
         id: login-prime
         if: ${{ inputs.push == true && inputs.release == true }}
-        uses: harvester/harvester-actions/actions/login-prime-registry@f5246cd8d423922ea55141991155f4b05f665bd5 # main
+        uses: harvester/harvester-actions/actions/login-prime-registry@f9d3081c0b7241e65cc2ffe8701a5e7ffd4c5ee2 # main
 
       - name: Publish prime ${{ env.imageName }} image
         if: ${{ inputs.push == true && inputs.release == true }}
-        uses: harvester/harvester-actions/actions/publish-prime-image@f5246cd8d423922ea55141991155f4b05f665bd5 # main
+        uses: harvester/harvester-actions/actions/publish-prime-image@f9d3081c0b7241e65cc2ffe8701a5e7ffd4c5ee2 # main
         with:
           context: .
           dockerfile: package/Dockerfile
