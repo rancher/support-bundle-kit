@@ -58,7 +58,7 @@ DOCKER_BUILD = docker build $(MK_DOCKER_PULL) \
 	--build-arg MK_HOST_ARCH \
 	-f $(ROOT)/Dockerfile $(ROOT)
 
-.PHONY: build ci generate package test validate
+.PHONY: build ci generate package simulator-vendor-check simulator-vendor-patch test validate
 
 
 # ---- Directories ----
@@ -71,6 +71,16 @@ $(ROOT)/bin:
 gen-version-env:
 	$(BANNER)
 	@bash $(ROOT)/scripts/version > /dev/null
+
+
+# ---- Simulator vendor patch ----
+simulator-vendor-patch:
+	$(BANNER)
+	@$(ROOT)/scripts/simulator-vendor apply
+
+simulator-vendor-check:
+	$(BANNER)
+	@$(ROOT)/scripts/simulator-vendor check
 
 
 # ---- Compile support-bundle-kit binaries ----
@@ -111,4 +121,4 @@ clean:
 
 default: build package
 
-ci: build validate test package
+ci: simulator-vendor-check build validate test package
