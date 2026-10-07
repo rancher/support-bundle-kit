@@ -175,6 +175,11 @@ func (o *ObjectManager) ApplyObjects(objs []runtime.Object, patchStatus bool, sk
 
 		restMapping, err := findGVR(v.GetObjectKind().GroupVersionKind(), o.config)
 		if err != nil {
+			if meta.IsNoMatchError(err) {
+				logrus.Warnf("skipping object %s/%s: no GVR mapping found for kind %q (CRD likely not present in bundle): %v",
+					unstructuredObj.GetNamespace(), unstructuredObj.GetName(), unstructuredObj.GetKind(), err)
+				continue
+			}
 			return fmt.Errorf("error looking up GVR %v for object %v", err, unstructuredObj)
 		}
 
