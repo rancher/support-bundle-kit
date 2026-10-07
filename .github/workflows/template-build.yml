@@ -12,6 +12,10 @@ on:
         default: false
         type: boolean
 
+env:
+  PLATFORMS: linux/amd64,linux/arm64
+  imageName: support-bundle-kit
+
 jobs:
   dapper-build:
     runs-on: ubuntu-latest
@@ -31,46 +35,83 @@ jobs:
       - name: Run dapper
         run: make ci
 
-      - name: Read some Secrets
-        uses: rancher-eio/read-vault-secrets@0da85151ad1f19ed7986c41587e45aac1ace74b6 # v3
-        if: ${{ inputs.push == true }}
-        with:
-          secrets: |
-            secret/data/github/repo/${{ github.repository }}/dockerhub/rancher/credentials username | DOCKER_USERNAME ;
-            secret/data/github/repo/${{ github.repository }}/dockerhub/rancher/credentials password | DOCKER_PASSWORD
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
-        if: ${{ inputs.push == true }}
-        with:
-          username: ${{ env.DOCKER_USERNAME }}
-          password: ${{ env.DOCKER_PASSWORD }}
-
       - name: Docker Build
+        if: ${{ inputs.push == false }}
         uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25 # v5
         with:
           provenance: false
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ env.PLATFORMS }}
           file: package/Dockerfile
-          push: ${{ inputs.push }}
-          tags: rancher/support-bundle-kit:${{ inputs.release-tag-name }}
+          push: false
+          tags: ${{ env.imageName }}:${{ inputs.release-tag-name }}
+
+      - name: Login to Docker Hub
+        id: login-docker
+        if: ${{ inputs.push == true }}
+        uses: harvester/harvester-actions/actions/login-docker-hub@f9d3081c0b7241e65cc2ffe8701a5e7ffd4c5ee2 # main
+
+      - name: Publish public ${{ env.imageName }} image
+        if: ${{ inputs.push == true }}
+        uses: harvester/harvester-actions/actions/publish-public-image@f9d3081c0b7241e65cc2ffe8701a5e7ffd4c5ee2 # main
+        with:
+          context: .
+          dockerfile: package/Dockerfile
+          image: ${{ env.imageName }}
+          tag: ${{ inputs.release-tag-name }}
+          platforms: ${{ env.PLATFORMS }}
+          registry: ${{ steps.login-docker.outputs.registry }}
+          repository: ${{ steps.login-docker.outputs.repository }}
+
+      - name: Login to Staging Registry
+        id: login-staging
+        if: ${{ inputs.push == true && inputs.release == false }}
+        uses: harvester/harvester-actions/actions/login-staging-registry@f9d3081c0b7241e65cc2ffe8701a5e7ffd4c5ee2 # main
+
+      - name: Publish staging ${{ env.imageName }} image
+        if: ${{ inputs.push == true && inputs.release == false }}
+        uses: harvester/harvester-actions/actions/publish-prime-image@f9d3081c0b7241e65cc2ffe8701a5e7ffd4c5ee2 # main
+        with:
+          context: .
+          dockerfile: package/Dockerfile
+          image: ${{ env.imageName }}
+          tag: ${{ inputs.release-tag-name }}
+          platforms: ${{ env.PLATFORMS }}
+          registry: ${{ steps.login-staging.outputs.registry }}
+          repository: ${{ steps.login-staging.outputs.repository }}
+
+      - name: Login to Prime Registry
+        id: login-prime
+        if: ${{ inputs.push == true && inputs.release == true }}
+        uses: harvester/harvester-actions/actions/login-prime-registry@f9d3081c0b7241e65cc2ffe8701a5e7ffd4c5ee2 # main
+
+      - name: Publish prime ${{ env.imageName }} image
+        if: ${{ inputs.push == true && inputs.release == true }}
+        uses: harvester/harvester-actions/actions/publish-prime-image@f9d3081c0b7241e65cc2ffe8701a5e7ffd4c5ee2 # main
+        with:
+          context: .
+          dockerfile: package/Dockerfile
+          image: ${{ env.imageName }}
+          tag: ${{ inputs.release-tag-name }}
+          platforms: ${{ env.PLATFORMS }}
+          registry: ${{ steps.login-prime.outputs.registry }}
+          repository: ${{ steps.login-prime.outputs.repository }}
 
       - name: Prepare artifacts for the release
-        if: ${{ startsWith(github.ref, 'refs/tags/') && fromJSON(inputs.release) }}
+        if: ${{ startsWith(github.ref, 'refs/tags/') && inputs.release }}
         run: |
           cd dist/artifacts
-          for arch in amd64 arm64; do
+          for arch in amd64 arm64 darwin-arm64; do
             rm -f sha256sum-$arch.txt && touch sha256sum-$arch.txt
             if [ -e support-bundle-kit-$arch ]; then
               tar zcf support-bundle-kit-$arch.tar.gz support-bundle-kit-$arch
               sha256sum support-bundle-kit-$arch.tar.gz > sha256sum-$arch.txt
             fi
           done
-      
+
 
       - name: Publish artifacts to the release
-        if: ${{ startsWith(github.ref, 'refs/tags/') && fromJSON(inputs.release) }}
+        if: ${{ startsWith(github.ref, 'refs/tags/') && inputs.release }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -81,5 +122,7 @@ jobs:
           fi
           gh release upload ${{ github.ref_name }} dist/artifacts/support-bundle-kit-amd64.tar.gz
           gh release upload ${{ github.ref_name }} dist/artifacts/support-bundle-kit-arm64.tar.gz
+          gh release upload ${{ github.ref_name }} dist/artifacts/support-bundle-kit-darwin-arm64.tar.gz
           gh release upload ${{ github.ref_name }} dist/artifacts/sha256sum-amd64.txt
           gh release upload ${{ github.ref_name }} dist/artifacts/sha256sum-arm64.txt
+          gh release upload ${{ github.ref_name }} dist/artifacts/sha256sum-darwin-arm64.txt

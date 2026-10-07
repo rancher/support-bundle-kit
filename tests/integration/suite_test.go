@@ -58,6 +58,8 @@ var _ = BeforeSuite(func(done Done) {
 	samplePodSpec = filepath.Join(samplesPath, "/yamls/namespaced/harvester-system/v1/pods.yaml")
 
 	By("setting up test cluster")
+	a = apiserver.NewAPIServerConfig(apiserver.DefaultClientQPS, apiserver.DefaultClientBurst)
+
 	certificates, err := certs.GenerateCerts([]string{"localhost", "127.0.0.1"},
 		dir)
 	Expect(err).ToNot(HaveOccurred())

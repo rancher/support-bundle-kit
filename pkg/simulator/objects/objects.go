@@ -12,6 +12,8 @@ import (
 
 	wranglerunstructured "github.com/rancher/wrangler/pkg/unstructured"
 	"github.com/rancher/wrangler/pkg/yaml"
+	"github.com/sirupsen/logrus"
+	apiregistrationv1 "k8s.io/kube-aggregator/pkg/apis/apiregistration/v1"
 )
 
 // GenerateClusterScopedRuntimeObjects will parse the yaml directory
@@ -37,6 +39,15 @@ func GenerateClusterScopedRuntimeObjects(path string) (crd []runtime.Object, clu
 			}
 			if strings.Contains(absPath, "apiextensions.k8s.io") {
 				crdList = append(crdList, absPath)
+			} else if strings.Contains(absPath, "apiregistration.k8s.io") {
+				// we identify the group from the apiservice yaml and add it to skippedGroups to avoid applying it in the simulator. This is needed as the apiservice is not a CRD and is not available in the simulator.
+				content, err := os.ReadFile(absPath)
+				if err != nil {
+					return fmt.Errorf("error reading file %s: %v", absPath, err)
+				}
+				if err := appendAPIServicesGroupToSkippedGroups(content); err != nil {
+					return fmt.Errorf("error appending apiservice group to skippedGroups %v", err)
+				}
 			} else {
 				noncrdList = append(noncrdList, absPath)
 			}
@@ -159,4 +170,21 @@ func GenerateUnstructuredObjects(file string) (objs []*unstructured.Unstructured
 	}
 
 	return objs, err
+}
+
+func appendAPIServicesGroupToSkippedGroups(content []byte) error {
+	apiServiceList := &apiregistrationv1.APIServiceList{}
+	err := yaml.Unmarshal(content, apiServiceList)
+	if err != nil {
+		return fmt.Errorf("error unmarshalling apiservice list: %v", err)
+	}
+	// identify and skip external apiservices that are not available in the simulator. This is needed as the apiservice is not a CRD and is not available in the simulator.
+	for _, apiService := range apiServiceList.Items {
+		if apiService.Spec.Service != nil {
+			logrus.Infof("appending apiservice group %s to skippedGroups", apiService.Spec.Group)
+			skippedGroups[apiService.Spec.Group] = true
+		}
+
+	}
+	return nil
 }
