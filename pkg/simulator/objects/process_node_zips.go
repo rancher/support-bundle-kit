@@ -123,6 +123,11 @@ func generateNodeZipList(bundleAbsPath string) ([]string, error) {
 	var nodeZipList []string
 	err := filepath.Walk(filepath.Join(bundleAbsPath, DefaultNodeDir), func(path string, info os.FileInfo, err error) error {
 		if err != nil {
+			if os.IsNotExist(err) {
+                logrus.Warnf("Path %q does not exist, skipping node zip processing", path)
+                return nil
+            }
+			
 			fmt.Printf("prevent panic by handling failure accessing a path %q: %v\n", path, err)
 			return err
 		}
