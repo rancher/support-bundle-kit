@@ -46,56 +46,16 @@ jobs:
           push: false
           tags: ${{ env.imageName }}:${{ inputs.release-tag-name }}
 
-      - name: Login to Docker Hub
-        id: login-docker
+      - name: Publish ${{ env.imageName }} image
         if: ${{ inputs.push == true }}
-        uses: harvester/harvester-actions/actions/login-docker-hub@f9d3081c0b7241e65cc2ffe8701a5e7ffd4c5ee2 # main
-
-      - name: Publish public ${{ env.imageName }} image
-        if: ${{ inputs.push == true }}
-        uses: harvester/harvester-actions/actions/publish-public-image@f9d3081c0b7241e65cc2ffe8701a5e7ffd4c5ee2 # main
+        uses: harvester/harvester-actions/actions/build-and-publish@a3d39c75b30420c5d4e2ce504a410c98a066ca79 # main
         with:
-          context: .
+          release-tag-name: ${{ inputs.release-tag-name }}
+          is-release: ${{ inputs.release }}
+          # Releases are published to every registry.
+          registries: ${{ inputs.release && 'docker-io,staging,prime' || 'auto' }}
           dockerfile: package/Dockerfile
           image: ${{ env.imageName }}
-          tag: ${{ inputs.release-tag-name }}
-          platforms: ${{ env.PLATFORMS }}
-          registry: ${{ steps.login-docker.outputs.registry }}
-          repository: ${{ steps.login-docker.outputs.repository }}
-
-      - name: Login to Staging Registry
-        id: login-staging
-        if: ${{ inputs.push == true && inputs.release == false }}
-        uses: harvester/harvester-actions/actions/login-staging-registry@f9d3081c0b7241e65cc2ffe8701a5e7ffd4c5ee2 # main
-
-      - name: Publish staging ${{ env.imageName }} image
-        if: ${{ inputs.push == true && inputs.release == false }}
-        uses: harvester/harvester-actions/actions/publish-prime-image@f9d3081c0b7241e65cc2ffe8701a5e7ffd4c5ee2 # main
-        with:
-          context: .
-          dockerfile: package/Dockerfile
-          image: ${{ env.imageName }}
-          tag: ${{ inputs.release-tag-name }}
-          platforms: ${{ env.PLATFORMS }}
-          registry: ${{ steps.login-staging.outputs.registry }}
-          repository: ${{ steps.login-staging.outputs.repository }}
-
-      - name: Login to Prime Registry
-        id: login-prime
-        if: ${{ inputs.push == true && inputs.release == true }}
-        uses: harvester/harvester-actions/actions/login-prime-registry@f9d3081c0b7241e65cc2ffe8701a5e7ffd4c5ee2 # main
-
-      - name: Publish prime ${{ env.imageName }} image
-        if: ${{ inputs.push == true && inputs.release == true }}
-        uses: harvester/harvester-actions/actions/publish-prime-image@f9d3081c0b7241e65cc2ffe8701a5e7ffd4c5ee2 # main
-        with:
-          context: .
-          dockerfile: package/Dockerfile
-          image: ${{ env.imageName }}
-          tag: ${{ inputs.release-tag-name }}
-          platforms: ${{ env.PLATFORMS }}
-          registry: ${{ steps.login-prime.outputs.registry }}
-          repository: ${{ steps.login-prime.outputs.repository }}
 
       - name: Prepare artifacts for the release
         if: ${{ startsWith(github.ref, 'refs/tags/') && inputs.release }}
