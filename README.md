@@ -4,6 +4,20 @@
 
 This project contains support bundle scripts and utilities for applications running on top of Kubernetes
 
+## Compatibility matrix
+
+Support Bundle Kit is shared by [Harvester](https://github.com/harvester/harvester) and [Longhorn](https://github.com/longhorn/longhorn). Use the Support Bundle Kit release that matches your Harvester or Longhorn version:
+
+| Support Bundle Kit | Harvester                  | Longhorn                                         |
+| ------------------ | -------------------------- | ------------------------------------------------ |
+| v1.1.x             | v1.10.x                    | v1.13.x                                          |
+| v1.0.x             | v1.9.1+                    | v1.12.x, v1.11.x, v1.10.x, v1.9.x                |
+| v0.\*              | v1.9.0, v1.8.x and earlier | v1.12.x (partial), v1.11.x (partial) and earlier |
+
+The maintenance period is n-2: the latest minor release and the two minor releases before it are maintained.
+
+## Components
+
 - `harvester-sb-collector.sh`: The script is used to collect k3os node logs. It can be run in a container with the host log folder mapped or be run on the host directly.
 - `support-bundle-utils`: This application contains several commands:
   - `manager`: start a support bundle kit manager. The manager does these works:
