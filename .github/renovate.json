@@ -1,0 +1,185 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices",
+    "security:openssf-scorecard"
+  ],
+  "baseBranchPatterns": [
+    "master",
+    "v1.0.x"
+  ],
+  "enabledManagers": [
+    "dockerfile",
+    "gomod",
+    "github-actions"
+  ],
+  "major": {
+    "automerge": false
+  },
+  "semanticCommits": "enabled",
+  "semanticCommitType": "chore",
+  "semanticCommitScope": "deps",
+  "prHourlyLimit": 12,
+  "timezone": "Asia/Taipei",
+  "schedule": [
+    "after 1pm on sunday"
+  ],
+  "postUpdateOptions": [
+    "gomodTidy"
+  ],
+  "minimumReleaseAge": "2 weeks",
+  "osvVulnerabilityAlerts": true,
+  "vulnerabilityAlerts": {
+    "automerge": true
+  },
+  "packageRules": [
+    {
+      "description": "Only update registry.suse.com/bci/golang in Dockerfile and registry.suse.com/bci/bci-base in package/Dockerfile",
+      "matchManagers": [
+        "dockerfile"
+      ],
+      "enabled": false
+    },
+    {
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchManagers": [
+        "dockerfile"
+      ],
+      "matchFileNames": [
+        "Dockerfile"
+      ],
+      "matchPackageNames": [
+        "registry.suse.com/bci/golang"
+      ],
+      "enabled": true
+    },
+    {
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchManagers": [
+        "dockerfile"
+      ],
+      "matchFileNames": [
+        "package/Dockerfile"
+      ],
+      "matchPackageNames": [
+        "registry.suse.com/bci/bci-base"
+      ],
+      "enabled": true
+    },
+    {
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchManagers": [
+        "dockerfile"
+      ],
+      "matchFileNames": [
+        "package/Dockerfile",
+        "Dockerfile"
+      ],
+      "matchPackageNames": [
+        "registry.suse.com/bci/bci-base"
+      ],
+      "allowedVersions": "/^15\\.7$/"
+    },
+    {
+      "description": "Bump the go directive in go.mod",
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchDatasources": [
+        "golang-version"
+      ],
+      "matchDepNames": [
+        "go"
+      ],
+      "matchDepTypes": [
+        "golang"
+      ],
+      "rangeStrategy": "bump"
+    },
+    {
+      "description": "Only minor and patch updates are allowed for go.mod (golang version and packages)",
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchUpdateTypes": [
+        "major",
+        "digest",
+        "pin",
+        "pinDigest",
+        "rollback",
+        "replacement"
+      ],
+      "enabled": false
+    },
+    {
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "major dependencies"
+    },
+    {
+      "matchUpdateTypes": [
+        "minor"
+      ],
+      "groupName": "minor dependencies"
+    },
+    {
+      "matchUpdateTypes": [
+        "patch",
+        "digest"
+      ],
+      "automerge": true,
+      "groupName": "patch digest dependencies"
+    },
+    {
+      "matchDatasources": [
+        "docker"
+      ],
+      "automerge": true,
+      "groupName": "docker dependencies"
+    },
+    {
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "github actions dependencies"
+    },
+    {
+      "description": "Keep the go directive in go.mod and the golang builder image in Dockerfile in sync",
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchDatasources": [
+        "golang-version"
+      ],
+      "groupName": "golang version dependencies"
+    },
+    {
+      "matchManagers": [
+        "dockerfile"
+      ],
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "registry.suse.com/bci/golang"
+      ],
+      "groupName": "golang version dependencies"
+    },
+    {
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchUpdateTypes": [
+        "digest"
+      ],
+      "minimumReleaseAge": "0 days"
+    }
+  ]
+}
