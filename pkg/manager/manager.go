@@ -25,6 +25,8 @@ import (
 	"github.com/rancher/support-bundle-kit/pkg/manager/client"
 	"github.com/rancher/support-bundle-kit/pkg/types"
 	"github.com/rancher/support-bundle-kit/pkg/utils"
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type SupportBundleManager struct {
@@ -46,6 +48,9 @@ type SupportBundleManager struct {
 	IssueURL             string
 	Description          string
 	NodeTimeout          time.Duration
+	LogSinceSeconds      int64
+	LogSinceTime         string
+	LogUntilTime         string
 
 	ExcludeResources    []schema.GroupResource
 	ExcludeResourceList []string
@@ -623,4 +628,29 @@ func parseToleration(taintToleration string) (*v1.Toleration, error) {
 		Operator: operator,
 		Effect:   effect,
 	}, nil
+}
+
+func (m *SupportBundleManager) getPodLogOptions(previous bool) (*corev1.PodLogOptions, error) {
+	if m.LogSinceSeconds > 0 && m.LogSinceTime != "" {
+		return nil, fmt.Errorf("only one of SUPPORT_BUNDLE_LOG_SINCE_SECONDS or SUPPORT_BUNDLE_LOG_SINCE_TIME may be set")
+	}
+
+	opts := &corev1.PodLogOptions{
+		Timestamps: true,
+		Previous:   previous,
+	}
+
+	if m.LogSinceSeconds > 0 {
+		opts.SinceSeconds = &m.LogSinceSeconds
+	}
+
+	if m.LogSinceTime != "" {
+		t, err := time.Parse(time.RFC3339, m.LogSinceTime)
+		if err != nil {
+			return nil, err
+		}
+		opts.SinceTime = &metav1.Time{Time: t}
+	}
+
+	return opts, nil
 }
