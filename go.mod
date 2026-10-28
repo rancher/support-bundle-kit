@@ -14,7 +14,7 @@ replace (
 	github.com/rancher/rancher/pkg/apis => github.com/rancher/rancher/pkg/apis v0.0.0-20211208233239-77392a65423d
 	github.com/rancher/rancher/pkg/client => github.com/rancher/rancher/pkg/client v0.0.0-20211208233239-77392a65423d
 	go.etcd.io/etcd/client/v3 => go.etcd.io/etcd/client/v3 v3.6.5
-	go.etcd.io/etcd/server/v3 => go.etcd.io/etcd/server/v3 v3.6.5
+	go.etcd.io/etcd/server/v3 => go.etcd.io/etcd/server/v3 v3.6.14
 	go.opentelemetry.io/contrib => go.opentelemetry.io/contrib v0.20.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc => go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.59.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp => go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.58.0
@@ -78,12 +78,12 @@ require (
 	github.com/rancher/lasso v0.0.0-20220519004610-700f167d8324
 	github.com/rancher/wrangler v1.0.1
 	github.com/sirupsen/logrus v1.9.3
-	github.com/spf13/cobra v1.10.0
+	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.8.1
 	github.com/virtual-kubelet/node-cli v0.7.0
 	github.com/virtual-kubelet/virtual-kubelet v1.6.0
-	go.etcd.io/etcd/client/v3 v3.6.5
-	go.etcd.io/etcd/server/v3 v3.6.5
+	go.etcd.io/etcd/client/v3 v3.6.14
+	go.etcd.io/etcd/server/v3 v3.6.14
 	golang.org/x/sync v0.23.0
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.35.0
@@ -116,7 +116,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
-	go.etcd.io/etcd/pkg/v3 v3.6.5 // indirect
+	go.etcd.io/etcd/pkg/v3 v3.6.14 // indirect
 	go.etcd.io/raft/v3 v3.6.0 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.61.0 // indirect
@@ -219,14 +219,14 @@ require (
 	github.com/spf13/afero v1.15.0 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
-	github.com/spf13/pflag v1.0.9 // indirect
+	github.com/spf13/pflag v1.0.10 // indirect
 	github.com/stretchr/testify v1.11.1
 	github.com/subosito/gotenv v1.2.0 // indirect
 	github.com/tmc/grpc-websocket-proxy v0.0.0-20220101234140-673ab2c3ae75 // indirect
 	github.com/xiang90/probing v0.0.0-20221125231312-a49e3df8f510 // indirect
 	go.etcd.io/bbolt v1.4.3 // indirect
-	go.etcd.io/etcd/api/v3 v3.6.5 // indirect
-	go.etcd.io/etcd/client/pkg/v3 v3.6.5 // indirect
+	go.etcd.io/etcd/api/v3 v3.6.14 // indirect
+	go.etcd.io/etcd/client/pkg/v3 v3.6.14 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.61.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.11.0 // indirect
