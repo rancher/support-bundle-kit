@@ -25,6 +25,7 @@
     "after 1pm on sunday"
   ],
   "postUpdateOptions": [
+    "goGenerate",
     "gomodTidy"
   ],
   "minimumReleaseAge": "2 weeks",

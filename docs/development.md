@@ -2,7 +2,7 @@
 
 The support-bundle-kit simulator patches a few upstream Kubernetes files in the vendor directory. The patch is stored in `patches/simulator.patch`.
 
-After changing Go dependencies, run `go mod vendor` followed by `make simulator-vendor-patch`, then commit the patched vendor files. If an upstream change makes a patch hunk incompatible, the target fails and asks for the patch to be refreshed.
+After changing Go dependencies, run `go mod vendor` followed by `make simulator-vendor-patch`, then commit the patched vendor files. Renovate does this automatically by running `go generate ./...` after `go mod vendor` (see `vendor_patch.go`); the simulator code generators in `generate.go` require `go generate -tags codegen ./...`. If an upstream change makes a patch hunk incompatible, the target fails and asks for the patch to be refreshed.
 
 To refresh the patch, start from the output of `go mod vendor`, make the simulator changes described below, and regenerate `patches/simulator.patch` from the vendor diff. Run `make simulator-vendor-check` to verify that the committed vendor directory contains the patch. The `ci` target runs this check before building and testing.
 
