@@ -260,14 +260,21 @@ func (sws *serverWatchStream) recvLoop() error {
 				// \x00 is the smallest key
 				creq.Key = []byte{0}
 			}
-			if len(creq.RangeEnd) == 0 {
-				// force nil since watchstream.Watch distinguishes
-				// between nil and []byte{} for single key / >=
-				creq.RangeEnd = nil
-			}
-			if len(creq.RangeEnd) == 1 && creq.RangeEnd[0] == 0 {
-				// support  >= key queries
-				creq.RangeEnd = []byte{}
+			if creq.StartRevision < 0 {
+				wr := &pb.WatchResponse{
+					Header:       sws.newResponseHeader(sws.watchStream.Rev()),
+					WatchId:      clientv3.InvalidWatchID,
+					Canceled:     true,
+					Created:      true,
+					CancelReason: rpctypes.ErrCompacted.Error(),
+				}
+
+				select {
+				case sws.ctrlStream <- wr:
+					continue
+				case <-sws.closec:
+					return nil
+				}
 			}
 
 			err := sws.isWatchPermitted(creq)
@@ -301,6 +308,16 @@ func (sws *serverWatchStream) recvLoop() error {
 				case <-sws.closec:
 					return nil
 				}
+			}
+
+			if len(creq.RangeEnd) == 0 {
+				// force nil since watchstream.Watch distinguishes
+				// between nil and []byte{} for single key / >=
+				creq.RangeEnd = nil
+			}
+			if len(creq.RangeEnd) == 1 && creq.RangeEnd[0] == 0 {
+				// support  >= key queries
+				creq.RangeEnd = []byte{}
 			}
 
 			filters := FiltersFromRequest(creq)
