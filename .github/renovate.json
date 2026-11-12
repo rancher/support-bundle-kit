@@ -6,7 +6,8 @@
   ],
   "baseBranchPatterns": [
     "master",
-    "v1.0.x"
+    "v1.0.x",
+    "v1.1.x"
   ],
   "enabledManagers": [
     "dockerfile",
