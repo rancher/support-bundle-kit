@@ -12,17 +12,33 @@ log_warn() {
     echo "[WARNING] $1"
 }
 
+# Redact secret values in place by editing only the matching lines, so the rest
+# of the file (CRLF endings, long lines, comments, layout) stays byte-identical.
+# Handles YAML ("key: value") and JSON ("key": "value"), including block values.
 remove_yaml_secret() {
     local yaml_file=$1
+
     export CONFIG_HEADER_COMMENT="Note: this file is re-formatted by support-bundle-kit collector."
+    perl -i -ne '
+    	# Add the header comment as the first line, using the file own line ending.
+        if ($. == 1) {
+            my $eol = /\r\n$/ ? "\r\n" : "\n";
+            print "# $ENV{CONFIG_HEADER_COMMENT}$eol";
+        }
 
-    yq e '. headComment=strenv(CONFIG_HEADER_COMMENT)' $yaml_file -i
-    yq e '(.. | select(has("passwd")) | .passwd) = "***" ' $yaml_file -i
-    yq e '(.. | select(has("password")) | .password) = "***" ' $yaml_file -i
-    yq e '(.. | select(has("secret")) | .secret) = "***" ' $yaml_file -i
-    yq e '(.. | select(has("token")) | .token) = "***" ' $yaml_file -i
-    yq e '(.. | select(has("agent-token")) | .agent-token) = "***" ' $yaml_file -i
+        # Skip the lines of a multi-line value we just redacted.
+        if (defined $indent) {
+            next if /^([ \t]*)\S/ && length($1) > $indent;
+            undef $indent;
+        }
 
+	# key: value  ->  key: "***"   (trailing comma and CRLF are kept)
+        if (s/^([ \t-]*)(["\x27]?(?:passwd|password|secret|token|agent-token)["\x27]?)[ \t]*:[ \t]*.*?(,?)(\r?\n?)$/$1$2: "***"$3$4/) {
+            $indent = length($1);
+        }
+
+        print;
+    ' "$yaml_file"
     unset CONFIG_HEADER_COMMENT
 }
 
