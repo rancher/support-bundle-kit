@@ -1,4 +1,4 @@
-FROM registry.suse.com/bci/golang:1.26 AS builder
+FROM registry.suse.com/bci/golang:1.26@sha256:943e15701cdd16a111906eeb798e294fa82bcccb93f59b6d84192d8459962d9c AS builder
 
 ARG MK_HOST_ARCH
 ENV ARCH=$MK_HOST_ARCH
