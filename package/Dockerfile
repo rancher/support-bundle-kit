@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7.0
 
-FROM registry.suse.com/bci/bci-base:15.7
+FROM registry.suse.com/bci/bci-base:15.7@sha256:8cd100ae2ec5ab23d6ec7aa1c0fe2dc30ca852c609406097797c9d298b7decdd
 
 ARG TARGETPLATFORM
 
