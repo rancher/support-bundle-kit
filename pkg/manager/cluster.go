@@ -162,7 +162,12 @@ func (c *Cluster) generateSupportBundleLogs(logsDir string, errLog io.Writer) {
 			podName := pod.Name
 			podDir := filepath.Join(logsDir, ns, podName)
 			for _, container := range pod.Spec.Containers {
-				req := c.sbm.k8s.GetPodContainerLogRequest(ns, podName, container.Name)
+				opts, err := c.sbm.getPodLogOptions(false)
+				if err != nil {
+					_, _ = fmt.Fprintf(errLog, "Support bundle: invalid log options: %v\n", err)
+					return
+				}
+				req := c.sbm.k8s.GetPodContainerLogRequest(ns, podName, container.Name, opts)
 				getLogToFile(podDir, podName, container.Name, req, c.sbm.context, errLog, false)
 				restartCount, err := c.sbm.k8s.GetPodRestartCount(ns, podName, container.Name)
 				if err != nil {
@@ -170,7 +175,12 @@ func (c *Cluster) generateSupportBundleLogs(logsDir string, errLog io.Writer) {
 					continue
 				}
 				if restartCount > 0 {
-					req := c.sbm.k8s.GetPodContainerPreviousLogRequest(ns, podName, container.Name)
+					opts, err := c.sbm.getPodLogOptions(true)
+					if err != nil {
+						_, _ = fmt.Fprintf(errLog, "Support bundle: invalid log options: %v\n", err)
+						continue
+					}
+					req := c.sbm.k8s.GetPodContainerPreviousLogRequest(ns, podName, container.Name, opts)
 					getLogToFile(podDir, podName, container.Name, req, c.sbm.context, errLog, true)
 				}
 			}
